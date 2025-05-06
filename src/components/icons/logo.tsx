@@ -1,20 +1,20 @@
 import type { SVGProps } from 'react';
 
-export function AlNisaaMarketLogo(props: SVGProps<SVGSVGElement>) {
+export function WomenCommerceLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="200" // Increased width for new text
-      height="60" // Increased height for new text
-      viewBox="0 0 200 60"
+      width="220" // Adjusted width for new text and slightly more space
+      height="60"
+      viewBox="0 0 220 60"
       xmlns="http://www.w3.org/2000/svg"
-      aria-label="AlNisaaMarket Logo"
+      aria-label="WomenCommerce Logo"
       {...props}
     >
       <style>
         {`
           .logo-main-text {
             font-family: var(--font-poppins), sans-serif;
-            font-size: 24px;
+            font-size: 22px; /* Slightly adjusted for new name */
             fill: hsl(var(--primary)); /* Warm Pink */
             font-weight: 700; /* Bold */
             text-anchor: start;
@@ -22,7 +22,7 @@ export function AlNisaaMarketLogo(props: SVGProps<SVGSVGElement>) {
           }
           .logo-tagline-text {
             font-family: var(--font-merriweather), serif;
-            font-size: 10px;
+            font-size: 9px; /* Slightly smaller for longer tagline */
             fill: hsl(var(--muted-foreground)); /* Muted Purple-Pink */
             text-anchor: start;
             dominant-baseline: central;
@@ -45,41 +45,41 @@ export function AlNisaaMarketLogo(props: SVGProps<SVGSVGElement>) {
         `}
       </style>
       
-      {/* Simplified Tree/Community Symbol */}
-      <g transform="translate(25, 30) scale(0.7)">
+      {/* Tree/Community Symbol representing women branching out */}
+      <g transform="translate(28, 30) scale(0.75)"> {/* Adjusted position and scale */}
         {/* Trunk */}
         <line x1="0" y1="20" x2="0" y2="-10" className="tree-trunk" />
         
-        {/* Branch 1 - Left */}
-        <g transform="translate(-15, -15) rotate(-30)">
-          <circle cx="0" cy="-5" r="4" className="female-symbol-fill" />
-          <line x1="0" y1="-1" x2="0" y2="5" className="female-symbol-stroke" />
-          <line x1="-3" y1="5" x2="3" y2="5" className="female-symbol-stroke" />
-          <circle cx="5" cy="-10" r="2" className="leaf-fill" />
+        {/* Branch 1 - Left - Female Symbol */}
+        <g transform="translate(-15, -15) rotate(-35)">
+          <circle cx="0" cy="-6" r="5" className="female-symbol-fill" />
+          <line x1="0" y1="-1" x2="0" y2="6" className="female-symbol-stroke" /> {/* Cross base */}
+          <line x1="-4" y1="6" x2="4" y2="6" className="female-symbol-stroke" /> {/* Cross arms */}
+          <path d="M 7 -8 A 3 3 0 0 1 4 -11" className="leaf-fill" stroke="hsl(var(--accent-yellow))" strokeWidth="1.5" fill="none" />
         </g>
         
-        {/* Branch 2 - Top */}
-        <g transform="translate(0, -20)">
-          <circle cx="0" cy="-5" r="4.5" className="female-symbol-fill" />
-          <line x1="0" y1="-0.5" x2="0" y2="5.5" className="female-symbol-stroke" />
-          <line x1="-3.5" y1="5.5" x2="3.5" y2="5.5" className="female-symbol-stroke" />
-           <circle cx="0" cy="-15" r="2.5" className="leaf-fill" />
+        {/* Branch 2 - Top - Female Symbol */}
+        <g transform="translate(0, -22)">
+          <circle cx="0" cy="-6" r="5.5" className="female-symbol-fill" />
+          <line x1="0" y1="-0.5" x2="0" y2="6.5" className="female-symbol-stroke" />
+          <line x1="-4.5" y1="6.5" x2="4.5" y2="6.5" className="female-symbol-stroke" />
+          <path d="M 0 -16 A 3 3 0 0 1 -3 -19" className="leaf-fill" stroke="hsl(var(--accent-yellow))" strokeWidth="1.5" fill="none" />
         </g>
 
-        {/* Branch 3 - Right */}
-        <g transform="translate(15, -15) rotate(30)">
-          <circle cx="0" cy="-5" r="4" className="female-symbol-fill" />
-          <line x1="0" y1="-1" x2="0" y2="5" className="female-symbol-stroke" />
-          <line x1="-3" y1="5" x2="3" y2="5" className="female-symbol-stroke" />
-          <circle cx="-5" cy="-10" r="2" className="leaf-fill" />
+        {/* Branch 3 - Right - Female Symbol */}
+        <g transform="translate(15, -15) rotate(35)">
+          <circle cx="0" cy="-6" r="5" className="female-symbol-fill" />
+          <line x1="0" y1="-1" x2="0" y2="6" className="female-symbol-stroke" />
+          <line x1="-4" y1="6" x2="4" y2="6" className="female-symbol-stroke" />
+           <path d="M -7 -8 A 3 3 0 0 0 -4 -11" className="leaf-fill" stroke="hsl(var(--accent-yellow))" strokeWidth="1.5" fill="none" />
         </g>
       </g>
 
-      <text x="55" y="25" className="logo-main-text">
-        AlNisaaMarket
+      <text x="60" y="25" className="logo-main-text"> {/* Adjusted x for new symbol width */}
+        WomenCommerce
       </text>
-      <text x="57" y="45" className="logo-tagline-text">
-        Empowering Women Entrepreneurs
+      <text x="62" y="45" className="logo-tagline-text"> {/* Adjusted x for new symbol width */}
+        Empowering Women Economically
       </text>
     </svg>
   );

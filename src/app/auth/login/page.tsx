@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { LogIn, Mail, KeyRound, UserPlus } from 'lucide-react';
-import { AlNisaaMarketLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -41,14 +41,11 @@ export default function LoginPage() {
     // Simulate API call for login
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Login Attempt:', data);
-    // In a real app, you would handle successful login (e.g., redirect, set auth token)
-    // or show an error message for failed login.
     toast({
       title: 'Login Successful (Simulated)',
-      description: "Welcome back to AlNisaaMarket!",
+      description: "Welcome back to WomenCommerce!",
       variant: 'default',
     });
-    // router.push('/dashboard'); // Example redirect
     reset();
   };
 
@@ -75,11 +72,11 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-xl border border-primary/20">
         <CardHeader className="items-center text-center p-6 sm:p-8 bg-primary/5 rounded-t-lg">
           <Link href="/" className="mb-4 inline-block">
-            <AlNisaaMarketLogo className="h-16 w-auto" />
+            <WomenCommerceLogo className="h-16 w-auto" />
           </Link>
           <CardTitle className="text-3xl font-bold text-primary">Welcome Back!</CardTitle>
           <CardDescription className="text-foreground/80">
-            Sign in to continue to your AlNisaaMarket account.
+            Sign in to continue to your WomenCommerce account.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>

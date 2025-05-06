@@ -11,7 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import React from 'react'; // Ensure React is imported
+import React from 'react';
 
 const testimonials = [
   {
@@ -19,7 +19,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/100/100?random=1',
     dataAiHint: 'woman smiling',
     initials: 'AH',
-    text: "AlNisaaMarket has been a game-changer for my small business. The support and visibility I've received are incredible!",
+    text: "WomenCommerce has been a game-changer for my small business. The support and visibility I've received are incredible!",
     rating: 5,
     type: 'Seller'
   },
@@ -28,7 +28,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/100/100?random=2',
     dataAiHint: 'woman happy',
     initials: 'LR',
-    text: "I love discovering unique, handmade items on AlNisaaMarket. It's my go-to for gifts and supporting women entrepreneurs.",
+    text: "I love discovering unique, handmade items on WomenCommerce. It's my go-to for gifts and supporting women entrepreneurs.",
     rating: 5,
     type: 'Buyer'
   },
@@ -37,7 +37,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/100/100?random=3',
     dataAiHint: 'woman portrait',
     initials: 'FK',
-    text: 'The platform is so easy to use, and the community is wonderful. I highly recommend it to any woman looking to sell her creations.',
+    text: 'The platform is so easy to use, and the community is wonderful. I highly recommend WomenCommerce to any woman looking to sell her creations.',
     rating: 4,
     type: 'Seller'
   },
@@ -46,7 +46,7 @@ const testimonials = [
     avatar: 'https://picsum.photos/100/100?random=4',
     dataAiHint: 'woman shopping',
     initials: 'YB',
-    text: 'Found the most beautiful handcrafted jewelry here. The quality is amazing, and I love knowing I'm supporting a woman-owned business.',
+    text: 'Found the most beautiful handcrafted jewelry here on WomenCommerce. The quality is amazing, and I love knowing I\'m supporting a woman-owned business.',
     rating: 5,
     type: 'Buyer'
   },
@@ -65,7 +65,7 @@ export function TestimonialsSection() {
             Voices from Our Community
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
-            Hear what sellers and buyers are saying about AlNisaaMarket.
+            Hear what sellers and buyers are saying about WomenCommerce.
           </p>
         </div>
 
@@ -115,5 +115,3 @@ export function TestimonialsSection() {
     </section>
   );
 }
-
-      

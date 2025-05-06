@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
-import { AlNisaaMarketLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address to reset your password." }),
@@ -37,12 +37,11 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit: SubmitHandler<ForgotPasswordFormValues> = async (data) => {
-    // Simulate API call for password reset link
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Password Reset Request:', data.email);
     toast({
       title: 'Password Reset Email Sent (Simulated)',
-      description: "If an account exists for this email, you'll receive instructions to reset your password shortly.",
+      description: "If an account exists for this email on WomenCommerce, you'll receive instructions to reset your password shortly.",
       variant: 'default',
     });
     reset();
@@ -71,11 +70,11 @@ export default function ForgotPasswordPage() {
       <Card className="w-full max-w-md shadow-xl border border-primary/20">
         <CardHeader className="items-center text-center p-6 sm:p-8 bg-primary/5 rounded-t-lg">
           <Link href="/" className="mb-4 inline-block">
-            <AlNisaaMarketLogo className="h-16 w-auto" />
+            <WomenCommerceLogo className="h-16 w-auto" />
           </Link>
           <CardTitle className="text-3xl font-bold text-primary">Forgot Your Password?</CardTitle>
           <CardDescription className="text-foreground/80">
-            No worries! Enter your email below and we'll send you a link to reset it.
+            No worries! Enter your email below and we'll send you a link to reset it for your WomenCommerce account.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 
 const poppins = Poppins({
-  weight: ['400', '700', '900'], // Added 900 for Poppins Bold
+  weight: ['400', '700', '900'],
   subsets: ['latin'],
   variable: '--font-poppins',
   display: 'swap',
@@ -20,8 +20,8 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
-  title: 'AlNisaaMarket - Empowering Women Entrepreneurs',
-  description: 'A platform for talented women to showcase and sell their unique products.',
+  title: 'WomenCommerce - Empowering Women Economically',
+  description: 'A comprehensive e-commerce platform for women to create virtual stores, sell or rent products and services, and build a supportive community.',
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr" className={`${poppins.variable} ${merriweather.variable}`}>
-      <body className={`font-sans antialiased`}> {/* Base font will be Poppins via globals.css */}
+      <body className={`font-sans antialiased`}>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-grow">{children}</main>

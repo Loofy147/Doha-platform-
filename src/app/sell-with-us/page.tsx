@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -20,8 +19,10 @@ const productCategories = [
   "Home Goods & Decor",
   "Beauty & Wellness",
   "Art & Collectibles",
-  "Sweets & Treats",
+  "Sweets & Treats (حلويات)",
   "Handmade Crafts",
+  "Rental Items",
+  "Services (e.g., Workshops, Consulting)",
   "Other",
 ];
 
@@ -30,7 +31,7 @@ const sellerApplicationSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   phoneNumber: z.string().regex(/^\+?[0-9\s-]{7,15}$/, { message: 'Please enter a valid phone number.' }),
   businessName: z.string().min(2, { message: "Business name must be at least 2 characters." }),
-  productCategory: z.string({ required_error: "Please select your primary product category." }),
+  productCategory: z.string({ required_error: "Please select your primary product/service category." }),
   businessDescription: z.string().min(20, { message: "Description must be at least 20 characters." }).max(500, {message: "Description cannot exceed 500 characters."}),
   agreeToTerms: z.boolean().refine(val => val === true, { message: "You must agree to the terms and conditions to proceed." }),
 });
@@ -64,7 +65,7 @@ export default function SellWithUsPage() {
     console.log('Seller Application Submitted:', data);
     toast({
       title: 'Application Submitted!',
-      description: "Thank you for your interest in selling on AlNisaaMarket. We've received your application and will review it shortly. We'll be in touch soon!",
+      description: "Thank you for your interest in selling on WomenCommerce. We've received your application and will review it shortly. We'll be in touch soon!",
       variant: 'default',
     });
     reset();
@@ -98,10 +99,10 @@ export default function SellWithUsPage() {
             <Sparkles size={48} className="text-accent-pink" />
           </div>
           <CardTitle className="text-3xl font-bold text-primary text-center">
-            Join AlNisaaMarket as a Seller!
+            Join WomenCommerce as a Seller!
           </CardTitle>
           <CardDescription className="text-center text-lg text-foreground/80 pt-2">
-            Showcase your unique creations to a supportive community. We're excited to help you grow your business.
+            Showcase your unique products, services, or rental items to a supportive community. We're excited to help you grow your business.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -138,14 +139,14 @@ export default function SellWithUsPage() {
                   {errors.businessName && <p className="mt-1 text-sm text-destructive">{errors.businessName.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="productCategory" className="flex items-center mb-1"><Tag size={16} className="mr-2 text-accent-yellow" /> Primary Product Category</Label>
+                  <Label htmlFor="productCategory" className="flex items-center mb-1"><Tag size={16} className="mr-2 text-accent-yellow" /> Primary Product/Service Category</Label>
                   <Controller
                     name="productCategory"
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger id="productCategory">
-                          <SelectValue placeholder="Select your main product category" />
+                          <SelectValue placeholder="Select your main category" />
                         </SelectTrigger>
                         <SelectContent>
                           {productCategories.map(category => (
@@ -158,11 +159,11 @@ export default function SellWithUsPage() {
                   {errors.productCategory && <p className="mt-1 text-sm text-destructive">{errors.productCategory.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="businessDescription" className="flex items-center mb-1"><FileText size={16} className="mr-2 text-accent-pink" /> Tell us about your business and products</Label>
+                  <Label htmlFor="businessDescription" className="flex items-center mb-1"><FileText size={16} className="mr-2 text-accent-pink" /> Tell us about your business, products, or services</Label>
                   <Textarea 
                     id="businessDescription" 
                     {...register('businessDescription')} 
-                    placeholder="Describe what you create, your inspiration, materials used, etc. (max 500 characters)" 
+                    placeholder="Describe what you create/offer, your inspiration, materials used, service details, etc. (max 500 characters)" 
                     rows={5}
                   />
                   {errors.businessDescription && <p className="mt-1 text-sm text-destructive">{errors.businessDescription.message}</p>}
@@ -189,7 +190,7 @@ export default function SellWithUsPage() {
                   htmlFor="agreeToTerms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  I have read and agree to the AlNisaaMarket Seller Terms and Conditions.
+                  I have read and agree to the WomenCommerce Seller Terms and Conditions.
                 </label>
                 <p className="text-xs text-muted-foreground">
                   (A link to the terms and conditions document would be provided here in a real application.)
@@ -208,5 +209,3 @@ export default function SellWithUsPage() {
     </div>
   );
 }
-
-      

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { UserPlus, Mail, KeyRound, User, LogIn } from 'lucide-react';
-import { AlNisaaMarketLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const registrationFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
@@ -26,7 +26,7 @@ const registrationFormSchema = z.object({
   agreeToTerms: z.boolean().refine(val => val === true, { message: "You must agree to the terms and conditions to register." }),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords do not match.",
-  path: ["confirmPassword"], // Set error on confirmPassword field
+  path: ["confirmPassword"], 
 });
 
 type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
@@ -53,16 +53,13 @@ export default function RegisterPage() {
   });
 
   const onSubmit: SubmitHandler<RegistrationFormValues> = async (data) => {
-    // Simulate API call for registration
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Registration Attempt:', data);
-    // In a real app, handle successful registration or show errors
     toast({
       title: 'Registration Successful (Simulated)',
-      description: "Welcome to AlNisaaMarket! Please check your email to verify your account.",
+      description: "Welcome to WomenCommerce! Please check your email to verify your account.",
       variant: 'default',
     });
-    // router.push('/auth/login'); // Example redirect
     reset();
   };
 
@@ -90,11 +87,11 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md shadow-xl border border-primary/20">
         <CardHeader className="items-center text-center p-6 sm:p-8 bg-primary/5 rounded-t-lg">
            <Link href="/" className="mb-4 inline-block">
-            <AlNisaaMarketLogo className="h-16 w-auto" />
+            <WomenCommerceLogo className="h-16 w-auto" />
           </Link>
           <CardTitle className="text-3xl font-bold text-primary">Create Your Account</CardTitle>
           <CardDescription className="text-foreground/80">
-            Join our community of talented women and supportive shoppers.
+            Join our community of talented women and supportive shoppers on WomenCommerce.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -168,7 +165,7 @@ export default function RegisterPage() {
                   htmlFor="agreeToTerms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  I agree to the AlNisaaMarket Terms of Service and Privacy Policy.
+                  I agree to the WomenCommerce Terms of Service and Privacy Policy.
                 </label>
                  {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms.message}</p>}
               </div>

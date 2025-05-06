@@ -51,7 +51,7 @@ export function ContactSection() {
             Get In Touch
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
-            Have questions or feedback? We'd love to hear from you!
+            Have questions or feedback about WomenCommerce? We'd love to hear from you!
           </p>
         </div>
 
@@ -128,7 +128,7 @@ export function ContactSection() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-foreground/80">
-                  AlNisaaMarket is an online platform connecting talented women entrepreneurs with buyers. We are based virtually and operate across Algeria.
+                  WomenCommerce is an online platform connecting talented women entrepreneurs with buyers. We are based virtually and operate to empower women economically.
                 </p>
                  <div className="aspect-video rounded-md overflow-hidden border">
                   <Image
@@ -137,12 +137,12 @@ export function ContactSection() {
                     width={800}
                     height={450}
                     className="object-cover w-full h-full"
-                    data-ai-hint="women online collaboration"
+                    data-ai-hint="women online business"
                   />
                 </div>
                 <p className="flex items-center gap-3 text-foreground/80">
                   <Mail size={20} className="text-accent-pink" />
-                  <span>support@alnisaamarket.dz</span>
+                  <span>support@womencommerce.com</span>
                 </p>
                  <p className="text-sm text-muted-foreground">
                   For specific seller contact details, please refer to individual store pages after logging in.
@@ -155,5 +155,3 @@ export function ContactSection() {
     </section>
   );
 }
-
-      

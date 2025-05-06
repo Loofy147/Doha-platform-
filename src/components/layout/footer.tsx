@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Mail, Info, Users, Briefcase, MessageSquare, Send } from 'lucide-react';
-import { AlNisaaMarketLogo } from '@/components/icons/logo'; // Updated logo
+import { Mail, Info, Users, Briefcase, MessageSquare, Send, FileText, Gift, ShoppingCart, BookOpen } from 'lucide-react';
+import { WomenCommerceLogo } from '@/components/icons/logo';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -13,27 +13,28 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <Link href="/" className="inline-block mb-4">
-              <AlNisaaMarketLogo className="h-14 w-auto" />
+              <WomenCommerceLogo className="h-14 w-auto" />
             </Link>
             <p className="text-sm text-foreground/80">
-              AlNisaaMarket: A platform dedicated to empowering women entrepreneurs and showcasing their unique talents.
+              WomenCommerce: A comprehensive platform empowering women entrepreneurs to sell, rent, and showcase their talents.
             </p>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold mb-4 text-primary">Discover</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/products" className="hover:text-primary transition-colors">Browse Products</Link></li>
+              <li><Link href="/products" className="hover:text-primary transition-colors flex items-center gap-1"><ShoppingCart size={16} /> Products & Services</Link></li>
               <li><Link href="/#categories" className="hover:text-primary transition-colors">Shop by Category</Link></li>
               <li><Link href="/#featured-sellers" className="hover:text-primary transition-colors">Featured Sellers</Link></li>
-              <li><Link href="/blog" className="hover:text-primary transition-colors">Our Blog</Link></li>
+              <li><Link href="/blog" className="hover:text-primary transition-colors flex items-center gap-1"><FileText size={16} /> Our Blog</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold mb-4 text-primary">Get Involved</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/sell-with-us" className="hover:text-primary transition-colors flex items-center gap-1"><Briefcase size={16} /> Sell on AlNisaaMarket</Link></li>
+              <li><Link href="/sell-with-us" className="hover:text-primary transition-colors flex items-center gap-1"><Briefcase size={16} /> Sell on WomenCommerce</Link></li>
+              <li><Link href="/subscriptions" className="hover:text-primary transition-colors flex items-center gap-1"><Gift size={16}/> Subscriptions</Link></li>
               <li><Link href="/#community" className="hover:text-primary transition-colors flex items-center gap-1"><Users size={16} /> Join Our Community</Link></li>
               <li><Link href="/#about" className="hover:text-primary transition-colors flex items-center gap-1"><Info size={16} /> About Us</Link></li>
               <li><Link href="/#contact" className="hover:text-primary transition-colors flex items-center gap-1"><MessageSquare size={16} /> Contact Support</Link></li>
@@ -51,12 +52,12 @@ export function Footer() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4">
-              General Inquiries: <a href="mailto:info@alnisaamarket.dz" className="hover:text-primary">info@alnisaamarket.dz</a>
+              General Inquiries: <a href="mailto:info@womencommerce.com" className="hover:text-primary">info@womencommerce.com</a>
             </p>
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-foreground/70">
-          <p>&copy; {currentYear} AlNisaaMarket. All rights reserved. Empowering Women Through Commerce.</p>
+          <p>&copy; {currentYear} WomenCommerce. All rights reserved. Empowering Women Economically Through Commerce.</p>
         </div>
       </div>
     </footer>
