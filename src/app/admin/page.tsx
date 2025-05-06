@@ -36,20 +36,20 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 
 const salesData = [
-  { month: "Jan", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Feb", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Mar", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Apr", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "May", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "Jun", sales: Math.floor(Math.random() * 5000) + 1000 },
+  { month: "يناير", sales: Math.floor(Math.random() * 5000) + 1000 },
+  { month: "فبراير", sales: Math.floor(Math.random() * 5000) + 1000 },
+  { month: "مارس", sales: Math.floor(Math.random() * 5000) + 1000 },
+  { month: "أبريل", sales: Math.floor(Math.random() * 5000) + 1000 },
+  { month: "مايو", sales: Math.floor(Math.random() * 5000) + 1000 },
+  { month: "يونيو", sales: Math.floor(Math.random() * 5000) + 1000 },
 ];
 
 const recentActivities = [
-  { id: 1, user: 'Aisha B.', description: 'New seller application received.', time: '5m ago', avatarSrc: 'https://picsum.photos/40/40?random=1', dataAiHint: "woman portrait" },
-  { id: 2, user: 'System', description: 'Platform update v1.2 deployed.', time: '1h ago', avatarSrc: 'https://picsum.photos/40/40?random=2', dataAiHint: "system logo" },
-  { id: 3, user: 'Fatima K.', description: 'Reported an issue with product listing.', time: '3h ago', avatarSrc: 'https://picsum.photos/40/40?random=3', dataAiHint: "woman thinking" },
-  { id: 4, user: 'Admin', description: 'Sent out weekly newsletter.', time: '1d ago', avatarSrc: 'https://picsum.photos/40/40?random=admin', dataAiHint: "admin icon" },
-  { id: 5, user: 'Layla R.', description: 'New high-value order placed.', time: '2d ago', avatarSrc: 'https://picsum.photos/40/40?random=4', dataAiHint: "woman shopping" },
+  { id: 1, user: 'عائشة ب.', description: 'تم استلام طلب بائعة جديدة.', time: 'منذ 5 دقائق', avatarSrc: 'https://picsum.photos/40/40?random=1', dataAiHint: "woman portrait" },
+  { id: 2, user: 'النظام', description: 'تم نشر تحديث المنصة v1.2.', time: 'منذ ساعة', avatarSrc: 'https://picsum.photos/40/40?random=2', dataAiHint: "system logo" },
+  { id: 3, user: 'فاطمة ك.', description: 'أبلغت عن مشكلة في قائمة المنتجات.', time: 'منذ 3 ساعات', avatarSrc: 'https://picsum.photos/40/40?random=3', dataAiHint: "woman thinking" },
+  { id: 4, user: 'المسؤول', description: 'تم إرسال النشرة الإخبارية الأسبوعية.', time: 'منذ يوم واحد', avatarSrc: 'https://picsum.photos/40/40?random=admin', dataAiHint: "admin icon" },
+  { id: 5, user: 'ليلى ر.', description: 'تم تقديم طلب جديد بقيمة عالية.', time: 'منذ يومين', avatarSrc: 'https://picsum.photos/40/40?random=4', dataAiHint: "woman shopping" },
 ];
 
 
@@ -62,37 +62,37 @@ export default function AdminDashboardPage() {
 
     const overviewCards = [
       { 
-        title: "Total Revenue", 
-        value: "DA 45,231.89", 
+        title: "إجمالي الإيرادات", 
+        value: "45,231.89 دج", 
         icon: <DollarSign className="text-green-500" />, 
         href: "/admin/reports/revenue",
-        trend: "+20.1% from last month",
+        trend: "+20.1% عن الشهر الماضي",
         color: "green"
       },
       { 
-        title: "Total Orders", 
+        title: "إجمالي الطلبات", 
         value: "+12,234", 
         icon: <CreditCard className="text-purple-500" />, 
         href: "/admin/orders", 
         color: "purple"
       },
       { 
-        title: "Customers", 
-        value: "1.2k", 
+        title: "العملاء", 
+        value: "1.2 ألف", 
         icon: <Users className="text-pink-500" />, 
         href: "/admin/customers",
-        trend: "+30 this week",
+        trend: "+30 هذا الأسبوع",
         color: "pink" 
       },
       { 
-        title: "Products/Services", 
+        title: "المنتجات/الخدمات", 
         value: "250", 
         icon: <ShoppingBag className="text-yellow-500" />, 
         href: "/admin/products",
         color: "yellow"
       },
       { 
-        title: "Sellers", 
+        title: "البائعات", 
         value: "85", 
         icon: <Store className="text-indigo-500" />, 
         href: "/admin/sellers",
@@ -101,10 +101,10 @@ export default function AdminDashboardPage() {
     ];
 
     const quickActions = [
-      { label: "Add New Product", icon: <PlusCircle size={18} />, href: "/admin/products/new" },
-      { label: "Manage Categories", icon: <LayoutGrid size={18} />, href: "/admin/categories" },
-      { label: "View Reports", icon: <BarChart3 size={18} />, href: "/admin/reports" },
-      { label: "Platform Settings", icon: <Settings size={18} />, href: "/admin/settings" },
+      { label: "إضافة منتج جديد", icon: <PlusCircle size={18} />, href: "/admin/products/new" },
+      { label: "إدارة الفئات", icon: <LayoutGrid size={18} />, href: "/admin/categories" },
+      { label: "عرض التقارير", icon: <BarChart3 size={18} />, href: "/admin/reports" },
+      { label: "إعدادات المنصة", icon: <Settings size={18} />, href: "/admin/settings" },
     ];
     
 
@@ -112,7 +112,7 @@ export default function AdminDashboardPage() {
         return (
             <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
                 <div className="flex items-center justify-between space-y-2">
-                    <h2 className="text-3xl font-bold tracking-tight text-primary">Admin Dashboard</h2>
+                    <h2 className="text-3xl font-bold tracking-tight text-primary">لوحة تحكم المسؤول</h2>
                 </div>
                 <Skeleton className="w-full h-32 rounded-lg" />
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -130,13 +130,13 @@ export default function AdminDashboardPage() {
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6 bg-background">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-2 md:space-y-0">
         <div>
-            <h2 className="text-3xl font-bold tracking-tight text-primary">Admin Dashboard</h2>
-            <p className="text-muted-foreground">Overview of WomenCommerce platform activity.</p>
+            <h2 className="text-3xl font-bold tracking-tight text-primary">لوحة تحكم المسؤول</h2>
+            <p className="text-muted-foreground">نظرة عامة على نشاط منصة نساء كوميرس.</p>
         </div>
         <div className="flex items-center space-x-2">
             <Button variant="outline">
                 <Download className="mr-2 h-4 w-4" />
-                Download Report
+                تحميل التقرير
             </Button>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function AdminDashboardPage() {
                 </CardContent>
                 <CardFooter>
                     <Button variant="ghost" size="sm" asChild className="text-xs text-primary hover:underline p-0 h-auto">
-                        <Link href={card.href}>View Details</Link>
+                        <Link href={card.href}>عرض التفاصيل</Link>
                     </Button>
                 </CardFooter>
             </Card>
@@ -166,8 +166,8 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2 shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-primary flex items-center"><LineChart className="mr-2 text-accent-purple" /> Sales Trends</CardTitle>
-                    <CardDescription>Last 6 months sales performance.</CardDescription>
+                    <CardTitle className="text-primary flex items-center"><LineChart className="mr-2 text-accent-purple" /> اتجاهات المبيعات</CardTitle>
+                    <CardDescription>أداء المبيعات لآخر 6 أشهر.</CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={300}>
@@ -179,7 +179,7 @@ export default function AdminDashboardPage() {
                                 </linearGradient>
                             </defs>
                             <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `DA ${value/1000}k`} />
+                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value/1000} ألف دج`} />
                             <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                             <Tooltip contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)"}} cursor={{fill: "hsla(var(--primary)/0.1)"}}/>
                             <Area type="monotone" dataKey="sales" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" />
@@ -190,7 +190,7 @@ export default function AdminDashboardPage() {
 
             <Card className="shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-primary flex items-center"><Activity className="mr-2 text-accent-pink"/> Recent Activities</CardTitle>
+                    <CardTitle className="text-primary flex items-center"><Activity className="mr-2 text-accent-pink"/> النشاطات الأخيرة</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <ScrollArea className="h-[300px]">
@@ -211,14 +211,14 @@ export default function AdminDashboardPage() {
                     </ScrollArea>
                 </CardContent>
                  <CardFooter className="border-t pt-4">
-                    <Button variant="outline" size="sm" className="w-full">View All Activities</Button>
+                    <Button variant="outline" size="sm" className="w-full">عرض كل النشاطات</Button>
                 </CardFooter>
             </Card>
         </div>
 
         <Card className="shadow-lg">
             <CardHeader>
-                <CardTitle className="text-primary flex items-center"><Zap className="mr-2 text-accent-yellow"/> Quick Actions</CardTitle>
+                <CardTitle className="text-primary flex items-center"><Zap className="mr-2 text-accent-yellow"/> إجراءات سريعة</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {quickActions.map((action) => (

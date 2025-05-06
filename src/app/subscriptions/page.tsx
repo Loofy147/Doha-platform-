@@ -7,46 +7,46 @@ import Link from "next/link";
 
 const subscriptionPlans = [
   {
-    name: "Basic Seller",
-    price: "Free",
+    name: "البائعة الأساسية",
+    price: "مجاني",
     features: [
-      "List up to 10 products/services",
-      "Basic store customization",
-      "Standard commission rate (15%)",
-      "Access to community forums",
+      "عرض حتى 10 منتجات/خدمات",
+      "تخصيص أساسي للمتجر",
+      "عمولة قياسية (15%)",
+      "الوصول إلى منتديات المجتمع",
     ],
-    cta: "Start Selling",
+    cta: "ابدئي البيع",
     href: "/auth/register?role=seller",
     popular: false,
   },
   {
-    name: "Pro Seller",
-    price: "DA 2,500/month",
+    name: "البائعة المحترفة",
+    price: "2,500 دج/شهريًا",
     features: [
-      "List up to 50 products/services",
-      "Advanced store customization",
-      "Reduced commission rate (10%)",
-      "Priority support",
-      "Featured listings opportunities",
-      "Access to exclusive workshops",
+      "عرض حتى 50 منتج/خدمة",
+      "تخصيص متقدم للمتجر",
+      "عمولة مخفضة (10%)",
+      "دعم ذو أولوية",
+      "فرص لعرض منتجات مميزة",
+      "الوصول إلى ورش عمل حصرية",
     ],
-    cta: "Go Pro",
+    cta: "انتقلي للاحتراف",
     href: "/checkout?plan=pro",
     popular: true,
   },
   {
-    name: "Elite Seller",
-    price: "DA 5,000/month",
+    name: "بائعة النخبة",
+    price: "5,000 دج/شهريًا",
     features: [
-      "Unlimited product/service listings",
-      "Premium store themes & analytics",
-      "Lowest commission rate (5%)",
-      "Dedicated account manager",
-      "Top placement in search results",
-      "Early access to new features",
-      "AI-powered marketing insights",
+      "عرض عدد غير محدود من المنتجات/الخدمات",
+      "واجهات متجر متميزة وتحليلات متقدمة",
+      "أقل نسبة عمولة (5%)",
+      "مدير حساب مخصص",
+      "ظهور بارز في نتائج البحث",
+      "وصول مبكر للميزات الجديدة",
+      "رؤى تسويقية مدعومة بالذكاء الاصطناعي",
     ],
-    cta: "Go Elite",
+    cta: "كوني من النخبة",
     href: "/checkout?plan=elite",
     popular: false,
   }
@@ -58,10 +58,10 @@ export default function SubscriptionsPage() {
       <header className="text-center mb-12">
         <Gift size={48} className="mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          WomenCommerce Subscription Plans
+          باقات اشتراك نساء كوميرس
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          Choose a plan that best suits your business needs and unlock powerful tools to grow on WomenCommerce. For buyers, browsing and purchasing is always free!
+          اختاري الباقة التي تناسب احتياجات عملكِ وافتحي أبواب أدوات قوية للنمو على نساء كوميرس. للمشترين، التصفح والشراء دائمًا مجاني!
         </p>
       </header>
 
@@ -70,19 +70,19 @@ export default function SubscriptionsPage() {
           <Card key={plan.name} className={`flex flex-col shadow-lg rounded-lg overflow-hidden ${plan.popular ? 'border-2 border-accent-yellow ring-2 ring-accent-yellow/50' : 'border-primary/20'}`}>
             {plan.popular && (
               <div className="bg-accent-yellow text-accent-yellow-foreground text-center py-1.5 text-sm font-semibold">
-                Most Popular
+                الأكثر رواجًا
               </div>
             )}
             <CardHeader className="p-6 bg-card/50">
               <CardTitle className="text-2xl font-semibold text-primary">{plan.name}</CardTitle>
               <CardDescription className="text-3xl font-bold text-accent-pink mt-2">{plan.price}</CardDescription>
-               <p className="text-sm text-muted-foreground mt-1">{plan.name === "Basic Seller" ? "Perfect for getting started" : (plan.name === "Pro Seller" ? "For growing businesses" : "For established sellers seeking maximum growth")}</p>
+               <p className="text-sm text-muted-foreground mt-1">{plan.name === "البائعة الأساسية" ? "مثالية للانطلاق" : (plan.name === "البائعة المحترفة" ? "للأعمال النامية" : "للبائعات المتمرسات الساعيات لأقصى نمو")}</p>
             </CardHeader>
             <CardContent className="p-6 flex-grow space-y-3">
               <ul className="space-y-2">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
-                    <CheckCircle size={18} className="text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <CheckCircle size={18} className="text-green-500 ml-2 mt-0.5 flex-shrink-0" /> {/* Changed mr-2 to ml-2 for RTL */}
                     <span className="text-sm text-foreground/80">{feature}</span>
                   </li>
                 ))}
@@ -99,12 +99,12 @@ export default function SubscriptionsPage() {
 
       <div className="mt-16 text-center p-8 bg-secondary/20 rounded-lg">
         <Sparkles size={32} className="mx-auto text-accent mb-4" />
-        <h2 className="text-2xl font-semibold text-primary mb-3">Are you a Buyer?</h2>
+        <h2 className="text-2xl font-semibold text-primary mb-3">هل أنتِ مشترية؟</h2>
         <p className="text-foreground/80 mb-6 max-w-xl mx-auto">
-          Enjoy browsing, discovering unique items, and supporting women entrepreneurs on WomenCommerce for FREE! Create an account to save your favorites and manage your purchases.
+          استمتعي بتصفح واكتشاف المنتجات الفريدة ودعم رائدات الأعمال على نساء كوميرس مجانًا! أنشئي حسابًا لحفظ مفضلاتكِ وإدارة مشترياتكِ.
         </p>
         <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
-          <Link href="/auth/register?role=buyer">Create Buyer Account</Link>
+          <Link href="/auth/register?role=buyer">أنشئي حساب مشترية</Link>
         </Button>
       </div>
     </div>

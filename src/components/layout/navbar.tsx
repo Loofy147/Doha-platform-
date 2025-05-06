@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react'; // Ensure React is imported
+import React from 'react'; 
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -10,14 +10,14 @@ import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIco
 import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const navItems = [
-  { label: 'Home', href: '/', icon: <HomeIcon size={16} className="mr-2" /> },
-  { label: 'Products & Services', href: '/products', icon: <ShoppingBag size={16} className="mr-2" /> },
-  { label: 'Sell with Us', href: '/sell-with-us', icon: <Store size={16} className="mr-2" /> },
-  { label: 'Community', href: '/#community', icon: <Users size={16} className="mr-2" /> },
-  { label: 'Subscriptions', href: '/subscriptions', icon: <Gift size={16} className="mr-2" /> },
-  { label: 'Blog', href: '/blog', icon: <FileText size={16} className="mr-2" /> },
-  { label: 'About Us', href: '/#about', icon: <Info size={16} className="mr-2" /> },
-  { label: 'Contact', href: '/#contact', icon: <MessageSquare size={16} className="mr-2" /> },
+  { label: 'الرئيسية', href: '/', icon: <HomeIcon size={16} /> },
+  { label: 'المنتجات والخدمات', href: '/products', icon: <ShoppingBag size={16} /> },
+  { label: 'بيعي معنا', href: '/sell-with-us', icon: <Store size={16} /> },
+  { label: 'المجتمع', href: '/#community', icon: <Users size={16} /> },
+  { label: 'الاشتراكات', href: '/subscriptions', icon: <Gift size={16} /> },
+  { label: 'المدونة', href: '/blog', icon: <FileText size={16} /> },
+  { label: 'عنا', href: '/#about', icon: <Info size={16} /> },
+  { label: 'اتصلي بنا', href: '/#contact', icon: <MessageSquare size={16} /> },
 ];
 
 export function Navbar() {
@@ -34,7 +34,7 @@ export function Navbar() {
           {navItems.map((item) => (
             <Button key={item.label} variant="ghost" asChild>
               <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground hover:text-primary flex items-center px-2 py-2">
-                {item.icon && React.cloneElement(item.icon, { size: 14, className: "mr-1" })}
+                {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })} {/* Adjusted for RTL */}
                 {item.label}
               </Link>
             </Button>
@@ -43,17 +43,17 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10">
-            <Link href="/auth/login">Login</Link>
+            <Link href="/auth/login">تسجيل الدخول</Link>
           </Button>
           <Button size="sm" asChild className="hidden sm:inline-flex bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
-            <Link href="/auth/register">Sign Up</Link>
+            <Link href="/auth/register">إنشاء حساب</Link>
           </Button>
           <div className="lg:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Menu className="h-5 w-5" />
-                  <span className="sr-only">Open menu</span>
+                  <span className="sr-only">فتح القائمة</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background">
@@ -71,17 +71,17 @@ export function Navbar() {
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <Link href={item.href} className="flex items-center">
-                          {item.icon && React.cloneElement(item.icon, { size: 18, className: "mr-2.5" })}
+                          {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })} {/* Adjusted for RTL */}
                           {item.label}
                         </Link>
                       </Button>
                     ))}
                      <hr className="my-3"/>
                      <Button variant="outline" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                       <Link href="/auth/login">Login</Link>
+                       <Link href="/auth/login">تسجيل الدخول</Link>
                      </Button>
                      <Button className="w-full justify-start text-base py-2.5 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                       <Link href="/auth/register">Sign Up</Link>
+                       <Link href="/auth/register">إنشاء حساب</Link>
                      </Button>
                   </nav>
                 </div>

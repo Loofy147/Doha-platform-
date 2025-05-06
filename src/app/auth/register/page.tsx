@@ -15,17 +15,17 @@ import { UserPlus, Mail, KeyRound, User, LogIn } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const registrationFormSchema = z.object({
-  fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." })
-    .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter."})
-    .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter."})
-    .regex(/[0-9]/, { message: "Password must contain at least one number."})
-    .regex(/[^a-zA-Z0-9]/, { message: "Password must contain at least one special character."}),
-  confirmPassword: z.string().min(1, { message: "Please confirm your password." }),
-  agreeToTerms: z.boolean().refine(val => val === true, { message: "You must agree to the terms and conditions to register." }),
+  fullName: z.string().min(2, { message: "يجب أن يتكون الاسم الكامل من حرفين على الأقل." }),
+  email: z.string().email({ message: "الرجاء إدخال عنوان بريد إلكتروني صالح." }),
+  password: z.string().min(8, { message: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل." })
+    .regex(/[a-z]/, { message: "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل."})
+    .regex(/[A-Z]/, { message: "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل."})
+    .regex(/[0-9]/, { message: "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل."})
+    .regex(/[^a-zA-Z0-9]/, { message: "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل."}),
+  confirmPassword: z.string().min(1, { message: "الرجاء تأكيد كلمة المرور." }),
+  agreeToTerms: z.boolean().refine(val => val === true, { message: "يجب الموافقة على الشروط والأحكام للتسجيل." }),
 }).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords do not match.",
+  message: "كلمتا المرور غير متطابقتين.",
   path: ["confirmPassword"], 
 });
 
@@ -56,8 +56,8 @@ export default function RegisterPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Registration Attempt:', data);
     toast({
-      title: 'Registration Successful (Simulated)',
-      description: "Welcome to WomenCommerce! Please check your email to verify your account.",
+      title: 'تم التسجيل بنجاح (محاكاة)',
+      description: "أهلاً بك في نساء كوميرس! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
       variant: 'default',
     });
     reset();
@@ -69,7 +69,7 @@ export default function RegisterPage() {
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="items-center text-center p-8 bg-primary/10">
              <UserPlus size={32} className="mb-2 text-accent-pink" />
-            <CardTitle className="text-2xl font-bold text-primary">Loading Registration...</CardTitle>
+            <CardTitle className="text-2xl font-bold text-primary">جاري تحميل نموذج التسجيل...</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="h-10 bg-muted rounded animate-pulse w-full"></div>
@@ -89,28 +89,28 @@ export default function RegisterPage() {
            <Link href="/" className="mb-4 inline-block">
             <WomenCommerceLogo className="h-16 w-auto" />
           </Link>
-          <CardTitle className="text-3xl font-bold text-primary">Create Your Account</CardTitle>
+          <CardTitle className="text-3xl font-bold text-primary">أنشئي حسابكِ</CardTitle>
           <CardDescription className="text-foreground/80">
-            Join our community of talented women and supportive shoppers on WomenCommerce.
+            انضمي إلى مجتمعنا من المبدعات والمتسوقات الداعمات في نساء كوميرس.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="p-6 sm:p-8 space-y-6">
             <div>
               <Label htmlFor="fullName" className="flex items-center mb-1">
-                <User size={16} className="mr-2 text-accent-pink" /> Full Name
+                <User size={16} className="mr-2 text-accent-pink" /> الاسم الكامل
               </Label>
               <Input 
                 id="fullName" 
                 {...register('fullName')} 
-                placeholder="Your full name" 
+                placeholder="اسمك الكامل" 
                 className={errors.fullName ? 'border-destructive' : ''}
               />
               {errors.fullName && <p className="mt-1 text-sm text-destructive">{errors.fullName.message}</p>}
             </div>
             <div>
               <Label htmlFor="email" className="flex items-center mb-1">
-                <Mail size={16} className="mr-2 text-accent-pink" /> Email Address
+                <Mail size={16} className="mr-2 text-accent-pink" /> عنوان البريد الإلكتروني
               </Label>
               <Input 
                 id="email" 
@@ -123,26 +123,26 @@ export default function RegisterPage() {
             </div>
             <div>
               <Label htmlFor="password" className="flex items-center mb-1">
-                <KeyRound size={16} className="mr-2 text-accent-pink" /> Password
+                <KeyRound size={16} className="mr-2 text-accent-pink" /> كلمة المرور
               </Label>
               <Input 
                 id="password" 
                 type="password" 
                 {...register('password')} 
-                placeholder="Choose a strong password" 
+                placeholder="اختاري كلمة مرور قوية" 
                 className={errors.password ? 'border-destructive' : ''}
               />
               {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
             </div>
             <div>
               <Label htmlFor="confirmPassword" className="flex items-center mb-1">
-                <KeyRound size={16} className="mr-2 text-accent-pink" /> Confirm Password
+                <KeyRound size={16} className="mr-2 text-accent-pink" /> تأكيد كلمة المرور
               </Label>
               <Input 
                 id="confirmPassword" 
                 type="password" 
                 {...register('confirmPassword')} 
-                placeholder="Re-enter your password" 
+                placeholder="أعيدي إدخال كلمة المرور" 
                 className={errors.confirmPassword ? 'border-destructive' : ''}
               />
               {errors.confirmPassword && <p className="mt-1 text-sm text-destructive">{errors.confirmPassword.message}</p>}
@@ -165,22 +165,22 @@ export default function RegisterPage() {
                   htmlFor="agreeToTerms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  I agree to the WomenCommerce Terms of Service and Privacy Policy.
+                  أوافق على شروط الخدمة وسياسة الخصوصية لمنصة نساء كوميرس.
                 </label>
                  {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms.message}</p>}
               </div>
             </div>
             <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
-              <UserPlus size={18} className="mr-2" /> {isSubmitting ? 'Creating Account...' : 'Create Account'}
+              <UserPlus size={18} className="mr-2" /> {isSubmitting ? 'جاري إنشاء الحساب...' : 'إنشاء حساب'}
             </Button>
           </CardContent>
         </form>
         <CardFooter className="p-6 sm:p-8 border-t bg-secondary/10 rounded-b-lg">
           <p className="text-sm text-center w-full text-foreground/80">
-            Already have an account?{' '}
+            لديك حساب بالفعل؟{' '}
             <Link href="/auth/login" passHref>
                <Button variant="link" className="p-0 h-auto font-semibold text-accent-purple hover:underline">
-                <LogIn size={16} className="mr-1" />Sign In
+                <LogIn size={16} className="mr-1" />تسجيل الدخول
               </Button>
             </Link>
           </p>

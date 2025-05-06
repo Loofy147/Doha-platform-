@@ -23,6 +23,10 @@ const GenerateProductDescriptionOutputSchema = z.object({
 export type GenerateProductDescriptionOutput = z.infer<typeof GenerateProductDescriptionOutputSchema>;
 
 export async function generateProductDescription(input: GenerateProductDescriptionInput): Promise<GenerateProductDescriptionOutput> {
+  // For now, defaulting to English.
+  // To use Arabic, you would potentially pass a language preference
+  // or have separate functions/flows.
+  // Example: if (input.language === 'ar') return generateProductDescriptionFlowAr(input);
   return generateProductDescriptionFlow(input);
 }
 
@@ -42,23 +46,24 @@ Focus on benefits for the customer and the story behind the product/service if a
 `,
 });
 
-/*
-// Arabic Prompt (If the model and Genkit setup supports Arabic well for structured output)
+
+// Arabic Prompt
 const promptAr = ai.definePrompt({
   name: 'generateWomenCommerceProductDescriptionPromptAr',
   input: {schema: GenerateProductDescriptionInputSchema},
   output: {schema: GenerateProductDescriptionOutputSchema},
-  prompt: `أنت مساعد ذكاء اصطناعي متخصص في كتابة أوصاف جذابة للمنتجات والخدمات على منصة "نساء كوميرس" (WomenCommerce)، وهي منصة تجارة إلكترونية تهدف لتمكين رائدات الأعمال.
-يجب أن تكون أوصافك جذابة، تبرز نقاط البيع الفريدة، وتناسب الجمهور النسائي.
+  prompt: `أنتِ مساعدة ذكاء اصطناعي مبدعة، متخصصة في صياغة أوصاف آسرة للمنتجات والخدمات على منصة "نساء كوميرس"، وجهة رائدات الأعمال الطموحات.
+يجب أن تكون أوصافكِ ملهمة، تبرز التفاصيل الفريدة، وتلامس قلوب جمهورنا النسائي الراقي.
 
-اكتب وصفًا لما يلي: {{{productDetails}}}.
+صيغي وصفًا لما يلي: {{{productDetails}}}.
 
-يجب أن يتكون الوصف من ٣ فقرات تقريبًا وأن يتضمن نداءً واحدًا واضحًا لاتخاذ إجراء (مثال: "تسوقي الآن!"، "احجزي خدمتك اليوم!"، "استأجري هذه الإطلالة!"، "اعرفي المزيد!").
-احرص على أن تكون النبرة ودودة، موثوقة، وملهمة.
-ركزي على الفوائد التي تعود على العميلة والقصة وراء المنتج/الخدمة إن أمكن.
+يجب أن يتألق الوصف في حوالي ثلاث فقرات، مع دعوة واحدة واضحة لاتخاذ إجراء (مثال: "اكتشفي الآن!"، "احجزي تجربتكِ اليوم!"، "تألقي بهذه الإطلالة!"، "اعرفي المزيد!").
+احرصي على أن تكون النبرة دافئة، جديرة بالثقة، ومفعمة بالإلهام.
+ركزي على المزايا التي ستعود على العميلة، واسردي القصة الكامنة وراء المنتج/الخدمة بأسلوب جذاب إن أمكن.
+اجعلي كل كلمة تنبض بالحياة وتعكس شغف مبدعاتنا.
 `,
 });
-*/
+
 
 const generateProductDescriptionFlow = ai.defineFlow(
   {
@@ -67,8 +72,23 @@ const generateProductDescriptionFlow = ai.defineFlow(
     outputSchema: GenerateProductDescriptionOutputSchema,
   },
   async (input) => {
-    // Use the English prompt by default. Switch to promptAr if Arabic output is preferred and supported.
+    // Defaulting to English prompt
     const {output} = await prompt(input); 
     return output!;
   }
 );
+
+// Flow for Arabic (can be called explicitly if needed)
+/*
+const generateProductDescriptionFlowAr = ai.defineFlow(
+  {
+    name: 'generateProductDescriptionFlowAr',
+    inputSchema: GenerateProductDescriptionInputSchema,
+    outputSchema: GenerateProductDescriptionOutputSchema,
+  },
+  async (input) => {
+    const {output} = await promptAr(input); 
+    return output!;
+  }
+);
+*/

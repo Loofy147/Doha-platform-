@@ -15,40 +15,40 @@ import React from 'react';
 
 const testimonials = [
   {
-    name: 'Amina H.',
+    name: 'أمينة ح.',
     avatar: 'https://picsum.photos/100/100?random=1',
     dataAiHint: 'woman smiling',
-    initials: 'AH',
-    text: "WomenCommerce has been a game-changer for my small business. The support and visibility I've received are incredible!",
+    initials: 'أح',
+    text: "نساء كوميرس غيرت حياتي ومشروعي الصغير. الدعم والظهور الذي حصلت عليه لا يصدق!",
     rating: 5,
-    type: 'Seller'
+    type: 'بائعة'
   },
   {
-    name: 'Layla R.',
+    name: 'ليلى ر.',
     avatar: 'https://picsum.photos/100/100?random=2',
     dataAiHint: 'woman happy',
-    initials: 'LR',
-    text: "I love discovering unique, handmade items on WomenCommerce. It's my go-to for gifts and supporting women entrepreneurs.",
+    initials: 'لر',
+    text: "أحب اكتشاف المنتجات اليدوية الفريدة على نساء كوميرس. إنه وجهتي المفضلة للهدايا ولدعم رائدات الأعمال.",
     rating: 5,
-    type: 'Buyer'
+    type: 'مشترية'
   },
   {
-    name: 'Fatima K.',
+    name: 'فاطمة ك.',
     avatar: 'https://picsum.photos/100/100?random=3',
     dataAiHint: 'woman portrait',
-    initials: 'FK',
-    text: 'The platform is so easy to use, and the community is wonderful. I highly recommend WomenCommerce to any woman looking to sell her creations.',
+    initials: 'فك',
+    text: 'المنصة سهلة الاستخدام للغاية، والمجتمع رائع. أوصي بشدة بنساء كوميرس لأي امرأة تتطلع لبيع إبداعاتها.',
     rating: 4,
-    type: 'Seller'
+    type: 'بائعة'
   },
   {
-    name: 'Yasmin B.',
+    name: 'ياسمين ب.',
     avatar: 'https://picsum.photos/100/100?random=4',
     dataAiHint: 'woman shopping',
-    initials: 'YB',
-    text: 'Found the most beautiful handcrafted jewelry here on WomenCommerce. The quality is amazing, and I love knowing I\'m supporting a woman-owned business.',
+    initials: 'يب',
+    text: 'وجدت أجمل المجوهرات المصنوعة يدويًا هنا على نساء كوميرس. الجودة مذهلة، وأحب أنني أدعم مشروعًا تملكه امرأة.',
     rating: 5,
-    type: 'Buyer'
+    type: 'مشترية'
   },
 ];
 
@@ -62,10 +62,10 @@ export function TestimonialsSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            Voices from Our Community
+            أصداء من مجتمعنا
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
-            Hear what sellers and buyers are saying about WomenCommerce.
+            استمعي إلى ما تقوله البائعات والمشتريات عن تجربتهن مع نساء كوميرس.
           </p>
         </div>
 
@@ -77,6 +77,7 @@ export function TestimonialsSection() {
           opts={{
             align: "start",
             loop: true,
+            direction: "rtl", // Added for RTL layout
           }}
         >
           <CarouselContent>
@@ -108,8 +109,8 @@ export function TestimonialsSection() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden sm:flex" />
-          <CarouselNext className="hidden sm:flex" />
+          <CarouselPrevious className="hidden sm:flex right-0 -translate-x-1/2 left-auto" /> {/* Adjusted for RTL */}
+          <CarouselNext className="hidden sm:flex left-0 translate-x-1/2 right-auto" /> {/* Adjusted for RTL */}
         </Carousel>
       </div>
     </section>

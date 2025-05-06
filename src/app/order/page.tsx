@@ -13,36 +13,36 @@ import Image from "next/image";
 const mockOrders = [
   {
     id: "ORD001",
-    date: "October 25, 2023",
-    status: "Delivered",
+    date: "25 أكتوبر 2023",
+    status: "تم التوصيل",
     total: 3200,
     items: [
-      { name: "Handmade Ceramic Mug Set", quantity: 1, imageSrc: "https://picsum.photos/80/80?random=1", dataAiHint: "ceramic mug" },
+      { name: "طقم أكواب سيراميك مصنوعة يدويًا", quantity: 1, imageSrc: "https://picsum.photos/80/80?random=1", dataAiHint: "ceramic mug" },
     ],
-    seller: "Amina's Creations",
-    deliveryEstimate: "October 27, 2023",
+    seller: "إبداعات أمينة",
+    deliveryEstimate: "27 أكتوبر 2023",
   },
   {
     id: "ORD002",
-    date: "October 28, 2023",
-    status: "Processing",
+    date: "28 أكتوبر 2023",
+    status: "قيد المعالجة",
     total: 5000,
     items: [
-      { name: "Designer Evening Gown Rental", quantity: 1, imageSrc: "https://picsum.photos/80/80?random=2", dataAiHint: "evening gown" },
+      { name: "فستان سهرة مصمم للإيجار", quantity: 1, imageSrc: "https://picsum.photos/80/80?random=2", dataAiHint: "evening gown" },
     ],
-    seller: "Layla's Closet",
-    deliveryEstimate: "November 2, 2023",
+    seller: "خزانة ليلى",
+    deliveryEstimate: "2 نوفمبر 2023",
   },
   {
     id: "ORD003",
-    date: "November 1, 2023",
-    status: "Shipped",
+    date: "1 نوفمبر 2023",
+    status: "تم الشحن",
     total: 1800,
     items: [
-      { name: "Spiced Date Cookies (Maamoul)", quantity: 2, imageSrc: "https://picsum.photos/80/80?random=3", dataAiHint: "date cookies" },
+      { name: "معمول بالتمر والبهارات (علبتين)", quantity: 2, imageSrc: "https://picsum.photos/80/80?random=3", dataAiHint: "date cookies" },
     ],
-    seller: "Khadija's Kitchen",
-    deliveryEstimate: "November 5, 2023",
+    seller: "مطبخ خديجة",
+    deliveryEstimate: "5 نوفمبر 2023",
   },
 ];
 
@@ -54,10 +54,10 @@ export default function OrderPage() {
       <header className="text-center mb-12">
         <History size={48} className="mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          Your Orders
+          طلباتكِ
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          Track your current purchases and view your order history on WomenCommerce.
+          تابعي مشترياتكِ الحالية واطلعي على سجل طلباتكِ في نساء كوميرس.
         </p>
       </header>
 
@@ -69,7 +69,7 @@ export default function OrderPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
                 type="text"
-                placeholder="Search by Order ID, Product, Seller..."
+                placeholder="ابحثي برقم الطلب، المنتج، البائعة..."
                 className="pl-10 w-full"
               />
             </div>
@@ -77,18 +77,18 @@ export default function OrderPage() {
                 <Filter className="h-5 w-5 text-muted-foreground" />
                 <Select defaultValue="all">
                     <SelectTrigger className="w-full sm:w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
+                        <SelectValue placeholder="تصفية حسب الحالة" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="processing">Processing</SelectItem>
-                        <SelectItem value="shipped">Shipped</SelectItem>
-                        <SelectItem value="delivered">Delivered</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                        <SelectItem value="all">كل الحالات</SelectItem>
+                        <SelectItem value="processing">قيد المعالجة</SelectItem>
+                        <SelectItem value="shipped">تم الشحن</SelectItem>
+                        <SelectItem value="delivered">تم التوصيل</SelectItem>
+                        <SelectItem value="cancelled">ملغى</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
-             <Button variant="outline" className="w-full sm:w-auto">Apply Filters</Button>
+             <Button variant="outline" className="w-full sm:w-auto">تطبيق الفلاتر</Button>
           </div>
         </CardContent>
       </Card>
@@ -100,19 +100,19 @@ export default function OrderPage() {
             <Card key={order.id} className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader className="flex flex-col sm:flex-row justify-between items-start gap-2 pb-3 border-b">
                 <div>
-                  <CardTitle className="text-xl text-primary">Order #{order.id}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">Date: {order.date} • Seller: <Link href="#" className="text-accent-purple hover:underline">{order.seller}</Link></CardDescription>
+                  <CardTitle className="text-xl text-primary">طلب رقم #{order.id}</CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground">التاريخ: {order.date} • البائعة: <Link href="#" className="text-accent-purple hover:underline">{order.seller}</Link></CardDescription>
                 </div>
                 <div className="flex flex-col sm:items-end gap-1">
                     <span className={`px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
-                    order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
-                    order.status === 'Processing' ? 'bg-blue-100 text-blue-700' :
-                    order.status === 'Shipped' ? 'bg-yellow-100 text-yellow-700' :
+                    order.status === 'تم التوصيل' ? 'bg-green-100 text-green-700' :
+                    order.status === 'قيد المعالجة' ? 'bg-blue-100 text-blue-700' :
+                    order.status === 'تم الشحن' ? 'bg-yellow-100 text-yellow-700' :
                     'bg-muted text-muted-foreground'
                     }`}>
                     {order.status}
                     </span>
-                    <p className="text-xs text-muted-foreground">Est. Delivery: {order.deliveryEstimate}</p>
+                    <p className="text-xs text-muted-foreground">التوصيل المقدر: {order.deliveryEstimate}</p>
                 </div>
               </CardHeader>
               <CardContent className="py-4">
@@ -122,34 +122,34 @@ export default function OrderPage() {
                         <Image src={item.imageSrc} alt={item.name} width={60} height={60} className="rounded-md border object-cover" data-ai-hint={item.dataAiHint} />
                         <div>
                             <p className="font-medium text-foreground">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">Quantity: {item.quantity}</p>
+                            <p className="text-xs text-muted-foreground">الكمية: {item.quantity}</p>
                         </div>
                     </li>
                   ))}
                 </ul>
-                <p className="text-lg font-semibold text-accent-pink text-right">Total: DA {order.total.toLocaleString()}</p>
+                <p className="text-lg font-semibold text-accent-pink text-right">الإجمالي: {order.total.toLocaleString()} دج</p>
               </CardContent>
               <CardFooter className="border-t pt-4 flex flex-col sm:flex-row justify-end gap-2">
-                <Button variant="ghost" size="sm" className="w-full sm:w-auto text-accent-purple hover:text-accent-purple/80"><MessageSquare size={16} className="mr-2" /> Contact Seller</Button>
-                <Button variant="outline" size="sm" className="w-full sm:w-auto"><FileText size={16} className="mr-2" /> View Invoice</Button>
-                {order.status === 'Shipped' && <Button variant="outline" size="sm" className="w-full sm:w-auto"><Truck size={16} className="mr-2" /> Track Package</Button>}
-                {order.status === 'Delivered' && <Button variant="outline" size="sm" className="w-full sm:w-auto"><Star size={16} className="mr-2" /> Leave Review</Button>}
+                <Button variant="ghost" size="sm" className="w-full sm:w-auto text-accent-purple hover:text-accent-purple/80"><MessageSquare size={16} className="mr-2" /> تواصلي مع البائعة</Button>
+                <Button variant="outline" size="sm" className="w-full sm:w-auto"><FileText size={16} className="mr-2" /> عرض الفاتورة</Button>
+                {order.status === 'تم الشحن' && <Button variant="outline" size="sm" className="w-full sm:w-auto"><Truck size={16} className="mr-2" /> تتبعي الشحنة</Button>}
+                {order.status === 'تم التوصيل' && <Button variant="outline" size="sm" className="w-full sm:w-auto"><Star size={16} className="mr-2" /> أضيفي تقييمك</Button>}
               </CardFooter>
             </Card>
           ))}
             <div className="text-center mt-12">
-                <Button variant="outline" size="lg">Load More Orders (Coming Soon)</Button>
+                <Button variant="outline" size="lg">تحميل المزيد من الطلبات (قريباً)</Button>
             </div>
         </div>
       ) : (
          <div className="text-center py-16 bg-card shadow-md rounded-lg">
           <ShoppingCart size={64} className="mx-auto text-muted-foreground mb-6" />
-          <h2 className="text-2xl font-semibold text-primary mb-3">No Orders Yet!</h2>
+          <h2 className="text-2xl font-semibold text-primary mb-3">لا توجد طلبات بعد!</h2>
           <p className="text-foreground/70 mb-8 max-w-md mx-auto">
-            It looks like you haven't placed any orders. Start exploring our amazing products and services created by talented women.
+            يبدو أنكِ لم تقومي بأي طلبات بعد. ابدئي باستكشاف منتجاتنا وخدماتنا المذهلة التي أبدعتها نساء موهوبات.
           </p>
           <Button asChild size="lg" className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
-            <Link href="/products"> <PackageCheck size={20} className="mr-2"/> Browse Products & Services</Link>
+            <Link href="/products"> <PackageCheck size={20} className="mr-2"/> تصفحي المنتجات والخدمات</Link>
           </Button>
         </div>
       )}

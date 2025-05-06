@@ -14,8 +14,8 @@ import { LogIn, Mail, KeyRound, UserPlus } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const loginFormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  email: z.string().email({ message: "الرجاء إدخال عنوان بريد إلكتروني صالح." }),
+  password: z.string().min(6, { message: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل." }),
 });
 
 type LoginFormValues = z.infer<typeof loginFormSchema>;
@@ -42,8 +42,8 @@ export default function LoginPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Login Attempt:', data);
     toast({
-      title: 'Login Successful (Simulated)',
-      description: "Welcome back to WomenCommerce!",
+      title: 'تم تسجيل الدخول بنجاح (محاكاة)',
+      description: "أهلاً بك مجددًا في نساء كوميرس!",
       variant: 'default',
     });
     reset();
@@ -55,7 +55,7 @@ export default function LoginPage() {
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="items-center text-center p-8 bg-primary/10">
              <LogIn size={32} className="mb-2 text-accent-pink" />
-            <CardTitle className="text-2xl font-bold text-primary">Loading Login...</CardTitle>
+            <CardTitle className="text-2xl font-bold text-primary">جاري تحميل صفحة الدخول...</CardTitle>
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="h-10 bg-muted rounded animate-pulse w-full"></div>
@@ -74,16 +74,16 @@ export default function LoginPage() {
           <Link href="/" className="mb-4 inline-block">
             <WomenCommerceLogo className="h-16 w-auto" />
           </Link>
-          <CardTitle className="text-3xl font-bold text-primary">Welcome Back!</CardTitle>
+          <CardTitle className="text-3xl font-bold text-primary">أهلاً بعودتكِ!</CardTitle>
           <CardDescription className="text-foreground/80">
-            Sign in to continue to your WomenCommerce account.
+            سجلي دخولك للمتابعة إلى حسابك في نساء كوميرس.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="p-6 sm:p-8 space-y-6">
             <div>
               <Label htmlFor="email" className="flex items-center mb-1">
-                <Mail size={16} className="mr-2 text-accent-pink" /> Email Address
+                <Mail size={16} className="mr-2 text-accent-pink" /> عنوان البريد الإلكتروني
               </Label>
               <Input 
                 id="email" 
@@ -97,11 +97,11 @@ export default function LoginPage() {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <Label htmlFor="password" className="flex items-center">
-                  <KeyRound size={16} className="mr-2 text-accent-pink" /> Password
+                  <KeyRound size={16} className="mr-2 text-accent-pink" /> كلمة المرور
                 </Label>
                 <Link href="/auth/forgot-password" passHref>
                   <Button variant="link" size="sm" className="p-0 h-auto text-xs text-accent-purple hover:underline">
-                    Forgot Password?
+                    هل نسيت كلمة المرور؟
                   </Button>
                 </Link>
               </div>
@@ -115,16 +115,16 @@ export default function LoginPage() {
               {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
             </div>
             <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
-              <LogIn size={18} className="mr-2" /> {isSubmitting ? 'Signing In...' : 'Sign In'}
+              <LogIn size={18} className="mr-2" /> {isSubmitting ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
             </Button>
           </CardContent>
         </form>
         <CardFooter className="p-6 sm:p-8 border-t bg-secondary/10 rounded-b-lg">
           <p className="text-sm text-center w-full text-foreground/80">
-            Don't have an account?{' '}
+            ليس لديك حساب؟{' '}
             <Link href="/auth/register" passHref>
               <Button variant="link" className="p-0 h-auto font-semibold text-accent-purple hover:underline">
-                <UserPlus size={16} className="mr-1" />Sign Up
+                <UserPlus size={16} className="mr-1" />إنشاء حساب جديد
               </Button>
             </Link>
           </p>

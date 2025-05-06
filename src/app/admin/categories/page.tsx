@@ -7,12 +7,12 @@ import { LayoutGrid, PlusCircle, Trash2 } from "lucide-react";
 
 // Mock categories for display
 const mockCategories = [
-  { id: 'cat1', name: 'Fashion & Accessories', productCount: 120 },
-  { id: 'cat2', name: 'Home Goods & Decor', productCount: 85 },
-  { id: 'cat3', name: 'Beauty & Wellness', productCount: 60 },
-  { id: 'cat4', name: 'Sweets & Treats (حلويات)', productCount: 45 },
-  { id: 'cat5', name: 'Rental Items', productCount: 30 },
-  { id: 'cat6', name: 'Services', productCount: 20 },
+  { id: 'cat1', name: 'أزياء وإكسسوارات', productCount: 120 }, // Fashion & Accessories
+  { id: 'cat2', name: 'مستلزمات منزلية وديكور', productCount: 85 }, // Home Goods & Decor
+  { id: 'cat3', name: 'جمال وعناية شخصية', productCount: 60 }, // Beauty & Wellness
+  { id: 'cat4', name: 'حلويات ومأكولات شهية', productCount: 45 }, // Sweets & Treats (حلويات) - More descriptive
+  { id: 'cat5', name: 'منتجات للإيجار', productCount: 30 }, // Rental Items
+  { id: 'cat6', name: 'خدمات احترافية', productCount: 20 }, // Services - More professional sounding
 ];
 
 export default function AdminCategoriesPage() {
@@ -20,7 +20,7 @@ export default function AdminCategoriesPage() {
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight text-primary">
-            <LayoutGrid className="inline-block mr-2 h-7 w-7" /> Category Management
+            <LayoutGrid className="inline-block mr-2 h-7 w-7" /> إدارة الفئات
         </h2>
       </div>
       
@@ -28,7 +28,7 @@ export default function AdminCategoriesPage() {
         <div className="md:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Existing Categories</CardTitle>
+              <CardTitle>الفئات الحالية</CardTitle>
             </CardHeader>
             <CardContent>
               {mockCategories.length > 0 ? (
@@ -37,17 +37,17 @@ export default function AdminCategoriesPage() {
                     <li key={category.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-md hover:bg-muted">
                       <div>
                         <span className="font-medium text-foreground">{category.name}</span>
-                        <p className="text-xs text-muted-foreground">{category.productCount} products/services</p>
+                        <p className="text-xs text-muted-foreground">{category.productCount} منتجات/خدمات</p>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">Edit</Button>
+                        <Button variant="outline" size="sm">تعديل</Button>
                         <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4"/></Button>
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-muted-foreground">No categories found. Add new categories using the form.</p>
+                <p className="text-muted-foreground">لم يتم العثور على فئات. أضف فئات جديدة باستخدام النموذج.</p>
               )}
             </CardContent>
           </Card>
@@ -57,26 +57,26 @@ export default function AdminCategoriesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <PlusCircle className="mr-2 h-5 w-5 text-accent-pink" /> Add New Category
+                <PlusCircle className="mr-2 h-5 w-5 text-accent-pink" /> إضافة فئة جديدة
               </CardTitle>
             </CardHeader>
             <form onSubmit={(e) => e.preventDefault()}>
                 <CardContent className="space-y-4">
                 <div>
-                    <Label htmlFor="categoryName">Category Name</Label>
-                    <Input id="categoryName" placeholder="e.g., Handmade Crafts" />
+                    <Label htmlFor="categoryName">اسم الفئة</Label>
+                    <Input id="categoryName" placeholder="مثال: مشغولات يدوية فنية" />
                 </div>
                 <div>
-                    <Label htmlFor="categorySlug">Slug (URL-friendly)</Label>
-                    <Input id="categorySlug" placeholder="e.g., handmade-crafts" />
+                    <Label htmlFor="categorySlug">المعرف (صديق لمحركات البحث)</Label>
+                    <Input id="categorySlug" placeholder="مثال: مشغولات-يدوية-فنية" />
                 </div>
                 <div>
-                    <Label htmlFor="categoryDescription">Description (Optional)</Label>
-                    <Input id="categoryDescription" placeholder="Brief description of the category" />
+                    <Label htmlFor="categoryDescription">الوصف (اختياري)</Label>
+                    <Input id="categoryDescription" placeholder="وصف موجز للفئة" />
                 </div>
                 </CardContent>
                 <CardFooter>
-                <Button type="submit" className="w-full">Add Category</Button>
+                <Button type="submit" className="w-full">إضافة الفئة</Button>
                 </CardFooter>
             </form>
           </Card>

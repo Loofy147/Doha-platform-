@@ -9,11 +9,11 @@ import Link from "next/link";
 
 const featuredPost = {
   id: "feat1",
-  title: "5 Essential Tips for Starting Your Online Store on WomenCommerce",
-  date: "October 26, 2023",
-  excerpt: "Embarking on your e-commerce journey? Here are five crucial tips to set up your WomenCommerce store for success, from product photography to customer engagement.",
-  author: "The WomenCommerce Team",
-  category: "Seller Tips",
+  title: "5 نصائح ذهبية لبدء متجركِ الإلكتروني بنجاح على نساء كوميرس",
+  date: "26 أكتوبر 2023",
+  excerpt: "هل تبدئين رحلتكِ في عالم التجارة الإلكترونية؟ إليكِ خمس نصائح حاسمة لإعداد متجركِ على نساء كوميرس وتحقيق النجاح، من تصوير المنتجات إلى تفاعل العملاء.",
+  author: "فريق نساء كوميرس",
+  category: "نصائح للبائعات",
   imageSrc: "https://picsum.photos/800/450?random=20",
   dataAiHint: "woman working laptop",
   slug: "/blog/5-tips-starting-online-store"
@@ -22,43 +22,43 @@ const featuredPost = {
 const recentPosts = [
   {
     id: "post1",
-    title: "How to Price Your Handmade Products Fairly and Profitably",
-    date: "October 20, 2023",
-    category: "Business Strategy",
+    title: "كيف تسعّرين منتجاتكِ اليدوية بعدالة وربحية؟",
+    date: "20 أكتوبر 2023",
+    category: "استراتيجيات الأعمال",
     imageSrc: "https://picsum.photos/400/225?random=21",
     dataAiHint: "calculator money",
     slug: "/blog/pricing-handmade-products"
   },
   {
     id: "post2",
-    title: "The Power of Storytelling in Marketing Your Brand",
-    date: "October 15, 2023",
-    category: "Marketing",
+    title: "قوة سرد القصص في تسويق علامتكِ التجارية",
+    date: "15 أكتوبر 2023",
+    category: "تسويق",
     imageSrc: "https://picsum.photos/400/225?random=22",
     dataAiHint: "writing notes",
     slug: "/blog/storytelling-marketing"
   },
   {
     id: "post3",
-    title: "Navigating Shipping and Logistics for Small Businesses",
-    date: "October 10, 2023",
-    category: "Operations",
+    title: "إدارة الشحن والخدمات اللوجستية للمشاريع الصغيرة",
+    date: "10 أكتوبر 2023",
+    category: "عمليات تشغيلية",
     imageSrc: "https://picsum.photos/400/225?random=23",
     dataAiHint: "delivery boxes",
     slug: "/blog/shipping-logistics-small-business"
   },
    {
     id: "post4",
-    title: "Spotlight: Success Story from a WomenCommerce Seller",
-    date: "October 5, 2023",
-    category: "Community",
+    title: "قصة نجاح ملهمة: بائعة مبدعة على نساء كوميرس",
+    date: "5 أكتوبر 2023",
+    category: "مجتمعنا",
     imageSrc: "https://picsum.photos/400/225?random=24",
     dataAiHint: "woman smiling store",
     slug: "/blog/seller-success-story"
   }
 ];
 
-const categories = ["All", "Seller Tips", "Business Strategy", "Marketing", "Operations", "Community", "Platform Updates"];
+const categories = ["الكل", "نصائح للبائعات", "استراتيجيات الأعمال", "تسويق", "عمليات تشغيلية", "مجتمعنا", "تحديثات المنصة"];
 
 export default function BlogPage() {
   return (
@@ -66,10 +66,10 @@ export default function BlogPage() {
       <header className="text-center mb-12">
         <FileText size={48} className="mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          WomenCommerce Blog
+          مدونة نساء كوميرس
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          Insights, tips, and stories to help you thrive in the world of e-commerce and entrepreneurship.
+          أفكار، نصائح، وقصص ملهمة لمساعدتكِ على التألق في عالم التجارة الإلكترونية وريادة الأعمال.
         </p>
       </header>
 
@@ -91,9 +91,9 @@ export default function BlogPage() {
               <Link href={featuredPost.slug}>{featuredPost.title}</Link>
             </CardTitle>
             <p className="text-foreground/70 mb-4 text-sm sm:text-base leading-relaxed">{featuredPost.excerpt}</p>
-            <p className="text-xs text-muted-foreground mb-6">By {featuredPost.author}</p>
+            <p className="text-xs text-muted-foreground mb-6">بقلم {featuredPost.author}</p>
             <Button asChild variant="outline" className="self-start border-primary text-primary hover:bg-primary/10">
-              <Link href={featuredPost.slug}>Read More</Link>
+              <Link href={featuredPost.slug}>اقرئي المزيد</Link>
             </Button>
           </CardContent>
         </Card>
@@ -103,7 +103,7 @@ export default function BlogPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
         {/* Recent Posts */}
         <main className="lg:col-span-2 space-y-8">
-          <h2 className="text-2xl font-semibold text-primary border-b pb-2">Recent Posts</h2>
+          <h2 className="text-2xl font-semibold text-primary border-b pb-2">أحدث المقالات</h2>
           {recentPosts.map((post) => (
             <Card key={post.id} className="overflow-hidden shadow-lg flex flex-col sm:flex-row">
               <div className="relative h-48 w-full sm:w-1/3 sm:h-auto flex-shrink-0">
@@ -117,27 +117,27 @@ export default function BlogPage() {
                   </CardTitle>
                 </div>
                 <Button asChild variant="link" className="p-0 h-auto text-sm self-start mt-3 text-accent-pink hover:underline">
-                  <Link href={post.slug}>Read article &rarr;</Link>
+                  <Link href={post.slug}>اقرئي المقال &larr;</Link>
                 </Button>
               </CardContent>
             </Card>
           ))}
            <div className="text-center mt-12">
-            <Button variant="outline" size="lg">Load More Posts (Coming Soon)</Button>
+            <Button variant="outline" size="lg">تحميل المزيد من المقالات (قريباً)</Button>
           </div>
         </main>
 
         {/* Sidebar */}
         <aside className="lg:col-span-1 space-y-8">
           <div>
-            <h3 className="text-xl font-semibold text-primary mb-3">Search Blog</h3>
+            <h3 className="text-xl font-semibold text-primary mb-3">ابحثي في المدونة</h3>
             <div className="relative">
-              <Input type="search" placeholder="Search articles..." className="pl-10" />
+              <Input type="search" placeholder="ابحثي عن مقالات..." className="pl-10" />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             </div>
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-primary mb-3">Categories</h3>
+            <h3 className="text-xl font-semibold text-primary mb-3">الفئات</h3>
             <ul className="space-y-1.5">
               {categories.map((category) => (
                 <li key={category}>
@@ -150,13 +150,13 @@ export default function BlogPage() {
           </div>
           <Card className="bg-secondary/20 p-6">
             <CardHeader className="p-0 mb-3">
-              <CardTitle className="text-xl text-primary flex items-center"><Rss size={22} className="mr-2 text-accent"/>Subscribe to our Newsletter</CardTitle>
+              <CardTitle className="text-xl text-primary flex items-center"><Rss size={22} className="mr-2 text-accent"/>اشتركي في نشرتنا البريدية</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <p className="text-sm text-foreground/70 mb-3">Get the latest blog posts, tips, and platform updates straight to your inbox.</p>
+              <p className="text-sm text-foreground/70 mb-3">احصلي على أحدث المقالات، النصائح، وتحديثات المنصة مباشرة في بريدك الإلكتروني.</p>
               <form className="space-y-3">
                 <Input type="email" placeholder="your.email@example.com" />
-                <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">Subscribe</Button>
+                <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">اشتراك</Button>
               </form>
             </CardContent>
           </Card>
