@@ -39,6 +39,18 @@ const products = [
     imageSrc: 'https://picsum.photos/400/300?random=6',
     dataAiHint: 'semolina cake',
   },
+  {
+    name: 'Algerian Makrout',
+    description: 'Diamond-shaped semolina cookies filled with dates, fried and soaked in honey.',
+    imageSrc: 'https://picsum.photos/400/300?random=7',
+    dataAiHint: 'makrout pastry',
+  },
+  {
+    name: 'Ghraiba Cookies',
+    description: 'Crumbly Algerian shortbread cookies, often flavored with lemon or orange blossom.',
+    imageSrc: 'https://picsum.photos/400/300?random=8',
+    dataAiHint: 'ghraiba cookies',
+  },
 ];
 
 export function ProductShowcase() {
@@ -83,4 +95,3 @@ export function ProductShowcase() {
     </section>
   );
 }
-
