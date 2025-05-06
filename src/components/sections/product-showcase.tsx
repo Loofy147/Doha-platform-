@@ -27,6 +27,18 @@ const products = [
     imageSrc: 'https://picsum.photos/400/300?random=4',
     dataAiHint: 'date cookies',
   },
+  {
+    name: 'Crispy Baklava',
+    description: 'Layers of flaky pastry, nuts, and sweet syrup – a delightful classic.',
+    imageSrc: 'https://picsum.photos/400/300?random=5',
+    dataAiHint: 'baklava pastry',
+  },
+  {
+    name: 'Kalb el Louz',
+    description: 'A rich semolina and almond cake, soaked in orange blossom syrup.',
+    imageSrc: 'https://picsum.photos/400/300?random=6',
+    dataAiHint: 'semolina cake',
+  },
 ];
 
 export function ProductShowcase() {
@@ -41,9 +53,9 @@ export function ProductShowcase() {
             Handcrafted daily with the finest ingredients and traditional recipes.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {products.map((product) => (
-            <Card key={product.name} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg">
+            <Card key={product.name} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col">
               <CardHeader className="p-0">
                 <div className="aspect-w-4 aspect-h-3">
                   <Image
@@ -56,11 +68,11 @@ export function ProductShowcase() {
                   />
                 </div>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-6 flex flex-col flex-grow">
                 <CardTitle className="text-xl font-semibold text-primary mb-2 flex items-center gap-2">
                   <Wheat size={20} className="text-accent" /> {product.name}
                 </CardTitle>
-                <CardDescription className="text-sm text-foreground/70">
+                <CardDescription className="text-sm text-foreground/70 flex-grow">
                   {product.description}
                 </CardDescription>
               </CardContent>
@@ -71,3 +83,4 @@ export function ProductShowcase() {
     </section>
   );
 }
+
