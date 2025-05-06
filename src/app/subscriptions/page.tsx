@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const subscriptionPlans = [
   {
-    name: "البائعة الأساسية",
+    name: "المبدعة الأساسية",
     price: "مجاني",
     features: [
       "عرض حتى 10 منتجات/خدمات",
@@ -15,12 +15,12 @@ const subscriptionPlans = [
       "عمولة قياسية (15%)",
       "الوصول إلى منتديات المجتمع",
     ],
-    cta: "ابدئي البيع",
+    cta: "ابدئي مسيرتك الإبداعية",
     href: "/auth/register?role=seller",
     popular: false,
   },
   {
-    name: "البائعة المحترفة",
+    name: "المبدعة المحترفة",
     price: "2,500 دج/شهريًا",
     features: [
       "عرض حتى 50 منتج/خدمة",
@@ -35,7 +35,7 @@ const subscriptionPlans = [
     popular: true,
   },
   {
-    name: "بائعة النخبة",
+    name: "مبدعة النخبة",
     price: "5,000 دج/شهريًا",
     features: [
       "عرض عدد غير محدود من المنتجات/الخدمات",
@@ -58,10 +58,10 @@ export default function SubscriptionsPage() {
       <header className="text-center mb-12">
         <Gift size={48} className="mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          باقات اشتراك نساء كوميرس
+          باقات اشتراك لمسة ضحى
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          اختاري الباقة التي تناسب احتياجات عملكِ وافتحي أبواب أدوات قوية للنمو على نساء كوميرس. للمشترين، التصفح والشراء دائمًا مجاني!
+          اختاري الباقة التي تناسب طموحاتكِ الإبداعية وافتحي أبواب أدوات قوية للنمو على منصة لمسة ضحى. للمتسوقات، التصفح والشراء دائمًا مجاني!
         </p>
       </header>
 
@@ -76,7 +76,7 @@ export default function SubscriptionsPage() {
             <CardHeader className="p-6 bg-card/50">
               <CardTitle className="text-2xl font-semibold text-primary">{plan.name}</CardTitle>
               <CardDescription className="text-3xl font-bold text-accent-pink mt-2">{plan.price}</CardDescription>
-               <p className="text-sm text-muted-foreground mt-1">{plan.name === "البائعة الأساسية" ? "مثالية للانطلاق" : (plan.name === "البائعة المحترفة" ? "للأعمال النامية" : "للبائعات المتمرسات الساعيات لأقصى نمو")}</p>
+               <p className="text-sm text-muted-foreground mt-1">{plan.name === "المبدعة الأساسية" ? "مثالية للانطلاق" : (plan.name === "المبدعة المحترفة" ? "للأعمال النامية" : "للمبدعات المتمرسات الساعيات لأقصى نمو")}</p>
             </CardHeader>
             <CardContent className="p-6 flex-grow space-y-3">
               <ul className="space-y-2">
@@ -99,12 +99,12 @@ export default function SubscriptionsPage() {
 
       <div className="mt-16 text-center p-8 bg-secondary/20 rounded-lg">
         <Sparkles size={32} className="mx-auto text-accent mb-4" />
-        <h2 className="text-2xl font-semibold text-primary mb-3">هل أنتِ مشترية؟</h2>
+        <h2 className="text-2xl font-semibold text-primary mb-3">هل أنتِ متسوقة؟</h2>
         <p className="text-foreground/80 mb-6 max-w-xl mx-auto">
-          استمتعي بتصفح واكتشاف المنتجات الفريدة ودعم رائدات الأعمال على نساء كوميرس مجانًا! أنشئي حسابًا لحفظ مفضلاتكِ وإدارة مشترياتكِ.
+          استمتعي بتصفح واكتشاف المنتجات الفريدة ودعم المبدعات على منصة لمسة ضحى مجانًا! أنشئي حسابًا لحفظ مفضلاتكِ وإدارة مشترياتكِ بكل سهولة.
         </p>
         <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
-          <Link href="/auth/register?role=buyer">أنشئي حساب مشترية</Link>
+          <Link href="/auth/register?role=buyer">أنشئي حساب متسوقة</Link>
         </Button>
       </div>
     </div>

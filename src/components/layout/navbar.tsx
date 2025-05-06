@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react'; 
@@ -7,7 +6,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, BookOpen } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 
 const navItems = [
   { label: 'الرئيسية', href: '/', icon: <HomeIcon size={16} /> },
@@ -26,7 +25,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2" aria-label="WomenCommerce Home">
+        <Link href="/" className="flex items-center gap-2" aria-label="لمسة ضحى - الصفحة الرئيسية">
           <WomenCommerceLogo className="h-14 w-auto sm:h-16" />
         </Link>
 

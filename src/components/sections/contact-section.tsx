@@ -12,10 +12,10 @@ import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 
 const contactFormSchema = z.object({
-  name: z.string().min(2, { message: 'يجب أن يتكون الاسم من حرفين على الأقل.' }),
-  email: z.string().email({ message: 'الرجاء إدخال عنوان بريد إلكتروني صالح.' }),
-  subject: z.string().min(5, { message: 'يجب أن يتكون الموضوع من 5 أحرف على الأقل.' }),
-  message: z.string().min(10, { message: 'يجب أن تتكون الرسالة من 10 أحرف على الأقل.' }),
+  name: z.string().min(2, { message: 'الاسم يجب أن يتكون من حرفين على الأقل.' }),
+  email: z.string().email({ message: 'يرجى إدخال بريد إلكتروني صحيح.' }),
+  subject: z.string().min(5, { message: 'الموضوع يجب أن يتكون من 5 أحرف على الأقل.' }),
+  message: z.string().min(10, { message: 'الرسالة يجب أن تتكون من 10 أحرف على الأقل.' }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -37,7 +37,7 @@ export function ContactSection() {
     console.log('Form data submitted:', data);
     toast({
       title: 'تم إرسال رسالتكِ بنجاح!',
-      description: "لقد استلمنا رسالتكِ وسنرد عليكِ في أقرب وقت ممكن.",
+      description: "شكراً لتواصلكِ مع لمسة ضحى. سنقوم بالرد في أقرب وقت ممكن.",
       variant: 'default',
     });
     reset();
@@ -51,7 +51,7 @@ export function ContactSection() {
             تواصلي معنا
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
-            هل لديكِ أسئلة أو اقتراحات حول نساء كوميرس؟ يسعدنا أن نسمع منكِ!
+            هل لديكِ أي أسئلة أو اقتراحات تخص منصة لمسة ضحى؟ نسعد دائمًا بسماع صوتكِ!
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export function ContactSection() {
                     id="subject"
                     className={`mt-1 ${errors.subject ? 'border-destructive' : ''}`}
                     {...register('subject')}
-                    placeholder="عن ماذا تدور رسالتكِ؟"
+                    placeholder="عن ماذا تتمحور رسالتكِ؟"
                   />
                   {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject.message}</p>}
                 </div>
@@ -128,12 +128,12 @@ export function ContactSection() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-foreground/80">
-                  نساء كوميرس هي منصة إلكترونية تربط رائدات الأعمال الموهوبات بالمشترين. نحن نعمل افتراضيًا ونهدف إلى تمكين المرأة اقتصاديًا.
+                  لمسة ضحى هي منصة إلكترونية تجمع رائدات الأعمال الموهوبات بالباحثات عن الإبداع. نعمل بشغف لتمكين المرأة اقتصاديًا.
                 </p>
                  <div className="aspect-video rounded-md overflow-hidden border">
                   <Image
                     src="https://picsum.photos/800/450?random=15"
-                    alt="صورة توضيحية لمجموعة متنوعة من النساء يتعاونّ عبر الإنترنت"
+                    alt="صورة تعبر عن التعاون النسائي والإبداع عبر الإنترنت"
                     width={800}
                     height={450}
                     className="object-cover w-full h-full"
@@ -142,10 +142,10 @@ export function ContactSection() {
                 </div>
                 <p className="flex items-center gap-3 text-foreground/80">
                   <Mail size={20} className="text-accent-pink" />
-                  <span>support@womencommerce.com</span>
+                  <span>support@lamsadoha.com</span>
                 </p>
                  <p className="text-sm text-muted-foreground">
-                  للتواصل مع بائعات محددات، يرجى الرجوع إلى صفحات متاجرهن بعد تسجيل الدخول.
+                  للتواصل مع مبدعات محددات، يرجى الرجوع إلى صفحات متاجرهن بعد تسجيل الدخول.
                 </p>
               </CardContent>
             </Card>

@@ -1,21 +1,20 @@
-
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import {
   Home,
-  LineChart,
-  Package,
-  Package2,
-  PanelLeft,
-  Search,
   ShoppingCart,
+  Package,
   Users2,
+  Store, // Changed from Package2 to Store for sellers for clarity
+  LayoutGrid,
+  BarChart3,
   Settings,
   Bell,
   LogOut,
-  LayoutGrid,
-  BarChart3
+  PanelLeft,
+  Search,
 } from 'lucide-react';
 import {
   Breadcrumb,
@@ -36,18 +35,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 import { usePathname } from 'next/navigation';
 
 const adminNavItems = [
-    { href: '/admin', icon: Home, label: 'Dashboard' },
-    { href: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
-    { href: '/admin/products', icon: Package, label: 'Products' },
-    { href: '/admin/customers', icon: Users2, label: 'Customers' },
-    { href: '/admin/sellers', icon: Package2, label: 'Sellers' }, // Using Package2 for Sellers as Store is used elsewhere or less common
-    { href: '/admin/categories', icon: LayoutGrid, label: 'Categories' },
-    { href: '/admin/reports', icon: BarChart3, label: 'Reports' },
-    { href: '/admin/settings', icon: Settings, label: 'Settings' },
+    { href: '/admin', icon: Home, label: 'لوحة التحكم' },
+    { href: '/admin/orders', icon: ShoppingCart, label: 'الطلبات' },
+    { href: '/admin/products', icon: Package, label: 'المنتجات' },
+    { href: '/admin/customers', icon: Users2, label: 'العملاء' },
+    { href: '/admin/sellers', icon: Store, label: 'البائعات' },
+    { href: '/admin/categories', icon: LayoutGrid, label: 'الفئات' },
+    { href: '/admin/reports', icon: BarChart3, label: 'التقارير' },
+    { href: '/admin/settings', icon: Settings, label: 'الإعدادات' },
 ];
 
 
@@ -55,12 +54,23 @@ export function AdminHeader() {
   const pathname = usePathname();
 
   const getBreadcrumbItems = () => {
-    const pathParts = pathname.split('/').filter(part => part);
-    let currentPath = '';
+    const pathParts = pathname.split('/').filter(part => part && part !== 'admin'); // filter out 'admin' base path
+    let currentPath = '/admin';
     const breadcrumbItems = pathParts.map((part, index) => {
       currentPath += `/${part}`;
       const isLast = index === pathParts.length - 1;
-      const label = part.charAt(0).toUpperCase() + part.slice(1);
+      // Basic localization - could be improved with a proper i18n solution
+      let label = part.charAt(0).toUpperCase() + part.slice(1);
+      if (part === 'orders') label = 'الطلبات';
+      if (part === 'products') label = 'المنتجات';
+      if (part === 'customers') label = 'العملاء';
+      if (part === 'sellers') label = 'البائعات';
+      if (part === 'categories') label = 'الفئات';
+      if (part === 'reports') label = 'التقارير';
+      if (part === 'settings') label = 'الإعدادات';
+      if (part === 'new') label = 'إضافة جديد';
+
+
       return (
         <React.Fragment key={currentPath}>
           <BreadcrumbSeparator />
@@ -86,7 +96,7 @@ export function AdminHeader() {
         <SheetTrigger asChild>
           <Button size="icon" variant="outline" className="sm:hidden">
             <PanelLeft className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
+            <span className="sr-only">فتح/إغلاق القائمة</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="sm:max-w-xs bg-sidebar">
@@ -96,7 +106,7 @@ export function AdminHeader() {
               className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
             >
               <WomenCommerceLogo className="h-10 w-auto" />
-              <span className="sr-only">WomenCommerce Admin</span>
+              <span className="sr-only">لمسة ضحى - لوحة التحكم</span>
             </Link>
             {adminNavItems.map(item => (
                 <Link
@@ -115,7 +125,7 @@ export function AdminHeader() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/admin" className="text-muted-foreground hover:text-primary">Dashboard</Link>
+              <Link href="/admin" className="text-muted-foreground hover:text-primary">لوحة التحكم</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           {getBreadcrumbItems()}
@@ -125,7 +135,7 @@ export function AdminHeader() {
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search..."
+          placeholder="بحث..."
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
         />
       </div>
@@ -137,16 +147,16 @@ export function AdminHeader() {
             className="overflow-hidden rounded-full"
           >
              <Bell className="h-5 w-5 text-muted-foreground" /> 
-             <span className="sr-only">Notifications</span>
+             <span className="sr-only">الإشعارات</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+          <DropdownMenuLabel>الإشعارات</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>New order #1234</DropdownMenuItem>
-          <DropdownMenuItem>Seller application pending</DropdownMenuItem>
+          <DropdownMenuItem>طلب جديد #1234</DropdownMenuItem>
+          <DropdownMenuItem>طلب بائعة جديد معلق</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>View all notifications</DropdownMenuItem>
+          <DropdownMenuItem>عرض كل الإشعارات</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu>
@@ -160,24 +170,24 @@ export function AdminHeader() {
               src="https://picsum.photos/32/32?random=admin"
               width={36}
               height={36}
-              alt="Admin Avatar"
+              alt="صورة حساب المسؤول"
               data-ai-hint="admin avatar"
               className="overflow-hidden rounded-full"
             />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>حسابي</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            Settings
+            الإعدادات
           </DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuItem>الدعم</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <LogOut className="mr-2 h-4 w-4" />
-            Logout
+            تسجيل الخروج
             </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

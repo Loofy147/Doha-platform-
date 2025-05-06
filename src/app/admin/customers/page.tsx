@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users2 } from "lucide-react";
 
@@ -16,7 +15,7 @@ export default function AdminCustomersPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            سيعرض هذا القسم جدولاً بجميع العملاء المسجلين في منصة نساء كوميرس.
+            سيعرض هذا القسم جدولاً بجميع العملاء المسجلين في منصة لمسة ضحى.
             سيتمكن المسؤولون من عرض تفاصيل العملاء، سجل الطلبات، إدارة الحسابات (مثل التحقق، التعليق)، والتواصل مع العملاء.
             الوظائف قيد التطوير وقريباً.
           </p>

@@ -9,11 +9,11 @@ import Link from "next/link";
 
 const featuredPost = {
   id: "feat1",
-  title: "5 نصائح ذهبية لبدء متجركِ الإلكتروني بنجاح على نساء كوميرس",
+  title: "5 لمسات ذهبية لبدء متجركِ بنجاح على منصة لمسة ضحى",
   date: "26 أكتوبر 2023",
-  excerpt: "هل تبدئين رحلتكِ في عالم التجارة الإلكترونية؟ إليكِ خمس نصائح حاسمة لإعداد متجركِ على نساء كوميرس وتحقيق النجاح، من تصوير المنتجات إلى تفاعل العملاء.",
-  author: "فريق نساء كوميرس",
-  category: "نصائح للبائعات",
+  excerpt: "هل تبدئين رحلتكِ في عالم التجارة الإلكترونية؟ إليكِ خمس نصائح حاسمة لإعداد متجركِ على لمسة ضحى وتحقيق النجاح، من تصوير المنتجات إلى تفاعل العملاء.",
+  author: "فريق لمسة ضحى",
+  category: "نصائح للمبدعات",
   imageSrc: "https://picsum.photos/800/450?random=20",
   dataAiHint: "woman working laptop",
   slug: "/blog/5-tips-starting-online-store"
@@ -22,7 +22,7 @@ const featuredPost = {
 const recentPosts = [
   {
     id: "post1",
-    title: "كيف تسعّرين منتجاتكِ اليدوية بعدالة وربحية؟",
+    title: "كيف تسعّرين إبداعاتكِ اليدوية بعدالة وربحية؟",
     date: "20 أكتوبر 2023",
     category: "استراتيجيات الأعمال",
     imageSrc: "https://picsum.photos/400/225?random=21",
@@ -31,16 +31,16 @@ const recentPosts = [
   },
   {
     id: "post2",
-    title: "قوة سرد القصص في تسويق علامتكِ التجارية",
+    title: "قوة سرد القصص في تسويق علامتكِ التجارية على لمسة ضحى",
     date: "15 أكتوبر 2023",
-    category: "تسويق",
+    category: "تسويق إبداعي",
     imageSrc: "https://picsum.photos/400/225?random=22",
     dataAiHint: "writing notes",
     slug: "/blog/storytelling-marketing"
   },
   {
     id: "post3",
-    title: "إدارة الشحن والخدمات اللوجستية للمشاريع الصغيرة",
+    title: "إدارة الشحن والخدمات اللوجستية لمشاريع لمسة ضحى الصغيرة",
     date: "10 أكتوبر 2023",
     category: "عمليات تشغيلية",
     imageSrc: "https://picsum.photos/400/225?random=23",
@@ -49,16 +49,16 @@ const recentPosts = [
   },
    {
     id: "post4",
-    title: "قصة نجاح ملهمة: بائعة مبدعة على نساء كوميرس",
+    title: "قصة نجاح ملهمة: مبدعة تتألق على لمسة ضحى",
     date: "5 أكتوبر 2023",
-    category: "مجتمعنا",
+    category: "مجتمعنا الملهم",
     imageSrc: "https://picsum.photos/400/225?random=24",
     dataAiHint: "woman smiling store",
     slug: "/blog/seller-success-story"
   }
 ];
 
-const categories = ["الكل", "نصائح للبائعات", "استراتيجيات الأعمال", "تسويق", "عمليات تشغيلية", "مجتمعنا", "تحديثات المنصة"];
+const categories = ["الكل", "نصائح للمبدعات", "استراتيجيات الأعمال", "تسويق إبداعي", "عمليات تشغيلية", "مجتمعنا الملهم", "تحديثات المنصة"];
 
 export default function BlogPage() {
   return (
@@ -66,10 +66,10 @@ export default function BlogPage() {
       <header className="text-center mb-12">
         <FileText size={48} className="mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-          مدونة نساء كوميرس
+          مدونة لمسة ضحى
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          أفكار، نصائح، وقصص ملهمة لمساعدتكِ على التألق في عالم التجارة الإلكترونية وريادة الأعمال.
+          أفكار، نصائح، وقصص ملهمة لمساعدتكِ على التألق في عالم التجارة الإلكترونية وريادة الأعمال مع لمسة ضحى.
         </p>
       </header>
 
@@ -130,7 +130,7 @@ export default function BlogPage() {
         {/* Sidebar */}
         <aside className="lg:col-span-1 space-y-8">
           <div>
-            <h3 className="text-xl font-semibold text-primary mb-3">ابحثي في المدونة</h3>
+            <h3 className="text-xl font-semibold text-primary mb-3">ابحثي في مدونة لمسة ضحى</h3>
             <div className="relative">
               <Input type="search" placeholder="ابحثي عن مقالات..." className="pl-10" />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -153,7 +153,7 @@ export default function BlogPage() {
               <CardTitle className="text-xl text-primary flex items-center"><Rss size={22} className="mr-2 text-accent"/>اشتركي في نشرتنا البريدية</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <p className="text-sm text-foreground/70 mb-3">احصلي على أحدث المقالات، النصائح، وتحديثات المنصة مباشرة في بريدك الإلكتروني.</p>
+              <p className="text-sm text-foreground/70 mb-3">احصلي على أحدث المقالات، النصائح، وتحديثات منصة لمسة ضحى مباشرة في بريدك الإلكتروني.</p>
               <form className="space-y-3">
                 <Input type="email" placeholder="your.email@example.com" />
                 <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">اشتراك</Button>

@@ -4,8 +4,8 @@ import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from "@vercel/analytics/next"
+// import { SpeedInsights } from "@vercel/speed-insights/next"
+// import { Analytics } from "@vercel/analytics/next"
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -29,10 +29,10 @@ const notoSansArabic = Noto_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: 'نساء كوميرس - تمكين رائدات الأعمال',
-  description: 'منصة تجارة إلكترونية شاملة للمرأة تمكّنها من بيع، تأجير، وعرض منتجاتها وخدماتها. انضمي إلى مجتمعنا الداعم اليوم!',
-  keywords: ['رائدات أعمال', 'تجارة إلكترونية', 'بيع عبر الإنترنت', 'تأجير منتجات', 'سوق خدمات', 'منتجات يدوية', 'المرأة في الأعمال', 'تمكين المرأة', 'نساء كوميرس'],
-  authors: [{ name: 'فريق نساء كوميرس' }],
+  title: 'لمسة ضحى - إبداع يلامس حياتك',
+  description: 'منصة لمسة ضحى: سوقكِ الشامل لاكتشاف، بيع، أو تأجير المنتجات والخدمات من رائدات أعمال موهوبات. انضمي إلى مجتمعنا الداعم اليوم!',
+  keywords: ['لمسة ضحى', 'رائدات أعمال', 'تجارة إلكترونية', 'بيع عبر الإنترنت', 'تأجير منتجات', 'سوق خدمات', 'منتجات يدوية', 'المرأة في الأعمال', 'تمكين المرأة'],
+  authors: [{ name: 'فريق لمسة ضحى' }],
 };
 
 export const viewport: Viewport = {
@@ -57,8 +57,8 @@ export default function RootLayout({
           <Footer />
         </div>
         <Toaster />
-        <SpeedInsights/>
-        <Analytics/>
+        {/* <SpeedInsights/> */}
+        {/* <Analytics/> */}
       </body>
     </html>
   );

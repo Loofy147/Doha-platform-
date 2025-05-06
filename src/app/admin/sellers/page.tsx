@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Store } from "lucide-react"; // Using Store icon for sellers
 
@@ -7,22 +6,22 @@ export default function AdminSellersPage() {
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight text-primary">
-            <Store className="inline-block mr-2 h-7 w-7" /> إدارة البائعات
+            <Store className="inline-block mr-2 h-7 w-7" /> إدارة المبدعات
         </h2>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>جميع البائعات</CardTitle>
+          <CardTitle>جميع المبدعات</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            سيعرض هذا القسم جدولاً بجميع البائعات المسجلات في منصة نساء كوميرس.
-            سيتمكن المسؤولون من عرض ملفات تعريف البائعات، إدارة تفاصيل المتاجر، الموافقة/رفض الطلبات، مراقبة الأداء، وإدارة المدفوعات.
+            سيعرض هذا القسم جدولاً بجميع المبدعات المسجلات في منصة لمسة ضحى.
+            سيتمكن المسؤولون من عرض ملفات تعريف المبدعات، إدارة تفاصيل المتاجر، الموافقة/رفض الطلبات، مراقبة الأداء، وإدارة المدفوعات.
             الوظائف قيد التطوير وقريباً.
           </p>
           {/* Placeholder for sellers table */}
           <div className="mt-6 h-64 w-full border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
-            <p className="text-muted-foreground">جدول البائعات - قيد التطوير</p>
+            <p className="text-muted-foreground">جدول المبدعات - قيد التطوير</p>
           </div>
         </CardContent>
       </Card>

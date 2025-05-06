@@ -1,7 +1,5 @@
-'use client';
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { DollarSign, Package, Users, LineChart, Settings, PlusCircle, Bell } from "lucide-react";
 import Link from "next/link";
 
@@ -27,15 +25,15 @@ export default function DashboardPage() {
       <header className="mb-8 flex flex-col sm:flex-row justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            لوحة تحكم البائعة
+            لوحة تحكم المبدعة
           </h1>
           <p className="mt-1 text-lg text-foreground/80">
-            أهلاً بعودتكِ، [اسم البائعة]! أديري متجركِ على نساء كوميرس من هنا.
+            أهلاً بعودتكِ، [اسم المبدعة]! أديري متجركِ على لمسة ضحى من هنا.
           </p>
         </div>
         <Button asChild className="mt-4 sm:mt-0 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
           <Link href="/dashboard/products/new">
-            <PlusCircle size={18} className="mr-2" /> أضيفي منتج/خدمة جديدة
+            <PlusCircle size={18} className="mr-2" /> أضيفي لمسة إبداعية جديدة
           </Link>
         </Button>
       </header>
@@ -98,10 +96,10 @@ export default function DashboardPage() {
        <div className="mt-12 p-8 bg-secondary/10 rounded-lg text-center">
             <h3 className="text-2xl font-semibold text-primary mb-3">هل تحتاجين مساعدة أو ترغبين بمعرفة المزيد؟</h3>
             <p className="text-foreground/70 mb-6 max-w-md mx-auto">
-                استكشفي أدلة البائعات، انضمي إلى مناقشات المجتمع، أو تواصلي مع الدعم للحصول على المساعدة.
+                استكشفي أدلة لمسة ضحى للمبدعات، انضمي إلى مناقشات المجتمع، أو تواصلي مع الدعم للحصول على المساعدة.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <Button variant="outline">أدلة البائعات</Button>
+                <Button variant="outline">أدلة المبدعات</Button>
                 <Button variant="outline">منتدى المجتمع</Button>
                 <Button variant="outline">التواصل مع الدعم</Button>
             </div>

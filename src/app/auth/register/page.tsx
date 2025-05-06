@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { UserPlus, Mail, KeyRound, User, LogIn } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 
 const registrationFormSchema = z.object({
   fullName: z.string().min(2, { message: "يجب أن يتكون الاسم الكامل من حرفين على الأقل." }),
@@ -57,7 +57,7 @@ export default function RegisterPage() {
     console.log('Registration Attempt:', data);
     toast({
       title: 'تم التسجيل بنجاح (محاكاة)',
-      description: "أهلاً بك في نساء كوميرس! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
+      description: "أهلاً بك في لمسة ضحى! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
       variant: 'default',
     });
     reset();
@@ -91,7 +91,7 @@ export default function RegisterPage() {
           </Link>
           <CardTitle className="text-3xl font-bold text-primary">أنشئي حسابكِ</CardTitle>
           <CardDescription className="text-foreground/80">
-            انضمي إلى مجتمعنا من المبدعات والمتسوقات الداعمات في نساء كوميرس.
+            انضمي إلى مجتمعنا من المبدعات والمتسوقات الداعمات في لمسة ضحى.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -165,7 +165,7 @@ export default function RegisterPage() {
                   htmlFor="agreeToTerms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  أوافق على شروط الخدمة وسياسة الخصوصية لمنصة نساء كوميرس.
+                  أوافق على شروط الخدمة وسياسة الخصوصية لمنصة لمسة ضحى.
                 </label>
                  {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms.message}</p>}
               </div>

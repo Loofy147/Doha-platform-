@@ -10,7 +10,7 @@ export function HeroSection() {
         <Image
           src="https://picsum.photos/1600/900?random=10" 
           alt="نساء رائدات أعمال متنوعات يعملن بحماس"
-          layout="fill"
+          fill
           objectFit="cover"
           data-ai-hint="women entrepreneurs diverse"
           priority
@@ -18,20 +18,20 @@ export function HeroSection() {
       </div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl">
-          أهلاً بكِ في <span className="text-accent-pink">نساء</span> كوميرس
+          أهلاً بكِ في <span className="text-accent-pink">لمسة</span> ضحى
         </h1>
         <p className="mt-6 max-w-2xl mx-auto text-lg text-foreground/80 sm:text-xl">
-          سوقكِ الشامل لاكتشاف، بيع، أو تأجير المنتجات والخدمات من رائدات أعمال موهوبات.
+          سوقكِ الشامل لاكتشاف، بيع، أو تأجير المنتجات والخدمات من رائدات أعمال موهوبات. إبداع يلامس حياتكِ.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg" asChild className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground shadow-lg transform hover:scale-105 transition-transform">
             <Link href="/products">
-              <ShoppingBag className="mr-2 h-5 w-5" /> استكشفي المنتجات والخدمات
+              <ShoppingBag className="mr-2 h-5 w-5" /> استكشفي إبداعاتنا
             </Link>
           </Button>
           <Button size="lg" variant="outline" asChild className="shadow-md transform hover:scale-105 transition-transform border-primary text-primary hover:bg-primary/10">
             <Link href="/sell-with-us">
-              <Store className="mr-2 h-5 w-5" /> ابدئي البيع/التأجير
+              <Store className="mr-2 h-5 w-5" /> ابدئي البيع/التأجير معنا
             </Link>
           </Button>
         </div>

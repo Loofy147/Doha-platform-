@@ -19,36 +19,36 @@ const testimonials = [
     avatar: 'https://picsum.photos/100/100?random=1',
     dataAiHint: 'woman smiling',
     initials: 'أح',
-    text: "نساء كوميرس غيرت حياتي ومشروعي الصغير. الدعم والظهور الذي حصلت عليه لا يصدق!",
+    text: "لمسة ضحى غيرت حياتي ومشروعي الصغير. الدعم والظهور الذي حصلت عليه لا يصدق!",
     rating: 5,
-    type: 'بائعة'
+    type: 'بائعة مبدعة'
   },
   {
     name: 'ليلى ر.',
     avatar: 'https://picsum.photos/100/100?random=2',
     dataAiHint: 'woman happy',
     initials: 'لر',
-    text: "أحب اكتشاف المنتجات اليدوية الفريدة على نساء كوميرس. إنه وجهتي المفضلة للهدايا ولدعم رائدات الأعمال.",
+    text: "أحب اكتشاف المنتجات اليدوية الفريدة على لمسة ضحى. إنه وجهتي المفضلة للهدايا ولدعم رائدات الأعمال.",
     rating: 5,
-    type: 'مشترية'
+    type: 'زبونة راقية'
   },
   {
     name: 'فاطمة ك.',
     avatar: 'https://picsum.photos/100/100?random=3',
     dataAiHint: 'woman portrait',
     initials: 'فك',
-    text: 'المنصة سهلة الاستخدام للغاية، والمجتمع رائع. أوصي بشدة بنساء كوميرس لأي امرأة تتطلع لبيع إبداعاتها.',
+    text: 'المنصة سهلة الاستخدام للغاية، والمجتمع رائع. أوصي بشدة بمنصة لمسة ضحى لأي امرأة تتطلع لبيع إبداعاتها.',
     rating: 4,
-    type: 'بائعة'
+    type: 'بائعة طموحة'
   },
   {
     name: 'ياسمين ب.',
     avatar: 'https://picsum.photos/100/100?random=4',
     dataAiHint: 'woman shopping',
     initials: 'يب',
-    text: 'وجدت أجمل المجوهرات المصنوعة يدويًا هنا على نساء كوميرس. الجودة مذهلة، وأحب أنني أدعم مشروعًا تملكه امرأة.',
+    text: 'وجدت أجمل المجوهرات المصنوعة يدويًا هنا على لمسة ضحى. الجودة مذهلة، وأحب أنني أدعم مشروعًا تملكه امرأة.',
     rating: 5,
-    type: 'مشترية'
+    type: 'زبونة متميزة'
   },
 ];
 
@@ -62,10 +62,10 @@ export function TestimonialsSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            أصداء من مجتمعنا
+            أصداء من مجتمع لمسة ضحى
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
-            استمعي إلى ما تقوله البائعات والمشتريات عن تجربتهن مع نساء كوميرس.
+            استمعي إلى ما تقوله البائعات والزبونات عن تجربتهن الملهمة مع لمسة ضحى.
           </p>
         </div>
 

@@ -69,6 +69,7 @@ export default {
   			},
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
+          background: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
           'muted-foreground': 'hsl(var(--sidebar-muted-foreground))',
           primary: {
@@ -124,6 +125,6 @@ export default {
   },
   plugins: [
     require("tailwindcss-animate"),
-    require('@tailwindcss/aspect-ratio'),
+    // require('@tailwindcss/aspect-ratio'), // This line was causing the error
   ],
 } satisfies Config;

@@ -1,6 +1,6 @@
-
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardTitle, CardFooter, CardHeader } from '@/components/ui/card';
 import { Sparkles, Eye, ChevronRight, Users, CalendarDays, ShoppingBag, Store, Edit3 } from 'lucide-react';
@@ -19,7 +19,7 @@ const featuredProducts = [
     imageSrc: 'https://picsum.photos/400/300?random=1',
     dataAiHint: 'silver jewelry handmade',
     price: '4,500 دج',
-    category: 'أزياء وإكسسوارات',
+    category: 'أناقة وإكسسوارات',
   },
   {
     id: 'featProd2',
@@ -37,15 +37,15 @@ const featuredProducts = [
     imageSrc: 'https://picsum.photos/400/300?random=3',
     dataAiHint: 'evening dress rental',
     price: '6,000 دج / لليلة',
-    category: 'منتجات للإيجار',
+    category: 'تأجير إبداعات',
   },
 ];
 
 const categories = [
-  { name: 'أزياء وإكسسوارات', icon: <ShoppingBag size={28} className="text-accent-pink" />, href: '/products?category=fashion', dataAiHint: 'fashion accessories' },
+  { name: 'أناقة وإكسسوارات', icon: <ShoppingBag size={28} className="text-accent-pink" />, href: '/products?category=fashion', dataAiHint: 'fashion accessories' },
   { name: 'حلويات ومأكولات شهية', icon: <Sparkles size={28} className="text-accent-yellow" />, href: '/products?category=sweets', dataAiHint: 'sweets treats' },
-  { name: 'مستلزمات منزلية وديكور', icon: <Store size={28} className="text-accent-purple" />, href: '/products?category=home', dataAiHint: 'home decor' },
-  { name: 'منتجات للإيجار', icon: <CalendarDays size={28} className="text-green-500" />, href: '/products?category=rental', dataAiHint: 'rental items' },
+  { name: 'لمسات منزلية وديكور', icon: <Store size={28} className="text-accent-purple" />, href: '/products?category=home', dataAiHint: 'home decor' },
+  { name: 'تأجير إبداعات', icon: <CalendarDays size={28} className="text-green-500" />, href: '/products?category=rental', dataAiHint: 'rental items' },
   { name: 'خدمات احترافية', icon: <Edit3 size={28} className="text-blue-500" />, href: '/products?category=services', dataAiHint: 'professional services' },
 ];
 
@@ -88,10 +88,10 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <Sparkles className="mx-auto h-12 w-12 text-primary" />
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-              إبداعات مميزة تنتظركِ
+              إبداعات مميزة تلامس ذوقكِ
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-              اكتشفي أحدث المنتجات والخدمات التي أضافتها رائدات الأعمال الموهوبات على منصتنا.
+              اكتشفي أحدث المنتجات والخدمات التي أضافتها مبدعات لمسة ضحى.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -127,7 +127,7 @@ export default function HomePage() {
           <div className="mt-12 text-center">
             <Button size="lg" variant="outline" asChild className="border-accent-yellow text-accent-yellow hover:bg-accent-yellow/10">
               <Link href="/products">
-                تصفحي كل المنتجات والخدمات <ChevronRight className="ml-2 h-5 w-5" />
+                تصفحي كل اللمسات الإبداعية <ChevronRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
@@ -143,7 +143,7 @@ export default function HomePage() {
               تسوقي حسب اهتماماتكِ
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-              تصفحي مجموعتنا المتنوعة من الفئات للعثور على ما تبحثين عنه بالضبط.
+              تصفحي مجموعتنا المتنوعة من الفئات لتجدي ما يلامس شغفك.
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -169,10 +169,10 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <Store className="mx-auto h-12 w-12 text-primary" />
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-              بائعات مميزات ومبدعات
+              مبدعات مميزات على لمسة ضحى
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-              تعرفي على بعض البائعات الموهوبات في مجتمعنا واكتشفي متاجرهن الفريدة.
+              تعرفي على بعض المبدعات الملهمات في مجتمعنا واكتشفي متاجرهن الفريدة.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

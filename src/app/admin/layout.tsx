@@ -1,11 +1,10 @@
-
 import type { Metadata } from 'next';
 import { AdminHeader } from '@/components/admin/admin-header';
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
 
 export const metadata: Metadata = {
-  title: 'WomenCommerce Admin',
-  description: 'Admin dashboard for WomenCommerce platform.',
+  title: 'لوحة تحكم لمسة ضحى',
+  description: 'لوحة التحكم الإدارية لمنصة لمسة ضحى.',
 };
 
 export default function AdminLayout({

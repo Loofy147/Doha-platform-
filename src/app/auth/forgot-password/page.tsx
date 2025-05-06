@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: "الرجاء إدخال بريد إلكتروني صالح لإعادة تعيين كلمة المرور." }),
@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
     console.log('Password Reset Request:', data.email);
     toast({
       title: 'تم إرسال بريد إعادة تعيين كلمة المرور (محاكاة)',
-      description: "إذا كان هناك حساب مسجل بهذا البريد الإلكتروني في نساء كوميرس، ستتلقى تعليمات لإعادة تعيين كلمة المرور قريبًا.",
+      description: "إذا كان هناك حساب مسجل بهذا البريد الإلكتروني في لمسة ضحى، ستتلقين تعليمات لإعادة تعيين كلمة المرور قريبًا.",
       variant: 'default',
     });
     reset();
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
           </Link>
           <CardTitle className="text-3xl font-bold text-primary">نسيت كلمة المرور؟</CardTitle>
           <CardDescription className="text-foreground/80">
-            لا تقلقي! أدخلي بريدك الإلكتروني أدناه وسنرسل لك رابطًا لإعادة تعيين كلمة المرور لحسابك في نساء كوميرس.
+            لا تقلقي! أدخلي بريدك الإلكتروني أدناه وسنرسل لك رابطًا لإعادة تعيين كلمة المرور لحسابك في لمسة ضحى.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>

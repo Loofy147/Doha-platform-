@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -11,26 +10,24 @@ import {
 } from '@/components/ui/tooltip';
 import {
   Home,
-  LineChart,
-  Package,
-  Package2,
-  Settings,
   ShoppingCart,
+  Package,
   Users2,
   Store,
   LayoutGrid,
-  BarChart3
+  BarChart3,
+  Settings,
 } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 
 const adminNavItems = [
-    { href: '/admin', icon: Home, label: 'Dashboard' },
-    { href: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
-    { href: '/admin/products', icon: Package, label: 'Products' },
-    { href: '/admin/customers', icon: Users2, label: 'Customers' },
-    { href: '/admin/sellers', icon: Store, label: 'Sellers' },
-    { href: '/admin/categories', icon: LayoutGrid, label: 'Categories' },
-    { href: '/admin/reports', icon: BarChart3, label: 'Reports' },
+    { href: '/admin', icon: Home, label: 'لوحة التحكم' },
+    { href: '/admin/orders', icon: ShoppingCart, label: 'الطلبات' },
+    { href: '/admin/products', icon: Package, label: 'المنتجات' },
+    { href: '/admin/customers', icon: Users2, label: 'العملاء' },
+    { href: '/admin/sellers', icon: Store, label: 'البائعات' },
+    { href: '/admin/categories', icon: LayoutGrid, label: 'الفئات' },
+    { href: '/admin/reports', icon: BarChart3, label: 'التقارير' },
 ];
 
 export function AdminSidebar() {
@@ -45,7 +42,7 @@ export function AdminSidebar() {
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <WomenCommerceLogo className="h-8 w-auto transition-all group-hover:scale-110" />
-            <span className="sr-only">WomenCommerce Admin</span>
+            <span className="sr-only">لمسة ضحى - لوحة التحكم</span>
           </Link>
           {adminNavItems.map((item) => (
             <Tooltip key={item.href}>
@@ -78,10 +75,10 @@ export function AdminSidebar() {
                   }`}
               >
                 <Settings className="h-5 w-5" />
-                <span className="sr-only">Settings</span>
+                <span className="sr-only">الإعدادات</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
+            <TooltipContent side="right">الإعدادات</TooltipContent>
           </Tooltip>
         </nav>
       </TooltipProvider>

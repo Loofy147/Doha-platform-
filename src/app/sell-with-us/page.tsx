@@ -65,7 +65,7 @@ export default function SellWithUsPage() {
     console.log('Seller Application Submitted:', data);
     toast({
       title: 'تم تقديم طلبك بنجاح!',
-      description: "شكرًا لاهتمامك بالبيع على نساء كوميرس. لقد استلمنا طلبك وسنقوم بمراجعته قريبًا. سنتواصل معكِ في أقرب وقت!",
+      description: "شكرًا لاهتمامك بالبيع على لمسة ضحى. لقد استلمنا طلبك وسنقوم بمراجعته قريبًا. سنتواصل معكِ في أقرب وقت!",
       variant: 'default',
     });
     reset();
@@ -99,10 +99,10 @@ export default function SellWithUsPage() {
             <Sparkles size={48} className="text-accent-pink" />
           </div>
           <CardTitle className="text-3xl font-bold text-primary text-center">
-            انضمي إلى نساء كوميرس كبائعة!
+            انضمي إلى مبدعات لمسة ضحى!
           </CardTitle>
           <CardDescription className="text-center text-lg text-foreground/80 pt-2">
-            اعرضي منتجاتكِ الفريدة، خدماتكِ، أو مقتنياتكِ للإيجار أمام مجتمع داعم. متحمسون لمساعدتكِ في تنمية عملكِ.
+            اعرضي منتجاتكِ الفريدة، خدماتكِ، أو مقتنياتكِ للإيجار أمام مجتمع داعم. متحمسون لمساعدتكِ في تنمية عملكِ وإبراز لمستكِ الخاصة.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -113,7 +113,7 @@ export default function SellWithUsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="fullName">الاسم الكامل</Label>
-                  <Input id="fullName" {...register('fullName')} placeholder="مثال: فاطمة الزهراء" />
+                  <Input id="fullName" {...register('fullName')} placeholder="مثال: ضحى الأحمد" />
                   {errors.fullName && <p className="mt-1 text-sm text-destructive">{errors.fullName.message}</p>}
                 </div>
                 <div>
@@ -131,11 +131,11 @@ export default function SellWithUsPage() {
 
             {/* Business Information */}
             <section>
-              <h3 className="text-xl font-semibold text-primary mb-4 flex items-center"><Store size={22} className="mr-2 text-accent-purple" /> تفاصيل نشاطكِ التجاري</h3>
+              <h3 className="text-xl font-semibold text-primary mb-4 flex items-center"><Store size={22} className="mr-2 text-accent-purple" /> تفاصيل لمستكِ الإبداعية</h3>
               <div className="space-y-6">
                 <div>
-                  <Label htmlFor="businessName">اسم النشاط التجاري / العلامة التجارية</Label>
-                  <Input id="businessName" {...register('businessName')} placeholder="مثال: إبداعات أمينة" />
+                  <Label htmlFor="businessName">اسم متجركِ / علامتكِ التجارية</Label>
+                  <Input id="businessName" {...register('businessName')} placeholder="مثال: لمسات ضحى الفنية" />
                   {errors.businessName && <p className="mt-1 text-sm text-destructive">{errors.businessName.message}</p>}
                 </div>
                 <div>
@@ -159,7 +159,7 @@ export default function SellWithUsPage() {
                   {errors.productCategory && <p className="mt-1 text-sm text-destructive">{errors.productCategory.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="businessDescription" className="flex items-center mb-1"><FileText size={16} className="mr-2 text-accent-pink" /> أخبرينا عن نشاطكِ، منتجاتكِ، أو خدماتكِ</Label>
+                  <Label htmlFor="businessDescription" className="flex items-center mb-1"><FileText size={16} className="mr-2 text-accent-pink" /> أخبرينا عن إبداعكِ، منتجاتكِ، أو خدماتكِ</Label>
                   <Textarea 
                     id="businessDescription" 
                     {...register('businessDescription')} 
@@ -190,7 +190,7 @@ export default function SellWithUsPage() {
                   htmlFor="agreeToTerms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  لقد قرأت وأوافق على شروط وأحكام البيع في نساء كوميرس.
+                  لقد قرأت وأوافق على شروط وأحكام البيع في منصة لمسة ضحى.
                 </label>
                 <p className="text-xs text-muted-foreground">
                   (سيتم توفير رابط لوثيقة الشروط والأحكام هنا في التطبيق الفعلي.)
@@ -201,7 +201,7 @@ export default function SellWithUsPage() {
           </CardContent>
           <CardFooter className="p-8 border-t bg-secondary/20 rounded-b-lg">
             <Button type="submit" size="lg" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground flex items-center gap-2" disabled={isSubmitting}>
-              <Handshake size={20} /> {isSubmitting ? 'جاري تقديم الطلب...' : 'قدمي طلبك الآن'}
+              <Handshake size={20} /> {isSubmitting ? 'جاري تقديم الطلب...' : 'قدمي طلبكِ الآن'}
             </Button>
           </CardFooter>
         </form>

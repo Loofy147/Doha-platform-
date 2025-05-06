@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
 
@@ -16,7 +15,7 @@ export default function AdminOrdersPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            سيعرض هذا القسم جدولاً بجميع الطلبات المقدمة على منصة نساء كوميرس.
+            سيعرض هذا القسم جدولاً بجميع الطلبات المقدمة على منصة لمسة ضحى.
             سيتمكن المستخدمون الإداريون من عرض تفاصيل الطلبات، تحديث الحالات، إدارة المبالغ المستردة، والمزيد.
             الوظائف قيد التطوير وقريباً.
           </p>

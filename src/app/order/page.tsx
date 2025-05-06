@@ -17,7 +17,7 @@ const mockOrders = [
     status: "تم التوصيل",
     total: 3200,
     items: [
-      { name: "طقم أكواب سيراميك مصنوعة يدويًا", quantity: 1, imageSrc: "https://picsum.photos/80/80?random=1", dataAiHint: "ceramic mug" },
+      { name: "طقم أكواب سيراميك مصنوعة يدوياً", quantity: 1, imageSrc: "https://picsum.photos/80/80?random=1", dataAiHint: "ceramic mug" },
     ],
     seller: "إبداعات أمينة",
     deliveryEstimate: "27 أكتوبر 2023",
@@ -57,7 +57,7 @@ export default function OrderPage() {
           طلباتكِ
         </h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-          تابعي مشترياتكِ الحالية واطلعي على سجل طلباتكِ في نساء كوميرس.
+          تابعي مشترياتكِ الحالية واطلعي على سجل طلباتكِ في لمسة ضحى.
         </p>
       </header>
 
@@ -101,7 +101,7 @@ export default function OrderPage() {
               <CardHeader className="flex flex-col sm:flex-row justify-between items-start gap-2 pb-3 border-b">
                 <div>
                   <CardTitle className="text-xl text-primary">طلب رقم #{order.id}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">التاريخ: {order.date} • البائعة: <Link href="#" className="text-accent-purple hover:underline">{order.seller}</Link></CardDescription>
+                  <CardDescription className="text-sm text-muted-foreground">التاريخ: {order.date} • المبدعة: <Link href="#" className="text-accent-purple hover:underline">{order.seller}</Link></CardDescription>
                 </div>
                 <div className="flex flex-col sm:items-end gap-1">
                     <span className={`px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
@@ -130,7 +130,7 @@ export default function OrderPage() {
                 <p className="text-lg font-semibold text-accent-pink text-right">الإجمالي: {order.total.toLocaleString()} دج</p>
               </CardContent>
               <CardFooter className="border-t pt-4 flex flex-col sm:flex-row justify-end gap-2">
-                <Button variant="ghost" size="sm" className="w-full sm:w-auto text-accent-purple hover:text-accent-purple/80"><MessageSquare size={16} className="mr-2" /> تواصلي مع البائعة</Button>
+                <Button variant="ghost" size="sm" className="w-full sm:w-auto text-accent-purple hover:text-accent-purple/80"><MessageSquare size={16} className="mr-2" /> تواصلي مع المبدعة</Button>
                 <Button variant="outline" size="sm" className="w-full sm:w-auto"><FileText size={16} className="mr-2" /> عرض الفاتورة</Button>
                 {order.status === 'تم الشحن' && <Button variant="outline" size="sm" className="w-full sm:w-auto"><Truck size={16} className="mr-2" /> تتبعي الشحنة</Button>}
                 {order.status === 'تم التوصيل' && <Button variant="outline" size="sm" className="w-full sm:w-auto"><Star size={16} className="mr-2" /> أضيفي تقييمك</Button>}
@@ -146,7 +146,7 @@ export default function OrderPage() {
           <ShoppingCart size={64} className="mx-auto text-muted-foreground mb-6" />
           <h2 className="text-2xl font-semibold text-primary mb-3">لا توجد طلبات بعد!</h2>
           <p className="text-foreground/70 mb-8 max-w-md mx-auto">
-            يبدو أنكِ لم تقومي بأي طلبات بعد. ابدئي باستكشاف منتجاتنا وخدماتنا المذهلة التي أبدعتها نساء موهوبات.
+            يبدو أنكِ لم تقومي بأي طلبات بعد. ابدئي باستكشاف إبداعاتنا وخدماتنا المذهلة من لمسة ضحى.
           </p>
           <Button asChild size="lg" className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
             <Link href="/products"> <PackageCheck size={20} className="mr-2"/> تصفحي المنتجات والخدمات</Link>

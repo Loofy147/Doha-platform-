@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { LogIn, Mail, KeyRound, UserPlus } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "الرجاء إدخال عنوان بريد إلكتروني صالح." }),
@@ -43,7 +43,7 @@ export default function LoginPage() {
     console.log('Login Attempt:', data);
     toast({
       title: 'تم تسجيل الدخول بنجاح (محاكاة)',
-      description: "أهلاً بك مجددًا في نساء كوميرس!",
+      description: "أهلاً بكِ مجددًا في لمسة ضحى!",
       variant: 'default',
     });
     reset();
@@ -76,7 +76,7 @@ export default function LoginPage() {
           </Link>
           <CardTitle className="text-3xl font-bold text-primary">أهلاً بعودتكِ!</CardTitle>
           <CardDescription className="text-foreground/80">
-            سجلي دخولك للمتابعة إلى حسابك في نساء كوميرس.
+            سجلي دخولك للمتابعة إلى حسابك في لمسة ضحى.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>

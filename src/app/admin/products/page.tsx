@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Package, PlusCircle } from "lucide-react";
@@ -23,7 +22,7 @@ export default function AdminProductsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            سيعرض هذا القسم جدولاً بجميع المنتجات والخدمات المعروضة على منصة نساء كوميرس.
+            سيعرض هذا القسم جدولاً بجميع المنتجات والخدمات المعروضة على منصة لمسة ضحى.
             سيتمكن المسؤولون من عرض، تعديل، الموافقة على، أو إزالة القوائم، إدارة الفئات، والإشراف على المخزون للعناصر التي تديرها المنصة (إن وجدت).
             الوظائف قيد التطوير وقريباً.
           </p>

@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +11,7 @@ export default function AdminSettingsPage() {
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight text-primary">
-            <Settings className="inline-block mr-2 h-7 w-7" /> إعدادات المنصة
+            <Settings className="inline-block mr-2 h-7 w-7" /> إعدادات منصة لمسة ضحى
         </h2>
       </div>
       
@@ -25,15 +24,15 @@ export default function AdminSettingsPage() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="platformName">اسم المنصة</Label>
-                <Input id="platformName" defaultValue="نساء كوميرس" />
+                <Input id="platformName" defaultValue="لمسة ضحى" />
               </div>
               <div>
                 <Label htmlFor="platformDescription">شعار/وصف المنصة</Label>
-                <Textarea id="platformDescription" defaultValue="تمكين المرأة اقتصادياً" rows={2}/>
+                <Textarea id="platformDescription" defaultValue="إبداع يلامس حياتك" rows={2}/>
               </div>
               <div>
                 <Label htmlFor="adminEmail">البريد الإلكتروني لجهة الاتصال الإدارية</Label>
-                <Input id="adminEmail" type="email" defaultValue="admin@womencommerce.com" />
+                <Input id="adminEmail" type="email" defaultValue="admin@lamsadoha.com" />
               </div>
             </CardContent>
           </Card>
@@ -49,7 +48,7 @@ export default function AdminSettingsPage() {
               </div>
                <div className="flex items-center space-x-2">
                 <Switch id="enableSubscriptionDiscounts" />
-                <Label htmlFor="enableSubscriptionDiscounts" className="text-sm">تفعيل خصومات العمولة للبائعات المشتركات</Label>
+                <Label htmlFor="enableSubscriptionDiscounts" className="text-sm">تفعيل خصومات العمولة للمبدعات المشتركات</Label>
               </div>
             </CardContent>
           </Card>

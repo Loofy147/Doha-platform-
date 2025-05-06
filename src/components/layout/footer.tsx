@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Mail, Info, Users, Briefcase, MessageSquare, Send, FileText, Gift, ShoppingCart, BookOpen } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -16,7 +16,7 @@ export function Footer() {
               <WomenCommerceLogo className="h-14 w-auto" />
             </Link>
             <p className="text-sm text-foreground/80">
-              نساء كوميرس: منصة شاملة تمكّن رائدات الأعمال من البيع، التأجير، وعرض مواهبهن.
+              لمسة ضحى: منصة شاملة تمكّن رائدات الأعمال من البيع، التأجير، وعرض مواهبهن.
             </p>
           </div>
 
@@ -33,7 +33,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-primary">انضمي إلينا</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/sell-with-us" className="hover:text-primary transition-colors flex items-center gap-1"><Briefcase size={16} /> بيعي على نساء كوميرس</Link></li>
+              <li><Link href="/sell-with-us" className="hover:text-primary transition-colors flex items-center gap-1"><Briefcase size={16} /> بيعي على لمسة ضحى</Link></li>
               <li><Link href="/subscriptions" className="hover:text-primary transition-colors flex items-center gap-1"><Gift size={16}/> باقات الاشتراك</Link></li>
               <li><Link href="/#community" className="hover:text-primary transition-colors flex items-center gap-1"><Users size={16} /> انضمي لمجتمعنا</Link></li>
               <li><Link href="/#about" className="hover:text-primary transition-colors flex items-center gap-1"><Info size={16} /> عنا</Link></li>
@@ -52,12 +52,12 @@ export function Footer() {
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4">
-              للاستفسارات العامة: <a href="mailto:info@womencommerce.com" className="hover:text-primary">info@womencommerce.com</a>
+              للاستفسارات العامة: <a href="mailto:info@lamsadoha.com" className="hover:text-primary">info@lamsadoha.com</a>
             </p>
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-foreground/70">
-          <p>&copy; {currentYear} نساء كوميرس. جميع الحقوق محفوظة. تمكين المرأة اقتصادياً عبر التجارة.</p>
+          <p>&copy; {currentYear} لمسة ضحى. جميع الحقوق محفوظة. إبداع يلامس حياتك.</p>
         </div>
       </div>
     </footer>

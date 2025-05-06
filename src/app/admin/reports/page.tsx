@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ export default function AdminReportsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            سيقدم هذا القسم تقارير شاملة حول جوانب مختلفة من منصة نساء كوميرس.
+            سيقدم هذا القسم تقارير شاملة حول جوانب مختلفة من منصة لمسة ضحى.
             سيتمكن المسؤولون من إنشاء تقارير حول المبيعات، الإيرادات، التركيبة السكانية للعملاء، أداء البائعين، المنتجات الرائجة، والمزيد.
             ستتوفر خيارات تصفية متقدمة وتصدير.
             الوظائف قيد التطوير وقريباً.
