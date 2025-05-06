@@ -13,7 +13,7 @@ export function HamidMerdjLogo(props: SVGProps<SVGSVGElement>) {
       <style>
         {`
           .logo-text-arabic {
-            font-family: var(--font-noto-kufi), 'Arial', sans-serif;
+            font-family: var(--font-noto-sans-arabic), 'Arial', sans-serif; /* Updated font variable */
             font-size: 28px;
             fill: hsl(var(--primary));
             font-weight: bold;

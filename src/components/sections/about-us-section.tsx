@@ -47,7 +47,7 @@ export function AboutUsSection() {
               width={600}
               height={600}
               className="object-cover w-full h-full"
-              data-ai-hint="baker hands"
+              data-ai-hint="baker dough"
             />
           </div>
         </div>

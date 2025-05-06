@@ -64,7 +64,7 @@ export function ContactSection() {
                     width={800}
                     height={450}
                     className="object-cover w-full h-full"
-                    data-ai-hint="city map street"
+                    data-ai-hint="city map"
                   />
                 </div>
               </CardContent>

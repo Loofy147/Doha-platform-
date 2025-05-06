@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-noto-kufi)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        sans: ["var(--font-noto-sans-arabic)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"], // Updated font variable
       },
   		colors: {
   			background: 'hsl(var(--background))',

@@ -12,7 +12,7 @@ export function HeroSection() {
           alt="Delicious baked goods background"
           layout="fill"
           objectFit="cover"
-          data-ai-hint="warm bakery background"
+          data-ai-hint="warm bakery"
           priority
         />
       </div>
