@@ -1,161 +1,123 @@
-ملخص شامل
-
-هذا الملف يقدم رؤية متكاملة ومُفصلة لتصميم وتطوير منصة تجارة إلكترونية موجهة للمرأة، تشمل الهوية البصرية، تجربة المستخدم، المميزات الأساسية والمتقدمة، إضافة إلى برومبتات ذكاء اصطناعي مُخصصة لكلّ مرحلة ووظيفة في المنصة. تم اعتماد لوحة ألوان وأنماط تصميم مدروسة نفسياً، مع مراعاة التباين والـ60-30-10 rule لتوجيه الانتباه بشكل فعّال. كما تم تضمين استراتيجيات تفاعل مبتكرة لجذب النساء، مثل ورش العمل الافتراضية وبرامج الإرشاد وعناصر اللعب (Gamification).
-
-
----
-
-1. الهوية البصرية (Brand Identity)
-
-1.1 لوحة الألوان (Color Palette)
-
-أساسي (60%): درجات الوردي الدافئ مثل #EAA4C6 تعكس المرح والثقة والجاذبية الأنثوية .
-
-ثانوي (30%): بنفسجي فاتح #BFA2DB يرمز للأناقة والفخامة والابتكار .
-
-نقاط جذب (10%): أصفر دافئ #FFD966 للحث على اتخاذ إجراء وخلق إحساس بالدفء والطاقة الإيجابية .
-
-
-1.2 الطباعة (Typography)
-
-رأسية: خط Sans-serif أنيق (مثل Poppins Bold) للألقاب والعناوين لجذب الانتباه وتوضيح الفئات.
-
-نص عادي: خط Serif ناعم (مثل Merriweather Regular) لسهولة القراءة ولإضفاء طابعٍ راقٍ على المحتوى.
-
-
-1.3 الشعارات والرموز (Logo & Iconography)
-
-الشعار: رمز بسيط يرمز لمجتمع نسائي (مثل شجرة تتفرع إلى نساء)، يستخدم الألوان الأساسية للتمايز.
-
-الأيقونات: تصميم دائري ولين مع خطوط رفيعة؛ مساحات داخلية شفافة لتعزيز الخفة والودّ.
-
-
-
----
-
-2. تجربة المستخدم (UI/UX Design)
-
-2.1 مبادئ التصميم الشامل (Inclusive UX)
-
-حجم الأزرار ومساحات اللمس ≥ 44×44 نقطة، مع مراعاة طول ومجال قبضة اليد النسائية .
-
-تباين نص/خلفية بنسبة ≥ 4.5:1 للوصولية وفق معايير WCAG .
-
-توجيه مرئي عبر صور نساء من خلفيات متنوعة يعززن شعور الانتماء.
-
-
-2.2 هيكل التنقل (Navigation & Flow)
-
-قائمة أساسية ثابتة بأسفل الشاشة تحتوي على: المتجر، إضافة منتج، المجتمع، التنبيهات، الملف الشخصي .
-
-نور إستعراض سريع باللمس الجانبي (Swipe) للزوار لتنقل سلسّ بين المتاجر الشائعة .
-
-
-2.3 تجسيد المسار (User Journey)
-
-1. التسجيل: اختيار الفئة (بائعة/زبونة)، إدخال بيانات أساسية مع تأكيد عبر OTP.
-
-
-2. إنشاء المتجر: برومبت مساعد بالذكاء الاصطناعي يقترح اسم متجر وشعار بناءً على وصف المستخدم.
-
-
-3. إضافة المنتجات: توليد أوتوماتيكي لوصف المنتج بناءً على صيغة برومبت (انظر قسم البرومبتات).
-
-
-4. العرض والترويج: واجهة عرض تفاعلية للخصومات و"قصص المتاجر" المباشرة.
-
-
-
-
----
-
-3. المميزات الأساسية والمتقدمة
-
-3.1 إدارة المتجر والمنتجات
-
-إنشاء فئات متعددة (حلويات، أزياء، تأجير، إعادة بيع) مع قوالب ضبط الأسعار والجودة.
-
-تقويم ذكي للمواعيد (للتأجير) مع إدارة رسوم التأخير تلقائياً.
-
-
-3.2 الدفع والشحن
-
-تكامل مع محفظات محلية وبطاقات دولية وStripe/ PayPal .
-
-خيارات Shippable وPick-up Points مع تتبع مباشر للمستخدم.
-
-
-3.3 التواصل والمجتمع
-
-دردشة فورية مدعومة بذكاء اصطناعي للرد على الأسئلة الشائعة.
-
-منتديات وورش عمل افتراضية داخل التطبيق لإثراء الخبرات.
-
-نظام تقييم ثلاثي الأبعاد: تقييم نجوم، مراجعة نصية، وميدالية “Master Seller” للموثوقية.
-
-
-3.4 تحليلات وذكاء اصطناعي
-
-لوحة تحكم للبائعات تعرض تحليلات المبيعات، والزوار، وأداء العروض الترويجية.
-
-توصيات ذكية للمنتجات (Cross-sell و Upsell) تعتمد على سلوك المستخدم .
-
-
-
----
-
-4. برومبتات الذكاء الاصطناعي (AI Prompts)
-
-4.1 برومبت لإنشاء وصف المنتج
-
-"أنت مساعد ذكاء اصطناعي متخصص في كتابة أوصاف جذابة. أكتب وصفًا لحلويات منزلية بنكهات التفاح والقرفة، يتكون من 3 فقرات، يتضمن نداءً لاتخاذ إجراء واحد."
-
-4.2 برومبت لإنشاء حملة تسويقية
-
-"ما هي أفضل نصوص لرسالة بريدية للترويج لتأجير فستان سهرة أنيق؟ اكتب عنواناً جذاباً، وفقرة تمهيدية، ونص CTA."
-
-4.3 برومبت لدعم العملاء الآلي
-
-"كوني روبوت خدمة عملاء مبسّط. عندما يسأل الزبون عن مواعيد تأجير فستان، أعطِ ثلاثة خيارات للتواريخ المتاحة واستعلم عن تفاصيل المقاس."
-
-4.4 برومبت للتوصيات الشخصية
-
-"اقترح 5 منتجات نسائية منزلية بناءً على شراء مستخدمة قامت بشراء مجموعة عطور منزلية زهريّة اللون."
-
-4.5 برومبت لإنشاء ورش عمل
-
-"اقترح عنوانًا ووصفًا لورشة افتراضية حول تصوير المنتجات بذكاء لتزيد من المبيعات للمتاجر النسائية."
-
-
----
-
-5. الاستراتيجيات الإبداعية للوصول إلى النساء
-
-5.1 محتوى موجه (Content Marketing)
-
-مقالات مدروسة حول ريادة الأعمال المنزلية للمرأة، مع خبراء ونماذج ناجحة.
-
-فيديوهات قصيرة (Reels/TikTok) تعرض خطوة بخطوة إعداد منتج أو تجهيز عرض.
-
-
-5.2 شراكات مؤثرة
-
-التعاون مع مدونات أمهات ومؤثرات في مجال الأزياء والطهي لعمل بث مباشر داخل التطبيق.
-
-
-5.3 عناصر اللعب (Gamification)
-
-منح نقاط ولاء لكل عملية بيع أو تفاعل في المجتمع.
-
-نظام ميداليات وأنظمة ترقية (على سبيل المثال، من بائعة جديدة إلى بائعة متميزة).
-
-
-
----
-
-6. دليل التصميم النهائي (Design Style Guide)
-
-
----
-
-> بهذا الملف المتكامل، تحصل المنصة على بنية تصميمية واضحة، مجموعة برومبتات جاهزة للذكاء الاصطناعي، وخطط تفاعل مبتكرة لتعزيز تجربة المستخدم وجذب المجتمع النسائي عبر وسائل تقنية وتسويقية موثوقة ومؤثرة.
+import type { Config } from "tailwindcss";
+
+export default {
+    darkMode: ["class"],
+    content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ["var(--font-poppins)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        serif: ["var(--font-merriweather)", "Georgia", "serif"],
+      },
+  		colors: {
+  			background: 'hsl(var(--background))',
+  			foreground: 'hsl(var(--foreground))',
+  			card: {
+  				DEFAULT: 'hsl(var(--card))',
+  				foreground: 'hsl(var(--card-foreground))'
+  			},
+  			popover: {
+  				DEFAULT: 'hsl(var(--popover))',
+  				foreground: 'hsl(var(--popover-foreground))'
+  			},
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary))', // Warm Pink #EAA4C6
+  				foreground: 'hsl(var(--primary-foreground))' // White
+  			},
+  			secondary: {
+  				DEFAULT: 'hsl(var(--secondary))', // Light Purple #BFA2DB
+  				foreground: 'hsl(var(--secondary-foreground))'
+  			},
+  			muted: {
+  				DEFAULT: 'hsl(var(--muted))',
+  				foreground: 'hsl(var(--muted-foreground))'
+  			},
+  			accent: { // General accent - Warm Yellow
+  				DEFAULT: 'hsl(var(--accent))', // Warm Yellow #FFD966
+  				foreground: 'hsl(var(--accent-foreground))'
+  			},
+        'accent-pink': { // Specific accent pink
+          DEFAULT: 'hsl(var(--accent-pink))', // Warm Pink #EAA4C6
+          foreground: 'hsl(var(--accent-pink-foreground))'
+        },
+        'accent-purple': { // Specific accent purple
+          DEFAULT: 'hsl(var(--accent-purple))', // Light Purple #BFA2DB (or a brighter variant)
+          foreground: 'hsl(var(--accent-purple-foreground))'
+        },
+        'accent-yellow': { // Specific accent yellow
+          DEFAULT: 'hsl(var(--accent-yellow))', // Warm Yellow #FFD966
+          foreground: 'hsl(var(--accent-yellow-foreground))'
+        },
+  			destructive: {
+  				DEFAULT: 'hsl(var(--destructive))',
+  				foreground: 'hsl(var(--destructive-foreground))'
+  			},
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
+  			chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
+  			}
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		keyframes: {
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		},
+  		animation: {
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
+  		},
+      aspectRatio: {
+        '4/3': '4 / 3',
+        '3/4': '3 / 4',
+        '16/9': '16 / 9',
+        '9/16': '9 / 16',
+        '21/9': '21 / 9',
+        '1/1': '1 / 1',
+        'video': '16 / 9', // Common aspect ratio for video
+        'square': '1 / 1',
+      },
+  	}
+  },
+  plugins: [
+    require("tailwindcss-animate"),
+    require('@tailwindcss/aspect-ratio'),
+  ],
+} satisfies Config;

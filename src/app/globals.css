@@ -1,81 +1,97 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', 'Merriweather', sans-serif;
 }
 
 @layer base {
   :root {
-    --background: 30 50% 96%; /* Light Warm Cream */
-    --foreground: 35 65% 25%; /* Dark Warm Brown */
-    --card: 30 55% 93%; /* Slightly darker cream for cards */
-    --card-foreground: 35 65% 25%;
-    --popover: 30 55% 93%;
-    --popover-foreground: 35 65% 25%;
-    --primary: 30 70% 40%; /* Richer Warm Brown for primary actions */
-    --primary-foreground: 30 40% 98%; /* Very light cream for text on primary */
-    --secondary: 30 45% 88%; /* Lighter warm brown for secondary elements */
-    --secondary-foreground: 35 65% 25%;
-    --muted: 30 45% 90%;
-    --muted-foreground: 35 50% 45%;
-    --accent: 3 89% 38%; /* Classic Red #B80F0A */
-    --accent-foreground: 0 0% 98%; /* White/Very Light Cream for text on accent */
+    --background: 255 100% 100%; /* White */
+    --foreground: 330 40% 25%; /* Dark Purple-Pink for text */
+    --card: 330 60% 97%; /* Very Light Pink for cards */
+    --card-foreground: 330 40% 25%;
+    --popover: 330 60% 97%;
+    --popover-foreground: 330 40% 25%;
+    --primary: 330 65% 60%; /* Warm Pink #EAA4C6 */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 270 50% 85%; /* Light Purple #BFA2DB */
+    --secondary-foreground: 270 40% 25%; /* Dark Purple for text on secondary */
+    --muted: 330 50% 92%; /* Lighter Pink */
+    --muted-foreground: 330 35% 45%; /* Muted Purple-Pink */
+    --accent: 45 100% 70%; /* Warm Yellow #FFD966 - General Accent */
+    --accent-foreground: 30 80% 20%; /* Dark Brown for text on yellow */
+    
+    --accent-pink: 330 65% 60%; /* #EAA4C6 */
+    --accent-pink-foreground: 0 0% 100%;
+    --accent-purple: 270 50% 70%; /* #BFA2DB - slightly brighter for UI elements */
+    --accent-purple-foreground: 0 0% 100%;
+    --accent-yellow: 45 100% 70%; /* #FFD966 */
+    --accent-yellow-foreground: 30 80% 20%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 50% 85%; /* Light warm brown border */
-    --input: 30 50% 90%;
-    --ring: 3 89% 45%; /* Red accent for ring */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 330 40% 88%; /* Light Pinkish Border */
+    --input: 330 50% 95%; /* Very Light Pink for input */
+    --ring: 330 65% 65%; /* Warm Pink for ring */
+    --chart-1: 330 70% 70%; /* Pink shade */
+    --chart-2: 270 60% 75%; /* Purple shade */
+    --chart-3: 45 90% 75%;  /* Yellow shade */
+    --chart-4: 300 65% 70%; /* Magenta shade */
+    --chart-5: 240 60% 75%; /* Blue-Purple shade */
     --radius: 0.5rem;
-    --sidebar-background: 30 40% 94%; /* Warm cream for sidebar */
-    --sidebar-foreground: 35 60% 30%; /* Dark brown for sidebar text */
-    --sidebar-primary: 3 89% 38%; /* Red accent for sidebar primary elements */
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 30 50% 88%; /* Lighter warm cream for sidebar accent */
-    --sidebar-accent-foreground: 35 60% 30%;
-    --sidebar-border: 30 50% 80%;
-    --sidebar-ring: 3 89% 45%;
+    --sidebar-background: 330 55% 96%; /* Light warm pink for sidebar */
+    --sidebar-foreground: 330 40% 30%; /* Dark purple-pink for sidebar text */
+    --sidebar-primary: 270 50% 70%; /* Light purple for sidebar primary elements */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 100% 75%; /* Warm yellow for sidebar accent */
+    --sidebar-accent-foreground: 30 80% 20%;
+    --sidebar-border: 330 40% 85%;
+    --sidebar-ring: 330 65% 65%;
   }
+
   .dark {
-    --background: 35 25% 10%; /* Dark Warm Brown */
-    --foreground: 30 60% 92%; /* Light Gold/Cream */
-    --card: 35 25% 12%;
-    --card-foreground: 30 60% 92%;
-    --popover: 35 25% 12%;
-    --popover-foreground: 30 60% 92%;
-    --primary: 3 89% 45%; /* Red accent as primary */
-    --primary-foreground: 30 50% 98%;
-    --secondary: 35 25% 20%;
-    --secondary-foreground: 30 60% 92%;
-    --muted: 35 25% 20%;
-    --muted-foreground: 30 50% 65%;
-    --accent: 3 89% 50%; /* Slightly brighter red for dark mode accent */
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 330 20% 10%; /* Dark Purple-Pink */
+    --foreground: 330 60% 92%; /* Light Pink/Cream */
+    --card: 330 20% 12%;
+    --card-foreground: 330 60% 92%;
+    --popover: 330 20% 12%;
+    --popover-foreground: 330 60% 92%;
+    --primary: 330 60% 65%; /* Warm Pink #EAA4C6 - slightly adjusted for dark */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 40% 30%; /* Darker Purple */
+    --secondary-foreground: 270 60% 90%; /* Light Purple for text */
+    --muted: 330 20% 20%;
+    --muted-foreground: 330 50% 65%;
+    --accent: 45 90% 70%; /* Warm Yellow #FFD966 */
+    --accent-foreground: 30 80% 15%; /* Darker Brown for text on yellow */
+
+    --accent-pink: 330 60% 65%; /* #EAA4C6 */
+    --accent-pink-foreground: 0 0% 100%;
+    --accent-purple: 270 45% 65%; /* #BFA2DB - slightly adjusted */
+    --accent-purple-foreground: 0 0% 100%;
+    --accent-yellow: 45 90% 70%; /* #FFD966 */
+    --accent-yellow-foreground: 30 80% 15%;
+    
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 35 25% 25%;
-    --input: 35 25% 25%;
-    --ring: 3 89% 55%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 35 20% 15%; /* Darker warm brown for sidebar */
-    --sidebar-foreground: 30 55% 90%; /* Light gold/cream for sidebar text */
-    --sidebar-primary: 3 89% 45%; /* Red accent for sidebar primary */
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 35 20% 22%; /* Slightly lighter dark brown for accent */
-    --sidebar-accent-foreground: 30 55% 90%;
-    --sidebar-border: 35 20% 25%;
-    --sidebar-ring: 3 89% 55%;
+    --border: 330 20% 25%;
+    --input: 330 20% 25%;
+    --ring: 330 60% 70%; /* Warm Pink for ring */
+    --chart-1: 330 60% 60%;
+    --chart-2: 270 50% 65%;
+    --chart-3: 45 80% 65%;
+    --chart-4: 300 55% 60%;
+    --chart-5: 240 50% 65%;
+    --sidebar-background: 330 15% 15%; /* Darker purple-pink for sidebar */
+    --sidebar-foreground: 330 55% 90%; /* Light pink/cream for sidebar text */
+    --sidebar-primary: 270 45% 65%; /* Light purple for sidebar primary */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 90% 70%; /* Warm yellow for sidebar accent */
+    --sidebar-accent-foreground: 30 80% 15%;
+    --sidebar-border: 330 15% 25%;
+    --sidebar-ring: 330 60% 70%;
   }
 }
 
@@ -87,4 +103,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-

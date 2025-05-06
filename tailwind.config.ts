@@ -10,7 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-noto-sans-arabic)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"], // Updated font variable
+        sans: ["var(--font-poppins)", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        serif: ["var(--font-merriweather)", "Georgia", "serif"],
       },
   		colors: {
   			background: 'hsl(var(--background))',
@@ -24,21 +25,33 @@ export default {
   				foreground: 'hsl(var(--popover-foreground))'
   			},
   			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
+  				DEFAULT: 'hsl(var(--primary))', // Warm Pink #EAA4C6
+  				foreground: 'hsl(var(--primary-foreground))' // White
   			},
   			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
+  				DEFAULT: 'hsl(var(--secondary))', // Light Purple #BFA2DB
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
   			muted: {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'
   			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
+  			accent: { // General accent - Warm Yellow
+  				DEFAULT: 'hsl(var(--accent))', // Warm Yellow #FFD966
   				foreground: 'hsl(var(--accent-foreground))'
   			},
+        'accent-pink': { // Specific accent pink
+          DEFAULT: 'hsl(var(--accent-pink))', // Warm Pink #EAA4C6
+          foreground: 'hsl(var(--accent-pink-foreground))'
+        },
+        'accent-purple': { // Specific accent purple
+          DEFAULT: 'hsl(var(--accent-purple))', // Light Purple #BFA2DB (or a brighter variant)
+          foreground: 'hsl(var(--accent-purple-foreground))'
+        },
+        'accent-yellow': { // Specific accent yellow
+          DEFAULT: 'hsl(var(--accent-yellow))', // Warm Yellow #FFD966
+          foreground: 'hsl(var(--accent-yellow-foreground))'
+        },
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
@@ -98,6 +111,8 @@ export default {
         '9/16': '9 / 16',
         '21/9': '21 / 9',
         '1/1': '1 / 1',
+        'video': '16 / 9', // Common aspect ratio for video
+        'square': '1 / 1',
       },
   	}
   },
