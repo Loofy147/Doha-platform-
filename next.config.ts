@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -17,6 +18,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // Allow serving local images for placeholders if needed during development
+    // domains: process.env.NODE_ENV === 'development' ? ['localhost'] : [],
   },
 };
 

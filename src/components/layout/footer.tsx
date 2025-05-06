@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
 import { HamidMerdjLogo } from '@/components/icons/logo';
@@ -23,9 +24,11 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-primary">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#products" className="hover:text-primary transition-colors">Our Products</Link></li>
-              <li><Link href="#about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link href="#contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link href="/#products" className="hover:text-primary transition-colors">Our Products</Link></li>
+              <li><Link href="/order" className="hover:text-primary transition-colors">Order Online</Link></li>
+              <li><Link href="/subscriptions" className="hover:text-primary transition-colors">Subscriptions</Link></li>
+              <li><Link href="/#about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link href="/#contact" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </div>
 
