@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 
 const notoKufi = Noto_Kufi({
+  weight: ['400', '700'],
   subsets: ['arabic', 'latin'],
   variable: '--font-noto-kufi',
   display: 'swap',
@@ -34,3 +35,4 @@ export default function RootLayout({
     </html>
   );
 }
+
