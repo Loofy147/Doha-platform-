@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 const notoKufi = Noto_Kufi({
   weight: ['400', '700'],
+  subsets: ['arabic'], // Specify the subset to load
   variable: '--font-noto-kufi',
   display: 'swap',
 });
@@ -22,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr">
-      <body className={`${notoKufi.variable} font-sans antialiased`}>
+    <html lang="en" dir="ltr" className={notoKufi.variable}>
+      <body className={`font-sans antialiased`}>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-grow">{children}</main>
@@ -34,5 +35,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
