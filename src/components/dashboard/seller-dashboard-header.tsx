@@ -19,14 +19,6 @@ import {
   CreditCard,
   Gift
 } from 'lucide-react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -89,7 +81,7 @@ export function SellerDashboardHeader() {
 
       return (
         <React.Fragment key={currentPath}>
-          <BreadcrumbSeparator />
+          {/*Removed BreadcrumbSeparator />
           <BreadcrumbItem>
             {isLast ? (
               <BreadcrumbPage className="text-foreground font-medium">{label}</BreadcrumbPage>
@@ -98,7 +90,7 @@ export function SellerDashboardHeader() {
                 <Link href={navItem?.href || currentPath} className="text-muted-foreground hover:text-primary">{label}</Link>
               </BreadcrumbLink>
             )}
-          </BreadcrumbItem>
+          </BreadcrumbItem>*/}
         </React.Fragment>
       );
     });
@@ -137,7 +129,7 @@ export function SellerDashboardHeader() {
           </nav>
         </SheetContent>
       </Sheet>
-      <Breadcrumb className="hidden md:flex">
+      {/*Removed Breadcrumb className="hidden md:flex">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
@@ -146,7 +138,7 @@ export function SellerDashboardHeader() {
           </BreadcrumbItem>
           {getBreadcrumbItems()}
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <div className="relative ml-auto flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> {/* Adjust to right-2.5 for RTL */}
         <Input
@@ -248,4 +240,3 @@ export function SellerDashboardHeader() {
     </header>
   );
 }
-
