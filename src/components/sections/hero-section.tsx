@@ -1,7 +1,9 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Sparkles, Store, ArrowLeft } from 'lucide-react'; 
+import { ShoppingBag, Sparkles, ArrowLeft } from 'lucide-react'; 
 import { motion } from 'framer-motion';
 
 const fadeInUp = {
