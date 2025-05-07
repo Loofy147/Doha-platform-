@@ -1,8 +1,8 @@
-// src/components/sections/bakery-specials-section.tsx
+// src/components/store/sections/bakery-specials-section.tsx
 'use client';
 
 import React from 'react';
-import type { Product, StoreData } from '@/lib/data/mock-store-data'; // Updated path
+import type { Product, StoreData } from '@/lib/data/mock-store-data'; 
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreSection from '@/components/store/store-section';
 import { CakeSlice } from 'lucide-react';

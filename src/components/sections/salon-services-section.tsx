@@ -1,21 +1,20 @@
-// src/components/sections/salon-services-section.tsx
+// src/components/store/sections/salon-services-section.tsx
 'use client';
 
 import React from 'react';
-import type { StoreData, Service as GlobalService } from '@/lib/data/mock-store-data'; // Updated path
+import type { StoreData, Service as GlobalService } from '@/lib/data/mock-store-data'; 
 import StoreSection from '@/components/store/store-section';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarPlus, Sparkle } from 'lucide-react'; // Changed from Scissors
+import { CalendarPlus, Sparkle } from 'lucide-react'; 
 
-// Using GlobalService as the base, but this component might only need a subset for its display logic
 interface Service extends Pick<GlobalService, 'name' | 'price' | 'duration' | 'description' | 'id'> {}
 
 
 interface SalonServicesSectionProps {
   services: Service[];
   storeData: StoreData | null;
-  onBookService: (service: Service) => void; // Changed to pass the whole service object
+  onBookService: (service: Service) => void; 
 }
 
 const SalonServicesSection: React.FC<SalonServicesSectionProps> = ({ services, storeData, onBookService }) => {

@@ -22,7 +22,7 @@ import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock
 import { useToast } from '@/hooks/use-toast';
 import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList } from '@/lib/data/mock-seller-data'; // Corrected import path
+import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList } from '@/lib/data/mock-seller-data'; 
 import Image from 'next/image';
 
 const productCategories = [
@@ -96,7 +96,7 @@ export default function EditProductPage() {
           setGeneratedDescription(fetchedProduct.description);
           setProductStory(fetchedProduct.story);
           
-          setPrice(fetchedProduct.price || ''); // This is for sale type
+          setPrice(fetchedProduct.price || ''); 
           setStock(fetchedProduct.stock || '');
           setDiscountPercentage(fetchedProduct.discountPercentage || '');
           setIsTaxable(fetchedProduct.isTaxable || false);
@@ -107,14 +107,14 @@ export default function EditProductPage() {
           setRentalAvailability(fetchedProduct.rentalAvailability || '');
 
           setServicePriceType(fetchedProduct.servicePriceType || 'ثابت');
-          setServicePriceValue(fetchedProduct.servicePrice || ''); // Use servicePriceValue here
+          setServicePriceValue(fetchedProduct.servicePrice || ''); 
           setServiceDuration(fetchedProduct.serviceDuration || '');
           setServiceLocation(fetchedProduct.serviceLocation || '');
           
           if (fetchedProduct.images && fetchedProduct.images.length > 0) {
             setCurrentImages(fetchedProduct.images);
           } else if (fetchedProduct.imageSrc) {
-             setCurrentImages([fetchedProduct.imageSrc, 'https://picsum.photos/seed/extraimg1/100/100', 'https://picsum.photos/seed/extraimg2/100/100'].slice(0,5)); // Add placeholders if only imageSrc exists
+             setCurrentImages([fetchedProduct.imageSrc, 'https://picsum.photos/seed/extraimg1/100/100', 'https://picsum.photos/seed/extraimg2/100/100'].slice(0,5)); 
           }
 
 
@@ -184,7 +184,7 @@ export default function EditProductPage() {
             detailsForAI: productDetailsForAI,
             description: generatedDescription,
             story: productStory,
-            price: productType === 'بيع' ? price : '', // Store string price for 'بيع'
+            price: productType === 'بيع' ? price : '', 
             stock: productType === 'بيع' ? stock : undefined,
             discountPercentage: productType === 'بيع' ? discountPercentage : undefined,
             isTaxable: productType === 'بيع' ? isTaxable : undefined,
@@ -193,10 +193,10 @@ export default function EditProductPage() {
             rentalDeposit: productType === 'إيجار' ? rentalDeposit : undefined,
             rentalAvailability: productType === 'إيجار' ? rentalAvailability : undefined,
             servicePriceType: productType === 'خدمة' ? servicePriceType : undefined,
-            servicePrice: productType === 'خدمة' ? servicePriceValue : undefined, // Store numeric service price here
+            servicePrice: productType === 'خدمة' ? servicePriceValue : undefined, 
             serviceDuration: productType === 'خدمة' ? serviceDuration : undefined,
             serviceLocation: productType === 'خدمة' ? serviceLocation : undefined,
-            images: currentImages, // Update images
+            images: currentImages, 
         };
         allSellerProductsList[productIndex] = updatedProduct;
     }

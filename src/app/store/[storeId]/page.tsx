@@ -27,7 +27,7 @@ import {
   Share2,
   Mail,
   Sparkles,
-  Tag,
+  TagIcon as LucideTagIcon, // Renamed to avoid conflict
   ThumbsUp,
   Eye,
   ChevronLeft,
@@ -42,7 +42,6 @@ import {
   AlertCircle,
   Store as StoreIconLucide, 
   Clock,
-  TagIcon
 } from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {useToast} from '@/hooks/use-toast';
@@ -77,11 +76,12 @@ const ServiceProviderShowcaseSection = React.lazy(() => import('@/components/sto
 
 import {
   getStoreDataById,
-  type StoreData,
-  type Product,
-  type Service,
-  type ProductType,
-  type StoreType,
+  StoreData,
+  Product,
+  Service,
+  ProductType,
+  StoreType,
+  mockStoreDetails // Assuming mockStoreDetails is also exported if needed for fallbacks or testing here
 } from '@/lib/data/mock-store-data';
 
 
@@ -96,7 +96,7 @@ const StorePage = () => {
   const params = useParams();
   const storeId = params.storeId as string;
   const [storeData, setStoreData] = useState<StoreData | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
+  const [isLoading, setIsLoading] = useState(true); 
   const [isMounted, setIsMounted] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
@@ -106,12 +106,11 @@ const StorePage = () => {
     setIsMounted(true);
     if (storeId) {
       setIsLoading(true);
-      // Simulate API call
       setTimeout(() => {
         const fetchedStoreData = getStoreDataById(storeId);
         setStoreData(fetchedStoreData);
         setIsLoading(false);
-      }, 500); // Simulate network delay
+      }, 500); 
     } else {
       setIsLoading(false);
     }
@@ -171,9 +170,8 @@ const StorePage = () => {
       title: 'جاري التوجيه...',
       description: `سيتم عرض كل "${collection.name}". (قيد التطوير)`,
     });
-    // Example: router.push(`/store/${storeId}/collection/${collection.type}/${collection.name.toLowerCase().replace(/\s+/g, '-')}`);
   };
-
+  
   const getStoreTypeSpecificIcon = (type?: StoreType) => {
     switch (type) {
         case 'bakery': return CookingPot;
@@ -181,18 +179,17 @@ const StorePage = () => {
         case 'salon': return Scissors;
         case 'crafts': return Palette;
         case 'rental': return CalendarDays; 
-        case 'service_provider': return Handshake;
-        default: return StoreIconLucide; // Use the imported StoreIconLucide
+        case 'service_provider': return Handshake; // Ensure Handshake is imported from lucide-react
+        default: return StoreIconLucide; 
     }
   };
   const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData?.storeType);
 
 
-  if (!isMounted || isLoading) { // Check isLoading as well
+  if (!isMounted || isLoading) { 
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="animate-pulse">
-          {/* Header Skeleton */}
           <Skeleton className="h-64 w-full rounded-lg mb-8" />
           <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-20 relative z-10">
             <Skeleton className="h-32 w-32 rounded-full border-4 border-muted" />
@@ -209,11 +206,7 @@ const StorePage = () => {
                 <Skeleton className="h-10 w-28 rounded-md" />
             </div>
           </div>
-
-          {/* Story Section Skeleton */}
           <Skeleton className="h-40 w-full rounded-lg mb-10" />
-          
-          {/* Products Section Skeleton */}
           <div className="mb-10">
             <Skeleton className="h-10 w-1/3 mb-6" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -233,7 +226,6 @@ const StorePage = () => {
               ))}
             </div>
           </div>
-          {/* Contact Section Skeleton */}
            <Skeleton className="h-52 w-full rounded-lg mb-10" />
         </div>
       </div>
@@ -255,7 +247,6 @@ const StorePage = () => {
     );
   }
 
-
   return (
     <div className={cn(
         "min-h-screen",
@@ -265,7 +256,6 @@ const StorePage = () => {
         storeThemeStyle === 'modern-minimal' && "bg-gray-100 text-gray-800",
         storeThemeStyle === 'dark' && "bg-gray-900 text-gray-200"
     )}>
-      {/* Store Header: Banner, Logo, Name, Slogan */}
       <header className="relative">
         <div className="h-48 md:h-64 lg:h-80 w-full overflow-hidden">
           <Carousel 
@@ -344,15 +334,15 @@ const StorePage = () => {
       </header>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {storeData.story && (
-          <StoreSection id="about-store" title="قصة متجرنا" icon={Rocket} accentColor={storeAccentColor} className="mb-10" description="تعرفي على الإلهام والشغف وراء كل قطعة نقدمها.">
-             <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
-                <CardContent className="p-6 text-md leading-relaxed">
-                    {storeData.story}
-                </CardContent>
-            </Card>
-          </StoreSection>
-        )}
+      {storeData.story && (
+        <StoreSection id="about-store" title="قصة متجرنا" icon={Rocket} accentColor={storeAccentColor} className="mb-10" description="تعرفي على الإلهام والشغف وراء كل قطعة نقدمها.">
+            <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
+            <CardContent className="p-6 text-md leading-relaxed">
+                {storeData.story}
+            </CardContent>
+        </Card>
+        </StoreSection>
+      )}
 
         {storeData.specialAnnouncements && storeData.specialAnnouncements.length > 0 && (
           <StoreSection id="announcements" title="إعلانات خاصة" icon={Sparkles} accentColor={storeAccentColor} className="mb-10">
@@ -387,7 +377,7 @@ const StorePage = () => {
             <SalonServicesSection
                 services={storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id))}
                 storeData={storeData}
-                onBookService={(service) => handleViewItemDetails(service as Service)} // Ensure correct type
+                onBookService={(service) => handleViewItemDetails(service as Service)} 
             />
             )}
             {storeData.storeType === 'fashion' && storeData.products && (
@@ -422,7 +412,6 @@ const StorePage = () => {
         </Suspense>
 
 
-        {/* Featured Collections / Product Types Section */}
         <StoreSection id="collections" title="تصفحي إبداعاتنا" icon={ShoppingBag} accentColor={storeAccentColor} className="my-10" description="مجموعات متنوعة تلبي كل أذواقك واحتياجاتك.">
           <div className="space-y-10">
             {featuredCollections.map((collection) => (
@@ -432,7 +421,7 @@ const StorePage = () => {
                   {collection.name}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {collection.items.slice(0, 4).map((item) => ( // Show up to 4 items initially
+                  {collection.items.slice(0, 4).map((item) => ( 
                     item.type === 'خدمة' ?
                     <StoreServiceCard
                       key={item.id}
@@ -471,7 +460,6 @@ const StorePage = () => {
           </div>
         </StoreSection>
 
-        {/* Store Contact & Info */}
         <StoreSection id="contact-store" title="تواصلي معنا" icon={MessageSquare} accentColor={storeAccentColor} className="my-10" description="نحن هنا للإجابة على جميع استفساراتك ومساعدتك.">
           <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
             <CardContent className="p-6 grid md:grid-cols-2 gap-x-8 gap-y-6">
@@ -485,10 +473,10 @@ const StorePage = () => {
                 <div>
                   <h4 className="font-semibold text-lg mb-2" style={{color: storeAccentColor}}>تابعينا على:</h4>
                   <div className="flex flex-wrap gap-x-4 gap-y-2">
-                    {storeData.socialMedia.instagram && <Link href={`https://instagram.com/${storeData.socialMedia.instagram}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><TagIcon size={14}/> انستغرام</Link>}
+                    {storeData.socialMedia.instagram && <Link href={`https://instagram.com/${storeData.socialMedia.instagram}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> انستغرام</Link>}
                     {storeData.socialMedia.facebook && <Link href={`https://facebook.com/${storeData.socialMedia.facebook}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><ThumbsUp size={14}/> فيسبوك</Link>}
-                    {storeData.socialMedia.tiktok && <Link href={`https://tiktok.com/@${storeData.socialMedia.tiktok}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><TagIcon size={14}/> تيك توك</Link>}
-                    {storeData.socialMedia.snapchat && <Link href={`https://snapchat.com/add/${storeData.socialMedia.snapchat}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><TagIcon size={14}/> سناب شات</Link>}
+                    {storeData.socialMedia.tiktok && <Link href={`https://tiktok.com/@${storeData.socialMedia.tiktok}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> تيك توك</Link>}
+                    {storeData.socialMedia.snapchat && <Link href={`https://snapchat.com/add/${storeData.socialMedia.snapchat}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> سناب شات</Link>}
                   </div>
                 </div>
               )}
@@ -504,7 +492,6 @@ const StorePage = () => {
           </Card>
         </StoreSection>
 
-         {/* Store Policies */}
         {storeData.policies && (
             <StoreSection id="policies-store" title="سياسات المتجر" icon={Info} accentColor={storeAccentColor} className="my-10" description="تعرفي على شروطنا لضمان تجربة تسوق مريحة وآمنة.">
             <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
@@ -516,11 +503,8 @@ const StorePage = () => {
             </Card>
             </StoreSection>
         )}
-
-
       </main>
 
-      {/* Item Details Modal */}
       {selectedItem && (
         <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
           <DialogContent className={cn(
@@ -548,7 +532,7 @@ const StorePage = () => {
                                 src={imgSrc}
                                 alt={`${selectedItem.name} - صورة ${index + 1}`}
                                 fill
-                                className="object-contain" // Changed to contain to show full image
+                                className="object-contain" 
                                 data-ai-hint={selectedItem.dataAiHint}
                             />
                             </CarouselItem>
@@ -593,8 +577,6 @@ const StorePage = () => {
                     )}
                     
                     <p className="text-3xl font-bold my-4" style={{color: storeAccentColor}}>{selectedItem.price}</p>
-                    
-                    {/* TODO: Add quantity selector, size/color options if applicable for 'Product' type */}
                 </div>
             </div>
 

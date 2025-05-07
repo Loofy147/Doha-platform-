@@ -9,14 +9,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Settings, Store, Palette, FileText, ShieldCheck, Save, UploadCloud, Info, LinkIcon, Eye, MessageSquare, Percent, Truck, Repeat, Users, DollarSign, Briefcase } from 'lucide-react'; // Removed CalendarClock, Sparkles
+import { Settings, Store, Palette, FileText, ShieldCheck, Save, UploadCloud, Info, Link as LinkIconLucide, Eye, MessageSquare, Percent, Truck, Repeat, Users, Briefcase, Star, CalendarClock, DollarSign as DollarSignIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { StoreType } from '@/app/store/[storeId]/page'; // Import StoreType
+import type { StoreType } from '@/lib/data/mock-store-data'; 
 
-const platformCategories = [ // General categories for the platform, not store-specific
+const platformCategories = [ 
   "أزياء وإكسسوارات",
   "مستلزمات منزلية وديكور",
   "جمال وعناية شخصية",
@@ -28,7 +28,6 @@ const platformCategories = [ // General categories for the platform, not store-s
   "أخرى - حددي بنفسك",
 ];
 
-// Default store type, in a real app, this would be fetched or set during store creation
 const initialStoreType: StoreType = 'general'; 
 
 export default function SellerStoreSettingsPage() {
@@ -37,13 +36,12 @@ export default function SellerStoreSettingsPage() {
 
   useEffect(() => {
     setIsClient(true);
-    // Potentially fetch store type here if it can change or is stored per user
   }, []);
 
   const [storeData, setStoreData] = useState({
     storeName: "متجر لمسات ضحى النموذجي",
     storeSlug: "lamsat-doha-creations",
-    storePlatformCategory: "حرف يدوية إبداعية", // Category on the main platform
+    storePlatformCategory: "حرف يدوية إبداعية", 
     storeSlogan: "حيث يلتقي الإبداع بالأصالة",
     storeStory: "بدأت رحلتي بشغف صغير في تحويل المواد البسيطة إلى قطع فنية فريدة. كل قطعة في متجري تحمل جزءًا من قلبي وقصتي. أهدف إلى إدخال البهجة والجمال إلى منازلكم من خلال إبداعاتي.",
     contactEmail: "contact@lamsatdoha.com",
@@ -52,6 +50,7 @@ export default function SellerStoreSettingsPage() {
     facebookPage: "LamsaDohaPage",
     returnPolicy: "يمكن إرجاع المنتجات خلال 7 أيام من الاستلام بحالتها الأصلية. المنتجات المخصصة غير قابلة للإرجاع.",
     shippingPolicy: "الشحن خلال 3-5 أيام عمل داخل المدينة. تكلفة الشحن تعتمد على المنطقة.",
+    rentalTerms: "مدة الإيجار الأساسية 3 أيام. يرجى إعادة المنتج نظيفًا وفي حالته الأصلية. مبلغ تأمين قد يُطلب لبعض المنتجات.",
     customerServiceInfo: "للاستفسارات، يرجى التواصل عبر البريد الإلكتروني support@lamsatdoha.com أو عبر رسائل المنصة.",
     enableCustomerReviews: true,
     showStockLevels: false,
@@ -60,7 +59,6 @@ export default function SellerStoreSettingsPage() {
     defaultCommissionRate: 12, 
   });
   
-  // This state now refers to the chosen template, not managed here directly
   const [currentStoreType, setCurrentStoreType] = useState<StoreType>(initialStoreType);
 
 
@@ -141,7 +139,6 @@ export default function SellerStoreSettingsPage() {
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-10">
-        {/* Basic Store Info */}
         <Card id="basic-info" className="shadow-xl transition-all hover:shadow-2xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl text-primary flex items-center"><Store className="ml-2 text-accent-purple" /> معلومات المتجر الأساسية</CardTitle>
@@ -181,7 +178,6 @@ export default function SellerStoreSettingsPage() {
           </CardContent>
         </Card>
         
-        {/* Contact and Social Media */}
         <Card id="contact-social" className="shadow-xl transition-all hover:shadow-2xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl text-primary flex items-center"><MessageSquare className="ml-2 text-accent-yellow" /> معلومات التواصل وحسابات التواصل الاجتماعي</CardTitle>
@@ -216,13 +212,12 @@ export default function SellerStoreSettingsPage() {
         </Card>
 
 
-        {/* Store Policies */}
         <Card id="policies" className="shadow-xl transition-all hover:shadow-2xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl text-primary flex items-center"><FileText className="ml-2 text-accent-pink" /> سياسات المتجر وشروطه</CardTitle>
             <CardDescription>حددي سياسات واضحة لبناء الثقة مع عملائكِ وتجنب أي سوء فهم.</CardDescription>
           </CardHeader>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="returnPolicy" className="flex items-center gap-1"><Repeat size={16} className="text-muted-foreground"/>سياسة الإرجاع والاستبدال</Label>
               <Textarea id="returnPolicy" name="returnPolicy" value={storeData.returnPolicy} onChange={handleInputChange} placeholder="وضحي شروط الإرجاع، المدة المسموحة، وحالات الاستثناء..." rows={4} className="mt-1"/>
@@ -231,14 +226,17 @@ export default function SellerStoreSettingsPage() {
               <Label htmlFor="shippingPolicy" className="flex items-center gap-1"><Truck size={16} className="text-muted-foreground"/>سياسة الشحن والتوصيل</Label>
               <Textarea id="shippingPolicy" name="shippingPolicy" value={storeData.shippingPolicy} onChange={handleInputChange} placeholder="تكاليف الشحن، المناطق المغطاة، مدة التوصيل المتوقعة..." rows={4} className="mt-1"/>
             </div>
-            <div>
+             <div className="md:col-span-2">
+              <Label htmlFor="rentalTerms" className="flex items-center gap-1"><CalendarClock size={16} className="text-muted-foreground"/>شروط تأجير المنتجات (إن وجدت)</Label>
+              <Textarea id="rentalTerms" name="rentalTerms" value={storeData.rentalTerms} onChange={handleInputChange} placeholder="مدة الإيجار، مبلغ التأمين، مسؤولية التلف، إجراءات الاستلام والتسليم..." rows={4} className="mt-1"/>
+            </div>
+            <div className="md:col-span-2">
               <Label htmlFor="customerServiceInfo" className="flex items-center gap-1"><MessageSquare size={16} className="text-muted-foreground"/>معلومات خدمة العملاء</Label>
               <Textarea id="customerServiceInfo" name="customerServiceInfo" value={storeData.customerServiceInfo} onChange={handleInputChange} placeholder="كيف يمكن للعملاء التواصل معك للاستفسارات والدعم؟" rows={3} className="mt-1"/>
             </div>
           </CardContent>
         </Card>
 
-        {/* Advanced Settings */}
         <Card id="advanced" className="shadow-xl transition-all hover:shadow-2xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl text-primary flex items-center"><ShieldCheck className="ml-2 text-green-500" /> إعدادات إضافية وتفضيلات</CardTitle>
@@ -278,7 +276,7 @@ export default function SellerStoreSettingsPage() {
             <Separator />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <Label htmlFor="baseCurrency" className="flex items-center gap-1"><DollarSign size={16} className="text-muted-foreground"/>العملة الأساسية للمتجر</Label>
+                    <Label htmlFor="baseCurrency" className="flex items-center gap-1"><DollarSignIcon size={16} className="text-muted-foreground"/>العملة الأساسية للمتجر</Label>
                     <Select name="baseCurrency" value={storeData.baseCurrency} onValueChange={(value) => handleSelectChange('baseCurrency', value)}>
                         <SelectTrigger id="baseCurrency" className="mt-1"><SelectValue /></SelectTrigger>
                         <SelectContent>

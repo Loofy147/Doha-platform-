@@ -32,9 +32,9 @@ interface SellerProductSummary {
   name: string;
   category: string;
   priceDisplay: string;
-  type: DetailedProductType;
+  type: DetailedProductType; // This should be ProductType from mock-seller-data
   stock?: number;
-  status: DetailedProductStatus;
+  status: DetailedProductStatus; // This should be SellerProductStatus from mock-seller-data
   imageSrc: string;
   dataAiHint: string;
   dateAdded: string;

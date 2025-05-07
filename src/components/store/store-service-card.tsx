@@ -2,13 +2,13 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link'; // Added Link import
+import Link from 'next/link'; 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarPlus, Eye, Heart, Clock, MapPin, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Service } from '@/lib/data/mock-store-data'; // Updated path
+import type { Service } from '@/lib/data/mock-store-data'; 
 import { cn } from '@/lib/utils';
 
 interface StoreServiceCardProps {
