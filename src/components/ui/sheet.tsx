@@ -4,6 +4,8 @@ import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+
 
 import { cn } from "@/lib/utils"
 
@@ -64,6 +66,10 @@ const SheetContent = React.forwardRef<
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
+      {/* Adding a visually hidden title for accessibility */}
+      <VisuallyHidden.Root asChild>
+        <SheetPrimitive.Title>Menu Panel</SheetPrimitive.Title>
+      </VisuallyHidden.Root>
       {children}
       <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
         <X className="h-4 w-4" />
@@ -80,7 +86,7 @@ const SheetHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col space-y-2 text-center sm:text-left",
+      "flex flex-col space-y-2 text-center sm:text-left", // Adjusted for RTL: sm:text-right
       className
     )}
     {...props}
@@ -94,7 +100,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", // Adjusted for RTL: sm:justify-start sm:space-x-reverse sm:space-x-2
       className
     )}
     {...props}

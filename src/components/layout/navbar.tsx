@@ -12,23 +12,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon } from 'lucide-react';
+import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo'; 
 
 const navItems = [
   { label: 'الرئيسية', href: '/', icon: <HomeIcon size={16} /> },
   { label: 'المنتجات والخدمات', href: '/products', icon: <ShoppingBag size={16} /> },
-  { label: 'بيعي معنا', href: '/sell-with-us', icon: <Store size={16} /> },
-  { label: 'المجتمع', href: '/#community', icon: <Users size={16} /> },
-  { label: 'الاشتراكات', href: '/subscriptions', icon: <Gift size={16} /> },
-  { label: 'المدونة', href: '/blog', icon: <FileText size={16} /> },
-  { label: 'عنا', href: '/#about', icon: <Info size={16} /> },
-  { label: 'اتصلي بنا', href: '/#contact', icon: <MessageSquare size={16} /> },
+  { label: 'انضمي كمبدعة', href: '/sell-with-us', icon: <Store size={16} /> },
+  { label: 'باقات الاشتراك', href: '/subscriptions', icon: <Gift size={16} /> },
+  { label: 'مدونة لمسة ضحى', href: '/blog', icon: <FileText size={16} /> },
+  { label: 'عن لمسة ضحى', href: '/#about', icon: <Info size={16} /> },
+  { label: 'تواصل معنا', href: '/#contact', icon: <MessageSquare size={16} /> },
 ];
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isLoggedIn = true; // Simulate user being logged in
+  const isSeller = true; // Simulate user being a seller
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -51,6 +51,14 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           {isLoggedIn ? (
             <>
+              {isSeller && (
+                <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
+                  <Link href="/dashboard" className="flex items-center">
+                    <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" />
+                    لوحة تحكم متجري
+                  </Link>
+                </Button>
+              )}
               <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
                 <Link href="/profile" className="flex items-center">
                   <UserCircle size={18} className="ml-1.5" />
@@ -81,14 +89,14 @@ export function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background">
-                <SheetHeader>
+                <SheetHeader className="p-4 border-b">
                   <SheetTitle>
-                     <Link href="/" className="mb-6 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                        <WomenCommerceLogo className="h-12 w-auto" />
                      </Link>
                   </SheetTitle>
                 </SheetHeader>
-                <div className="p-6 pt-2">
+                <div className="p-4 pt-2">
                   <nav className="flex flex-col gap-2">
                     {navItems.map((item) => (
                       <Button
@@ -107,6 +115,14 @@ export function Navbar() {
                      <hr className="my-3"/>
                      {isLoggedIn ? (
                        <>
+                          {isSeller && (
+                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
+                                <Link href="/dashboard" className="flex items-center">
+                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" />
+                                  لوحة تحكم متجري
+                                </Link>
+                            </Button>
+                          )}
                           <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
                            <Link href="/profile" className="flex items-center">
                               <UserCircle size={18} className="ml-2.5" />
