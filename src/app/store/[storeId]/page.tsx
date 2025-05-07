@@ -43,7 +43,9 @@ import {
   Scissors,
   Shirt,
   AlertCircle,
-  Store as StoreIcon, // Renamed to avoid conflict with StorePage component
+  Store as StoreIconLucide, 
+  Clock,
+  TagIcon
 } from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {useToast} from '@/hooks/use-toast';
@@ -65,6 +67,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import StoreProductCard from '@/components/store/store-product-card';
+import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
 import BakerySpecialsSection from '@/components/store/sections/bakery-specials-section';
 import SalonServicesSection from '@/components/store/sections/salon-services-section';
@@ -73,14 +76,16 @@ import {
   mockStoreDetails,
   type StoreData,
   type Product,
+  type Service,
   type ProductType,
   type StoreType,
-} from '../../../lib/data/mock-store-data';
+} from '@/lib/data/mock-store-data';
 
 
 interface FeaturedCollection {
   name: string;
-  products: Product[];
+  items: (Product | Service)[]; // Can be products or services
+  type: ProductType;
 }
 
 const StorePage = () => {
@@ -89,13 +94,12 @@ const StorePage = () => {
   const storeId = params.storeId as string;
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
   const {toast} = useToast();
 
   useEffect(() => {
     setIsMounted(true);
-    // Simulate fetching store data based on storeId
     if (storeId) {
       const fetchedStoreData = mockStoreDetails.find(store => store.id === storeId) || null;
       setStoreData(fetchedStoreData);
@@ -106,38 +110,57 @@ const StorePage = () => {
   const storeAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
 
 
-  const handleViewProductDetails = (product: Product) => {
-    setSelectedProduct(product);
-    setIsProductDetailsOpen(true);
+  const handleViewItemDetails = (item: Product | Service) => {
+    setSelectedItem(item);
+    setIsDetailsModalOpen(true);
   };
 
-  const handleCloseProductDetails = () => {
-    setIsProductDetailsOpen(false);
-    setSelectedProduct(null);
+  const handleCloseDetailsModal = () => {
+    setIsDetailsModalOpen(false);
+    setSelectedItem(null);
   };
 
-  const handleAddToCart = (product: Product) => {
+  const handlePrimaryAction = (item: Product | Service) => {
+    const actionText = item.type === 'بيع' ? 'أضيف للسلة' : item.type === 'إيجار' ? 'احجزي الآن' : 'استفسري/احجزي الخدمة';
     toast({
-      title: `💖 ${product.name}`,
-      description: "تمت إضافة المنتج إلى سلة أمنياتك (محاكاة)!",
-      action: <Button variant="outline" size="sm" onClick={() => { /* navigate to cart or wishlist */ }}>عرض السلة/الأمنيات</Button>,
+      title: `🛍️ ${item.name}`,
+      description: `تم ${actionText.toLowerCase()} بنجاح (محاكاة)!`,
+      action: <Button variant="outline" size="sm" onClick={() => { /* navigate to cart/booking */ }}>متابعة</Button>,
     });
   };
 
-  const featuredCollections: FeaturedCollection[] = useMemo(() => {
+ const featuredCollections: FeaturedCollection[] = useMemo(() => {
     if (!storeData) return [];
-    return storeData.productTypes.map((productTypeCollection) => ({
-      name: productTypeCollection.name,
-      products: storeData.products.filter((product) => product.type === productTypeCollection.id),
-    }));
+    const collections: FeaturedCollection[] = [];
+
+    storeData.productTypes.forEach(pt => {
+      if (pt.id === 'بيع') {
+        const products = storeData.products.filter(p => (storeData.featuredProductIds?.includes(p.id) || p.isBestseller || p.isNew) && p.type === 'بيع');
+        if (products.length > 0) {
+          collections.push({ name: pt.name, items: products, type: 'بيع' });
+        }
+      } else if (pt.id === 'إيجار') {
+        const rentalItems = storeData.products.filter(p => (storeData.featuredProductIds?.includes(p.id) || p.isBestseller) && p.type === 'إيجار');
+        if (rentalItems.length > 0) {
+          collections.push({ name: pt.name, items: rentalItems, type: 'إيجار' });
+        }
+      } else if (pt.id === 'خدمة' && storeData.services) {
+        const services = storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id));
+        if (services.length > 0) {
+          collections.push({ name: pt.name, items: services, type: 'خدمة' });
+        }
+      }
+    });
+    return collections;
   }, [storeData]);
 
-  const handleShowAllFromCollection = (collectionName: string) => {
+
+  const handleShowAllFromCollection = (collection: FeaturedCollection) => {
     toast({
       title: 'جاري التوجيه...',
-      description: `سيتم عرض كل المنتجات من مجموعة "${collectionName}". (قيد التطوير)`,
+      description: `سيتم عرض كل "${collection.name}". (قيد التطوير)`,
     });
-    // router.push(`/store/${storeId}/collection/${collectionName.toLowerCase().replace(/\s+/g, '-')}`);
+    // Example: router.push(`/store/${storeId}/collection/${collection.type}/${collection.name.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
   const getStoreTypeSpecificIcon = (type?: StoreType) => {
@@ -146,9 +169,9 @@ const StorePage = () => {
         case 'fashion': return Shirt;
         case 'salon': return Scissors;
         case 'crafts': return Palette;
-        // case 'rental': return CalendarDays; // Assuming rental is a specific store type
-        // case 'service': return Handshake; // Assuming service is a specific store type
-        default: return StoreIcon;
+        case 'rental': return CalendarDays; 
+        case 'service_provider': return Handshake;
+        default: return StoreIconLucide;
     }
   };
   const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData?.storeType);
@@ -158,38 +181,49 @@ const StorePage = () => {
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="animate-pulse">
-          <div className="mb-6">
-            <Skeleton className="h-6 w-1/4 mb-2" />
-            <Skeleton className="h-10 w-1/2" />
-          </div>
-
+          {/* Header Skeleton */}
           <Skeleton className="h-64 w-full rounded-lg mb-8" />
-
-          <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-            <Skeleton className="h-32 w-32 rounded-full" />
-            <div className="flex-1 space-y-3">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-5 w-full" />
-              <Skeleton className="h-5 w-2/3" />
+          <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-20 relative z-10">
+            <Skeleton className="h-32 w-32 rounded-full border-4 border-muted" />
+            <div className="flex-1 space-y-4">
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-6 w-full" />
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-24 rounded-full" />
+                <Skeleton className="h-8 w-32 rounded-full" />
+              </div>
+            </div>
+            <div className="flex gap-2">
+                <Skeleton className="h-10 w-28 rounded-md" />
+                <Skeleton className="h-10 w-28 rounded-md" />
             </div>
           </div>
+
+          {/* Story Section Skeleton */}
+          <Skeleton className="h-40 w-full rounded-lg mb-10" />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array(3).fill(0).map((_, i) => (
-              <Card key={i} className="shadow-lg rounded-lg overflow-hidden">
-                <Skeleton className="aspect-square w-full" />
-                <CardContent className="p-4">
-                  <Skeleton className="h-5 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full mb-1" />
-                  <Skeleton className="h-4 w-5/6 mb-3" />
-                  <Skeleton className="h-6 w-1/3" />
-                </CardContent>
-                <CardFooter className="p-3 border-t">
-                  <Skeleton className="h-10 w-full" />
-                </CardFooter>
-              </Card>
-            ))}
+          {/* Products Section Skeleton */}
+          <div className="mb-10">
+            <Skeleton className="h-10 w-1/3 mb-6" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {Array(4).fill(0).map((_, i) => (
+                <Card key={`skel-prod-${i}`} className="shadow-lg rounded-lg overflow-hidden">
+                  <Skeleton className="aspect-square w-full" />
+                  <CardContent className="p-4 space-y-2">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-6 w-1/3 mt-2" />
+                  </CardContent>
+                  <CardFooter className="p-3 border-t">
+                    <Skeleton className="h-10 w-full" />
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
           </div>
+          {/* Contact Section Skeleton */}
+           <Skeleton className="h-52 w-full rounded-lg mb-10" />
         </div>
       </div>
     );
@@ -214,18 +248,18 @@ const StorePage = () => {
   return (
     <div className={cn(
         "min-h-screen",
-        storeThemeStyle === 'light' && "bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50",
-        storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-50", // Darker theme
-        storeThemeStyle === 'playful' && "bg-yellow-50",
-        storeThemeStyle === 'modern-minimal' && "bg-gray-50",
-        storeThemeStyle === 'dark' && "bg-gray-900 text-gray-100"
+        storeThemeStyle === 'light' && "bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50 text-foreground",
+        storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-100", 
+        storeThemeStyle === 'playful' && "bg-yellow-50 text-yellow-900",
+        storeThemeStyle === 'modern-minimal' && "bg-gray-100 text-gray-800",
+        storeThemeStyle === 'dark' && "bg-gray-900 text-gray-200"
     )}>
       {/* Store Header: Banner, Logo, Name, Slogan */}
       <header className="relative">
         <div className="h-48 md:h-64 lg:h-80 w-full overflow-hidden">
           <Carousel 
             plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]} 
-            opts={{ loop: true }} 
+            opts={{ loop: storeData.bannerImages.length > 1 }} 
             className="h-full w-full"
           >
             <CarouselContent className="h-full">
@@ -247,9 +281,9 @@ const StorePage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-16 md:-mt-20 relative z-10">
           <div className={cn(
             "p-6 rounded-xl shadow-2xl flex flex-col md:flex-row items-center gap-6",
-            storeThemeStyle === 'elegant' && "bg-slate-700/90 backdrop-blur-md border border-slate-600",
-            storeThemeStyle === 'dark' && "bg-gray-800/90 backdrop-blur-md border border-gray-700",
-            (storeThemeStyle === 'light' || storeThemeStyle === 'playful' || storeThemeStyle === 'modern-minimal') && "bg-card/90 backdrop-blur-md border border-border"
+            storeThemeStyle === 'elegant' && "bg-slate-700/90 backdrop-blur-md border border-slate-600 text-slate-50",
+            storeThemeStyle === 'dark' && "bg-gray-800/90 backdrop-blur-md border border-gray-700 text-gray-100",
+            (storeThemeStyle === 'light' || storeThemeStyle === 'playful' || storeThemeStyle === 'modern-minimal') && "bg-card/90 backdrop-blur-md border border-border text-card-foreground"
            )}>
             <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 shadow-lg" style={{ borderColor: storeAccentColor }}>
               <AvatarImage src={storeData.logo} alt={`${storeData.name} شعار`} data-ai-hint={storeData.dataAiHintLogo} />
@@ -270,6 +304,8 @@ const StorePage = () => {
                    storeData.storeType === 'fashion' ? 'أزياء وموضة' :
                    storeData.storeType === 'salon' ? 'صالون وخدمات تجميل' :
                    storeData.storeType === 'crafts' ? 'حرف يدوية وفنون' :
+                   storeData.storeType === 'rental' ? 'خدمات تأجير' :
+                   storeData.storeType === 'service_provider' ? 'مقدم خدمات' :
                    'متجر'}
                 </Badge>
                 <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
@@ -299,9 +335,9 @@ const StorePage = () => {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {/* Store Story/About Section */}
         {storeData.story && (
-          <StoreSection title="قصة متجرنا" icon={Rocket} accentColor={storeAccentColor} className="mb-10" description="تعرفي على الإلهام والشغف وراء كل قطعة نقدمها.">
-            <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700")}>
-              <CardContent className="p-6 text-md text-foreground/80 leading-relaxed">
+          <StoreSection id="about-store" title="قصة متجرنا" icon={Rocket} accentColor={storeAccentColor} className="mb-10" description="تعرفي على الإلهام والشغف وراء كل قطعة نقدمها.">
+            <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
+              <CardContent className="p-6 text-md leading-relaxed">
                 {storeData.story}
               </CardContent>
             </Card>
@@ -310,13 +346,17 @@ const StorePage = () => {
 
         {/* Special Announcements */}
         {storeData.specialAnnouncements && storeData.specialAnnouncements.length > 0 && (
-          <StoreSection title="إعلانات خاصة" icon={Sparkles} accentColor={storeAccentColor} className="mb-10">
-            <Card className={cn("bg-accent-yellow/10 border-accent-yellow shadow-lg", storeThemeStyle === 'elegant' && "bg-yellow-500/20 border-yellow-500", storeThemeStyle === 'dark' && "bg-yellow-400/20 border-yellow-400")}>
+          <StoreSection id="announcements" title="إعلانات خاصة" icon={Sparkles} accentColor={storeAccentColor} className="mb-10">
+            <Card className={cn("bg-accent-yellow/10 border-accent-yellow shadow-lg", 
+                storeThemeStyle === 'elegant' && "bg-yellow-500/20 border-yellow-500 text-yellow-50", 
+                storeThemeStyle === 'dark' && "bg-yellow-400/20 border-yellow-400 text-yellow-100",
+                (storeThemeStyle === 'light' || storeThemeStyle === 'playful' || storeThemeStyle === 'modern-minimal') && "text-yellow-700"
+            )}>
               <CardContent className="p-6">
                 <ul className="space-y-2">
                   {storeData.specialAnnouncements.map((ann, index) => (
-                    <li key={index} className="flex items-center gap-2 text-yellow-700 font-medium">
-                      <Sparkles size={18} className="text-yellow-600" />
+                    <li key={index} className="flex items-center gap-2 font-medium">
+                      <Sparkles size={18} />
                       {ann}
                     </li>
                   ))}
@@ -330,56 +370,66 @@ const StorePage = () => {
         {/* Store Type Specific Sections */}
         {storeData.storeType === 'bakery' && (
           <BakerySpecialsSection
-            products={storeData.products.filter(p => p.category.includes("خاص"))} // Example filter
+            products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isBestseller)}
             storeData={storeData}
-            onViewProductDetails={handleViewProductDetails}
+            onViewProductDetails={handleViewItemDetails}
           />
         )}
         {storeData.storeType === 'salon' && storeData.services && (
           <SalonServicesSection
-            services={storeData.services}
+            services={storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id))}
             storeData={storeData}
-            onBookService={(serviceName) => toast({title: `حجز خدمة: ${serviceName}`, description: "سيتم توجيهك لصفحة الحجز (قيد التطوير).", variant: "default"})}
+            onBookService={(service) => handleViewItemDetails(service)}
           />
         )}
         {storeData.storeType === 'fashion' && (
           <FashionLookbookSection
-            products={storeData.products} // Could be curated looks
+            products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isNew)} 
             storeData={storeData}
-            onViewProductDetails={handleViewProductDetails}
+            onViewProductDetails={handleViewItemDetails}
           />
         )}
 
         {/* Featured Collections / Product Types Section */}
-        <StoreSection title="تصفحي إبداعاتنا" icon={ShoppingBag} accentColor={storeAccentColor} className="my-10" description="مجموعات متنوعة تلبي كل أذواقك واحتياجاتك.">
+        <StoreSection id="collections" title="تصفحي إبداعاتنا" icon={ShoppingBag} accentColor={storeAccentColor} className="my-10" description="مجموعات متنوعة تلبي كل أذواقك واحتياجاتك.">
           <div className="space-y-10">
             {featuredCollections.map((collection) => (
-              collection.products.length > 0 && (
+              collection.items.length > 0 && (
               <div key={collection.name}>
                 <h3 className="text-2xl font-semibold mb-6 pb-2" style={{ borderBottom: `3px solid ${storeAccentColor}`}}>
                   {collection.name}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {collection.products.slice(0, 4).map((product) => ( // Show up to 4 products initially
-                    <StoreProductCard
-                      key={product.id}
-                      product={product}
+                  {collection.items.slice(0, 4).map((item) => ( // Show up to 4 items initially
+                    item.type === 'خدمة' ?
+                    <StoreServiceCard
+                      key={item.id}
+                      service={item as Service}
                       accentColor={storeAccentColor}
-                      onViewDetails={handleViewProductDetails}
+                      onViewDetails={handleViewItemDetails}
+                      className={cn(storeThemeStyle === 'dark' || storeThemeStyle === 'elegant' ? 'bg-gray-800/50 border-gray-700' : '')}
+                    />
+                    :
+                    <StoreProductCard
+                      key={item.id}
+                      product={item as Product}
+                      accentColor={storeAccentColor}
+                      onViewDetails={handleViewItemDetails}
+                      className={cn(storeThemeStyle === 'dark' || storeThemeStyle === 'elegant' ? 'bg-gray-800/50 border-gray-700' : '')}
                     />
                   ))}
                 </div>
-                {collection.products.length > 4 && (
+                {collection.items.length > 4 && (
                   <div className="text-center mt-8">
                     <Button
                       variant="outline"
                       size="lg"
-                      onClick={() => handleShowAllFromCollection(collection.name)}
+                      onClick={() => handleShowAllFromCollection(collection)}
                       style={{borderColor: storeAccentColor, color: storeAccentColor}}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${storeAccentColor}1A`}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      عرض كل منتجات "{collection.name}" <ChevronLeft className="mr-2 h-5 w-5"/>
+                      عرض كل "{collection.name}" <ChevronLeft className="mr-2 h-5 w-5"/>
                     </Button>
                   </div>
                 )}
@@ -390,27 +440,31 @@ const StorePage = () => {
         </StoreSection>
 
         {/* Store Contact & Info */}
-        <StoreSection title="تواصلي معنا" icon={MessageSquare} accentColor={storeAccentColor} className="my-10" description="نحن هنا للإجابة على جميع استفساراتك ومساعدتك.">
-          <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700")}>
-            <CardContent className="p-6 grid md:grid-cols-2 gap-6">
+        <StoreSection id="contact-store" title="تواصلي معنا" icon={MessageSquare} accentColor={storeAccentColor} className="my-10" description="نحن هنا للإجابة على جميع استفساراتك ومساعدتك.">
+          <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
+            <CardContent className="p-6 grid md:grid-cols-2 gap-x-8 gap-y-6">
               <div>
                 <h4 className="font-semibold text-lg mb-2" style={{color: storeAccentColor}}>معلومات التواصل:</h4>
-                {storeData.contact.email && <p className="flex items-center gap-2 mb-1"><Mail size={16} /> {storeData.contact.email}</p>}
-                {storeData.contact.phone && <p className="flex items-center gap-2 mb-1"><Phone size={16} /> {storeData.contact.phone}</p>}
-                {storeData.contact.address && <p className="flex items-center gap-2"><MapPin size={16} /> {storeData.contact.address}</p>}
+                {storeData.contact.email && <p className="flex items-center gap-2 mb-1"><Mail size={16} className="text-muted-foreground" /> {storeData.contact.email}</p>}
+                {storeData.contact.phone && <p className="flex items-center gap-2 mb-1"><Phone size={16} className="text-muted-foreground" /> {storeData.contact.phone}</p>}
+                {storeData.contact.address && <p className="flex items-center gap-2"><MapPin size={16} className="text-muted-foreground" /> {storeData.contact.address}</p>}
               </div>
               {storeData.socialMedia && (
                 <div>
                   <h4 className="font-semibold text-lg mb-2" style={{color: storeAccentColor}}>تابعينا على:</h4>
-                  {storeData.socialMedia.instagram && <p><Link href={`https://instagram.com/${storeData.socialMedia.instagram}`} target="_blank" className="hover:underline flex items-center gap-2"><StoreIcon size={16}/> انستغرام</Link></p>}
-                  {storeData.socialMedia.facebook && <p><Link href={`https://facebook.com/${storeData.socialMedia.facebook}`} target="_blank" className="hover:underline flex items-center gap-2"><ThumbsUp size={16}/> فيسبوك</Link></p>}
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    {storeData.socialMedia.instagram && <Link href={`https://instagram.com/${storeData.socialMedia.instagram}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><TagIcon size={14}/> انستغرام</Link>}
+                    {storeData.socialMedia.facebook && <Link href={`https://facebook.com/${storeData.socialMedia.facebook}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><ThumbsUp size={14}/> فيسبوك</Link>}
+                    {storeData.socialMedia.tiktok && <Link href={`https://tiktok.com/@${storeData.socialMedia.tiktok}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><TagIcon size={14}/> تيك توك</Link>}
+                    {storeData.socialMedia.snapchat && <Link href={`https://snapchat.com/add/${storeData.socialMedia.snapchat}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><TagIcon size={14}/> سناب شات</Link>}
+                  </div>
                 </div>
               )}
               {storeData.openingHours && storeData.openingHours.length > 0 && (
                  <div>
                     <h4 className="font-semibold text-lg mb-2" style={{color: storeAccentColor}}>أوقات العمل:</h4>
-                    <ul className="text-sm">
-                    {storeData.openingHours.map((line, idx) => <li key={idx}>{line}</li>)}
+                    <ul className="text-sm space-y-1">
+                    {storeData.openingHours.map((line, idx) => <li key={idx} className="flex items-center gap-2"><Clock size={14} className="text-muted-foreground"/>{line}</li>)}
                     </ul>
                 </div>
               )}
@@ -420,9 +474,9 @@ const StorePage = () => {
 
          {/* Store Policies */}
         {storeData.policies && (
-            <StoreSection title="سياسات المتجر" icon={Info} accentColor={storeAccentColor} className="my-10" description="تعرفي على شروطنا لضمان تجربة تسوق مريحة وآمنة.">
-            <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700")}>
-                <CardContent className="p-6 space-y-4 text-sm text-foreground/80">
+            <StoreSection id="policies-store" title="سياسات المتجر" icon={Info} accentColor={storeAccentColor} className="my-10" description="تعرفي على شروطنا لضمان تجربة تسوق مريحة وآمنة.">
+            <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
+                <CardContent className="p-6 space-y-4 text-sm">
                 {storeData.policies.returnPolicy && <div><h4 className="font-semibold mb-1" style={{color:storeAccentColor}}>سياسة الإرجاع والاستبدال:</h4><p className="whitespace-pre-line">{storeData.policies.returnPolicy}</p></div>}
                 {storeData.policies.shippingPolicy && <div><h4 className="font-semibold mb-1" style={{color:storeAccentColor}}>سياسة الشحن والتوصيل:</h4><p className="whitespace-pre-line">{storeData.policies.shippingPolicy}</p></div>}
                 {storeData.policies.customPolicy && <div><h4 className="font-semibold mb-1" style={{color:storeAccentColor}}>{storeData.policies.customPolicy.title}:</h4><p className="whitespace-pre-line">{storeData.policies.customPolicy.content}</p></div>}
@@ -434,44 +488,44 @@ const StorePage = () => {
 
       </main>
 
-      {/* Product Details Modal */}
-      {selectedProduct && (
-        <Dialog open={isProductDetailsOpen} onOpenChange={setIsProductDetailsOpen}>
+      {/* Item Details Modal */}
+      {selectedItem && (
+        <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
           <DialogContent className={cn(
             "sm:max-w-3xl max-h-[90vh] flex flex-col",
              storeThemeStyle === 'elegant' && "bg-slate-700 text-slate-50 border-slate-600",
              storeThemeStyle === 'dark' && "bg-gray-800 text-gray-100 border-gray-700"
             )}>
-            <DialogHeader className="pr-10"> {/* Add padding for close button */}
-              <DialogTitle className="text-2xl md:text-3xl" style={{color: storeAccentColor}}>{selectedProduct.name}</DialogTitle>
+            <DialogHeader className="pr-10 border-b pb-4">
+              <DialogTitle className="text-2xl md:text-3xl" style={{color: storeAccentColor}}>{selectedItem.name}</DialogTitle>
               <p className="text-sm text-muted-foreground">
-                مقدم من {storeData?.name} • الفئة: {selectedProduct.category} • النوع: <span className="capitalize">{selectedProduct.type}</span>
+                مقدم من {storeData?.name} • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
               </p>
             </DialogHeader>
             
-            <div className="grid md:grid-cols-2 gap-6 flex-1 overflow-y-auto py-4 px-1">
-                <div className="aspect-square md:aspect-auto md:h-[400px] rounded-lg overflow-hidden relative shadow-lg">
+            <div className="grid md:grid-cols-2 gap-6 flex-1 overflow-y-auto py-4 px-1 scrollbar-thin scrollbar-thumb-muted-foreground/50 scrollbar-track-transparent">
+                <div className="aspect-square md:aspect-auto md:min-h-[300px] md:max-h-[500px] rounded-lg overflow-hidden relative shadow-lg group">
                     <Carousel 
-                        opts={{ loop: selectedProduct.images.length > 1 }} 
-                        className="h-full w-full group"
+                        opts={{ loop: (selectedItem as Product).images ? (selectedItem as Product).images.length > 1 : false }} 
+                        className="h-full w-full"
                     >
                         <CarouselContent className="h-full">
-                        {selectedProduct.images.map((imgSrc, index) => (
+                        {((selectedItem as Product).images || [(selectedItem as Product).imageSrc || (selectedItem as Service).imageSrc || 'https://picsum.photos/800/600']).map((imgSrc, index) => (
                             <CarouselItem key={index} className="h-full">
                             <Image
                                 src={imgSrc}
-                                alt={`${selectedProduct.name} - صورة ${index + 1}`}
+                                alt={`${selectedItem.name} - صورة ${index + 1}`}
                                 fill
-                                className="object-cover"
-                                data-ai-hint={selectedProduct.dataAiHint}
+                                className="object-contain" // Changed to contain to show full image
+                                data-ai-hint={selectedItem.dataAiHint}
                             />
                             </CarouselItem>
                         ))}
                         </CarouselContent>
-                        {selectedProduct.images.length > 1 && (
+                        {((selectedItem as Product).images ? (selectedItem as Product).images.length > 1 : false) && (
                             <>
-                            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" />
+                            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" />
                             </>
                         )}
                     </Carousel>
@@ -479,26 +533,41 @@ const StorePage = () => {
 
                 <div className="flex flex-col">
                     <DialogDescription className="text-base text-foreground/90 leading-relaxed mb-4 whitespace-pre-line">
-                        {selectedProduct.description}
+                        {selectedItem.longDescription || selectedItem.description}
                     </DialogDescription>
 
-                    {selectedProduct.averageRating && (
+                    {(selectedItem as Product).averageRating && (
                         <div className="flex items-center gap-2 mb-4">
                             {Array.from({length: 5}).map((_, i) => (
-                                <Star key={i} size={20} className={i < Math.round(selectedProduct.averageRating || 0) ? 'fill-current' : ''} style={{color: storeAccentColor}}/>
+                                <Star key={i} size={20} className={i < Math.round((selectedItem as Product).averageRating || 0) ? 'fill-current' : ''} style={{color: storeAccentColor}}/>
                             ))}
-                            <span className="text-sm text-muted-foreground">({selectedProduct.reviewCount} تقييمات)</span>
+                            <span className="text-sm text-muted-foreground">({(selectedItem as Product).reviewCount} تقييمات)</span>
                         </div>
                     )}
+
+                    {selectedItem.type === 'خدمة' && (selectedItem as Service).duration && (
+                        <p className="text-sm text-muted-foreground mb-1"><Clock size={14} className="inline ml-1" /> المدة: {(selectedItem as Service).duration}</p>
+                    )}
+                    {selectedItem.type === 'خدمة' && (selectedItem as Service).location && (
+                        <p className="text-sm text-muted-foreground mb-1"><MapPin size={14} className="inline ml-1" /> المكان: {(selectedItem as Service).location}</p>
+                    )}
+                    {(selectedItem as Product).tags && (selectedItem as Product).tags!.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium mb-1" style={{color: storeAccentColor}}>كلمات مفتاحية:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {(selectedItem as Product).tags!.map(tag => <Badge key={tag} variant="outline" style={{borderColor: storeAccentColor, color: storeAccentColor}}>{tag}</Badge>)}
+                        </div>
+                      </div>
+                    )}
                     
-                    <p className="text-3xl font-bold my-4" style={{color: storeAccentColor}}>{selectedProduct.price}</p>
+                    <p className="text-3xl font-bold my-4" style={{color: storeAccentColor}}>{selectedItem.price}</p>
                     
-                    {/* TODO: Add quantity selector, size/color options if applicable */}
+                    {/* TODO: Add quantity selector, size/color options if applicable for 'Product' type */}
                 </div>
             </div>
 
             <DialogFooter className="mt-auto pt-4 border-t sm:justify-between items-center gap-2">
-              <Button type="button" variant="ghost" onClick={handleCloseProductDetails} className={cn(storeThemeStyle === 'elegant' && "text-slate-300 hover:bg-slate-600", storeThemeStyle === 'dark' && "text-gray-300 hover:bg-gray-700")}>
+              <Button type="button" variant="ghost" onClick={handleCloseDetailsModal} className={cn(storeThemeStyle === 'elegant' && "text-slate-300 hover:bg-slate-600", storeThemeStyle === 'dark' && "text-gray-300 hover:bg-gray-700")}>
                 إغلاق
               </Button>
               <Button 
@@ -507,10 +576,13 @@ const StorePage = () => {
                 style={{backgroundColor: storeAccentColor}}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                onClick={() => handleAddToCart(selectedProduct)}
+                onClick={() => handlePrimaryAction(selectedItem)}
                 size="lg"
               >
-                <ShoppingBasket size={20} className="ml-2" /> أضيفي إلى السلة (محاكاة)
+                {selectedItem.type === 'بيع' && <ShoppingBasket size={20} className="ml-2" />}
+                {selectedItem.type === 'إيجار' && <CalendarDays size={20} className="ml-2" />}
+                {selectedItem.type === 'خدمة' && <Handshake size={20} className="ml-2" />}
+                {selectedItem.type === 'بيع' ? 'أضيفي إلى السلة' : selectedItem.type === 'إيجار' ? 'احجزي الآن' : 'احجزي/استفسري عن الخدمة'}
               </Button>
             </DialogFooter>
           </DialogContent>
