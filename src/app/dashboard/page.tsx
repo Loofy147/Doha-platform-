@@ -18,7 +18,8 @@ import {
   MessageSquare,
   Sparkles,
   Store,
-  Star // Added Star
+  Star,
+  Eye // Added Eye icon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -51,7 +52,7 @@ const mockSellerProfile = {
   dataAiHint: "woman smiling store owner",
   sellerSince: "مارس 2023",
   profileCompletion: 85, // percentage
-  storeSlug: "lamsat-doha-creations" // Added storeSlug
+  storeSlug: "my-mock-store" 
 };
 
 const recentActivities = [
@@ -63,12 +64,11 @@ const recentActivities = [
 
 export default function SellerDashboardPage() {
   const [isClient, setIsClient] = useState(false);
-  const [sellerName, setSellerName] = useState("مبدعتنا الغالية"); // Placeholder, fetch actual name
+  const [sellerName, setSellerName] = useState("مبدعتنا الغالية"); 
   const { toast } = useToast();
 
   useEffect(() => {
     setIsClient(true);
-    // Simulate fetching seller name
     setSellerName("ضحى الأنصاري"); 
   }, []);
   
@@ -129,7 +129,7 @@ export default function SellerDashboardPage() {
             <AvatarImage src={mockSellerProfile.avatarSrc} alt={sellerName} data-ai-hint={mockSellerProfile.dataAiHint} />
             <AvatarFallback>{sellerName.substring(0, 1)}</AvatarFallback>
           </Avatar>
-          <div className="flex-1 text-center sm:text-right">
+          <div className="flex-1 text-center md:text-right">
             <h2 className="text-xl font-semibold text-primary">{mockSellerProfile.storeName}</h2>
             <p className="text-sm text-muted-foreground">مبدعة في لمسة ضحى منذ: {mockSellerProfile.sellerSince}</p>
             <div className="mt-2">
@@ -141,8 +141,8 @@ export default function SellerDashboardPage() {
             </div>
           </div>
           <Button variant="outline" asChild>
-            <Link href={`/store/${mockSellerProfile.storeSlug}`} >
-                <Store size={18} className="ml-2"/> عرض المتجر العام 
+            <Link href={`/store/${mockSellerProfile.storeSlug}`} target="_blank" rel="noopener noreferrer">
+                <Eye size={18} className="ml-2"/> عرض المتجر العام 
             </Link>
           </Button>
         </CardContent>

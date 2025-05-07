@@ -16,6 +16,7 @@ const featuredProducts = [
     id: 'featProd1',
     name: 'مجموعة مجوهرات فضية مصنوعة يدوياً',
     seller: 'إبداعات نادية',
+    sellerSlug: 'lamsa-ibdaa', // Example slug for Nadia's creations
     imageSrc: 'https://picsum.photos/400/300?random=1',
     dataAiHint: 'silver jewelry handmade',
     price: '4,500 دج',
@@ -25,6 +26,7 @@ const featuredProducts = [
     id: 'featProd2',
     name: 'كيكة الشوكولاتة الفاخرة للمناسبات',
     seller: 'حلويات سارة',
+    sellerSlug: 'mathaq-albayt', // Example slug for Sara's sweets
     imageSrc: 'https://picsum.photos/400/300?random=2',
     dataAiHint: 'chocolate cake fancy',
     price: 'حسب الطلب',
@@ -34,6 +36,7 @@ const featuredProducts = [
     id: 'featProd3',
     name: 'فستان سهرة أنيق (للإيجار)',
     seller: 'بوتيك الأحلام',
+    sellerSlug: 'anaqa-lilijar', // Example slug for dream boutique
     imageSrc: 'https://picsum.photos/400/300?random=3',
     dataAiHint: 'evening dress rental',
     price: '6,000 دج / لليلة',
@@ -44,7 +47,7 @@ const featuredProducts = [
 const categories = [
   { name: 'أناقة وإكسسوارات', icon: <ShoppingBag size={28} className="text-accent-pink" />, href: '/products?category=fashion', dataAiHint: 'fashion accessories' },
   { name: 'حلويات ومأكولات شهية', icon: <Sparkles size={28} className="text-accent-yellow" />, href: '/products?category=sweets', dataAiHint: 'sweets treats' },
-  { name: 'لمسات منزلية وديكور', icon: <Store size={28} className="text-accent-purple" />, href: '/products?category=home', dataAiHint: 'home decor' },
+  { name: 'لمسات منزلية وديكور', icon: <Store size={28} className="text-accent-purple" />, href: '/products?category=home-decor', dataAiHint: 'home decor' },
   { name: 'تأجير إبداعات', icon: <CalendarDays size={28} className="text-green-500" />, href: '/products?category=rental', dataAiHint: 'rental items' },
   { name: 'خدمات احترافية', icon: <Edit3 size={28} className="text-blue-500" />, href: '/products?category=services', dataAiHint: 'professional services' },
 ];
@@ -111,7 +114,9 @@ export default function HomePage() {
                 <CardContent className="p-6">
                   <p className="text-xs text-muted-foreground mb-1">{product.category}</p>
                   <CardTitle className="text-xl font-semibold text-primary mb-2">{product.name}</CardTitle>
-                  <CardDescription className="text-sm text-foreground/70 mb-3">من إبداع: {product.seller}</CardDescription>
+                  <CardDescription className="text-sm text-foreground/70 mb-3">
+                    من إبداع: <Link href={`/store/${product.sellerSlug}`} className="text-accent-purple hover:underline">{product.seller}</Link>
+                  </CardDescription>
                   <p className="text-lg font-bold text-accent-pink">{product.price}</p>
                 </CardContent>
                 <CardFooter>
@@ -203,3 +208,4 @@ export default function HomePage() {
     </>
   );
 }
+
