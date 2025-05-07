@@ -19,6 +19,7 @@ export interface Product {
   dataAiHint: string;
   images: string[]; // Array of image URLs for product details dialog (can include imageSrc)
   sellerId: string; // To link product to a store
+  storeSlug: string; // Added for easier linking from product cards
   sku?: string;
   tags?: string[];
   availability?: 'متوفر' | 'نفذ المخزون' | 'قريباً';
@@ -41,6 +42,7 @@ export interface Service {
   dataAiHint?: string;
   type: 'خدمة'; // Ensure type is 'خدمة'
   sellerId: string;
+  storeSlug: string; // Added for easier linking
   availability?: string; // e.g., "الحجز المسبق مطلوب", "أيام محددة"
   location?: 'عبر الإنترنت' | 'في موقع العميل' | 'في مقرنا';
   tags?: string[];
@@ -52,7 +54,7 @@ export interface ProductTypeCollection {
 }
 
 export interface StoreData {
-  id: string;
+  id: string; // This will be the storeSlug
   name: string;
   slogan?: string;
   story?: string;
@@ -60,7 +62,7 @@ export interface StoreData {
   dataAiHintLogo: string;
   bannerImages: string[];
   dataAiHintBanner: string[];
-  heroImages: string[];
+  heroImages?: string[]; // Optional
   products: Product[];
   services?: Service[];
   storeType: StoreType;
@@ -88,7 +90,7 @@ export interface StoreData {
     shippingPolicy?: string;
     customPolicy?: { title: string, content: string };
   };
-  productTypes: ProductTypeCollection[];
+  productTypes: ProductTypeCollection[]; // Categories of products/services offered by the store
   openingHours?: string[];
   specialAnnouncements?: string[];
   featuredProductIds?: string[]; // IDs of products to feature on store homepage
@@ -110,7 +112,8 @@ const commonProducts: Product[] = [
     isNew: true,
     dataAiHint: 'scented candles gift',
     images: ['https://picsum.photos/seed/candleset/800/600', 'https://picsum.photos/seed/candlelav/800/600', 'https://picsum.photos/seed/candlevan/800/600'],
-    sellerId: 'lamsa-ibdaa',
+    sellerId: 'lamsa-ibdaa', // Store ID
+    storeSlug: 'lamsa-ibdaa',
     tags: ['شموع', 'هدايا', 'ديكور', 'استرخاء'],
     availability: 'متوفر',
   },
@@ -128,16 +131,17 @@ const commonProducts: Product[] = [
     isBestseller: true,
     dataAiHint: 'leather handbag fashion',
     images: ['https://picsum.photos/seed/leatherbag/800/600', 'https://picsum.photos/seed/bagdetail/800/600', 'https://picsum.photos/seed/bagmodel/800/600'],
-    sellerId: 'anaqa-lilijar', // This product can be sold by a fashion store
+    sellerId: 'anaqa-lilijar',
+    storeSlug: 'anaqa-lilijar',
     tags: ['حقيبة', 'جلد طبيعي', 'أزياء', 'نسائية'],
     availability: 'متوفر',
   }
 ];
 
 export const mockStoreDetails: StoreData[] = [
-  // Store 1: Crafts Store (Lamsa Ibdaa)
+  // Store 1: Crafts Store (Lamsa Ibdaa) - using 'lamsa-ibdaa' as ID (slug)
   {
-    id: 'lamsa-ibdaa',
+    id: 'lamsa-ibdaa', // This is the storeSlug
     name: 'لمسة إبداع نادية',
     slogan: 'حيث تتحول الخيوط والألوان إلى فن يروي قصصًا.',
     story: 'منذ صغري وأنا أعشق الألوان وتفاصيل الحرف اليدوية. "لمسة إبداع" هي مساحتي التي أشارك فيها هذا الشغف من خلال قطع فنية فريدة مصنوعة بحب وإتقان، كل قطعة تحمل جزءًا من روحي. أهدف لإضفاء لمسة جمال وفرح على حياتكم اليومية.',
@@ -151,7 +155,7 @@ export const mockStoreDetails: StoreData[] = [
     dataAiHintBanner: ['handmade crafts display', 'artisan working studio', 'colorful textile art'],
     heroImages: ['https://picsum.photos/seed/lamsahero/1600/600', 'https://picsum.photos/seed/lamsacrafts/1600/600'],
     products: [
-      ...commonProducts.filter(p => p.id === 'common-prod1'),
+      ...commonProducts.filter(p => p.id === 'common-prod1').map(p => ({ ...p, sellerId: 'lamsa-ibdaa', storeSlug: 'lamsa-ibdaa' })),
       {
         id: 'lamsa-prod1',
         name: 'شال كروشيه ملون فاخر',
@@ -167,6 +171,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'crochet shawl colorful',
         images: ['https://picsum.photos/seed/crochetshawl/800/600', 'https://picsum.photos/seed/shawldetail/800/600', 'https://picsum.photos/seed/shawlmodel/800/600'],
         sellerId: 'lamsa-ibdaa',
+        storeSlug: 'lamsa-ibdaa',
         tags: ['كروشيه', 'شال', 'صوف', 'يدوي'],
         availability: 'متوفر',
       },
@@ -183,6 +188,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'amigurumi dolls handmade',
         images: ['https://picsum.photos/seed/amigurumi/800/600', 'https://picsum.photos/seed/dollgroup/800/600', 'https://picsum.photos/seed/dollplay/800/600'],
         sellerId: 'lamsa-ibdaa',
+        storeSlug: 'lamsa-ibdaa',
         tags: ['أميغورومي', 'دمى', 'كروشيه', 'أطفال', 'هدايا'],
         availability: 'متوفر',
       },
@@ -198,6 +204,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'spring flowers painting',
         images: ['https://picsum.photos/seed/springflowersart/800/600', 'https://picsum.photos/seed/artdetail1/800/600'],
         sellerId: 'lamsa-ibdaa',
+        storeSlug: 'lamsa-ibdaa',
         tags: ['لوحة زيتية', 'فن تجريدي', 'ديكور', 'أزهار'],
         availability: 'متوفر',
       },
@@ -213,6 +220,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'ورش عمل فنية',
         type: 'خدمة',
         sellerId: 'lamsa-ibdaa',
+        storeSlug: 'lamsa-ibdaa',
         imageSrc: 'https://picsum.photos/seed/crochetworkshop/400/300',
         dataAiHint: 'crochet workshop beginner',
         availability: 'الحجز المسبق مطلوب',
@@ -242,9 +250,9 @@ export const mockStoreDetails: StoreData[] = [
     featuredServiceIds: ['lamsa-serv1'],
   },
 
-  // Store 2: Bakery Store (Mathaq AlBayt)
+  // Store 2: Bakery Store (Mathaq AlBayt) - using 'mathaq-albayt' as ID (slug)
   {
-    id: 'mathaq-albayt',
+    id: 'mathaq-albayt', // This is the storeSlug
     name: 'مذاق البيت مع سارة',
     slogan: 'حلويات تقليدية وعصرية تُحضّر بحب وجودة تليق بكم.',
     story: 'ورثت حب الطهي والحلويات من جدتي، وأضفت إليه لمستي الخاصة. في "مذاق البيت"، أقدم لكم أشهى الحلويات المصنوعة من أجود المكونات الطبيعية، كأنها أُعدت في منزلكم. كل قطعة هي دعوة لتذوق السعادة.',
@@ -273,6 +281,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'russian honey cake',
         images: ['https://picsum.photos/seed/honeycake/800/600', 'https://picsum.photos/seed/honeycakeslice/800/600', 'https://picsum.photos/seed/honeycaketop/800/600'],
         sellerId: 'mathaq-albayt',
+        storeSlug: 'mathaq-albayt',
         tags: ['كيك', 'عسل', 'روسي', 'مناسبات', 'حلويات فاخرة'],
         availability: 'متوفر',
         preparationTime: 'يحتاج يوم للتجهيز',
@@ -289,6 +298,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'assorted maamoul cookies',
         images: ['https://picsum.photos/seed/maamoulbox/800/600', 'https://picsum.photos/seed/maamoulcloseup/800/600', 'https://picsum.photos/seed/maamoulplate/800/600'],
         sellerId: 'mathaq-albayt',
+        storeSlug: 'mathaq-albayt',
         tags: ['معمول', 'تمر', 'جوز', 'فستق', 'حلويات عربية'],
         availability: 'متوفر',
       },
@@ -304,7 +314,8 @@ export const mockStoreDetails: StoreData[] = [
         isNew: true,
         dataAiHint: 'baklava tray assorted',
         images: ['https://picsum.photos/seed/baklavatray/800/600', 'https://picsum.photos/seed/baklavaclose/800/600'],
-        sellerId: 'mathاق-albayt',
+        sellerId: 'mathaq-albayt',
+        storeSlug: 'mathaq-albayt',
         tags: ['بقلاوة', 'مكسرات', 'عسل', 'حلويات تقليدية'],
         availability: 'متوفر',
       }
@@ -320,6 +331,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'ورش عمل تعليمية',
         type: 'خدمة',
         sellerId: 'mathaq-albayt',
+        storeSlug: 'mathaq-albayt',
         imageSrc: 'https://picsum.photos/seed/cakeworkshop/400/300',
         dataAiHint: 'cake decorating workshop',
         availability: 'تُعقد شهريًا، الحجز المسبق ضروري',
@@ -352,9 +364,9 @@ export const mockStoreDetails: StoreData[] = [
     featuredServiceIds: ['mathaq-serv1'],
   },
 
-  // Store 3: Fashion Rental (Anaqa Lilijar)
+  // Store 3: Fashion Rental (Anaqa Lilijar) - using 'anaqa-lilijar' as ID (slug)
   {
-    id: 'anaqa-lilijar',
+    id: 'anaqa-lilijar', // This is the storeSlug
     name: 'أناقة للإيجار مع ليلى',
     slogan: 'فساتين سهرة وعبايات فاخرة لمناسباتكِ التي لا تُنسى.',
     story: 'أؤمن بأن كل امرأة تستحق أن تتألق في مناسباتها الخاصة دون الحاجة لإنفاق الكثير. "أناقة للإيجار" يوفر لكِ تشكيلة متنوعة من فساتين السهرة والعبايات الراقية بتصاميم عصرية وكلاسيكية. مهمتنا هي أن نجعلكِ تشعرين بالثقة والجمال في كل خطوة.',
@@ -368,7 +380,7 @@ export const mockStoreDetails: StoreData[] = [
     dataAiHintBanner: ['evening gowns display', 'luxury abayas collection', 'dresses rack boutique'],
     heroImages: ['https://picsum.photos/seed/anaqahero/1600/600', 'https://picsum.photos/seed/fashionmodelhero/1600/600'],
     products: [
-       ...commonProducts.filter(p => p.id === 'common-prod2'), // Assuming this fashion store also sells some items
+       ...commonProducts.filter(p => p.id === 'common-prod2').map(p => ({ ...p, sellerId: 'anaqa-lilijar', storeSlug: 'anaqa-lilijar' })),
       {
         id: 'anaqa-prod1',
         name: 'فستان سهرة ذهبي مطرز فاخر',
@@ -382,6 +394,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'gold sequin dress elegant',
         images: ['https://picsum.photos/seed/golddress/800/600', 'https://picsum.photos/seed/golddetail/800/600', 'https://picsum.photos/seed/goldmodel/800/600'],
         sellerId: 'anaqa-lilijar',
+        storeSlug: 'anaqa-lilijar',
         tags: ['فستان سهرة', 'ذهبي', 'مطرز', 'إيجار', 'زفاف'],
         availability: 'الحجز المسبق مطلوب',
         rentalTerms: { minDuration: "3 أيام", deposit: "5,000 دج" }
@@ -398,6 +411,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'black abaya silver embroidery',
         images: ['https://picsum.photos/seed/blackabaya/800/600', 'https://picsum.photos/seed/abayadetail/800/600', 'https://picsum.photos/seed/abayamodel/800/600'],
         sellerId: 'anaqa-lilijar',
+        storeSlug: 'anaqa-lilijar',
         tags: ['عباءة', 'سوداء', 'تطريز فضي', 'إيجار', 'خليجي'],
         availability: 'متوفر',
         rentalTerms: { minDuration: "7 أيام", deposit: "3,000 دج" }
@@ -414,6 +428,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'green moroccan caftan',
         images: ['https://picsum.photos/seed/greencaftan/800/600', 'https://picsum.photos/seed/caftandetail/800/600'],
         sellerId: 'anaqa-lilijar',
+        storeSlug: 'anaqa-lilijar',
         tags: ['قفطان', 'مغربي', 'أخضر', 'إيجار', 'تقليدي'],
         availability: 'الحجز المسبق مطلوب',
         rentalTerms: { minDuration: "3 أيام", deposit: "4,000 دج" }
@@ -440,9 +455,9 @@ export const mockStoreDetails: StoreData[] = [
     featuredProductIds: ['anaqa-prod1', 'anaqa-prod2', 'common-prod2'],
   },
 
-  // Store 4: Beauty Salon (Salon Farah)
+  // Store 4: Beauty Salon (Salon Farah) - using 'salon-farah' as ID (slug)
   {
-    id: 'salon-farah',
+    id: 'salon-farah', // This is the storeSlug
     name: 'صالون فرح للتجميل والعناية',
     slogan: 'جمالك يبدأ من هنا... عناية فائقة ولمسات احترافية تبرز تألقك.',
     story: 'في صالون فرح، نؤمن بأن الجمال الحقيقي ينبع من الثقة بالنفس. فريقنا من الخبيرات مستعد لتقديم أفضل خدمات العناية بالشعر، البشرة، والمكياج لتبرزي أجمل ما فيكِ في جو من الراحة والاسترخاء. نستخدم منتجات عالية الجودة ونهتم بأدق التفاصيل لضمان رضاكِ التام.',
@@ -469,6 +484,7 @@ export const mockStoreDetails: StoreData[] = [
             dataAiHint: 'argan oil hair product',
             images: ['https://picsum.photos/seed/arganoilhair/800/600', 'https://picsum.photos/seed/arganbottle/800/600'],
             sellerId: 'salon-farah',
+            storeSlug: 'salon-farah',
             tags: ['زيت أرغان', 'عناية بالشعر', 'عضوي', 'ترطيب'],
             availability: 'متوفر',
         },
@@ -484,6 +500,7 @@ export const mockStoreDetails: StoreData[] = [
             dataAiHint: 'gold collagen face mask',
             images: ['https://picsum.photos/seed/goldmask/800/600', 'https://picsum.photos/seed/masktexture/800/600'],
             sellerId: 'salon-farah',
+            storeSlug: 'salon-farah',
             tags: ['ماسك ذهب', 'كولاجين', 'عناية بالبشرة', 'مكافحة الشيخوخة'],
             availability: 'متوفر',
         }
@@ -499,6 +516,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'خدمات الشعر',
         type: 'خدمة',
         sellerId: 'salon-farah',
+        storeSlug: 'salon-farah',
         imageSrc: 'https://picsum.photos/seed/haircutstyle/400/300',
         dataAiHint: 'haircut styling salon professional',
         availability: 'الحجز المسبق ضروري',
@@ -515,6 +533,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'علاجات الشعر',
         type: 'خدمة',
         sellerId: 'salon-farah',
+        storeSlug: 'salon-farah',
          imageSrc: 'https://picsum.photos/seed/hairprotein/400/300',
         dataAiHint: 'hair protein keratin treatment',
         availability: 'يتطلب استشارة مسبقة',
@@ -531,6 +550,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'مكياج وتجميل',
         type: 'خدمة',
         sellerId: 'salon-farah',
+        storeSlug: 'salon-farah',
         imageSrc: 'https://picsum.photos/seed/makeupartist/400/300',
         dataAiHint: 'evening makeup professional artist',
         availability: 'الحجز المسبق ضروري',
@@ -547,6 +567,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'عناية بالبشرة',
         type: 'خدمة',
         sellerId: 'salon-farah',
+        storeSlug: 'salon-farah',
         imageSrc: 'https://picsum.photos/seed/facialtreatment/400/300',
         dataAiHint: 'facial treatment spa steam',
         availability: 'الحجز المسبق ضروري',
@@ -579,9 +600,9 @@ export const mockStoreDetails: StoreData[] = [
     featuredProductIds: ['farah-prod1'],
   },
 
-  // Store 5: General Store (General Purpose Template)
+  // Store 5: General Store (Souq Albanat) - using 'souq-albanat' as ID (slug)
   {
-    id: 'souq-albanat',
+    id: 'souq-albanat', // This is the storeSlug
     name: 'سوق البنات المتنوع',
     slogan: 'كل ما تحتاجينه في مكان واحد... وأكثر!',
     story: 'سوق البنات هو وجهتكِ الأولى لكل ما هو جديد ومميز. نجمع لكِ بين المنتجات اليدوية، الأزياء العصرية، مستلزمات المنزل الأنيقة، وحتى الخدمات الفريدة. هدفنا توفير تجربة تسوق ممتعة وشاملة تلبي جميع اهتماماتك.',
@@ -609,6 +630,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'colored marker pens set',
         images: ['https://picsum.photos/seed/colorpens/800/600', 'https://picsum.photos/seed/penwriting/800/600'],
         sellerId: 'souq-albanat',
+        storeSlug: 'souq-albanat',
         tags: ['أقلام تحديد', 'قرطاسية', 'ألوان', 'دراسة', 'رسم'],
         availability: 'متوفر',
       },
@@ -624,6 +646,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'handmade hair accessories',
         images: ['https://picsum.photos/seed/hairaccessories/800/600', 'https://picsum.photos/seed/hairscrunchie/800/600', 'https://picsum.photos/seed/hairclips/800/600'],
         sellerId: 'souq-albanat',
+        storeSlug: 'souq-albanat',
         tags: ['إكسسوارات شعر', 'يدوي', 'أزياء', 'بناتي'],
         availability: 'متوفر',
       },
@@ -640,6 +663,7 @@ export const mockStoreDetails: StoreData[] = [
         dataAiHint: 'modern school backpack',
         images: ['https://picsum.photos/seed/schoolbackpack/800/600', 'https://picsum.photos/seed/backpackdetails/800/600'],
         sellerId: 'souq-albanat',
+        storeSlug: 'souq-albanat',
         tags: ['حقيبة ظهر', 'مدرسية', 'جامعية', 'عصرية'],
         availability: 'متوفر',
       },
@@ -655,6 +679,7 @@ export const mockStoreDetails: StoreData[] = [
         category: 'خدمات عامة',
         type: 'خدمة',
         sellerId: 'souq-albanat',
+        storeSlug: 'souq-albanat',
         imageSrc: 'https://picsum.photos/seed/giftwrapping/400/300',
         dataAiHint: 'professional gift wrapping',
         availability: 'متوفرة خلال ساعات العمل',
@@ -687,14 +712,12 @@ export const mockStoreDetails: StoreData[] = [
   }
 ];
 
+// Detailed product data for seller dashboard (matches what's used in `getSellerProductsSummary` and `getDetailedSellerProductById`)
 export type SellerProductStatus = 'نشط' | 'غير نشط' | 'بانتظار الموافقة' | 'نفذ المخزون';
-export type SellerProductType = ProductType; // Reuse ProductType for consistency
-
-
 export interface DetailedSellerProduct {
   id: string;
   name: string;
-  productType: SellerProductType;
+  productType: ProductType; // Use the global ProductType
   category: string;
   detailsForAI: string; // For AI description generation
   description: string; // Main description for display
@@ -708,7 +731,7 @@ export interface DetailedSellerProduct {
   rentalDeposit?: string; // For 'إيجار'
   rentalAvailability?: string; // For 'إيجار'
   servicePriceType?: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'; // For 'خدمة'
-  // servicePrice is already part of 'price' for 'خدمة' type.
+  servicePrice?: string; // This is the actual price value for service, 'price' field in Product/Service is display string.
   serviceDuration?: string; // For 'خدمة'
   serviceLocation?: string; // For 'خدمة'
   imageSrc: string; // Primary image
@@ -877,4 +900,50 @@ export const getSellerProductsSummary = () => allSellerProductsList.map(p => {
 
 export const getDetailedSellerProductById = (id: string): DetailedSellerProduct | undefined => {
   return allSellerProductsList.find(p => p.id === id);
+};
+
+// Function to get all products for a specific store ID (slug)
+export const getProductsByStoreId = (storeId: string): Product[] => {
+  const store = mockStoreDetails.find(s => s.id === storeId);
+  return store ? store.products : [];
+};
+
+// Function to get all services for a specific store ID (slug)
+export const getServicesByStoreId = (storeId: string): Service[] => {
+  const store = mockStoreDetails.find(s => s.id === storeId);
+  return store && store.services ? store.services : [];
+};
+
+// Function to get a specific product by its ID
+export const getProductById = (productId: string): Product | undefined => {
+  for (const store of mockStoreDetails) {
+    const product = store.products.find(p => p.id === productId);
+    if (product) return product;
+  }
+  return undefined;
+};
+
+// Function to get a specific service by its ID
+export const getServiceById = (serviceId: string): Service | undefined => {
+    for (const store of mockStoreDetails) {
+        if (store.services) {
+            const service = store.services.find(s => s.id === serviceId);
+            if (service) return service;
+        }
+    }
+    return undefined;
+};
+
+// Function to get all products from all stores
+export const getAllPlatformProducts = (): Product[] => {
+    return mockStoreDetails.reduce((acc, store) => acc.concat(store.products), [] as Product[]);
+};
+
+// Function to get all services from all stores
+export const getAllPlatformServices = (): Service[] => {
+    return mockStoreDetails.reduce((acc, store) => acc.concat(store.services || []), [] as Service[]);
+};
+
+export const getStoreDataById = (storeId: string): StoreData | undefined => {
+  return mockStoreDetails.find(store => store.id === storeId);
 };

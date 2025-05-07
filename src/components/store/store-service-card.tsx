@@ -2,12 +2,13 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link'; // Added Link import
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarPlus, Eye, Heart, Clock, MapPin, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Service } from '@/lib/data/mock-store-data';
+import type { Service } from '@/lib/data/mock-store-data'; // Updated path
 import { cn } from '@/lib/utils';
 
 interface StoreServiceCardProps {
@@ -35,14 +36,16 @@ const StoreServiceCard: React.FC<StoreServiceCardProps> = ({ service, accentColo
   return (
     <Card className={cn("overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group h-full border rounded-xl hover:border-primary/60 transform hover:-translate-y-1.5", className)}>
       <CardHeader className="p-0 relative aspect-video overflow-hidden"> {/* Changed aspect-square to aspect-video for services */}
-        <Image
-          src={service.imageSrc || 'https://picsum.photos/seed/serviceplaceholder/400/225'} // Fallback image
-          alt={service.name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-          data-ai-hint={service.dataAiHint || "service image"}
-        />
+        <Link href={`/store/${service.storeSlug}/service/${service.id}`} passHref>
+            <Image
+            src={service.imageSrc || 'https://picsum.photos/seed/serviceplaceholder/400/225'} // Fallback image
+            alt={service.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            data-ai-hint={service.dataAiHint || "service image"}
+            />
+        </Link>
          <Button
             variant="ghost"
             size="icon"

@@ -114,6 +114,9 @@ body {
   .animate-head-shake {
     animation: head-shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
   }
+  .animate-ping-slow {
+    animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
 }
 
 @keyframes head-shake {
@@ -123,4 +126,11 @@ body {
   31.5% { transform: translateX(-1.5px) rotateY(-2.5deg); }
   43.5% { transform: translateX(1px) rotateY(1.5deg); }
   50% { transform: translateX(0) rotateY(0); }
+}
+
+@keyframes ping-slow {
+  75%, 100% {
+    transform: scale(1.15); /* Slightly larger scale for more visibility */
+    opacity: 0;
+  }
 }

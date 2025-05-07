@@ -2,19 +2,20 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link'; // Added Link import
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBasket, Star, Eye, Heart } from 'lucide-react'; // Added Heart
+import { ShoppingBasket, Star, Eye, Heart } from 'lucide-react'; 
 import { useToast } from '@/hooks/use-toast';
-import type { Product } from '@/app/store/[storeId]/page'; 
+import type { Product } from '@/lib/data/mock-store-data'; // Updated path
 import { cn } from '@/lib/utils';
 
 interface StoreProductCardProps {
   product: Product;
   accentColor?: string;
   onViewDetails: (product: Product) => void; 
-  className?: string; // Allow additional classes for grid/flex layouts
+  className?: string; 
 }
 
 const StoreProductCard: React.FC<StoreProductCardProps> = ({ product, accentColor, onViewDetails, className }) => {
@@ -22,8 +23,7 @@ const StoreProductCard: React.FC<StoreProductCardProps> = ({ product, accentColo
 
   const handleAddToCartAnimation = (event: React.MouseEvent<HTMLButtonElement>) => {
     const button = event.currentTarget;
-    // Simple shake animation
-    button.classList.add('animate-head-shake'); // You'd need to define this animation in globals.css
+    button.classList.add('animate-head-shake'); 
     setTimeout(() => button.classList.remove('animate-head-shake'), 600);
 
     toast({
@@ -36,14 +36,16 @@ const StoreProductCard: React.FC<StoreProductCardProps> = ({ product, accentColo
   return (
     <Card className={cn("overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group h-full border rounded-xl hover:border-primary/60 transform hover:-translate-y-1.5", className)}>
       <CardHeader className="p-0 relative aspect-square overflow-hidden">
-        <Image 
-          src={product.imageSrc} 
-          alt={product.name} 
-          fill 
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-110" 
-          data-ai-hint={product.dataAiHint} 
-        />
+        <Link href={`/store/${product.storeSlug}/product/${product.id}`} passHref>
+          <Image 
+            src={product.imageSrc} 
+            alt={product.name} 
+            fill 
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110" 
+            data-ai-hint={product.dataAiHint} 
+          />
+        </Link>
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 z-10">
             {product.isNew && <Badge variant="destructive" className="shadow-md animate-pulse backdrop-blur-sm bg-destructive/80">جديد!</Badge>}
             {product.isBestseller && <Badge style={{ backgroundColor: accentColor || 'hsl(var(--accent-yellow))', color: 'hsl(var(--accent-yellow-foreground))' }} className="shadow-md backdrop-blur-sm bg-opacity-80">الأكثر مبيعًا</Badge>}
@@ -109,18 +111,3 @@ const StoreProductCard: React.FC<StoreProductCardProps> = ({ product, accentColo
 };
 
 export default StoreProductCard;
-
-// Add to globals.css if you want the head-shake animation
-/*
-@keyframes head-shake {
-  0% { transform: translateX(0); }
-  6.5% { transform: translateX(-6px) rotateY(-9deg); }
-  18.5% { transform: translateX(5px) rotateY(7deg); }
-  31.5% { transform: translateX(-3px) rotateY(-5deg); }
-  43.5% { transform: translateX(2px) rotateY(3deg); }
-  50% { transform: translateX(0); }
-}
-.animate-head-shake {
-  animation: head-shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-}
-*/

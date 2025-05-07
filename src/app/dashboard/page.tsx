@@ -1,3 +1,4 @@
+// src/app/dashboard/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -53,7 +54,7 @@ const mockSellerProfile = {
   dataAiHint: "woman smiling store owner",
   sellerSince: "مارس 2023",
   profileCompletion: 85, // percentage
-  storeSlug: "my-mock-store" 
+  storeSlug: "lamsa-ibdaa" // Updated to a valid slug from mock-store-data
 };
 
 const recentActivities = [
@@ -81,12 +82,12 @@ export default function SellerDashboardPage() {
   ];
 
   const quickActions = [
-    { label: "إضافة منتج/خدمة", icon: <PlusCircle size={22} />, href: "/dashboard/products/new", color: "text-accent-pink" },
-    { label: "إدارة المنتجات", icon: <Package size={22} />, href: "/dashboard/products", color: "text-accent-purple" },
-    { label: "عرض الطلبات", icon: <ShoppingBag size={22} />, href: "/dashboard/orders", color: "text-green-500" },
-    { label: "تصميم المتجر", icon: <LayoutTemplate size={22} />, href: "/dashboard/store-template", color: "text-orange-500" }, // Changed from Palette to LayoutTemplate
-    { label: "إعدادات المتجر", icon: <Settings size={22} />, href: "/dashboard/settings", color: "text-blue-500" },
-    { label: "سياسات المتجر", icon: <FileText size={22} />, href: "/dashboard/settings#policies", color: "text-teal-500" },
+    { label: "إضافة منتج/خدمة", icon: PlusCircle, href: "/dashboard/products/new", color: "text-accent-pink" },
+    { label: "إدارة المنتجات", icon: Package, href: "/dashboard/products", color: "text-accent-purple" },
+    { label: "عرض الطلبات", icon: ShoppingBag, href: "/dashboard/orders", color: "text-green-500" },
+    { label: "تصميم المتجر", icon: LayoutTemplate, href: "/dashboard/store-template", color: "text-orange-500" },
+    { label: "إعدادات المتجر", icon: Settings, href: "/dashboard/settings", color: "text-blue-500" },
+    { label: "سياسات المتجر", icon: FileText, href: "/dashboard/settings#policies", color: "text-teal-500" },
   ];
 
   if (!isClient) {
@@ -170,16 +171,19 @@ export default function SellerDashboardPage() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center"><Sparkles size={24} className="text-accent-yellow ml-2" /> إجراءات سريعة لمتجركِ</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {quickActions.map((action) => (
-            <Link key={action.label} href={action.href} passHref>
-              <Card className="h-full hover:shadow-xl hover:border-primary/50 transition-all transform hover:-translate-y-1 cursor-pointer border-dashed border-primary/30">
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center aspect-square">
-                  {React.cloneElement(action.icon, { className: `mb-2 ${action.color}`})}
-                  <p className="text-xs sm:text-sm font-medium text-foreground">{action.label}</p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+          {quickActions.map((action) => {
+            const ActionIcon = action.icon;
+            return (
+              <Link key={action.label} href={action.href} passHref>
+                <Card className="h-full hover:shadow-xl hover:border-primary/50 transition-all transform hover:-translate-y-1 cursor-pointer border-dashed border-primary/30">
+                  <CardContent className="p-4 flex flex-col items-center justify-center text-center aspect-square">
+                    <ActionIcon size={22} className={`mb-2 ${action.color}`} />
+                    <p className="text-xs sm:text-sm font-medium text-foreground">{action.label}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

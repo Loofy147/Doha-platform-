@@ -1,3 +1,4 @@
+// src/app/dashboard/products/edit/[productId]/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -21,7 +22,7 @@ import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock
 import { useToast } from '@/hooks/use-toast';
 import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList } from '@/lib/mock-seller-data';
+import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList } from '@/lib/data/mock-seller-data'; // Corrected import path
 import Image from 'next/image';
 
 const productCategories = [
@@ -33,8 +34,8 @@ const productCategories = [
   "حرف يدوية إبداعية",
   "منتجات للإيجار (فساتين، معدات)",
   "خدمات (ورش عمل، استشارات، تصميم)",
-  "تأجير إبداعات", // Added from main product list
-  "خدمات احترافية", // Added from main product list
+  "تأجير إبداعات", 
+  "خدمات احترافية", 
   "أخرى",
 ];
 
@@ -73,11 +74,11 @@ export default function EditProductPage() {
 
   // Service specific states
   const [servicePriceType, setServicePriceType] = useState<'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'>('ثابت');
-  const [servicePrice, setServicePrice] = useState('');
+  const [servicePriceValue, setServicePriceValue] = useState(''); // Renamed from servicePrice to avoid conflict
   const [serviceDuration, setServiceDuration] = useState('');
   const [serviceLocation, setServiceLocation] = useState('');
   
-  const [currentImages, setCurrentImages] = useState<string[]>([]); // To store image URLs if available
+  const [currentImages, setCurrentImages] = useState<string[]>([]); 
 
 
   useEffect(() => {
@@ -95,7 +96,7 @@ export default function EditProductPage() {
           setGeneratedDescription(fetchedProduct.description);
           setProductStory(fetchedProduct.story);
           
-          setPrice(fetchedProduct.price || '');
+          setPrice(fetchedProduct.price || ''); // This is for sale type
           setStock(fetchedProduct.stock || '');
           setDiscountPercentage(fetchedProduct.discountPercentage || '');
           setIsTaxable(fetchedProduct.isTaxable || false);
@@ -106,14 +107,16 @@ export default function EditProductPage() {
           setRentalAvailability(fetchedProduct.rentalAvailability || '');
 
           setServicePriceType(fetchedProduct.servicePriceType || 'ثابت');
-          setServicePrice(fetchedProduct.servicePrice || '');
+          setServicePriceValue(fetchedProduct.servicePrice || ''); // Use servicePriceValue here
           setServiceDuration(fetchedProduct.serviceDuration || '');
           setServiceLocation(fetchedProduct.serviceLocation || '');
           
-          // Simulate existing images
-          if (fetchedProduct.imageSrc) {
-            setCurrentImages([fetchedProduct.imageSrc, 'https://picsum.photos/seed/extraimg1/100/100', 'https://picsum.photos/seed/extraimg2/100/100']);
+          if (fetchedProduct.images && fetchedProduct.images.length > 0) {
+            setCurrentImages(fetchedProduct.images);
+          } else if (fetchedProduct.imageSrc) {
+             setCurrentImages([fetchedProduct.imageSrc, 'https://picsum.photos/seed/extraimg1/100/100', 'https://picsum.photos/seed/extraimg2/100/100'].slice(0,5)); // Add placeholders if only imageSrc exists
           }
+
 
         } else {
           toast({ title: "خطأ", description: `لم يتم العثور على المنتج رقم ${productId} للتعديل.`, variant: "destructive"});
@@ -154,7 +157,7 @@ export default function EditProductPage() {
     const files = event.target.files;
     if (files) {
       const newImageUrls = Array.from(files).map(file => URL.createObjectURL(file));
-      setCurrentImages(prev => [...prev, ...newImageUrls].slice(0,5)); // Limit to 5 images
+      setCurrentImages(prev => [...prev, ...newImageUrls].slice(0,5)); 
       toast({title: "تم إضافة صور جديدة مؤقتًا.", description: "سيتم معالجة الرفع عند الحفظ."})
     }
   };
@@ -170,18 +173,18 @@ export default function EditProductPage() {
       toast({ title: "اسم المنتج مطلوب", variant: "destructive" });
       return;
     }
-    // In a real app, update the product in allSellerProductsList or send to API
+    
     const productIndex = allSellerProductsList.findIndex(p => p.id === productId);
     if (productIndex !== -1 && productData) {
         const updatedProduct: DetailedSellerProduct = {
-            ...productData, // Preserve existing fields like id, imageSrc, dataAiHint, dateAdded, status
+            ...productData, 
             name: productName,
             productType: productType,
             category: productCategory,
             detailsForAI: productDetailsForAI,
             description: generatedDescription,
             story: productStory,
-            price: productType === 'بيع' ? price : '',
+            price: productType === 'بيع' ? price : '', // Store string price for 'بيع'
             stock: productType === 'بيع' ? stock : undefined,
             discountPercentage: productType === 'بيع' ? discountPercentage : undefined,
             isTaxable: productType === 'بيع' ? isTaxable : undefined,
@@ -190,10 +193,10 @@ export default function EditProductPage() {
             rentalDeposit: productType === 'إيجار' ? rentalDeposit : undefined,
             rentalAvailability: productType === 'إيجار' ? rentalAvailability : undefined,
             servicePriceType: productType === 'خدمة' ? servicePriceType : undefined,
-            servicePrice: productType === 'خدمة' ? servicePrice : undefined,
+            servicePrice: productType === 'خدمة' ? servicePriceValue : undefined, // Store numeric service price here
             serviceDuration: productType === 'خدمة' ? serviceDuration : undefined,
             serviceLocation: productType === 'خدمة' ? serviceLocation : undefined,
-            // Note: imageSrc might need special handling if new images are uploaded
+            images: currentImages, // Update images
         };
         allSellerProductsList[productIndex] = updatedProduct;
     }
@@ -402,7 +405,7 @@ export default function EditProductPage() {
                     {servicePriceType !== 'حسب_الطلب' && (
                         <div>
                             <Label htmlFor="servicePrice">السعر/التكلفة (دج)</Label>
-                            <Input id="servicePrice" type="number" value={servicePrice} onChange={(e) => setServicePrice(e.target.value)} />
+                            <Input id="servicePrice" type="number" value={servicePriceValue} onChange={(e) => setServicePriceValue(e.target.value)} />
                         </div>
                     )}
                     <div className="md:col-span-2">

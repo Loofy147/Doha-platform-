@@ -1,7 +1,7 @@
 // src/app/store/[storeId]/page.tsx
 'use client';
 
-import React, {useEffect, useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo, Suspense} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +15,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
-import {Separator} from '@/components/ui/separator';
 import {Badge} from '@/components/ui/badge';
 import {
   ShoppingBag,
@@ -32,13 +31,11 @@ import {
   ThumbsUp,
   Eye,
   ChevronLeft,
-  ChevronRight,
   ShoppingBasket,
   Rocket,
   Palette,
   CalendarDays,
   Handshake,
-  Edit3,
   CookingPot,
   Scissors,
   Shirt,
@@ -69,11 +66,17 @@ import {
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
-import BakerySpecialsSection from '@/components/store/sections/bakery-specials-section';
-import SalonServicesSection from '@/components/store/sections/salon-services-section';
-import FashionLookbookSection from '@/components/store/sections/fashion-lookbook-section';
+
+// Import specific section components
+const BakerySpecialsSection = React.lazy(() => import('@/components/store/sections/bakery-specials-section'));
+const SalonServicesSection = React.lazy(() => import('@/components/store/sections/salon-services-section'));
+const FashionLookbookSection = React.lazy(() => import('@/components/store/sections/fashion-lookbook-section'));
+const CraftsShowcaseSection = React.lazy(() => import('@/components/store/sections/crafts-showcase-section'));
+const RentalShowcaseSection = React.lazy(() => import('@/components/store/sections/rental-showcase-section'));
+const ServiceProviderShowcaseSection = React.lazy(() => import('@/components/store/sections/service-provider-showcase-section'));
+
 import {
-  mockStoreDetails,
+  getStoreDataById,
   type StoreData,
   type Product,
   type Service,
@@ -93,6 +96,7 @@ const StorePage = () => {
   const params = useParams();
   const storeId = params.storeId as string;
   const [storeData, setStoreData] = useState<StoreData | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
   const [isMounted, setIsMounted] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
@@ -101,8 +105,15 @@ const StorePage = () => {
   useEffect(() => {
     setIsMounted(true);
     if (storeId) {
-      const fetchedStoreData = mockStoreDetails.find(store => store.id === storeId) || null;
-      setStoreData(fetchedStoreData);
+      setIsLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        const fetchedStoreData = getStoreDataById(storeId);
+        setStoreData(fetchedStoreData);
+        setIsLoading(false);
+      }, 500); // Simulate network delay
+    } else {
+      setIsLoading(false);
     }
   }, [storeId]);
 
@@ -171,13 +182,13 @@ const StorePage = () => {
         case 'crafts': return Palette;
         case 'rental': return CalendarDays; 
         case 'service_provider': return Handshake;
-        default: return StoreIconLucide;
+        default: return StoreIconLucide; // Use the imported StoreIconLucide
     }
   };
   const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData?.storeType);
 
 
-  if (!isMounted) {
+  if (!isMounted || isLoading) { // Check isLoading as well
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="animate-pulse">
@@ -238,7 +249,7 @@ const StorePage = () => {
           عذرًا، لم نتمكن من العثور على المتجر الذي تبحثين عنه. قد يكون الرابط غير صحيح أو تم حذف المتجر.
         </p>
         <Button variant="outline" onClick={() => router.back()} className="text-lg px-6 py-3">
-          <ChevronRight className="w-5 h-5 ml-2" /> العودة للخلف
+          <ChevronLeft className="w-5 h-5 ml-2" /> العودة للخلف
         </Button>
       </div>
     );
@@ -333,21 +344,19 @@ const StorePage = () => {
       </header>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* Store Story/About Section */}
         {storeData.story && (
           <StoreSection id="about-store" title="قصة متجرنا" icon={Rocket} accentColor={storeAccentColor} className="mb-10" description="تعرفي على الإلهام والشغف وراء كل قطعة نقدمها.">
-            <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
-              <CardContent className="p-6 text-md leading-relaxed">
-                {storeData.story}
-              </CardContent>
+             <Card className={cn("shadow-lg", storeThemeStyle === 'elegant' && "bg-slate-700 border-slate-600 text-slate-100", storeThemeStyle === 'dark' && "bg-gray-800 border-gray-700 text-gray-200")}>
+                <CardContent className="p-6 text-md leading-relaxed">
+                    {storeData.story}
+                </CardContent>
             </Card>
           </StoreSection>
         )}
 
-        {/* Special Announcements */}
         {storeData.specialAnnouncements && storeData.specialAnnouncements.length > 0 && (
           <StoreSection id="announcements" title="إعلانات خاصة" icon={Sparkles} accentColor={storeAccentColor} className="mb-10">
-            <Card className={cn("bg-accent-yellow/10 border-accent-yellow shadow-lg", 
+             <Card className={cn("bg-accent-yellow/10 border-accent-yellow shadow-lg", 
                 storeThemeStyle === 'elegant' && "bg-yellow-500/20 border-yellow-500 text-yellow-50", 
                 storeThemeStyle === 'dark' && "bg-yellow-400/20 border-yellow-400 text-yellow-100",
                 (storeThemeStyle === 'light' || storeThemeStyle === 'playful' || storeThemeStyle === 'modern-minimal') && "text-yellow-700"
@@ -366,29 +375,52 @@ const StorePage = () => {
           </StoreSection>
         )}
 
+        <Suspense fallback={<Skeleton className="h-80 w-full" />}>
+            {storeData.storeType === 'bakery' && storeData.products && (
+            <BakerySpecialsSection
+                products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isBestseller)}
+                storeData={storeData}
+                onViewProductDetails={handleViewItemDetails}
+            />
+            )}
+            {storeData.storeType === 'salon' && storeData.services && (
+            <SalonServicesSection
+                services={storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id))}
+                storeData={storeData}
+                onBookService={(service) => handleViewItemDetails(service as Service)} // Ensure correct type
+            />
+            )}
+            {storeData.storeType === 'fashion' && storeData.products && (
+            <FashionLookbookSection
+                products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isNew)} 
+                storeData={storeData}
+                onViewProductDetails={handleViewItemDetails}
+            />
+            )}
+             {storeData.storeType === 'crafts' && (storeData.products || storeData.services) && (
+              <CraftsShowcaseSection
+                products={storeData.products || []}
+                services={storeData.services || []}
+                storeData={storeData}
+                onViewItemDetails={handleViewItemDetails}
+              />
+            )}
+            {storeData.storeType === 'rental' && storeData.products && (
+              <RentalShowcaseSection
+                products={storeData.products}
+                storeData={storeData}
+                onViewProductDetails={handleViewItemDetails}
+              />
+            )}
+            {storeData.storeType === 'service_provider' && storeData.services && (
+              <ServiceProviderShowcaseSection
+                services={storeData.services}
+                storeData={storeData}
+                onViewServiceDetails={handleViewItemDetails}
+              />
+            )}
+        </Suspense>
 
-        {/* Store Type Specific Sections */}
-        {storeData.storeType === 'bakery' && (
-          <BakerySpecialsSection
-            products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isBestseller)}
-            storeData={storeData}
-            onViewProductDetails={handleViewItemDetails}
-          />
-        )}
-        {storeData.storeType === 'salon' && storeData.services && (
-          <SalonServicesSection
-            services={storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id))}
-            storeData={storeData}
-            onBookService={(service) => handleViewItemDetails(service)}
-          />
-        )}
-        {storeData.storeType === 'fashion' && (
-          <FashionLookbookSection
-            products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isNew)} 
-            storeData={storeData}
-            onViewProductDetails={handleViewItemDetails}
-          />
-        )}
 
         {/* Featured Collections / Product Types Section */}
         <StoreSection id="collections" title="تصفحي إبداعاتنا" icon={ShoppingBag} accentColor={storeAccentColor} className="my-10" description="مجموعات متنوعة تلبي كل أذواقك واحتياجاتك.">

@@ -1,3 +1,4 @@
+// src/app/dashboard/products/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -9,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Package, PlusCircle, Search, Filter, Edit, Trash2, Eye, ToggleRight, ToggleLeft } from 'lucide-react'; // Removed unused icons
+import { Package, PlusCircle, Search, Filter, Edit, Trash2, Eye, ToggleRight, ToggleLeft } from 'lucide-react'; 
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -23,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from '@/components/ui/skeleton';
-import { getSellerProductsSummary, ProductType as DetailedProductType, ProductStatus as DetailedProductStatus } from '@/lib/mock-seller-data'; // Import centralized data
+import { getSellerProductsSummary, ProductType as DetailedProductType, ProductStatus as DetailedProductStatus, allSellerProductsList } from '@/lib/data/mock-seller-data';
 
 // This interface is for the summary data used in this table
 interface SellerProductSummary {
@@ -47,7 +48,7 @@ const statusColors: Record<DetailedProductStatus, string> = {
   'نفذ المخزون': 'bg-red-100 text-red-700',
 };
 
-const productCategories = ["الكل", "أزياء وإكسسوارات", "مستلزمات منزلية وديكور", "جمال وعناية شخصية", "فن ومقتنيات", "حلويات ومأكولات شهية", "حرف يدوية إبداعية", "تأجير إبداعات", "خدمات احترافية", "تأجير منتجات", "خدمات (ورش عمل، استشارات، تصميم)"]; // Combined and refined
+const productCategories = ["الكل", "أزياء وإكسسوارات", "مستلزمات منزلية وديكور", "جمال وعناية شخصية", "فن ومقتنيات", "حلويات ومأكولات شهية", "حرف يدوية إبداعية", "تأجير إبداعات", "خدمات احترافية", "تأجير منتجات", "خدمات (ورش عمل، استشارات، تصميم)"]; 
 const productStatuses: DetailedProductStatus[] = ['نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'];
 
 
@@ -57,7 +58,7 @@ export default function SellerProductsPage() {
   const [products, setProducts] = useState<SellerProductSummary[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
-  const [selectedStatus, setSelectedStatus] = useState<string>('الكل'); // Can be 'الكل' or DetailedProductStatus
+  const [selectedStatus, setSelectedStatus] = useState<string>('الكل'); 
 
   useEffect(() => {
     setIsClient(true);
@@ -72,19 +73,20 @@ export default function SellerProductsPage() {
   });
 
   const toggleProductStatus = (productId: string) => {
-    setProducts(prevProducts =>
-      prevProducts.map(p => 
-        p.id === productId 
-        ? { ...p, status: p.status === 'نشط' ? 'غير نشط' : 'نشط' } 
-        : p
-      )
-    );
+    const productIndexInAll = allSellerProductsList.findIndex(p => p.id === productId);
+    if (productIndexInAll !== -1) {
+      allSellerProductsList[productIndexInAll].status = allSellerProductsList[productIndexInAll].status === 'نشط' ? 'غير نشط' : 'نشط';
+    }
+    setProducts(getSellerProductsSummary()); // Re-fetch summary after updating source
     toast({ title: "تم تحديث حالة المنتج بنجاح!", variant: "default" });
   };
 
   const deleteProduct = (productId: string) => {
-    // In a real app, this would also update the source data (allSellerProductsList) or call an API
-    setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+    const productIndexInAll = allSellerProductsList.findIndex(p => p.id === productId);
+    if (productIndexInAll !== -1) {
+        allSellerProductsList.splice(productIndexInAll, 1);
+    }
+    setProducts(getSellerProductsSummary()); // Re-fetch summary
     toast({ title: "تم حذف المنتج!", description: `المنتج #${productId} تم حذفه من متجرك.`, variant: "destructive" });
   };
 
