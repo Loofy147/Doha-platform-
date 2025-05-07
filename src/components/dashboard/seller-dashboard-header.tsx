@@ -43,6 +43,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { PlusCircle, UserCircle, Heart, LogOutIcon } from 'lucide-react';
 
 const dashboardNavItems = [
     { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
@@ -219,7 +220,7 @@ export function SellerDashboardHeader() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-                 <Link href="/profile"><Users className="mr-2 h-4 w-4" /><span>ملفي الشخصي العام</span></Link>
+                 <Link href="/profile"><UserCircle className="mr-2 h-4 w-4" /><span>ملفي الشخصي العام</span></Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
                 <Link href="/dashboard/settings"><Settings className="mr-2 h-4 w-4" /><span>إعدادات المتجر</span></Link>
@@ -238,7 +239,7 @@ export function SellerDashboardHeader() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOutIcon className="mr-2 h-4 w-4" />
             <span>تسجيل الخروج</span>
             <DropdownMenuShortcut>⇧⌘خ</DropdownMenuShortcut>
           </DropdownMenuItem>
@@ -247,3 +248,4 @@ export function SellerDashboardHeader() {
     </header>
   );
 }
+
