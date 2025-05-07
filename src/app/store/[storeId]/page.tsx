@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link'; // Added import
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -70,7 +70,74 @@ const mockStoreDetails: Record<string, StoreData> = {
     socialMedia: { instagram: 'lamsat_doha', facebook: 'LamsaDohaCreations' },
     accentColor: 'hsl(var(--accent-pink))'
   },
+  'lamsa-ibdaa': { 
+    id: 'store-lamsa-ibdaa',
+    name: 'لمسة إبداع',
+    slug: 'lamsa-ibdaa',
+    slogan: 'فن يروي حكايات',
+    story: 'كل قطعة هي بصمة من شغفي بالفن اليدوي. أقدم لكم إبداعات مصنوعة بحب وإتقان لتزين حياتكم بلمسات فنية راقية.',
+    logoSrc: 'https://picsum.photos/seed/lamsaibdaa_logo/100/100',
+    dataAiHintLogo: 'artistic brand logo',
+    bannerSrc: 'https://picsum.photos/seed/lamsaibdaa_banner/1200/400',
+    dataAiHintBanner: 'handmade art crafts',
+    category: 'مشغولات يدوية فنية',
+    products: [
+      { id: 'li_p1', name: 'حقيبة جلد مطرزة باليد', description: 'حقيبة جلدية فاخرة بتطريز يدوي دقيق، مثالية لإطلالة متميزة.', price: '7,200 دج', imageSrc: 'https://picsum.photos/seed/leatherbagstitch/300/300', dataAiHint: 'stitched leather bag', category: 'إكسسوارات فاخرة' },
+      { id: 'li_p2', name: 'مجموعة فخاريات مزخرفة يدويًا', description: 'أواني فخارية فريدة مرسومة بألوان زاهية لتزيين منزلك.', price: '4,800 دج', imageSrc: 'https://picsum.photos/seed/decoratedpottery/300/300', dataAiHint: 'decorated pottery set', category: 'ديكور منزلي فني' },
+      { id: 'li_p3', name: 'وشاح حرير مصبوغ طبيعيًا', description: 'وشاح حريري ناعم مصبوغ بألوان طبيعية مستخلصة من النباتات.', price: '3,500 دج', imageSrc: 'https://picsum.photos/seed/silkscarfnatural/300/300', dataAiHint: 'natural silk scarf', category: 'أزياء مستدامة' },
+    ],
+    contactEmail: 'lamsa.ibdaa@lamsadoha.com',
+    contactPhone: '+213 555 987 654',
+    address: 'ورشة الإبداع، حي الفنانين، وهران',
+    socialMedia: { instagram: 'LamsaIbdaaOfficial', facebook: 'LamsaIbdaaPage' },
+    accentColor: 'hsl(var(--accent-purple))'
+  },
+  'mathaq-albayt': { 
+    id: 'store-mathaq-albayt',
+    name: 'مذاق البيت',
+    slug: 'mathaq-albayt',
+    slogan: 'أشهى الحلويات المنزلية الأصيلة',
+    story: 'في "مذاق البيت"، نصنع حلوياتنا بكل حب وشغف، مستخدمين مكونات طازجة ووصفات عائلية توارثناها عبر الأجيال، لتستمتعوا بمذاق لا يُنسى يذكركم بدفء المنزل.',
+    logoSrc: 'https://picsum.photos/seed/mathaqlogo/100/100',
+    dataAiHintLogo: 'bakery brand logo',
+    bannerSrc: 'https://picsum.photos/seed/mathaqbanner/1200/400',
+    dataAiHintBanner: 'homemade sweets display',
+    category: 'حلويات ومأكولات منزلية',
+    products: [
+      { id: 'ma_p1', name: 'كيكة العسل الروسية التقليدية', description: 'طبقات هشة من عجين العسل مع كريمة الزبدة الغنية، تجربة لا تقاوم.', price: '3,000 دج', imageSrc: 'https://picsum.photos/seed/russianhoneycake/300/300', dataAiHint: 'russian honey cake', category: 'كيك عالمي' },
+      { id: 'ma_p2', name: 'معمول التمر الفاخر المحشو بالجوز', description: 'معمول هش يذوب في الفم، بحشوة التمر الغنية وقطع الجوز المقرمشة.', price: '1,500 دج / للعلبة (12 قطعة)', imageSrc: 'https://picsum.photos/seed/maamouldateswalnuts/300/300', dataAiHint: 'maamoul dates walnuts', category: 'حلويات شرقية تقليدية' },
+      { id: 'ma_p3', name: 'بقلاوة بالفستق الحلبي والعسل', description: 'طبقات رقيقة من العجين الذهبي محشوة بالفستق الحلبي الفاخر ومسقاة بالعسل الطبيعي.', price: '2,800 دج / للكيلو', imageSrc: 'https://picsum.photos/seed/pistachiobaklava/300/300', dataAiHint: 'pistachio baklava honey', category: 'حلويات شرقية فاخرة' },
+    ],
+    contactEmail: 'mathaq.albayt@lamsadoha.com',
+    contactPhone: '+213 555 654 321',
+    address: 'مطبخ مذاق البيت، شارع الحلويات، قسنطينة',
+    socialMedia: { instagram: 'MathaqAlbaytSweets', facebook: 'MathaqAlbaytBakery' },
+    accentColor: 'hsl(var(--accent-yellow))'
+  },
+  'anaqa-lilijar': { 
+    id: 'store-anaqa-lilijar',
+    name: 'أناقة للإيجار',
+    slug: 'anaqa-lilijar',
+    slogan: 'تألقي في كل مناسبة بأجمل الفساتين',
+    story: 'في "أناقة للإيجار"، نؤمن بأن كل امرأة تستحق أن تشعر بالجمال والثقة في مناسباتها الخاصة. نوفر لكِ تشكيلة واسعة من فساتين السهرة الراقية بتصاميم عصرية وجودة عالية، لتكوني نجمة كل حفل دون الحاجة لشراء فستان جديد في كل مرة.',
+    logoSrc: 'https://picsum.photos/seed/anaqalogo/100/100',
+    dataAiHintLogo: 'fashion rental brand',
+    bannerSrc: 'https://picsum.photos/seed/anaqabanner/1200/400',
+    dataAiHintBanner: 'evening dresses rack',
+    category: 'تأجير فساتين سهرة',
+    products: [
+      { id: 'an_p1', name: 'فستان سهرة ذهبي مطرز بالكريستال', description: 'فستان طويل بقصة حورية البحر، مطرز بالكامل بكريستالات سواروفسكي، مثالي للمناسبات الكبرى.', price: '10,000 دج / لليلة', imageSrc: 'https://picsum.photos/seed/goldcrystaldress/300/300', dataAiHint: 'gold crystal dress', category: 'فساتين سهرة فاخرة' },
+      { id: 'an_p2', name: 'فستان كوكتيل أحمر قصير من الدانتيل', description: 'فستان أنيق ومميز من الدانتيل الأحمر، مثالي للمناسبات النهارية والمسائية وحفلات الكوكتيل.', price: '5,000 دج / لليلة', imageSrc: 'https://picsum.photos/seed/redlacedress/300/300', dataAiHint: 'red lace cocktail dress', category: 'فساتين قصيرة للمناسبات' },
+      { id: 'an_p3', name: 'فستان أميرات منفوش باللون الأزرق السماوي', description: 'فستان ساحر بقصة الأميرات وتنورة منفوشة، يجعلكِ تشعرين وكأنكِ في حكاية خيالية.', price: '8,500 دج / لليلة', imageSrc: 'https://picsum.photos/seed/blueprincessdress/300/300', dataAiHint: 'blue princess dress', category: 'فساتين حفلات زفاف' },
+    ],
+    contactEmail: 'anaqa.lilijar@lamsadoha.com',
+    contactPhone: '+213 555 111 222',
+    address: 'بوتيك أناقة، شارع الموضة، سطيف',
+    socialMedia: { instagram: 'AnaqaLilijar', facebook: 'AnaqaDressRental' },
+    accentColor: 'hsl(330 65% 60%)' // A vibrant pink, can be adjusted
+  }
 };
+
 
 export default function StorePage() {
   const params = useParams();
@@ -248,3 +315,4 @@ export default function StorePage() {
     </div>
   );
 }
+
