@@ -36,6 +36,7 @@ import { WomenCommerceLogo } from '@/components/icons/logo';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { PlusCircle, UserCircle, Heart, LogOutIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge'; // Import Badge component
 
 const dashboardNavItems = [
     { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
