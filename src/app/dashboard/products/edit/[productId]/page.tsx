@@ -17,10 +17,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText as StoryIcon, CalendarClock, Handshake, Layers, DollarSign, ShieldCheck, Percent, Info, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock, Handshake, Layers, DollarSign, ShieldCheck, Percent, Info, Loader2, CheckCircle, AlertCircle, Trash2, Eye, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow';
 import { Skeleton } from '@/components/ui/skeleton';
+import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList } from '@/lib/mock-seller-data';
+import Image from 'next/image';
 
 const productCategories = [
   "أزياء وإكسسوارات",
@@ -31,34 +33,12 @@ const productCategories = [
   "حرف يدوية إبداعية",
   "منتجات للإيجار (فساتين، معدات)",
   "خدمات (ورش عمل، استشارات، تصميم)",
+  "تأجير إبداعات", // Added from main product list
+  "خدمات احترافية", // Added from main product list
   "أخرى",
 ];
 
-type ProductType = 'بيع' | 'إيجار' | 'خدمة';
-
-// Mock product data for editing - in a real app, this would be fetched based on productId
-const mockEditableProduct = {
-  id: 'sprod1',
-  name: 'أقراط فضية مرصعة بحجر الفيروز',
-  productType: 'بيع' as ProductType,
-  category: 'أزياء وإكسسوارات',
-  detailsForAI: 'أقراط فضية نسائية، مصنوعة يدويًا، حجر فيروز طبيعي، تصميم عصري وأنيق، مناسبة للهدايا والمناسبات اليومية.',
-  description: 'تألقي بلمسة من الأصالة والجمال مع هذه الأقراط الفضية المصنوعة يدويًا، والمرصعة بحجر الفيروز الطبيعي الساحر. تصميمها العصري يجمع بين الأناقة والبساطة، مما يجعلها قطعة مثالية لإطلالاتكِ اليومية أو كهدية تعبر عن ذوقكِ الرفيع.\n\nتتميز هذه الأقراط بجودة الفضة العالية وحرفية الصنع الدقيقة، مع تركيز على إبراز جمال حجر الفيروز بألوانه الزاهية التي تضفي حيوية وجاذبية. خفيفة الوزن ومريحة للارتداء طوال اليوم.\n\nاقتني هذه القطعة الفريدة الآن وأضيفي لمسة من السحر الطبيعي إلى صندوق مجوهراتكِ، أو قدميها كهدية لا تُنسى لمن تحبين!',
-  story: 'كل قطعة أصنعها تحمل شغفي بالأحجار الكريمة وسحر الفضة. هذه الأقراط مستوحاة من زرقة السماء الصافية.',
-  price: '3500',
-  stock: '15',
-  discountPercentage: '5',
-  isTaxable: false,
-  rentalPrice: '',
-  rentalPeriod: 'يوم',
-  rentalDeposit: '',
-  rentalAvailability: '',
-  servicePriceType: 'ثابت',
-  servicePrice: '',
-  serviceDuration: '',
-  serviceLocation: '',
-  // images would be handled separately, e.g. array of URLs or File objects
-};
+const uniqueProductCategories = [...new Set(productCategories)];
 
 
 export default function EditProductPage() {
@@ -68,43 +48,76 @@ export default function EditProductPage() {
   const { toast } = useToast();
 
   const [isLoadingProduct, setIsLoadingProduct] = useState(true);
-  const [productData, setProductData] = useState<typeof mockEditableProduct | null>(null);
+  const [productData, setProductData] = useState<DetailedSellerProduct | null>(null);
   
-  // Form states based on productData after fetch
   const [productType, setProductType] = useState<ProductType>('بيع');
   const [productName, setProductName] = useState('');
+  const [productCategory, setProductCategory] = useState('');
   const [productDetailsForAI, setProductDetailsForAI] = useState('');
   const [generatedDescription, setGeneratedDescription] = useState('');
+  const [productStory, setProductStory] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDescriptionManuallyEdited, setIsDescriptionManuallyEdited] = useState(false);
+  
+  // Sale specific states
   const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [discountPercentage, setDiscountPercentage] = useState('');
+  const [isTaxable, setIsTaxable] = useState(false);
+
+  // Rental specific states
   const [rentalPrice, setRentalPrice] = useState('');
-  const [rentalPeriod, setRentalPeriod] = useState('يوم');
-  const [servicePriceType, setServicePriceType] = useState('ثابت');
-  // Add other state variables similar to the new product page based on productData structure
+  const [rentalPeriod, setRentalPeriod] = useState<'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'>('يوم');
+  const [rentalDeposit, setRentalDeposit] = useState('');
+  const [rentalAvailability, setRentalAvailability] = useState('');
+
+  // Service specific states
+  const [servicePriceType, setServicePriceType] = useState<'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'>('ثابت');
+  const [servicePrice, setServicePrice] = useState('');
+  const [serviceDuration, setServiceDuration] = useState('');
+  const [serviceLocation, setServiceLocation] = useState('');
+  
+  const [currentImages, setCurrentImages] = useState<string[]>([]); // To store image URLs if available
 
 
   useEffect(() => {
-    // Simulate fetching product data
     if (productId) {
       setIsLoadingProduct(true);
       setTimeout(() => {
-        // In a real app, fetch from your backend:
-        // const fetchedProduct = await fetchProductById(productId);
-        const fetchedProduct = productId === mockEditableProduct.id ? mockEditableProduct : null;
+        const fetchedProduct = getDetailedSellerProductById(productId);
 
         if (fetchedProduct) {
           setProductData(fetchedProduct);
-          // Populate form states
           setProductType(fetchedProduct.productType);
           setProductName(fetchedProduct.name);
+          setProductCategory(fetchedProduct.category);
           setProductDetailsForAI(fetchedProduct.detailsForAI);
           setGeneratedDescription(fetchedProduct.description);
-          // ... populate other states like price, stock, etc.
-          setPrice(fetchedProduct.price);
+          setProductStory(fetchedProduct.story);
+          
+          setPrice(fetchedProduct.price || '');
+          setStock(fetchedProduct.stock || '');
+          setDiscountPercentage(fetchedProduct.discountPercentage || '');
+          setIsTaxable(fetchedProduct.isTaxable || false);
+
+          setRentalPrice(fetchedProduct.rentalPrice || '');
+          setRentalPeriod(fetchedProduct.rentalPeriod || 'يوم');
+          setRentalDeposit(fetchedProduct.rentalDeposit || '');
+          setRentalAvailability(fetchedProduct.rentalAvailability || '');
+
+          setServicePriceType(fetchedProduct.servicePriceType || 'ثابت');
+          setServicePrice(fetchedProduct.servicePrice || '');
+          setServiceDuration(fetchedProduct.serviceDuration || '');
+          setServiceLocation(fetchedProduct.serviceLocation || '');
+          
+          // Simulate existing images
+          if (fetchedProduct.imageSrc) {
+            setCurrentImages([fetchedProduct.imageSrc, 'https://picsum.photos/seed/extraimg1/100/100', 'https://picsum.photos/seed/extraimg2/100/100']);
+          }
+
         } else {
           toast({ title: "خطأ", description: `لم يتم العثور على المنتج رقم ${productId} للتعديل.`, variant: "destructive"});
-          router.push('/dashboard/products'); // Redirect if product not found
+          router.push('/dashboard/products'); 
         }
         setIsLoadingProduct(false);
       }, 1000);
@@ -118,7 +131,6 @@ export default function EditProductPage() {
         return;
     }
     setIsGenerating(true);
-    // setGeneratedDescription(''); // Keep current description while generating new one
     try {
         const input: GenerateProductDescriptionInput = { productDetails: productDetailsForAI };
         const result = await generateProductDescription(input);
@@ -138,15 +150,56 @@ export default function EditProductPage() {
     setIsDescriptionManuallyEdited(true);
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newImageUrls = Array.from(files).map(file => URL.createObjectURL(file));
+      setCurrentImages(prev => [...prev, ...newImageUrls].slice(0,5)); // Limit to 5 images
+      toast({title: "تم إضافة صور جديدة مؤقتًا.", description: "سيتم معالجة الرفع عند الحفظ."})
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    setCurrentImages(prev => prev.filter((_,index) => index !== indexToRemove));
+    toast({title: "تم تحديد الصورة للحذف.", description: "سيتم الحذف الفعلي عند الحفظ."})
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!productName) {
       toast({ title: "اسم المنتج مطلوب", variant: "destructive" });
       return;
     }
-    // Submit updated data logic here
+    // In a real app, update the product in allSellerProductsList or send to API
+    const productIndex = allSellerProductsList.findIndex(p => p.id === productId);
+    if (productIndex !== -1 && productData) {
+        const updatedProduct: DetailedSellerProduct = {
+            ...productData, // Preserve existing fields like id, imageSrc, dataAiHint, dateAdded, status
+            name: productName,
+            productType: productType,
+            category: productCategory,
+            detailsForAI: productDetailsForAI,
+            description: generatedDescription,
+            story: productStory,
+            price: productType === 'بيع' ? price : '',
+            stock: productType === 'بيع' ? stock : undefined,
+            discountPercentage: productType === 'بيع' ? discountPercentage : undefined,
+            isTaxable: productType === 'بيع' ? isTaxable : undefined,
+            rentalPrice: productType === 'إيجار' ? rentalPrice : undefined,
+            rentalPeriod: productType === 'إيجار' ? rentalPeriod : undefined,
+            rentalDeposit: productType === 'إيجار' ? rentalDeposit : undefined,
+            rentalAvailability: productType === 'إيجار' ? rentalAvailability : undefined,
+            servicePriceType: productType === 'خدمة' ? servicePriceType : undefined,
+            servicePrice: productType === 'خدمة' ? servicePrice : undefined,
+            serviceDuration: productType === 'خدمة' ? serviceDuration : undefined,
+            serviceLocation: productType === 'خدمة' ? serviceLocation : undefined,
+            // Note: imageSrc might need special handling if new images are uploaded
+        };
+        allSellerProductsList[productIndex] = updatedProduct;
+    }
+
     toast({ title: "تم تحديث المنتج/الخدمة بنجاح!", description: `تم حفظ التغييرات على ${productName} (محاكاة).`, variant: "default" });
-    router.push('/dashboard/products'); // Redirect after saving
+    router.push('/dashboard/products'); 
   };
 
   if (isLoadingProduct) {
@@ -164,7 +217,6 @@ export default function EditProductPage() {
   }
 
   if (!productData) {
-    // This case should ideally be handled by the redirect in useEffect, but as a fallback:
     return (
          <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center">
             <AlertCircle size={48} className="mx-auto text-destructive mb-4" />
@@ -190,7 +242,6 @@ export default function EditProductPage() {
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Core Product Information */}
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl text-primary flex items-center"><Tag className="ml-2 text-accent-purple" /> المعلومات الأساسية</CardTitle>
@@ -213,10 +264,10 @@ export default function EditProductPage() {
             </div>
             <div className="md:col-span-2">
               <Label htmlFor="productCategory">الفئة الرئيسية</Label>
-              <Select defaultValue={productData.category}>
+              <Select value={productCategory} onValueChange={(value) => setProductCategory(value)}>
                 <SelectTrigger id="productCategory"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {productCategories.map(category => (
+                  {uniqueProductCategories.map(category => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
                 </SelectContent>
@@ -225,7 +276,6 @@ export default function EditProductPage() {
           </CardContent>
         </Card>
         
-        {/* Product Description & Story */}
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-xl text-primary flex items-center"><FileText className="ml-2 text-accent-pink" /> الوصف وقصة المنتج</CardTitle>
@@ -266,12 +316,11 @@ export default function EditProductPage() {
                 </div>
                 <div>
                     <Label htmlFor="productStory">قصة المنتج/الخدمة (اختياري)</Label>
-                    <Textarea id="productStory" defaultValue={productData.story} placeholder="شاركي العملاء الإلهام وراء إبداعكِ..." rows={3} />
+                    <Textarea id="productStory" value={productStory} onChange={(e) => setProductStory(e.target.value)} placeholder="شاركي العملاء الإلهام وراء إبداعكِ..." rows={3} />
                 </div>
             </CardContent>
         </Card>
 
-        {/* Pricing Section - Conditional Rendering based on productType */}
         {productType === 'بيع' && (
             <Card className="shadow-lg">
                 <CardHeader>
@@ -284,37 +333,123 @@ export default function EditProductPage() {
                     </div>
                     <div>
                         <Label htmlFor="stock">الكمية المتاحة (المخزون)</Label>
-                        <Input id="stock" type="number" defaultValue={productData.stock} />
+                        <Input id="stock" type="number" value={stock} onChange={(e) => setStock(e.target.value)} />
                     </div>
                     <div>
                         <Label htmlFor="discountPercentage">نسبة الخصم (اختياري %)</Label>
-                        <Input id="discountPercentage" type="number" defaultValue={productData.discountPercentage} />
+                        <Input id="discountPercentage" type="number" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} />
                     </div>
                     <div className="flex items-center space-x-2 pt-6">
-                        <Switch id="isTaxable" defaultChecked={productData.isTaxable} />
+                        <Switch id="isTaxable" checked={isTaxable} onCheckedChange={setIsTaxable} />
                         <Label htmlFor="isTaxable" className="text-sm">هذا المنتج خاضع للضريبة</Label>
                     </div>
                 </CardContent>
             </Card>
         )}
 
-        {/* Add similar conditional cards for 'إيجار' and 'خدمة' types, pre-filled with productData */}
+        {productType === 'إيجار' && (
+            <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl text-primary flex items-center"><CalendarClock className="ml-2 text-blue-500" /> تسعير المنتج (إيجار)</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <Label htmlFor="rentalPrice">سعر الإيجار (دج)</Label>
+                        <Input id="rentalPrice" type="number" value={rentalPrice} onChange={(e) => setRentalPrice(e.target.value)} />
+                    </div>
+                    <div>
+                        <Label htmlFor="rentalPeriod">لكل فترة</Label>
+                         <Select value={rentalPeriod} onValueChange={(value: 'يوم' | 'أسبوع' | 'شهر' | 'مناسبة') => setRentalPeriod(value)}>
+                            <SelectTrigger id="rentalPeriod"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="يوم">يوم</SelectItem>
+                                <SelectItem value="أسبوع">أسبوع</SelectItem>
+                                <SelectItem value="شهر">شهر</SelectItem>
+                                <SelectItem value="مناسبة">مناسبة واحدة</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Label htmlFor="rentalDeposit">مبلغ التأمين (اختياري - دج)</Label>
+                        <Input id="rentalDeposit" type="number" value={rentalDeposit} onChange={(e) => setRentalDeposit(e.target.value)} />
+                    </div>
+                     <div className="md:col-span-2">
+                        <Label htmlFor="rentalAvailability">ملاحظات حول التوفر وشروط الإيجار</Label>
+                        <Textarea id="rentalAvailability" value={rentalAvailability} onChange={(e) => setRentalAvailability(e.target.value)} rows={3} />
+                    </div>
+                </CardContent>
+            </Card>
+        )}
+        
+        {productType === 'خدمة' && (
+            <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-xl text-primary flex items-center"><Handshake className="ml-2 text-purple-500" /> تسعير الخدمة</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     <div>
+                        <Label htmlFor="servicePriceType">نوع تسعير الخدمة</Label>
+                         <Select value={servicePriceType} onValueChange={(value: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب') => setServicePriceType(value)}>
+                            <SelectTrigger id="servicePriceType"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ثابت">سعر ثابت</SelectItem>
+                                <SelectItem value="بالساعة">بالساعة</SelectItem>
+                                <SelectItem value="بالمشروع">بالمشروع/الحزمة</SelectItem>
+                                <SelectItem value="حسب_الطلب">حسب الطلب (يتطلب استشارة)</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {servicePriceType !== 'حسب_الطلب' && (
+                        <div>
+                            <Label htmlFor="servicePrice">السعر/التكلفة (دج)</Label>
+                            <Input id="servicePrice" type="number" value={servicePrice} onChange={(e) => setServicePrice(e.target.value)} />
+                        </div>
+                    )}
+                    <div className="md:col-span-2">
+                        <Label htmlFor="serviceDuration">مدة تقديم الخدمة أو تفاصيل إضافية</Label>
+                        <Input id="serviceDuration" value={serviceDuration} onChange={(e) => setServiceDuration(e.target.value)} />
+                    </div>
+                     <div className="md:col-span-2">
+                        <Label htmlFor="serviceLocation">مكان تقديم الخدمة (إن وجد)</Label>
+                        <Input id="serviceLocation" value={serviceLocation} onChange={(e) => setServiceLocation(e.target.value)} />
+                    </div>
+                </CardContent>
+            </Card>
+        )}
 
 
-        {/* Images & Variations */}
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-xl text-primary flex items-center"><ImageIcon className="ml-2 text-orange-500" /> الصور والتنوعات</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div>
-                    <Label htmlFor="productImages">صور المنتج/الخدمة (إدارة الصور الحالية أو تحميل جديد)</Label>
-                    <Input id="productImages" type="file" multiple accept="image/*" />
-                    <p className="text-xs text-muted-foreground mt-1">يمكنكِ تحميل صور جديدة لاستبدال أو إضافة للصور الحالية.</p>
-                    {/* Placeholder for displaying current images and allowing removal/reordering */}
-                    <div className="mt-2 p-2 border border-dashed rounded-md text-center text-sm text-muted-foreground">
-                        معرض الصور الحالي وإدارته (قيد التطوير)
-                    </div>
+                    <Label htmlFor="productImages" className='flex items-center gap-2 mb-2'>
+                      <Upload size={18} />
+                      صور المنتج/الخدمة (إدارة الصور الحالية أو تحميل جديد)
+                    </Label>
+                    <Input id="productImages" type="file" multiple accept="image/*" onChange={handleImageUpload} />
+                    <p className="text-xs text-muted-foreground mt-1">يمكنكِ تحميل حتى 5 صور. اسحبي وأفلتي لتغيير ترتيب الصورة الرئيسية.</p>
+                    
+                    {currentImages.length > 0 && (
+                      <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                        {currentImages.map((imgSrc, index) => (
+                          <div key={index} className="relative group aspect-square border rounded-md overflow-hidden">
+                            <Image src={imgSrc} alt={`Product image ${index + 1}`} fill className="object-cover" data-ai-hint="product image current" />
+                            <Button 
+                              type="button"
+                              variant="destructive" 
+                              size="icon" 
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeImage(index)}
+                            >
+                              <Trash2 size={14}/>
+                            </Button>
+                            {index === 0 && <Badge className="absolute bottom-1 left-1 text-xs">صورة رئيسية</Badge>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                 </div>
                 {productType === 'بيع' && (
                   <div className="p-4 border border-dashed rounded-md">
@@ -330,9 +465,7 @@ export default function EditProductPage() {
         <CardFooter className="border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground flex items-center"><Info size={16} className="ml-1" /> تأكدي من مراجعة كل التغييرات قبل الحفظ.</p>
           <div className="flex gap-2">
-            <Button variant="outline" asChild>
-              <Link href="/dashboard/products">إلغاء التعديلات</Link>
-            </Button>
+            <Button variant="outline" type="button" onClick={() => router.push('/dashboard/products')}>إلغاء التعديلات</Button>
             <Button type="submit" className="bg-primary hover:bg-primary/90">
               <PackageEdit className="ml-2 h-4 w-4" /> حفظ التغييرات
             </Button>

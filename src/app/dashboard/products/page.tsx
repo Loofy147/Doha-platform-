@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Package, PlusCircle, Search, Filter, Edit, Trash2, Eye, ToggleRight, ToggleLeft, Image as ImageIcon, Palette, Tag, FileText as StoryIcon, Sparkles as AiIcon } from 'lucide-react';
+import { Package, PlusCircle, Search, Filter, Edit, Trash2, Eye, ToggleRight, ToggleLeft } from 'lucide-react'; // Removed unused icons
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -23,53 +23,45 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from '@/components/ui/skeleton';
+import { getSellerProductsSummary, ProductType as DetailedProductType, ProductStatus as DetailedProductStatus } from '@/lib/mock-seller-data'; // Import centralized data
 
-
-type ProductStatus = 'نشط' | 'غير نشط' | 'بانتظار الموافقة' | 'نفذ المخزون';
-
-interface SellerProduct {
+// This interface is for the summary data used in this table
+interface SellerProductSummary {
   id: string;
   name: string;
   category: string;
-  priceDisplay: string; // e.g., "2500 دج" or "500 دج/يوم" or "حسب الطلب"
-  type: 'بيع' | 'إيجار' | 'خدمة';
+  priceDisplay: string;
+  type: DetailedProductType;
   stock?: number;
-  status: ProductStatus;
+  status: DetailedProductStatus;
   imageSrc: string;
   dataAiHint: string;
   dateAdded: string;
 }
 
-const mockProducts: SellerProduct[] = [
-  { id: 'sprod1', name: 'أقراط فضية مرصعة بحجر الفيروز', category: 'أزياء وإكسسوارات', priceDisplay: '3,500 دج', type: 'بيع', stock: 15, status: 'نشط', imageSrc: 'https://picsum.photos/seed/sprod1/80/80', dataAiHint: 'silver earrings', dateAdded: '2024-05-01' },
-  { id: 'sprod2', name: 'فستان سهرة أحمر طويل (للإيجار)', category: 'تأجير إبداعات', priceDisplay: '8,000 دج/لليلة', type: 'إيجار', status: 'نشط', imageSrc: 'https://picsum.photos/seed/sprod2/80/80', dataAiHint: 'red gown', dateAdded: '2024-04-20' },
-  { id: 'sprod3', name: 'كيكة عيد ميلاد مخصصة (شوكولاتة)', category: 'حلويات ومأكولات شهية', priceDisplay: 'حسب الطلب', type: 'خدمة', status: 'نشط', imageSrc: 'https://picsum.photos/seed/sprod3/80/80', dataAiHint: 'chocolate cake', dateAdded: '2024-04-15' },
-  { id: 'sprod4', name: 'لوحة زيتية تجريدية "ألوان الربيع"', category: 'فن ومقتنيات', priceDisplay: '12,000 دج', type: 'بيع', stock: 1, status: 'غير نشط', imageSrc: 'https://picsum.photos/seed/sprod4/80/80', dataAiHint: 'oil painting', dateAdded: '2024-03-10' },
-  { id: 'sprod5', name: 'استشارة تصميم داخلي (ساعة)', category: 'خدمات احترافية', priceDisplay: '5,000 دج/ساعة', type: 'خدمة', status: 'بانتظار الموافقة', imageSrc: 'https://picsum.photos/seed/sprod5/80/80', dataAiHint: 'interior design', dateAdded: '2024-05-05' },
-  { id: 'sprod6', name: 'مجموعة شموع عطرية يدوية الصنع', category: 'مستلزمات منزلية وديكور', priceDisplay: '2,200 دج', type: 'بيع', stock: 0, status: 'نفذ المخزون', imageSrc: 'https://picsum.photos/seed/sprod6/80/80', dataAiHint: 'scented candles', dateAdded: '2024-02-28' },
-];
 
-const statusColors: Record<ProductStatus, string> = {
+const statusColors: Record<DetailedProductStatus, string> = {
   'نشط': 'bg-green-100 text-green-700',
   'غير نشط': 'bg-gray-100 text-gray-700',
   'بانتظار الموافقة': 'bg-yellow-100 text-yellow-700',
   'نفذ المخزون': 'bg-red-100 text-red-700',
 };
 
-const productCategories = ["الكل", "أزياء وإكسسوارات", "مستلزمات منزلية وديكور", "جمال وعناية شخصية", "فن ومقتنيات", "حلويات ومأكولات شهية", "حرف يدوية إبداعية", "منتجات للإيجار", "خدمات احترافية"];
-const productStatuses: ProductStatus[] = ['نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'];
+const productCategories = ["الكل", "أزياء وإكسسوارات", "مستلزمات منزلية وديكور", "جمال وعناية شخصية", "فن ومقتنيات", "حلويات ومأكولات شهية", "حرف يدوية إبداعية", "تأجير إبداعات", "خدمات احترافية", "تأجير منتجات", "خدمات (ورش عمل، استشارات، تصميم)"]; // Combined and refined
+const productStatuses: DetailedProductStatus[] = ['نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'];
 
 
 export default function SellerProductsPage() {
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
-  const [products, setProducts] = useState<SellerProduct[]>(mockProducts);
+  const [products, setProducts] = useState<SellerProductSummary[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
-  const [selectedStatus, setSelectedStatus] = useState('الكل');
+  const [selectedStatus, setSelectedStatus] = useState<string>('الكل'); // Can be 'الكل' or DetailedProductStatus
 
   useEffect(() => {
     setIsClient(true);
+    setProducts(getSellerProductsSummary());
   }, []);
 
   const filteredProducts = products.filter(product => {
@@ -91,6 +83,7 @@ export default function SellerProductsPage() {
   };
 
   const deleteProduct = (productId: string) => {
+    // In a real app, this would also update the source data (allSellerProductsList) or call an API
     setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
     toast({ title: "تم حذف المنتج!", description: `المنتج #${productId} تم حذفه من متجرك.`, variant: "destructive" });
   };
@@ -174,7 +167,7 @@ export default function SellerProductsPage() {
               />
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto">
-              <Tag className="h-5 w-5 text-muted-foreground" />
+              <Filter className="h-5 w-5 text-muted-foreground" />
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-full sm:w-[200px] bg-background">
                   <SelectValue placeholder="تصفية حسب الفئة" />
@@ -188,7 +181,7 @@ export default function SellerProductsPage() {
             </div>
              <div className="flex items-center gap-2 w-full md:w-auto">
               <Filter className="h-5 w-5 text-muted-foreground" />
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <Select value={selectedStatus} onValueChange={(value) => setSelectedStatus(value as DetailedProductStatus | 'الكل')}>
                 <SelectTrigger className="w-full sm:w-[180px] bg-background">
                   <SelectValue placeholder="تصفية حسب الحالة" />
                 </SelectTrigger>
