@@ -1,12 +1,19 @@
+// src/components/layout/navbar.tsx
 'use client';
 
 import React from 'react'; 
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, BookOpen } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader, // Added
+  SheetTitle,  // Added
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift } from 'lucide-react';
+import { WomenCommerceLogo } from '@/components/icons/logo'; 
 
 const navItems = [
   { label: 'الرئيسية', href: '/', icon: <HomeIcon size={16} /> },
@@ -33,7 +40,7 @@ export function Navbar() {
           {navItems.map((item) => (
             <Button key={item.label} variant="ghost" asChild>
               <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground hover:text-primary flex items-center px-2 py-2">
-                {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })} {/* Adjusted for RTL */}
+                {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })}
                 {item.label}
               </Link>
             </Button>
@@ -56,6 +63,9 @@ export function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">القائمة</SheetTitle>
+                </SheetHeader>
                 <div className="p-6">
                   <Link href="/" className="mb-6 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                      <WomenCommerceLogo className="h-12 w-auto" />
@@ -70,7 +80,7 @@ export function Navbar() {
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <Link href={item.href} className="flex items-center">
-                          {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })} {/* Adjusted for RTL */}
+                          {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })}
                           {item.label}
                         </Link>
                       </Button>
