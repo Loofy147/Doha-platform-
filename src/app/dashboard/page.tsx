@@ -19,7 +19,8 @@ import {
   Sparkles,
   Store,
   Star,
-  Eye // Added Eye icon
+  Eye,
+  LayoutTemplate // Added for Store Template
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -83,8 +84,8 @@ export default function SellerDashboardPage() {
     { label: "إضافة منتج/خدمة", icon: <PlusCircle size={22} />, href: "/dashboard/products/new", color: "text-accent-pink" },
     { label: "إدارة المنتجات", icon: <Package size={22} />, href: "/dashboard/products", color: "text-accent-purple" },
     { label: "عرض الطلبات", icon: <ShoppingBag size={22} />, href: "/dashboard/orders", color: "text-green-500" },
+    { label: "تصميم المتجر", icon: <LayoutTemplate size={22} />, href: "/dashboard/store-template", color: "text-orange-500" }, // Changed from Palette to LayoutTemplate
     { label: "إعدادات المتجر", icon: <Settings size={22} />, href: "/dashboard/settings", color: "text-blue-500" },
-    { label: "تخصيص المظهر", icon: <Palette size={22} />, href: "/dashboard/settings#appearance", color: "text-orange-500" },
     { label: "سياسات المتجر", icon: <FileText size={22} />, href: "/dashboard/settings#policies", color: "text-teal-500" },
   ];
 
@@ -129,7 +130,7 @@ export default function SellerDashboardPage() {
             <AvatarImage src={mockSellerProfile.avatarSrc} alt={sellerName} data-ai-hint={mockSellerProfile.dataAiHint} />
             <AvatarFallback>{sellerName.substring(0, 1)}</AvatarFallback>
           </Avatar>
-          <div className="flex-1 text-center md:text-right">
+          <div className="flex-1 text-center sm:text-right">
             <h2 className="text-xl font-semibold text-primary">{mockSellerProfile.storeName}</h2>
             <p className="text-sm text-muted-foreground">مبدعة في لمسة ضحى منذ: {mockSellerProfile.sellerSince}</p>
             <div className="mt-2">
@@ -140,7 +141,7 @@ export default function SellerDashboardPage() {
               <Progress value={mockSellerProfile.profileCompletion} aria-label="إكتمال ملف المتجر" className="h-2" />
             </div>
           </div>
-          <Button variant="outline" asChild>
+          <Button variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10">
             <Link href={`/store/${mockSellerProfile.storeSlug}`} target="_blank" rel="noopener noreferrer">
                 <Eye size={18} className="ml-2"/> عرض المتجر العام 
             </Link>
@@ -256,4 +257,3 @@ export default function SellerDashboardPage() {
     </div>
   );
 }
-

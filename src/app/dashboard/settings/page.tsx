@@ -9,13 +9,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Settings, Store, Palette, FileText, ShieldCheck, Save, UploadCloud, Info, LinkIcon, Eye, MessageSquare, Percent, Truck, Repeat, Users, CalendarClock, Sparkles, DollarSign } from 'lucide-react';
+import { Settings, Store, Palette, FileText, ShieldCheck, Save, UploadCloud, Info, LinkIcon, Eye, MessageSquare, Percent, Truck, Repeat, Users, DollarSign, Briefcase } from 'lucide-react'; // Removed CalendarClock, Sparkles
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { StoreType } from '@/app/store/[storeId]/page'; // Import StoreType
 
-const storeCategories = [
+const platformCategories = [ // General categories for the platform, not store-specific
   "أزياء وإكسسوارات",
   "مستلزمات منزلية وديكور",
   "جمال وعناية شخصية",
@@ -27,13 +28,8 @@ const storeCategories = [
   "أخرى - حددي بنفسك",
 ];
 
-const accentColorOptions = [
-    { label: "وردي دافئ (افتراضي)", value: "default-pink", hsl: "hsl(var(--accent-pink))" },
-    { label: "بنفسجي أنيق", value: "elegant-purple", hsl: "hsl(var(--accent-purple))" },
-    { label: "أصفر مشرق", value: "bright-yellow", hsl: "hsl(var(--accent-yellow))" },
-    { label: "أخضر زمردي", value: "emerald-green", hsl: "hsl(145 63% 49%)" },
-    { label: "أزرق سماوي", value: "sky-blue", hsl: "hsl(202 80% 55%)" },
-];
+// Default store type, in a real app, this would be fetched or set during store creation
+const initialStoreType: StoreType = 'general'; 
 
 export default function SellerStoreSettingsPage() {
   const { toast } = useToast();
@@ -41,31 +37,32 @@ export default function SellerStoreSettingsPage() {
 
   useEffect(() => {
     setIsClient(true);
+    // Potentially fetch store type here if it can change or is stored per user
   }, []);
 
   const [storeData, setStoreData] = useState({
     storeName: "متجر لمسات ضحى النموذجي",
     storeSlug: "lamsat-doha-creations",
-    storeCategory: "حرف يدوية إبداعية",
+    storePlatformCategory: "حرف يدوية إبداعية", // Category on the main platform
     storeSlogan: "حيث يلتقي الإبداع بالأصالة",
     storeStory: "بدأت رحلتي بشغف صغير في تحويل المواد البسيطة إلى قطع فنية فريدة. كل قطعة في متجري تحمل جزءًا من قلبي وقصتي. أهدف إلى إدخال البهجة والجمال إلى منازلكم من خلال إبداعاتي.",
-    logoFile: null as File | null,
-    logoPreview: "https://picsum.photos/seed/logo/200/100", // Placeholder
-    bannerFile: null as File | null,
-    bannerPreview: "https://picsum.photos/seed/banner/1200/300", // Placeholder
-    accentColor: "default-pink",
+    contactEmail: "contact@lamsatdoha.com",
+    contactPhone: "+213555123456",
     instagramHandle: "lamsat_doha_official",
     facebookPage: "LamsaDohaPage",
     returnPolicy: "يمكن إرجاع المنتجات خلال 7 أيام من الاستلام بحالتها الأصلية. المنتجات المخصصة غير قابلة للإرجاع.",
     shippingPolicy: "الشحن خلال 3-5 أيام عمل داخل المدينة. تكلفة الشحن تعتمد على المنطقة.",
-    rentalTerms: "مدة الإيجار القياسية 3 أيام. يتطلب تأمين مسترد. تطبق رسوم على التأخير أو التلف.",
     customerServiceInfo: "للاستفسارات، يرجى التواصل عبر البريد الإلكتروني support@lamsatdoha.com أو عبر رسائل المنصة.",
-    enableOnlineBooking: true,
+    enableCustomerReviews: true,
     showStockLevels: false,
     acceptCustomOrders: true,
     baseCurrency: "DZD",
-    defaultCommissionRate: 12, // Example
+    defaultCommissionRate: 12, 
   });
+  
+  // This state now refers to the chosen template, not managed here directly
+  const [currentStoreType, setCurrentStoreType] = useState<StoreType>(initialStoreType);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -78,20 +75,6 @@ export default function SellerStoreSettingsPage() {
   const handleSelectChange = (name: string, value: string) => {
     setStoreData(prev => ({ ...prev, [name]: value }));
   };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files && files.length > 0) {
-      const file = files[0];
-      setStoreData(prev => ({ ...prev, [name]: file }));
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (name === 'logoFile') setStoreData(prev => ({ ...prev, logoPreview: reader.result as string }));
-        if (name === 'bannerFile') setStoreData(prev => ({ ...prev, bannerPreview: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
   
   const handleSwitchChange = (name: string, checked: boolean) => {
     setStoreData(prev => ({ ...prev, [name]: checked }));
@@ -99,11 +82,10 @@ export default function SellerStoreSettingsPage() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simulate saving data
-    console.log("Store Settings Submitted:", storeData);
+    console.log("General Store Settings Submitted:", storeData);
     toast({
-      title: "تم حفظ إعدادات المتجر بنجاح!",
-      description: "لقد تم تحديث تفاصيل متجركِ. قد يستغرق ظهور بعض التغييرات بضع دقائق.",
+      title: "تم حفظ إعدادات المتجر العامة بنجاح!",
+      description: "لقد تم تحديث التفاصيل العامة لمتجركِ.",
       variant: 'default',
     });
   };
@@ -122,19 +104,7 @@ export default function SellerStoreSettingsPage() {
                         <Skeleton className="h-10 w-full" />
                         <Skeleton className="h-10 w-full" />
                         <Skeleton className="h-10 w-full md:col-span-2" />
-                        <Skeleton className="h-10 w-full md:col-span-2" />
                         <Skeleton className="h-24 w-full md:col-span-2" />
-                    </CardContent>
-                </Card>
-                <Card className="shadow-xl">
-                    <CardHeader className="bg-primary/5 p-6"><Skeleton className="h-8 w-1/3" /></CardHeader>
-                    <CardContent className="p-6 space-y-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Skeleton className="h-28 w-full" />
-                            <Skeleton className="h-28 w-full" />
-                        </div>
-                        <Skeleton className="h-10 w-full" />
-                        <Skeleton className="h-16 w-full" />
                     </CardContent>
                 </Card>
                  <Card className="shadow-xl">
@@ -157,17 +127,17 @@ export default function SellerStoreSettingsPage() {
       <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center">
-            <Settings size={36} className="ml-3 text-accent-pink" /> إعدادات متجركِ الإبداعي
+            <Settings size={36} className="ml-3 text-accent-pink" /> إعدادات المتجر العامة
           </h1>
           <p className="mt-2 text-lg text-foreground/80">
-            هنا يمكنكِ التحكم في كل تفاصيل متجركِ، من الاسم والشعار إلى السياسات والمظهر العام. اجعليه يعكس لمستكِ الفريدة!
+            هنا يمكنكِ التحكم في المعلومات الأساسية، التواصل، والسياسات العامة لمتجركِ.
           </p>
         </div>
-        <Link href={`/store/${storeData.storeSlug || 'my-mock-store'}`} passHref target="_blank">
-          <Button variant="outline" className="border-accent-yellow text-accent-yellow hover:bg-accent-yellow/10">
-            <Eye size={18} className="ml-2"/> معاينة المتجر
-          </Button>
-        </Link>
+         <Button variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10">
+            <Link href="/dashboard/store-template">
+                <Palette size={18} className="ml-2"/> تخصيص تصميم وقالب المتجر
+            </Link>
+        </Button>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-10">
@@ -188,13 +158,13 @@ export default function SellerStoreSettingsPage() {
               <p className="text-xs text-muted-foreground mt-1">يتم إنشاؤه تلقائياً من اسم المتجر. يجب أن يكون فريداً باللغة الإنجليزية.</p>
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="storeCategory">فئة المتجر الرئيسية</Label>
-              <Select name="storeCategory" value={storeData.storeCategory} onValueChange={(value) => handleSelectChange('storeCategory', value)}>
-                <SelectTrigger id="storeCategory" className="mt-1">
+              <Label htmlFor="storePlatformCategory">فئة المتجر الرئيسية (على المنصة)</Label>
+              <Select name="storePlatformCategory" value={storeData.storePlatformCategory} onValueChange={(value) => handleSelectChange('storePlatformCategory', value)}>
+                <SelectTrigger id="storePlatformCategory" className="mt-1">
                   <SelectValue placeholder="اختاري الفئة التي تمثل نشاطكِ" />
                 </SelectTrigger>
                 <SelectContent>
-                  {storeCategories.map(category => (
+                  {platformCategories.map(category => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
                 </SelectContent>
@@ -210,47 +180,23 @@ export default function SellerStoreSettingsPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Store Appearance */}
-        <Card id="appearance" className="shadow-xl transition-all hover:shadow-2xl">
+        
+        {/* Contact and Social Media */}
+        <Card id="contact-social" className="shadow-xl transition-all hover:shadow-2xl">
           <CardHeader className="bg-primary/5">
-            <CardTitle className="text-2xl text-primary flex items-center"><Palette className="ml-2 text-accent-yellow" /> مظهر المتجر وهوية العلامة التجارية</CardTitle>
-            <CardDescription>اجعلي متجركِ جذابًا بصريًا ويعكس علامتكِ التجارية الفريدة.</CardDescription>
+            <CardTitle className="text-2xl text-primary flex items-center"><MessageSquare className="ml-2 text-accent-yellow" /> معلومات التواصل وحسابات التواصل الاجتماعي</CardTitle>
+             <CardDescription>ساعدي عملائكِ على الوصول إليكِ بسهولة.</CardDescription>
           </CardHeader>
-          <CardContent className="p-6 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-              <div>
-                <Label htmlFor="logoFile">شعار المتجر (اختياري)</Label>
-                <Input id="logoFile" name="logoFile" type="file" accept="image/*" onChange={handleFileChange} className="mt-1" />
-                <p className="text-xs text-muted-foreground mt-1">الأبعاد الموصى بها: 200x200 بكسل. يدعم PNG, JPG.</p>
-                {storeData.logoPreview && <img data-ai-hint="store logo" src={storeData.logoPreview} alt="معاينة الشعار" className="mt-2 h-20 w-auto object-contain border rounded-md p-1"/>}
-              </div>
-              <div>
-                <Label htmlFor="bannerFile">بانر المتجر (اختياري)</Label>
-                <Input id="bannerFile" name="bannerFile" type="file" accept="image/*" onChange={handleFileChange} className="mt-1" />
-                <p className="text-xs text-muted-foreground mt-1">الأبعاد الموصى بها: 1200x300 بكسل. يظهر في أعلى صفحة متجركِ.</p>
-                {storeData.bannerPreview && <img data-ai-hint="store banner" src={storeData.bannerPreview} alt="معاينة البانر" className="mt-2 h-20 w-full object-cover border rounded-md p-1"/>}
-              </div>
-            </div>
-            
-             <div>
-              <Label htmlFor="accentColor">اللون المميز لمتجركِ</Label>
-              <Select name="accentColor" value={storeData.accentColor} onValueChange={(value) => handleSelectChange('accentColor', value)}>
-                <SelectTrigger id="accentColor" className="mt-1">
-                  <SelectValue placeholder="اختاري لونًا يمثل علامتكِ" />
-                </SelectTrigger>
-                <SelectContent>
-                  {accentColorOptions.map(color => (
-                    <SelectItem key={color.value} value={color.value}>
-                        <div className="flex items-center gap-2">
-                            <span style={{backgroundColor: color.hsl}} className="w-4 h-4 rounded-full border"/>
-                            {color.label}
-                        </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground mt-1">سيتم استخدام هذا اللون لتخصيص بعض عناصر واجهة متجركِ.</p>
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <Label htmlFor="contactEmail">البريد الإلكتروني للتواصل</Label>
+                    <Input id="contactEmail" name="contactEmail" type="email" value={storeData.contactEmail} onChange={handleInputChange} placeholder="yourstore@example.com" className="mt-1"/>
+                </div>
+                <div>
+                    <Label htmlFor="contactPhone">رقم الهاتف للتواصل (اختياري)</Label>
+                    <Input id="contactPhone" name="contactPhone" type="tel" value={storeData.contactPhone} onChange={handleInputChange} placeholder="+213 XXX XXXXXX" className="mt-1"/>
+                </div>
             </div>
             <Separator/>
             <div>
@@ -269,6 +215,7 @@ export default function SellerStoreSettingsPage() {
           </CardContent>
         </Card>
 
+
         {/* Store Policies */}
         <Card id="policies" className="shadow-xl transition-all hover:shadow-2xl">
           <CardHeader className="bg-primary/5">
@@ -285,10 +232,6 @@ export default function SellerStoreSettingsPage() {
               <Textarea id="shippingPolicy" name="shippingPolicy" value={storeData.shippingPolicy} onChange={handleInputChange} placeholder="تكاليف الشحن، المناطق المغطاة، مدة التوصيل المتوقعة..." rows={4} className="mt-1"/>
             </div>
             <div>
-              <Label htmlFor="rentalTerms" className="flex items-center gap-1"><CalendarClock size={16} className="text-muted-foreground"/>شروط تأجير المنتجات (إن وجدت)</Label>
-              <Textarea id="rentalTerms" name="rentalTerms" value={storeData.rentalTerms} onChange={handleInputChange} placeholder="مدة الإيجار، مبلغ التأمين، مسؤولية التلف، إجراءات الاستلام والتسليم..." rows={4} className="mt-1"/>
-            </div>
-            <div>
               <Label htmlFor="customerServiceInfo" className="flex items-center gap-1"><MessageSquare size={16} className="text-muted-foreground"/>معلومات خدمة العملاء</Label>
               <Textarea id="customerServiceInfo" name="customerServiceInfo" value={storeData.customerServiceInfo} onChange={handleInputChange} placeholder="كيف يمكن للعملاء التواصل معك للاستفسارات والدعم؟" rows={3} className="mt-1"/>
             </div>
@@ -303,18 +246,18 @@ export default function SellerStoreSettingsPage() {
           </CardHeader>
           <CardContent className="p-6 space-y-6">
              <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg">
-                <Label htmlFor="enableOnlineBooking" className="text-sm font-medium flex items-center">
-                    <CalendarClock size={18} className="ml-2 text-muted-foreground" /> تفعيل الحجز المباشر للخدمات/الإيجار
+                <Label htmlFor="enableCustomerReviews" className="text-sm font-medium flex items-center">
+                    <Star size={18} className="ml-2 text-muted-foreground" /> تفعيل تقييمات العملاء للمنتجات/الخدمات
                 </Label>
                 <Switch 
-                    id="enableOnlineBooking" 
-                    checked={storeData.enableOnlineBooking} 
-                    onCheckedChange={(checked) => handleSwitchChange('enableOnlineBooking', checked)}
+                    id="enableCustomerReviews" 
+                    checked={storeData.enableCustomerReviews} 
+                    onCheckedChange={(checked) => handleSwitchChange('enableCustomerReviews', checked)}
                 />
             </div>
              <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg">
                 <Label htmlFor="showStockLevels" className="text-sm font-medium flex items-center">
-                    <Info size={18} className="ml-2 text-muted-foreground" /> عرض مستويات المخزون للعملاء
+                    <Info size={18} className="ml-2 text-muted-foreground" /> عرض مستويات المخزون للعملاء (للمنتجات المباعة)
                 </Label>
                 <Switch 
                     id="showStockLevels" 
@@ -324,7 +267,7 @@ export default function SellerStoreSettingsPage() {
             </div>
             <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg">
                 <Label htmlFor="acceptCustomOrders" className="text-sm font-medium flex items-center">
-                    <Sparkles size={18} className="ml-2 text-muted-foreground" /> قبول الطلبات المخصصة
+                    <Briefcase size={18} className="ml-2 text-muted-foreground" /> قبول الطلبات المخصصة (إن أمكن لنشاطك)
                 </Label>
                 <Switch 
                     id="acceptCustomOrders" 
@@ -342,7 +285,6 @@ export default function SellerStoreSettingsPage() {
                             <SelectItem value="DZD">دينار جزائري (DZD)</SelectItem>
                             <SelectItem value="SAR">ريال سعودي (SAR)</SelectItem>
                             <SelectItem value="AED">درهم إماراتي (AED)</SelectItem>
-                            {/* Add more currencies as needed */}
                         </SelectContent>
                     </Select>
                 </div>
@@ -352,7 +294,6 @@ export default function SellerStoreSettingsPage() {
                      <p className="text-xs text-muted-foreground mt-1">هذه هي نسبة العمولة التي تطبقها المنصة. قد تختلف باختلاف باقة اشتراككِ.</p>
                 </div>
             </div>
-             <p className="text-sm text-muted-foreground pt-4">سيتم إضافة المزيد من الخيارات المتقدمة قريبًا مثل إدارة فريق العمل وتكاملات إضافية.</p>
           </CardContent>
         </Card>
 
@@ -365,7 +306,7 @@ export default function SellerStoreSettingsPage() {
                 <Link href="/dashboard">إلغاء</Link>
             </Button>
             <Button type="submit" size="lg" className="bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground shadow-md hover:shadow-lg transition-shadow">
-              <Save className="ml-2 h-5 w-5" /> حفظ كل التغييرات
+              <Save className="ml-2 h-5 w-5" /> حفظ الإعدادات العامة
             </Button>
           </div>
         </CardFooter>
@@ -373,4 +314,3 @@ export default function SellerStoreSettingsPage() {
     </div>
   );
 }
-

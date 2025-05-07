@@ -4,13 +4,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-// import Link from 'next/link'; // Link was unused, removed
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Star, MessageSquare, Info, MapPin, Phone, Heart, Share2, Mail, Sparkles, Tag, ThumbsUp, Eye, ChevronLeft, ChevronRight, ShoppingBasket, Rocket, Palette } from 'lucide-react';
+import { ShoppingBag, Star, MessageSquare, Info, MapPin, Phone, Heart, Share2, Mail, Sparkles, Tag, ThumbsUp, Eye, ChevronLeft, ChevronRight, ShoppingBasket, Rocket, Palette, CalendarDays, Handshake, Edit3, CookingPot, Scissors, Shirt } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
@@ -19,17 +19,22 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreSection from '@/components/store/store-section';
+import BakerySpecialsSection from '@/components/store/sections/bakery-specials-section';
+import SalonServicesSection from '@/components/store/sections/salon-services-section';
+import FashionLookbookSection from '@/components/store/sections/fashion-lookbook-section';
 
-// Define ProductType if not already defined or imported
-type ProductType = 'بيع' | 'إيجار' | 'خدمة';
 
-export interface Product { // Exporting for StoreProductCard
+export type ProductType = 'بيع' | 'إيجار' | 'خدمة';
+export type StoreType = 'bakery' | 'fashion' | 'salon' | 'crafts' | 'rental' | 'service' | 'general';
+
+
+export interface Product { 
   id: string;
   name: string;
   type: ProductType;
   description: string;
   longDescription?: string;
-  price: string; // This is the display price string
+  price: string; 
   imageSrc: string;
   dataAiHint: string;
   category: string;
@@ -43,6 +48,7 @@ interface StoreData {
   id: string;
   name: string;
   slug: string;
+  storeType: StoreType;
   slogan?: string;
   story?: string;
   highlights?: string[];
@@ -50,8 +56,8 @@ interface StoreData {
   dataAiHintLogo: string;
   bannerSrc: string;
   dataAiHintBanner: string;
-  category: string;
-  storeCategories: string[];
+  category: string; // Main platform category
+  storeCategories: string[]; // Categories within the store
   products: Product[];
   contactEmail?: string;
   contactPhone?: string;
@@ -62,7 +68,10 @@ interface StoreData {
     twitter?: string;
   };
   accentColor?: string; 
-  themeStyle?: 'light' | 'elegant' | 'playful';
+  themeStyle?: 'light' | 'elegant' | 'playful' | 'modern-minimal';
+  // Template specific data
+  openingHours?: string; // For salons, bakeries
+  services?: Array<{ name: string; price: string; duration?: string }>; // For salons
 }
 
 const mockStoreDetails: Record<string, StoreData> = {
@@ -70,6 +79,7 @@ const mockStoreDetails: Record<string, StoreData> = {
     id: 'store123',
     name: 'متجر لمسات ضحى الإبداعية',
     slug: 'my-mock-store',
+    storeType: 'crafts',
     slogan: 'حيث يلتقي الإبداع بالأصالة',
     story: 'بدأت رحلتي بشغف صغير في تحويل المواد البسيطة إلى قطع فنية فريدة. كل قطعة في متجري تحمل جزءًا من قلبي وقصتي. أهدف إلى إدخال البهجة والجمال إلى منازلكم من خلال إبداعاتي.',
     highlights: ["منتجات مصنوعة يدوياً بحب", "تصاميم فريدة ومبتكرة", "جودة عالية واهتمام بالتفاصيل"],
@@ -93,11 +103,13 @@ const mockStoreDetails: Record<string, StoreData> = {
     socialMedia: { instagram: 'lamsat_doha', facebook: 'LamsaDohaCreations', twitter: 'LamsaDoha' },
     accentColor: 'hsl(var(--accent-pink))',
     themeStyle: 'elegant',
+    openingHours: 'الاثنين - الجمعة: 9ص - 6م',
   },
   'lamsa-ibdaa': { 
     id: 'store-lamsa-ibdaa',
     name: 'لمسة إبداع',
     slug: 'lamsa-ibdaa',
+    storeType: 'crafts',
     slogan: 'فن يروي حكايات',
     story: 'كل قطعة هي بصمة من شغفي بالفن اليدوي. أقدم لكم إبداعات مصنوعة بحب وإتقان لتزين حياتكم بلمسات فنية راقية.',
     highlights: ["قطع فنية فريدة من نوعها", "مواد عالية الجودة", "تصاميم مستوحاة من التراث"],
@@ -123,6 +135,7 @@ const mockStoreDetails: Record<string, StoreData> = {
     id: 'store-mathaq-albayt',
     name: 'مذاق البيت',
     slug: 'mathaq-albayt',
+    storeType: 'bakery',
     slogan: 'أشهى الحلويات المنزلية الأصيلة',
     story: 'في "مذاق البيت"، نصنع حلوياتنا بكل حب وشغف، مستخدمين مكونات طازجة ووصفات عائلية توارثناها عبر الأجيال، لتستمتعوا بمذاق لا يُنسى يذكركم بدفء المنزل.',
     highlights: ["حلويات طازجة يومياً", "وصفات تقليدية أصيلة", "مكونات طبيعية 100%"],
@@ -130,7 +143,7 @@ const mockStoreDetails: Record<string, StoreData> = {
     dataAiHintLogo: 'bakery brand logo',
     bannerSrc: 'https://picsum.photos/seed/mathaqbanner/1200/400',
     dataAiHintBanner: 'homemade sweets display',
-    category: 'حلويات ومأكولات منزلية',
+    category: 'حلويات ومأكولات شهية',
     storeCategories: ['كيك عالمي', 'حلويات شرقية تقليدية', 'حلويات شرقية فاخرة'],
     products: [
       { id: 'ma_p1', name: 'كيكة العسل الروسية التقليدية', type: 'خدمة', description: 'طبقات هشة من عجين العسل مع كريمة الزبدة الغنية، تجربة لا تقاوم.', longDescription: 'كيكة العسل الروسية الشهيرة "Medovik"، مكونة من طبقات رقيقة من بسكويت العسل وكريمة القشطة الحامضة أو كريمة الزبدة. تحضر بالطلب. تكفي 8-10 أشخاص.', price: '3,000 دج', imageSrc: 'https://picsum.photos/seed/russianhoneycake/300/300', dataAiHint: 'russian honey cake', category: 'كيك عالمي', isNew: true, averageRating: 4.6, reviewCount: 22  },
@@ -143,11 +156,13 @@ const mockStoreDetails: Record<string, StoreData> = {
     socialMedia: { instagram: 'MathaqAlbaytSweets', facebook: 'MathaqAlbaytBakery' },
     accentColor: 'hsl(var(--accent-yellow))',
     themeStyle: 'playful',
+    openingHours: 'السبت - الخميس: 8ص - 7م',
   },
   'anaqa-lilijar': { 
     id: 'store-anaqa-lilijar',
     name: 'أناقة للإيجار',
     slug: 'anaqa-lilijar',
+    storeType: 'rental',
     slogan: 'تألقي في كل مناسبة بأجمل الفساتين',
     story: 'في "أناقة للإيجار"، نؤمن بأن كل امرأة تستحق أن تشعر بالجمال والثقة في مناسباتها الخاصة. نوفر لكِ تشكيلة واسعة من فساتين السهرة الراقية بتصاميم عصرية وجودة عالية، لتكوني نجمة كل حفل دون الحاجة لشراء فستان جديد في كل مرة.',
     highlights: ["أحدث موديلات فساتين السهرة", "خدمة تأجير مريحة وسلسة", "أسعار تنافسية"],
@@ -166,10 +181,44 @@ const mockStoreDetails: Record<string, StoreData> = {
     contactPhone: '+213 555 111 222',
     address: 'بوتيك أناقة، شارع الموضة، سطيف',
     socialMedia: { instagram: 'AnaqaLilijar', facebook: 'AnaqaDressRental' },
-    accentColor: 'hsl(330 65% 60%)',
+    accentColor: 'hsl(330 65% 60%)', // Pink
     themeStyle: 'light',
-  }
+  },
+  'salon-asma': {
+    id: 'store-salon-asma',
+    name: 'صالون أسماء للتجميل',
+    slug: 'salon-asma',
+    storeType: 'salon',
+    slogan: 'جمالكِ يبدأ من هنا',
+    story: 'في صالون أسماء، نؤمن بأن كل امرأة تستحق أن تشعر بالجمال والثقة. نقدم مجموعة متكاملة من خدمات التجميل والعناية بالشعر والبشرة باستخدام أحدث التقنيات وأجود المنتجات. فريقنا من الخبيرات مستعد لتقديم أفضل تجربة لكِ.',
+    highlights: ["خبيرات تجميل محترفات", "أحدث صيحات الموضة والجمال", "أجواء مريحة وفاخرة"],
+    logoSrc: 'https://picsum.photos/seed/salonlogo/100/100',
+    dataAiHintLogo: 'beauty salon logo',
+    bannerSrc: 'https://picsum.photos/seed/salonbanner/1200/400',
+    dataAiHintBanner: 'modern beauty salon interior',
+    category: 'خدمات احترافية',
+    storeCategories: ['العناية بالشعر', 'مكياج وسهرات', 'عناية بالبشرة والأظافر'],
+    products: [
+      { id: 'sa_p1', name: 'قص وتصفيف شعر احترافي', type: 'خدمة', description: 'احصلي على قصة شعر عصرية تناسب شكل وجهكِ مع تصفيف احترافي.', price: '2,500 دج', imageSrc: 'https://picsum.photos/seed/haircutstyle/300/300', dataAiHint: 'haircut styling salon', category: 'العناية بالشعر', averageRating: 4.8, reviewCount: 35 },
+      { id: 'sa_p2', name: 'مكياج سهرة متكامل', type: 'خدمة', description: 'مكياج سهرة فاخر يبرز جمالكِ في المناسبات الخاصة.', price: '4,000 دج', imageSrc: 'https://picsum.photos/seed/makeupevening/300/300', dataAiHint: 'evening makeup professional', category: 'مكياج وسهرات', isBestseller: true },
+      { id: 'sa_p3', name: 'جلسة عناية بالبشرة (تنظيف عميق)', type: 'خدمة', description: 'تنظيف عميق للبشرة لإزالة الشوائب وتجديد النضارة.', price: '3,000 دج', imageSrc: 'https://picsum.photos/seed/facialtreatment/300/300', dataAiHint: 'facial treatment spa', category: 'عناية بالبشرة والأظافر' },
+    ],
+    contactEmail: 'salon.asma@lamsadoha.com',
+    contactPhone: '+213 555 333 444',
+    address: 'صالون أسماء، الطابق الأول، مول الجزائر',
+    socialMedia: { instagram: 'SalonAsmaBeauty', facebook: 'SalonAsmaDZ' },
+    accentColor: 'hsl(270 50% 70%)', // Purple
+    themeStyle: 'modern-minimal',
+    openingHours: 'يومياً: 10ص - 8م (ما عدا الجمعة)',
+    services: [
+        { name: 'قص شعر', price: '1500 دج', duration: '45 دقيقة' },
+        { name: 'سشوار', price: '1000 دج', duration: '30 دقيقة' },
+        { name: 'صبغة شعر (لون واحد)', price: 'ابتداءً من 4000 دج' },
+        { name: 'مكياج نهاري', price: '2000 دج' },
+    ]
+  },
 };
+
 
 interface FeaturedCollection {
     name: string;
@@ -256,7 +305,7 @@ export default function StorePage() {
         if (data) {
           setStoreData(data);
         } else {
-          toast({ title: "خطأ", description: `لم يتم العثور على المتجر المطلوب.`, variant: "destructive" });
+          toast({ title: "خطأ", description: `لم يتم العثور على المتجر المطلوب (${storeId}).`, variant: "destructive" });
           router.push('/products');
         }
         setIsLoading(false);
@@ -270,7 +319,7 @@ export default function StorePage() {
 
   const newArrivals = storeData?.products.filter(p => p.isNew).slice(0, 6) || [];
   const bestSellers = storeData?.products.filter(p => p.isBestseller).slice(0, 6) || [];
-  const specialOffers = storeData?.products.filter(p => p.price.includes('خصم') || (p.averageRating || 0) > 4.5).slice(0,8) || []; // Example logic for offers
+  const specialOffers = storeData?.products.filter(p => p.price.includes('خصم') || (p.averageRating || 0) > 4.5).slice(0,8) || []; 
   const featuredCollectionsData: FeaturedCollection[] = storeData?.storeCategories.map(category => ({
         name: category,
         products: storeData.products.filter(p => p.category === category)
@@ -287,7 +336,6 @@ export default function StorePage() {
   
   const handleShowAllFromCollection = (categoryName: string) => {
     setSelectedStoreCategory(categoryName);
-    // Scroll to all products section (optional)
     const allProductsSection = document.getElementById('all-products-section');
     if (allProductsSection) {
         allProductsSection.scrollIntoView({ behavior: 'smooth' });
@@ -302,6 +350,19 @@ export default function StorePage() {
       default: return 'عرض التفاصيل';
     }
   }
+
+  const getStoreTypeSpecificIcon = (storeType: StoreType | undefined) => {
+    switch (storeType) {
+        case 'bakery': return CookingPot;
+        case 'fashion': return Shirt;
+        case 'salon': return Scissors;
+        case 'crafts': return Edit3; // Or Palette
+        case 'rental': return CalendarDays;
+        case 'service': return Handshake;
+        default: return Store;
+    }
+  };
+  const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData?.storeType);
 
 
   if (isLoading) {
@@ -339,7 +400,7 @@ export default function StorePage() {
         <h1 className="text-2xl font-semibold text-destructive">المتجر غير موجود</h1>
         <p className="text-muted-foreground mt-2">عذرًا، لا يمكننا العثور على المتجر الذي تبحثين عنه.</p>
         <Button asChild className="mt-6" onClick={() => router.push('/products')}>
-          <span>العودة إلى تصفح المنتجات</span>
+          <Link href="/products">العودة إلى تصفح المنتجات</Link>
         </Button>
       </div>
     );
@@ -353,6 +414,7 @@ export default function StorePage() {
         storeThemeStyle === 'light' && "bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50",
         storeThemeStyle === 'elegant' && "bg-slate-50",
         storeThemeStyle === 'playful' && "bg-amber-50",
+        storeThemeStyle === 'modern-minimal' && "bg-gray-50",
     )}>
       <div className="relative h-56 md:h-80 w-full group overflow-hidden shadow-inner">
         <Image 
@@ -380,7 +442,7 @@ export default function StorePage() {
             {storeData.slogan && <p className="text-md md:text-lg text-muted-foreground mt-1">{storeData.slogan}</p>}
             <div className="mt-3 flex flex-wrap justify-center md:justify-start gap-2">
                 <Badge variant="outline" className="capitalize text-sm" style={{borderColor: storeData.accentColor ? `${storeData.accentColor}80` : 'hsl(var(--primary)/0.5)', color: storeData.accentColor || 'hsl(var(--primary))'}}>
-                <Palette size={14} className="ml-1" /> {storeData.category}
+                  <StoreTypeSpecificIcon size={14} className="ml-1" /> {storeData.category}
                 </Badge>
                 <Badge variant="secondary" className="text-sm"><Star size={14} className="ml-1 text-yellow-400 fill-yellow-400"/> 4.7 (150+ تقييم)</Badge>
             </div>
@@ -428,6 +490,7 @@ export default function StorePage() {
                     <CardTitle className="text-xl flex items-center gap-2" style={{color: storeData.accentColor || 'hsl(var(--primary))'}}><MessageSquare size={20}/> معلومات التواصل</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
+                    {storeData.openingHours && <p className="flex items-center gap-2"><CalendarDays size={16} className="text-muted-foreground"/> {storeData.openingHours}</p>}
                     {storeData.contactEmail && <p className="flex items-start gap-2"><Mail size={16} className="text-muted-foreground mt-0.5"/> <a href={`mailto:${storeData.contactEmail}`} className="hover:underline transition-colors break-all" style={{color: storeData.accentColor || 'hsl(var(--primary))'}}>{storeData.contactEmail}</a></p>}
                     {storeData.contactPhone && <p className="flex items-center gap-2"><Phone size={16} className="text-muted-foreground"/> <a href={`tel:${storeData.contactPhone}`} className="hover:underline transition-colors" style={{color: storeData.accentColor || 'hsl(var(--primary))'}}>{storeData.contactPhone}</a></p>}
                     {storeData.address && <p className="flex items-start gap-2"><MapPin size={16} className="text-muted-foreground mt-0.5"/> {storeData.address}</p>}
@@ -453,6 +516,12 @@ export default function StorePage() {
           </aside>
 
           <main className="lg:col-span-2 space-y-12">
+            {/* Template specific sections */}
+            {storeData.storeType === 'bakery' && <BakerySpecialsSection products={storeData.products.slice(0,4)} storeData={storeData} onViewProductDetails={handleViewProductDetails} />}
+            {storeData.storeType === 'salon' && <SalonServicesSection services={storeData.services || []} storeData={storeData} onBookService={(serviceName) => toast({title: `حجز خدمة: ${serviceName}`, description: "سيتم توجيهك لصفحة الحجز (قيد التطوير)"})} />}
+            {storeData.storeType === 'fashion' && <FashionLookbookSection products={storeData.products.slice(0,4)} storeData={storeData} onViewProductDetails={handleViewProductDetails} />}
+
+
             {newArrivals.length > 0 && (
                 <StoreSection title="وصل حديثًا" icon={Rocket} accentColor={storeData.accentColor}>
                     <Carousel 
@@ -495,7 +564,6 @@ export default function StorePage() {
                 </StoreSection>
             )}
             
-            {/* Featured Collections */}
             <FeaturedCollectionsSection 
                 collections={featuredCollectionsData} 
                 storeData={storeData}
@@ -503,7 +571,6 @@ export default function StorePage() {
                 onShowAllFromCollection={handleShowAllFromCollection}
             />
 
-            {/* Special Offers */}
             <SpecialOffersSection products={specialOffers} storeData={storeData} onViewProductDetails={handleViewProductDetails} />
 
 
@@ -533,7 +600,7 @@ export default function StorePage() {
                 </StoreSection>
             )}
 
-            <StoreSection title={selectedStoreCategory === 'الكل' ? "جميع إبداعات المتجر" : `إبداعات من فئة: ${selectedStoreCategory}`} icon={ShoppingBag} accentColor={storeData.accentColor} id="all-products-section">
+            <StoreSection title={selectedStoreCategory === 'الكل' ? "جميع إبداعات المتجر" : `إبداعات من فئة: ${selectedStoreCategory}`} icon={ShoppingBasket} accentColor={storeData.accentColor} id="all-products-section">
                 {filteredProducts && filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     {filteredProducts.map(product => (
@@ -587,7 +654,6 @@ export default function StorePage() {
                     </div>
                     <div>
                         <p className="text-3xl font-bold mt-2 mb-4" style={{color: storeData?.accentColor || 'hsl(var(--accent-pink))'}}>{selectedProductModal.price}</p>
-                        {/* Quantity selector or other options can go here */}
                     </div>
                 </div>
             </div>
@@ -601,7 +667,6 @@ export default function StorePage() {
                     style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}}
                     onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
                     onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                    // onClick={handleAddToCartFromModal} // Implement this
                 >
                     {getModalActionText(selectedProductModal.type)}
                 </Button>

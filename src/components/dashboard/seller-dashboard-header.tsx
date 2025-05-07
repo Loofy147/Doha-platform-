@@ -9,7 +9,7 @@ import {
   Settings,
   BarChart3,
   Bell,
-  LogOut,
+  LogOutIcon, // Renamed from LogOut to avoid conflict if used elsewhere
   PanelLeft,
   Search,
   Users,
@@ -18,8 +18,20 @@ import {
   LifeBuoy,
   CreditCard,
   Gift,
-  Eye // Added Eye icon
+  Eye,
+  LayoutTemplate, // Added for Store Template
+  PlusCircle,
+  UserCircle,
+  Heart
 } from 'lucide-react';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'; // Added Breadcrumb imports
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -36,33 +48,78 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { PlusCircle, UserCircle, Heart, LogOutIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const dashboardNavItems = [
-    { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
-    { href: '/dashboard/products', icon: Package, label: 'المنتجات والخدمات' },
-    { href: '/dashboard/products/new', icon: PlusCircle, label: 'إضافة منتج جديد', parent: '/dashboard/products'},
-    { href: '/dashboard/orders', icon: ShoppingBag, label: 'الطلبات' },
-    { href: '/dashboard/customers', icon: Users, label: 'العملاء والتواصل' }, // Placeholder
-    { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات المتجر' }, // Placeholder
-    { href: '/dashboard/marketing', icon: Gift, label: 'التسويق والعروض' }, // Placeholder
-    { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير' }, // Placeholder
-    { href: '/dashboard/settings', icon: Settings, label: 'إعدادات المتجر' },
+    { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية', breadcrumb: 'الرئيسية' },
+    { href: '/dashboard/products', icon: Package, label: 'المنتجات والخدمات', breadcrumb: 'المنتجات' },
+    { href: '/dashboard/products/new', icon: PlusCircle, label: 'إضافة منتج جديد', parent: '/dashboard/products', breadcrumb: 'إضافة جديد'},
+    { href: '/dashboard/products/edit', icon: Package, label: 'تعديل المنتج', parent: '/dashboard/products', breadcrumb: 'تعديل', isDynamic: true }, // For dynamic routes like edit/[productId]
+    { href: '/dashboard/orders', icon: ShoppingBag, label: 'الطلبات الواردة', breadcrumb: 'الطلبات' },
+    { href: '/dashboard/orders', icon: ShoppingBag, label: 'تفاصيل الطلب', parent: '/dashboard/orders', breadcrumb: 'تفاصيل الطلب', isDynamic: true }, // For dynamic routes like orders/[orderId]
+    { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل', breadcrumb: 'العملاء' }, 
+    { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات المتجر', breadcrumb: 'التحليلات' }, 
+    { href: '/dashboard/marketing', icon: Gift, label: 'التسويق والعروض', breadcrumb: 'التسويق' }, 
+    { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير', breadcrumb: 'المدفوعات' },
+    { href: '/dashboard/store-template', icon: LayoutTemplate, label: 'قالب وتصميم المتجر', breadcrumb: 'تصميم المتجر' },
+    { href: '/dashboard/settings', icon: Settings, label: 'إعدادات المتجر العامة', breadcrumb: 'الإعدادات' },
 ];
 
-const kebabToTitleCase = (str: string) => {
-  return str
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+
+const getBreadcrumbPath = (pathname: string) => {
+    const pathSegments = pathname.split('/').filter(segment => segment && segment !== 'dashboard');
+    const breadcrumbs = [];
+
+    let currentPath = '/dashboard';
+    breadcrumbs.push({ href: currentPath, label: 'لوحة التحكم' });
+
+    for (const segment of pathSegments) {
+        const matchedNavItem = dashboardNavItems.find(item => {
+            const itemBase = item.href.replace('/dashboard/', '');
+            if (item.isDynamic && segment.match(/^\S+$/) && itemBase.startsWith(pathSegments[pathSegments.indexOf(segment)-1] || '')) { // Basic check for dynamic part
+                return item.parent ? pathname.startsWith(item.parent) : false;
+            }
+            return itemBase === segment || (item.parent && item.parent.endsWith(pathSegments[pathSegments.indexOf(segment)-1] || ''));
+        });
+
+        currentPath += `/${segment}`;
+        
+        if (matchedNavItem) {
+            // If it's a dynamic route's child (e.g. /products/edit/123), use the parent's breadcrumb or a generic one
+            if (matchedNavItem.isDynamic && matchedNavItem.parent) {
+                const parentItem = dashboardNavItems.find(p => p.href === matchedNavItem.parent);
+                if (parentItem && currentPath !== parentItem.href) { // Add parent if not already the current breadcrumb
+                     if (!breadcrumbs.find(b => b.href === parentItem.href)) {
+                        breadcrumbs.push({ href: parentItem.href, label: parentItem.breadcrumb });
+                     }
+                }
+                 breadcrumbs.push({ href: currentPath, label: `${matchedNavItem.breadcrumb} #${segment}` }); // e.g. تعديل المنتج #123
+            } else {
+                 breadcrumbs.push({ href: currentPath, label: matchedNavItem.breadcrumb });
+            }
+        } else if (!isNaN(Number(segment)) || segment.length > 15) { // Likely an ID for a dynamic route not explicitly in navItems
+             const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+             const parentNavItem = dashboardNavItems.find(item => item.href === parentPath && item.isDynamic);
+             if (parentNavItem) {
+                breadcrumbs.push({ href: currentPath, label: `${parentNavItem.breadcrumb} #${segment}` });
+             } else {
+                // Fallback for unknown dynamic segments
+                breadcrumbs.push({ href: currentPath, label: segment });
+             }
+        }
+         else {
+            // Fallback for unmatched segments (e.g. sub-pages not in navItems)
+            // breadcrumbs.push({ href: currentPath, label: segment.charAt(0).toUpperCase() + segment.slice(1) });
+        }
+    }
+    return breadcrumbs.filter((value, index, self) => index === self.findIndex((t) => (t.href === value.href && t.label === value.label)));
 };
 
 
 export function SellerDashboardHeader() {
   const pathname = usePathname();
-  // Mock store slug, in a real app, this would come from user's session or store data
   const storeSlug = "my-mock-store"; 
+  const breadcrumbItems = getBreadcrumbPath(pathname);
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -73,7 +130,7 @@ export function SellerDashboardHeader() {
             <span className="sr-only">فتح/إغلاق القائمة</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="sm:max-w-xs bg-sidebar"> {/* Changed to right for RTL */}
+        <SheetContent side="right" className="sm:max-w-xs bg-sidebar">
           <nav className="grid gap-6 text-lg font-medium p-4">
             <Link
               href="/dashboard"
@@ -82,11 +139,11 @@ export function SellerDashboardHeader() {
               <WomenCommerceLogo className="h-12 w-auto" />
               <span className="sr-only">لمسة ضحى - لوحة التحكم</span>
             </Link>
-            {dashboardNavItems.filter(item => !item.parent).map(item => ( 
+            {dashboardNavItems.filter(item => !item.parent || item.isDynamic === undefined).map(item => ( 
                 <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-4 px-2.5 py-2 rounded-md ${pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href)) ? 'bg-sidebar-primary text-sidebar-primary-foreground font-semibold' : 'text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/10'}`}
+                className={`flex items-center gap-4 px-2.5 py-2 rounded-md ${pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href) && !item.isDynamic) ? 'bg-sidebar-primary text-sidebar-primary-foreground font-semibold' : 'text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/10'}`}
               >
                 <item.icon className="h-5 w-5" />
                 {item.label}
@@ -96,22 +153,38 @@ export function SellerDashboardHeader() {
         </SheetContent>
       </Sheet>
       
-      <div className="flex-1">
-         {/* Optional: Add Breadcrumbs back if needed, currently removed for simplicity */}
-      </div>
+      <Breadcrumb className="hidden md:flex">
+        <BreadcrumbList>
+          {breadcrumbItems.map((item, index) => (
+            <React.Fragment key={item.href + index}>
+              {index > 0 && <BreadcrumbSeparator />}
+              <BreadcrumbItem>
+                {index === breadcrumbItems.length - 1 ? (
+                  <BreadcrumbPage className="text-foreground">{item.label}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link href={item.href} className="text-muted-foreground hover:text-primary">{item.label}</Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </React.Fragment>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      <div className="flex items-center gap-3">
+
+      <div className="ml-auto flex items-center gap-3"> {/* Changed to ml-auto to push to the end */}
         <Button variant="outline" size="sm" asChild className="hidden md:inline-flex border-accent-yellow text-accent-yellow hover:bg-accent-yellow/10 transition-all">
             <Link href={`/store/${storeSlug}`} target="_blank">
                 <Eye size={16} className="ml-2" /> معاينة متجري
             </Link>
         </Button>
         <div className="relative md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> {/* Adjust to right-2.5 for RTL */}
+            <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> {/* Changed to right-2.5 for RTL */}
             <Input
             type="search"
             placeholder="بحث في لوحة التحكم..."
-            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[300px]" /* Adjust to pr-8 for RTL */
+            className="w-full rounded-lg bg-background pr-8 md:w-[200px] lg:w-[300px]" /* Changed to pr-8 for RTL */
             />
         </div>
         <DropdownMenu>
@@ -119,11 +192,10 @@ export function SellerDashboardHeader() {
             <Button
                 variant="outline"
                 size="icon"
-                className="overflow-hidden rounded-full border-2 border-transparent hover:border-primary transition-all"
+                className="overflow-hidden rounded-full border-2 border-transparent hover:border-primary transition-all group"
             >
                 <Bell className="h-5 w-5 text-muted-foreground group-hover:text-primary" /> 
                 <span className="sr-only">الإشعارات</span>
-                {/* Example: Add a dot for unread notifications */}
                 <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500 ring-1 ring-background" /> 
             </Button>
             </DropdownMenuTrigger>
@@ -184,6 +256,9 @@ export function SellerDashboardHeader() {
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard/settings"><Settings className="mr-2 h-4 w-4" /><span>إعدادات المتجر</span></Link>
                 </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                    <Link href="/dashboard/store-template"><LayoutTemplate className="mr-2 h-4 w-4" /><span>تصميم المتجر</span></Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard/payments"><CreditCard className="mr-2 h-4 w-4" /><span>المدفوعات والفواتير</span></Link>
                 </DropdownMenuItem>
@@ -208,4 +283,3 @@ export function SellerDashboardHeader() {
     </header>
   );
 }
-
