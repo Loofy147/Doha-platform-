@@ -9,10 +9,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Settings, Store, Palette, FileText, ShieldCheck, Save, UploadCloud, Info, LinkIcon, Eye, MessageSquare, Percent, Truck, Repeat, Users, CalendarClock, Sparkles } from 'lucide-react';
+import { Settings, Store, Palette, FileText, ShieldCheck, Save, UploadCloud, Info, LinkIcon, Eye, MessageSquare, Percent, Truck, Repeat, Users, CalendarClock, Sparkles, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const storeCategories = [
   "أزياء وإكسسوارات",
@@ -104,13 +105,51 @@ export default function SellerStoreSettingsPage() {
       title: "تم حفظ إعدادات المتجر بنجاح!",
       description: "لقد تم تحديث تفاصيل متجركِ. قد يستغرق ظهور بعض التغييرات بضع دقائق.",
       variant: 'default',
-      className: 'bg-green-500 text-white',
     });
   };
 
   if (!isClient) {
-    // Basic skeleton or loading state for SSR
-    return <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 animate-pulse"><div className="h-10 bg-muted rounded w-1/3 mb-8"></div><div className="space-y-8"><div className="h-64 bg-muted rounded-lg"></div><div className="h-80 bg-muted rounded-lg"></div><div className="h-40 bg-muted rounded-lg"></div></div></div>;
+    return (
+        <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <header className="mb-10">
+                <Skeleton className="h-10 w-1/2 mb-2" />
+                <Skeleton className="h-6 w-3/4" />
+            </header>
+            <div className="space-y-10">
+                <Card className="shadow-xl">
+                    <CardHeader className="bg-primary/5 p-6"><Skeleton className="h-8 w-1/3" /></CardHeader>
+                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full md:col-span-2" />
+                        <Skeleton className="h-10 w-full md:col-span-2" />
+                        <Skeleton className="h-24 w-full md:col-span-2" />
+                    </CardContent>
+                </Card>
+                <Card className="shadow-xl">
+                    <CardHeader className="bg-primary/5 p-6"><Skeleton className="h-8 w-1/3" /></CardHeader>
+                    <CardContent className="p-6 space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Skeleton className="h-28 w-full" />
+                            <Skeleton className="h-28 w-full" />
+                        </div>
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-16 w-full" />
+                    </CardContent>
+                </Card>
+                 <Card className="shadow-xl">
+                    <CardHeader className="bg-primary/5 p-6"><Skeleton className="h-8 w-1/3" /></CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                        <Skeleton className="h-20 w-full" />
+                        <Skeleton className="h-20 w-full" />
+                    </CardContent>
+                </Card>
+            </div>
+             <CardFooter className="border-t pt-8 mt-10 pb-8 flex justify-end">
+                <Skeleton className="h-12 w-32" />
+            </CardFooter>
+        </div>
+    );
   }
 
   return (
@@ -334,3 +373,4 @@ export default function SellerStoreSettingsPage() {
     </div>
   );
 }
+
