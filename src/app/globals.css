@@ -109,3 +109,18 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .animate-head-shake {
+    animation: head-shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  }
+}
+
+@keyframes head-shake {
+  0% { transform: translateX(0) rotateY(0); }
+  6.5% { transform: translateX(-3px) rotateY(-4.5deg); }
+  18.5% { transform: translateX(2.5px) rotateY(3.5deg); }
+  31.5% { transform: translateX(-1.5px) rotateY(-2.5deg); }
+  43.5% { transform: translateX(1px) rotateY(1.5deg); }
+  50% { transform: translateX(0) rotateY(0); }
+}

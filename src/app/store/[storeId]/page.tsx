@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
+// import Link from 'next/link'; // Link was unused, removed
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,12 +16,20 @@ import { useToast } from '@/hooks/use-toast';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import StoreProductCard from '@/components/store/store-product-card';
+import StoreSection from '@/components/store/store-section';
 
-interface Product {
+// Define ProductType if not already defined or imported
+type ProductType = 'بيع' | 'إيجار' | 'خدمة';
+
+export interface Product { // Exporting for StoreProductCard
   id: string;
   name: string;
+  type: ProductType;
   description: string;
-  price: string;
+  longDescription?: string;
+  price: string; // This is the display price string
   imageSrc: string;
   dataAiHint: string;
   category: string;
@@ -37,13 +45,13 @@ interface StoreData {
   slug: string;
   slogan?: string;
   story?: string;
-  highlights?: string[]; // Short bullet points for store highlights
+  highlights?: string[];
   logoSrc: string;
   dataAiHintLogo: string;
   bannerSrc: string;
   dataAiHintBanner: string;
-  category: string; // Main store category
-  storeCategories: string[]; // Categories of products within this store
+  category: string;
+  storeCategories: string[];
   products: Product[];
   contactEmail?: string;
   contactPhone?: string;
@@ -54,7 +62,7 @@ interface StoreData {
     twitter?: string;
   };
   accentColor?: string; 
-  themeStyle?: 'light' | 'elegant' | 'playful'; // Conceptual for future theming
+  themeStyle?: 'light' | 'elegant' | 'playful';
 }
 
 const mockStoreDetails: Record<string, StoreData> = {
@@ -72,12 +80,12 @@ const mockStoreDetails: Record<string, StoreData> = {
     category: 'حرف يدوية إبداعية',
     storeCategories: ['مجوهرات', 'فن وديكور', 'ديكور منزلي', 'أدوات منزلية'],
     products: [
-      { id: 'p1', name: 'أقراط فضية مرصعة بالفيروز', description: 'أقراط أنيقة مصنوعة يدوياً.', price: '3,500 دج', imageSrc: 'https://picsum.photos/seed/earrings/300/300', dataAiHint: 'silver earrings', category: 'مجوهرات', isNew: true, averageRating: 4.5, reviewCount: 12 },
-      { id: 'p2', name: 'لوحة زيتية "ألوان الربيع"', description: 'لوحة تجريدية تضفي الحياة على أي جدار.', price: '12,000 دج', imageSrc: 'https://picsum.photos/seed/painting/300/300', dataAiHint: 'oil painting', category: 'فن وديكور', isBestseller: true, averageRating: 5, reviewCount: 8 },
-      { id: 'p3', name: 'مجموعة شموع عطرية يدوية', description: 'شموع طبيعية بروائح آسرة.', price: '2,200 دج', imageSrc: 'https://picsum.photos/seed/candles/300/300', dataAiHint: 'scented candles', category: 'ديكور منزلي', averageRating: 4.2, reviewCount: 20 },
-      { id: 'p4', name: 'كوب سيراميك مزخرف', description: 'كوب فريد بتصميم يدوي.', price: '1,800 دج', imageSrc: 'https://picsum.photos/seed/mug/300/300', dataAiHint: 'ceramic mug', category: 'أدوات منزلية', isNew: true, averageRating: 4.8, reviewCount: 5 },
-      { id: 'p5', name: 'قلادة الأحجار الكريمة', description: 'قلادة أنيقة بأحجار كريمة متنوعة.', price: '4,800 دج', imageSrc: 'https://picsum.photos/seed/necklace/300/300', dataAiHint: 'gemstone necklace', category: 'مجوهرات', isBestseller: true },
-      { id: 'p6', name: 'إناء زهور خزفي', description: 'إناء بتصميم فريد يضفي لمسة جمالية.', price: '2,500 دج', imageSrc: 'https://picsum.photos/seed/vase/300/300', dataAiHint: 'ceramic vase', category: 'ديكور منزلي' },
+      { id: 'p1', name: 'أقراط فضية مرصعة بالفيروز', type: 'بيع', description: 'أقراط أنيقة مصنوعة يدوياً.', longDescription: 'أقراط فضية استرليني عيار 925، مصنوعة يدوياً ومرصعة بحجر الفيروز الطبيعي الأزرق السماوي. تصميم عصري وأنيق يناسب الإطلالات اليومية والمناسبات الخاصة. الوزن: 5 جرام. تأتي في علبة هدايا فاخرة.', price: '3,500 دج', imageSrc: 'https://picsum.photos/seed/earrings/300/300', dataAiHint: 'silver earrings', category: 'مجوهرات', isNew: true, averageRating: 4.5, reviewCount: 12 },
+      { id: 'p2', name: 'لوحة زيتية "ألوان الربيع"', type: 'بيع', description: 'لوحة تجريدية تضفي الحياة على أي جدار.', longDescription: 'لوحة زيتية أصلية بألوان أكريليك على قماش كانفاس مشدود. مقاس 50x70 سم. تجسد اللوحة انطباعات تجريدية لألوان الربيع المبهجة. مثالية لإضافة لمسة فنية عصرية لغرفة المعيشة أو المكتب.', price: '12,000 دج', imageSrc: 'https://picsum.photos/seed/painting/300/300', dataAiHint: 'oil painting', category: 'فن وديكور', isBestseller: true, averageRating: 5, reviewCount: 8 },
+      { id: 'p3', name: 'مجموعة شموع عطرية يدوية', type: 'بيع', description: 'شموع طبيعية بروائح آسرة.', longDescription: 'مجموعة من 3 شموع عطرية مصنوعة يدوياً من شمع الصويا الطبيعي وفتائل قطنية. الروائح: لافندر للاسترخاء، فانيليا دافئة، وخشب الصندل الهادئ. مدة احتراق كل شمعة: حوالي 25 ساعة.', price: '2,200 دج', imageSrc: 'https://picsum.photos/seed/candles/300/300', dataAiHint: 'scented candles', category: 'ديكور منزلي', averageRating: 4.2, reviewCount: 20 },
+      { id: 'p4', name: 'كوب سيراميك مزخرف', type: 'بيع', description: 'كوب فريد بتصميم يدوي.', longDescription: 'كوب سيراميك مصنوع ومزخرف يدوياً بنقوش فريدة. مثالي للمشروبات الساخنة. السعة: 300 مل. آمن للاستخدام في الميكروويف وغسالة الصحون (ينصح بالغسيل اليدوي للحفاظ على الزخارف).', price: '1,800 دج', imageSrc: 'https://picsum.photos/seed/mug/300/300', dataAiHint: 'ceramic mug', category: 'أدوات منزلية', isNew: true, averageRating: 4.8, reviewCount: 5 },
+      { id: 'p5', name: 'قلادة الأحجار الكريمة', type: 'بيع', description: 'قلادة أنيقة بأحجار كريمة متنوعة.', longDescription: 'قلادة فضية أنيقة مرصعة بمزيج من الأحجار الكريمة الطبيعية (جمشت، روز كوارتز، أفينتورين). طول السلسلة: 45 سم. قطعة فريدة تضيف لمسة من الألوان والحيوية.', price: '4,800 دج', imageSrc: 'https://picsum.photos/seed/necklace/300/300', dataAiHint: 'gemstone necklace', category: 'مجوهرات', isBestseller: true },
+      { id: 'p6', name: 'إناء زهور خزفي', type: 'إيجار', description: 'إناء بتصميم فريد يضفي لمسة جمالية.', longDescription: 'إناء زهور خزفي مصنوع يدويًا بتصميم عصري. مثالي لتنسيقات الزهور المتوسطة الحجم. الارتفاع: 25 سم. خدمة الإيجار للمناسبات والفعاليات.', price: '800 دج / لليوم', imageSrc: 'https://picsum.photos/seed/vase/300/300', dataAiHint: 'ceramic vase', category: 'ديكور منزلي' },
     ],
     contactEmail: 'contact@lamsatdoha.com',
     contactPhone: '+213 555 123 456',
@@ -86,7 +94,6 @@ const mockStoreDetails: Record<string, StoreData> = {
     accentColor: 'hsl(var(--accent-pink))',
     themeStyle: 'elegant',
   },
-   // Add other store details here, similar to my-mock-store but with different products and details.
   'lamsa-ibdaa': { 
     id: 'store-lamsa-ibdaa',
     name: 'لمسة إبداع',
@@ -101,9 +108,9 @@ const mockStoreDetails: Record<string, StoreData> = {
     category: 'مشغولات يدوية فنية',
     storeCategories: ['إكسسوارات فاخرة', 'ديكور منزلي فني', 'أزياء مستدامة'],
     products: [
-      { id: 'li_p1', name: 'حقيبة جلد مطرزة باليد', description: 'حقيبة جلدية فاخرة بتطريز يدوي دقيق، مثالية لإطلالة متميزة.', price: '7,200 دج', imageSrc: 'https://picsum.photos/seed/leatherbagstitch/300/300', dataAiHint: 'stitched leather bag', category: 'إكسسوارات فاخرة', isBestseller: true, averageRating: 4.9, reviewCount: 15 },
-      { id: 'li_p2', name: 'مجموعة فخاريات مزخرفة يدويًا', description: 'أواني فخارية فريدة مرسومة بألوان زاهية لتزيين منزلك.', price: '4,800 دج', imageSrc: 'https://picsum.photos/seed/decoratedpottery/300/300', dataAiHint: 'decorated pottery set', category: 'ديكور منزلي فني', isNew: true },
-      { id: 'li_p3', name: 'وشاح حرير مصبوغ طبيعيًا', description: 'وشاح حريري ناعم مصبوغ بألوان طبيعية مستخلصة من النباتات.', price: '3,500 دج', imageSrc: 'https://picsum.photos/seed/silkscarfnatural/300/300', dataAiHint: 'natural silk scarf', category: 'أزياء مستدامة', averageRating: 4.7, reviewCount: 9  },
+      { id: 'li_p1', name: 'حقيبة جلد مطرزة باليد', type: 'بيع', description: 'حقيبة جلدية فاخرة بتطريز يدوي دقيق، مثالية لإطلالة متميزة.', longDescription: 'حقيبة كتف مصنوعة من الجلد الطبيعي الفاخر، مطرزة يدويًا بخيوط حريرية ملونة بتصميم تقليدي مستوحى من التراث. أبعاد الحقيبة: 25 سم × 20 سم × 8 سم. تحتوي على جيب داخلي بسحاب.', price: '7,200 دج', imageSrc: 'https://picsum.photos/seed/leatherbagstitch/300/300', dataAiHint: 'stitched leather bag', category: 'إكسسوارات فاخرة', isBestseller: true, averageRating: 4.9, reviewCount: 15 },
+      { id: 'li_p2', name: 'مجموعة فخاريات مزخرفة يدويًا', type: 'بيع', description: 'أواني فخارية فريدة مرسومة بألوان زاهية لتزيين منزلك.', longDescription: 'مجموعة مكونة من ثلاث قطع فخارية (إناء، طبق، كوب) مزخرفة يدويًا بألوان أكريليك ثابتة. تصميم فريد يجمع بين الأصالة والعصرية. مثالية كقطعة ديكور أو للاستخدام اليومي.', price: '4,800 دج', imageSrc: 'https://picsum.photos/seed/decoratedpottery/300/300', dataAiHint: 'decorated pottery set', category: 'ديكور منزلي فني', isNew: true },
+      { id: 'li_p3', name: 'وشاح حرير مصبوغ طبيعيًا', type: 'بيع', description: 'وشاح حريري ناعم مصبوغ بألوان طبيعية مستخلصة من النباتات.', longDescription: 'وشاح مصنوع من الحرير الطبيعي 100%، مصبوغ يدويًا باستخدام أصباغ طبيعية مستخلصة من النباتات والأزهار. كل قطعة فريدة بنقشها اللوني. مقاس: 180 سم × 50 سم.', price: '3,500 دج', imageSrc: 'https://picsum.photos/seed/silkscarfnatural/300/300', dataAiHint: 'natural silk scarf', category: 'أزياء مستدامة', averageRating: 4.7, reviewCount: 9  },
     ],
     contactEmail: 'lamsa.ibdaa@lamsadoha.com',
     contactPhone: '+213 555 987 654',
@@ -126,9 +133,9 @@ const mockStoreDetails: Record<string, StoreData> = {
     category: 'حلويات ومأكولات منزلية',
     storeCategories: ['كيك عالمي', 'حلويات شرقية تقليدية', 'حلويات شرقية فاخرة'],
     products: [
-      { id: 'ma_p1', name: 'كيكة العسل الروسية التقليدية', description: 'طبقات هشة من عجين العسل مع كريمة الزبدة الغنية، تجربة لا تقاوم.', price: '3,000 دج', imageSrc: 'https://picsum.photos/seed/russianhoneycake/300/300', dataAiHint: 'russian honey cake', category: 'كيك عالمي', isNew: true, averageRating: 4.6, reviewCount: 22  },
-      { id: 'ma_p2', name: 'معمول التمر الفاخر المحشو بالجوز', description: 'معمول هش يذوب في الفم، بحشوة التمر الغنية وقطع الجوز المقرمشة.', price: '1,500 دج / للعلبة (12 قطعة)', imageSrc: 'https://picsum.photos/seed/maamouldateswalnuts/300/300', dataAiHint: 'maamoul dates walnuts', category: 'حلويات شرقية تقليدية', isBestseller: true },
-      { id: 'ma_p3', name: 'بقلاوة بالفستق الحلبي والعسل', description: 'طبقات رقيقة من العجين الذهبي محشوة بالفستق الحلبي الفاخر ومسقاة بالعسل الطبيعي.', price: '2,800 دج / للكيلو', imageSrc: 'https://picsum.photos/seed/pistachiobaklava/300/300', dataAiHint: 'pistachio baklava honey', category: 'حلويات شرقية فاخرة' },
+      { id: 'ma_p1', name: 'كيكة العسل الروسية التقليدية', type: 'خدمة', description: 'طبقات هشة من عجين العسل مع كريمة الزبدة الغنية، تجربة لا تقاوم.', longDescription: 'كيكة العسل الروسية الشهيرة "Medovik"، مكونة من طبقات رقيقة من بسكويت العسل وكريمة القشطة الحامضة أو كريمة الزبدة. تحضر بالطلب. تكفي 8-10 أشخاص.', price: '3,000 دج', imageSrc: 'https://picsum.photos/seed/russianhoneycake/300/300', dataAiHint: 'russian honey cake', category: 'كيك عالمي', isNew: true, averageRating: 4.6, reviewCount: 22  },
+      { id: 'ma_p2', name: 'معمول التمر الفاخر المحشو بالجوز', type: 'بيع', description: 'معمول هش يذوب في الفم، بحشوة التمر الغنية وقطع الجوز المقرمشة.', longDescription: 'معمول بيتي فاخر مصنوع من أجود أنواع السميد والتمر، محشو بالجوز ومزين بالسكر البودرة. مثالي للتقديم في المناسبات والأعياد. العلبة تحتوي على 12 قطعة.', price: '1,500 دج / للعلبة (12 قطعة)', imageSrc: 'https://picsum.photos/seed/maamouldateswalnuts/300/300', dataAiHint: 'maamoul dates walnuts', category: 'حلويات شرقية تقليدية', isBestseller: true },
+      { id: 'ma_p3', name: 'بقلاوة بالفستق الحلبي والعسل', type: 'بيع', description: 'طبقات رقيقة من العجين الذهبي محشوة بالفستق الحلبي الفاخر ومسقاة بالعسل الطبيعي.', longDescription: 'بقلاوة شهية محضرة من طبقات رقيقة من عجينة الفيلو، محشوة بالفستق الحلبي الفاخر ومخبوزة حتى تكتسب لونًا ذهبيًا، ثم تُسقى بشيرة العسل الطبيعي. تباع بالكيلو.', price: '2,800 دج / للكيلو', imageSrc: 'https://picsum.photos/seed/pistachiobaklava/300/300', dataAiHint: 'pistachio baklava honey', category: 'حلويات شرقية فاخرة' },
     ],
     contactEmail: 'mathaq.albayt@lamsadoha.com',
     contactPhone: '+213 555 654 321',
@@ -151,91 +158,82 @@ const mockStoreDetails: Record<string, StoreData> = {
     category: 'تأجير فساتين سهرة',
     storeCategories: ['فساتين سهرة فاخرة', 'فساتين قصيرة للمناسبات', 'فساتين حفلات زفاف'],
     products: [
-      { id: 'an_p1', name: 'فستان سهرة ذهبي مطرز بالكريستال', description: 'فستان طويل بقصة حورية البحر، مطرز بالكامل بكريستالات سواروفسكي، مثالي للمناسبات الكبرى.', price: '10,000 دج / لليلة', imageSrc: 'https://picsum.photos/seed/goldcrystaldress/300/300', dataAiHint: 'gold crystal dress', category: 'فساتين سهرة فاخرة', isBestseller: true, averageRating: 5, reviewCount: 7 },
-      { id: 'an_p2', name: 'فستان كوكتيل أحمر قصير من الدانتيل', description: 'فستان أنيق ومميز من الدانتيل الأحمر، مثالي للمناسبات النهارية والمسائية وحفلات الكوكتيل.', price: '5,000 دج / لليلة', imageSrc: 'https://picsum.photos/seed/redlacedress/300/300', dataAiHint: 'red lace cocktail dress', category: 'فساتين قصيرة للمناسبات', isNew: true },
-      { id: 'an_p3', name: 'فستان أميرات منفوش باللون الأزرق السماوي', description: 'فستان ساحر بقصة الأميرات وتنورة منفوشة، يجعلكِ تشعرين وكأنكِ في حكاية خيالية.', price: '8,500 دج / لليلة', imageSrc: 'https://picsum.photos/seed/blueprincessdress/300/300', dataAiHint: 'blue princess dress', category: 'فساتين حفلات زفاف' },
+      { id: 'an_p1', name: 'فستان سهرة ذهبي مطرز بالكريستال', type: 'إيجار', description: 'فستان طويل بقصة حورية البحر، مطرز بالكامل بكريستالات سواروفسكي، مثالي للمناسبات الكبرى.', longDescription: 'فستان سهرة فاخر بلون ذهبي بقصة حورية البحر يبرز جمال القوام. مطرز يدويًا بكريستالات سواروفسكي لامعة. مثالي لحفلات الزفاف والمناسبات الرسمية. متوفر بمقاسات S, M, L. مدة الإيجار 3 أيام.', price: '10,000 دج / لليلة', imageSrc: 'https://picsum.photos/seed/goldcrystaldress/300/300', dataAiHint: 'gold crystal dress', category: 'فساتين سهرة فاخرة', isBestseller: true, averageRating: 5, reviewCount: 7 },
+      { id: 'an_p2', name: 'فستان كوكتيل أحمر قصير من الدانتيل', type: 'إيجار', description: 'فستان أنيق ومميز من الدانتيل الأحمر، مثالي للمناسبات النهارية والمسائية وحفلات الكوكتيل.', longDescription: 'فستان كوكتيل قصير وجذاب من الدانتيل الأحمر الفاخر. تصميم أنيق يناسب حفلات الخطوبة والمناسبات الخاصة. متوفر بمقاسات متعددة. مدة الإيجار يوم واحد.', price: '5,000 دج / لليلة', imageSrc: 'https://picsum.photos/seed/redlacedress/300/300', dataAiHint: 'red lace cocktail dress', category: 'فساتين قصيرة للمناسبات', isNew: true },
+      { id: 'an_p3', name: 'فستان أميرات منفوش باللون الأزرق السماوي', type: 'إيجار', description: 'فستان ساحر بقصة الأميرات وتنورة منفوشة، يجعلكِ تشعرين وكأنكِ في حكاية خيالية.', longDescription: 'فستان الأحلام بقصة الأميرات بلون أزرق سماوي فاتح. يتميز بتنورة منفوشة من عدة طبقات من التول وصدرية مطرزة باللؤلؤ. مثالي لحفلات التخرج أو كفستان وصيفة العروس. مدة الإيجار 3 أيام.', price: '8,500 دج / لليلة', imageSrc: 'https://picsum.photos/seed/blueprincessdress/300/300', dataAiHint: 'blue princess dress', category: 'فساتين حفلات زفاف' },
     ],
     contactEmail: 'anaqa.lilijar@lamsadoha.com',
     contactPhone: '+213 555 111 222',
     address: 'بوتيك أناقة، شارع الموضة، سطيف',
     socialMedia: { instagram: 'AnaqaLilijar', facebook: 'AnaqaDressRental' },
-    accentColor: 'hsl(330 65% 60%)', // A vibrant pink
+    accentColor: 'hsl(330 65% 60%)',
     themeStyle: 'light',
   }
 };
 
-const StoreProductCard: React.FC<{ product: Product, accentColor?: string }> = ({ product, accentColor }) => {
-  const { toast } = useToast();
-  const handleViewDetails = () => {
-    // In a real app, this would likely open a product detail page or a more detailed modal
-    toast({
-      title: `تفاصيل المنتج: ${product.name}`,
-      description: "سيتم عرض صفحة المنتج الكاملة هنا (قيد التطوير).",
-      action: <Button variant="outline" size="sm" onClick={() => {/* navigate to product page */}}>اكتشفي المزيد</Button>,
-    });
-  };
+interface FeaturedCollection {
+    name: string;
+    products: Product[];
+}
 
-  return (
-    <Card className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group h-full border rounded-lg hover:border-primary/50">
-      <CardHeader className="p-0 relative aspect-square">
-        <Image 
-          src={product.imageSrc} 
-          alt={product.name} 
-          fill 
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105" 
-          data-ai-hint={product.dataAiHint} 
-        />
-        <div className="absolute top-2 right-2 flex flex-col gap-1">
-            {product.isNew && <Badge variant="destructive" className="shadow-md animate-pulse">جديد!</Badge>}
-            {product.isBestseller && <Badge style={{ backgroundColor: accentColor || 'hsl(var(--accent-yellow))', color: 'hsl(var(--accent-yellow-foreground))' }} className="shadow-md">الأكثر مبيعًا</Badge>}
-        </div>
-      </CardHeader>
-      <CardContent className="p-4 flex-grow flex flex-col">
-        <p className="text-xs text-muted-foreground mb-1">{product.category}</p>
-        <CardTitle className="text-lg font-semibold text-primary mb-1 group-hover:text-pink-500 transition-colors" style={{ color: accentColor || 'hsl(var(--primary))' }}>
-          {product.name}
-        </CardTitle>
-        <CardDescription className="text-xs text-foreground/70 flex-grow mb-2">{product.description}</CardDescription>
-        {product.averageRating && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                <Star className="w-3.5 h-3.5" style={{fill: accentColor || 'hsl(var(--accent-yellow))', color: accentColor || 'hsl(var(--accent-yellow))'}}/>
-                <span>{product.averageRating.toFixed(1)}</span>
-                <span>({product.reviewCount} تقييمات)</span>
+const FeaturedCollectionsSection: React.FC<{ collections: FeaturedCollection[], storeData: StoreData | null, onViewProductDetails: (product: Product) => void, onShowAllFromCollection: (categoryName: string) => void }> = ({ collections, storeData, onViewProductDetails, onShowAllFromCollection }) => {
+    if (!collections.length) return null;
+
+    return (
+        <StoreSection title="اكتشفي مجموعاتنا" icon={Palette} accentColor={storeData?.accentColor} className="my-10">
+            <div className="space-y-10">
+                {collections.map(collection => (
+                    <div key={collection.name}>
+                        <h3 className="text-xl font-semibold mb-4 text-foreground/90" style={{borderBottom: `2px solid ${storeData?.accentColor || 'hsl(var(--primary))'}`, paddingBottom: '0.5rem'}}>
+                            {collection.name}
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            {collection.products.slice(0,3).map(product => (
+                                <StoreProductCard key={product.id} product={product} accentColor={storeData?.accentColor} onViewDetails={onViewProductDetails} />
+                            ))}
+                        </div>
+                        {collection.products.length > 3 && (
+                            <div className="text-center mt-6">
+                                <Button variant="outline" onClick={() => onShowAllFromCollection(collection.name)}
+                                style={{borderColor: storeData?.accentColor || 'hsl(var(--primary))', color: storeData?.accentColor || 'hsl(var(--primary))'}}
+                                >
+                                    عرض المزيد من {collection.name}
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
-        )}
-        <p className="text-xl font-bold mt-auto" style={{ color: accentColor || 'hsl(var(--accent-pink))' }}>{product.price}</p>
-      </CardContent>
-      <CardFooter className="p-3 border-t">
-        <Button 
-          variant="outline" 
-          className="w-full hover:text-white transition-all duration-300"
-          style={{
-            borderColor: accentColor || 'hsl(var(--primary))',
-            color: accentColor || 'hsl(var(--primary))',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = accentColor || 'hsl(var(--primary))'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-          onClick={handleViewDetails}
-        >
-          <ShoppingBasket size={16} className="ml-2"/> عرض التفاصيل
-        </Button>
-      </CardFooter>
-    </Card>
-  );
+        </StoreSection>
+    );
 };
 
-const StoreSection: React.FC<{title: string, icon?: React.ElementType, children: React.ReactNode, accentColor?: string, className?: string}> = ({ title, icon: Icon, children, accentColor, className }) => {
+const SpecialOffersSection: React.FC<{ products: Product[], storeData: StoreData | null, onViewProductDetails: (product: Product) => void }> = ({ products, storeData, onViewProductDetails }) => {
+    if (!products.length) return null;
+    const autoplayPlugin = React.useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+
     return (
-        <section className={cn("py-8 md:py-12", className)}>
-            <div className="flex items-center gap-3 mb-6">
-                {Icon && <Icon size={28} style={{color: accentColor || 'hsl(var(--primary))'}} />}
-                <h2 className="text-2xl md:text-3xl font-bold" style={{color: accentColor || 'hsl(var(--primary))'}}>{title}</h2>
-            </div>
-            {children}
-        </section>
-    )
-}
+        <StoreSection title="عروضنا المميزة" icon={Sparkles} accentColor={storeData?.accentColor} className="bg-card/50 p-4 md:p-6 rounded-lg shadow-md">
+            <Carousel
+                opts={{ align: "start", loop: products.length > 2, direction: "rtl" }}
+                plugins={[autoplayPlugin.current]}
+                className="w-full"
+                onMouseEnter={autoplayPlugin.current.stop}
+                onMouseLeave={autoplayPlugin.current.reset}
+            >
+                <CarouselContent className="-ml-4">
+                    {products.map(product => (
+                        <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4">
+                            <StoreProductCard product={product} accentColor={storeData?.accentColor} onViewDetails={onViewProductDetails} />
+                        </CarouselItem>
+                    ))}
+                </CarouselContent>
+                {products.length > 3 && <> <CarouselPrevious className="right-0 -translate-x-1/2 left-auto text-white" style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}} /> <CarouselNext className="left-0 translate-x-1/2 right-auto text-white" style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}} /> </>}
+            </Carousel>
+        </StoreSection>
+    );
+};
+
 
 export default function StorePage() {
   const params = useParams();
@@ -247,6 +245,8 @@ export default function StorePage() {
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStoreCategory, setSelectedStoreCategory] = useState<string>('الكل');
+  const [selectedProductModal, setSelectedProductModal] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (storeId) {
@@ -257,7 +257,7 @@ export default function StorePage() {
           setStoreData(data);
         } else {
           toast({ title: "خطأ", description: `لم يتم العثور على المتجر المطلوب.`, variant: "destructive" });
-          router.push('/products'); // Redirect if store not found
+          router.push('/products');
         }
         setIsLoading(false);
       }, 1000);
@@ -270,10 +270,38 @@ export default function StorePage() {
 
   const newArrivals = storeData?.products.filter(p => p.isNew).slice(0, 6) || [];
   const bestSellers = storeData?.products.filter(p => p.isBestseller).slice(0, 6) || [];
+  const specialOffers = storeData?.products.filter(p => p.price.includes('خصم') || (p.averageRating || 0) > 4.5).slice(0,8) || []; // Example logic for offers
+  const featuredCollectionsData: FeaturedCollection[] = storeData?.storeCategories.map(category => ({
+        name: category,
+        products: storeData.products.filter(p => p.category === category)
+    })).filter(collection => collection.products.length > 0) || [];
   
   const filteredProducts = selectedStoreCategory === 'الكل' 
     ? storeData?.products 
     : storeData?.products.filter(p => p.category === selectedStoreCategory);
+
+  const handleViewProductDetails = (product: Product) => {
+    setSelectedProductModal(product);
+    setIsModalOpen(true);
+  };
+  
+  const handleShowAllFromCollection = (categoryName: string) => {
+    setSelectedStoreCategory(categoryName);
+    // Scroll to all products section (optional)
+    const allProductsSection = document.getElementById('all-products-section');
+    if (allProductsSection) {
+        allProductsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const getModalActionText = (type?: ProductType) => {
+    switch (type) {
+      case 'بيع': return <><ShoppingBag size={18} className="mr-2" /> أضيفي للسلة (قريباً)</>;
+      case 'إيجار': return <><CalendarDays size={18} className="mr-2" /> احجزي الآن (قريباً)</>;
+      case 'خدمة': return <><Handshake size={18} className="mr-2" /> استفسري/احجزي الخدمة (قريباً)</>;
+      default: return 'عرض التفاصيل';
+    }
+  }
 
 
   if (isLoading) {
@@ -305,20 +333,19 @@ export default function StorePage() {
   }
 
   if (!storeData) {
-    // This case should ideally be handled by the redirect in useEffect, but as a fallback:
     return (
       <div className="container mx-auto px-4 py-12 text-center min-h-screen flex flex-col justify-center items-center">
         <ShoppingBag size={64} className="mx-auto text-muted-foreground mb-4" />
         <h1 className="text-2xl font-semibold text-destructive">المتجر غير موجود</h1>
         <p className="text-muted-foreground mt-2">عذرًا، لا يمكننا العثور على المتجر الذي تبحثين عنه.</p>
         <Button asChild className="mt-6" onClick={() => router.push('/products')}>
-          <Link href="/products">العودة إلى تصفح المنتجات</Link>
+          <span>العودة إلى تصفح المنتجات</span>
         </Button>
       </div>
     );
   }
   
-  const storeThemeStyle = storeData.themeStyle || 'light'; // Default theme
+  const storeThemeStyle = storeData.themeStyle || 'light';
 
   return (
     <div className={cn(
@@ -327,7 +354,6 @@ export default function StorePage() {
         storeThemeStyle === 'elegant' && "bg-slate-50",
         storeThemeStyle === 'playful' && "bg-amber-50",
     )}>
-      {/* Store Banner */}
       <div className="relative h-56 md:h-80 w-full group overflow-hidden shadow-inner">
         <Image 
           src={storeData.bannerSrc} 
@@ -338,12 +364,10 @@ export default function StorePage() {
           priority
         />
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            {/* Can add text or overlay elements on banner here */}
         </div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {/* Store Header and Logo */}
         <div className="relative -mt-16 md:-mt-24 z-10 flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6 p-4 md:p-6 bg-card shadow-xl rounded-lg border-2 mb-10" style={{borderColor: storeData.accentColor || 'hsl(var(--primary))'}}>
           <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 shadow-lg" style={{borderColor: storeData.accentColor || 'hsl(var(--primary))'}}>
             <AvatarImage src={storeData.logoSrc} alt={`${storeData.name} Logo`} data-ai-hint={storeData.dataAiHintLogo} />
@@ -358,7 +382,6 @@ export default function StorePage() {
                 <Badge variant="outline" className="capitalize text-sm" style={{borderColor: storeData.accentColor ? `${storeData.accentColor}80` : 'hsl(var(--primary)/0.5)', color: storeData.accentColor || 'hsl(var(--primary))'}}>
                 <Palette size={14} className="ml-1" /> {storeData.category}
                 </Badge>
-                {/* Mock rating */}
                 <Badge variant="secondary" className="text-sm"><Star size={14} className="ml-1 text-yellow-400 fill-yellow-400"/> 4.7 (150+ تقييم)</Badge>
             </div>
           </div>
@@ -372,7 +395,6 @@ export default function StorePage() {
           </div>
         </div>
         
-        {/* Store Highlights Section */}
         {storeData.highlights && storeData.highlights.length > 0 && (
             <StoreSection title="أبرز ما يميزنا" icon={Sparkles} accentColor={storeData.accentColor} className="bg-card p-6 rounded-lg shadow-md mb-10">
                 <ul className="list-none space-y-2 pl-0">
@@ -386,9 +408,7 @@ export default function StorePage() {
             </StoreSection>
         )}
 
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-12">
-          {/* Sidebar/Store Info */}
           <aside className="lg:col-span-1 space-y-8">
             <Card className="shadow-lg sticky top-24">
               <CardHeader>
@@ -432,9 +452,7 @@ export default function StorePage() {
             </Card>
           </aside>
 
-          {/* Products Sections */}
           <main className="lg:col-span-2 space-y-12">
-            {/* New Arrivals Section */}
             {newArrivals.length > 0 && (
                 <StoreSection title="وصل حديثًا" icon={Rocket} accentColor={storeData.accentColor}>
                     <Carousel 
@@ -447,16 +465,15 @@ export default function StorePage() {
                         <CarouselContent className="-ml-4">
                         {newArrivals.map(product => (
                             <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                                <StoreProductCard product={product} accentColor={storeData.accentColor} />
+                                <StoreProductCard product={product} accentColor={storeData.accentColor} onViewDetails={handleViewProductDetails} />
                             </CarouselItem>
                         ))}
                         </CarouselContent>
-                        {newArrivals.length > 3 && <> <CarouselPrevious className="right-0 -translate-x-1/2 left-auto text-white" style={{backgroundColor: storeData.accentColor || 'hsl(var(--primary))'}} /> <CarouselNext className="left-0 translate-x-1/2 right-auto text-white" style={{backgroundColor: storeData.accentColor || 'hsl(var(--primary))'}} /> </>}
+                        {newArrivals.length > 3 && <> <CarouselPrevious className="right-0 -translate-x-1/2 left-auto text-white" style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}} /> <CarouselNext className="left-0 translate-x-1/2 right-auto text-white" style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}} /> </>}
                     </Carousel>
                 </StoreSection>
             )}
 
-            {/* Best Sellers Section */}
             {bestSellers.length > 0 && (
                 <StoreSection title="الأكثر طلبًا" icon={ThumbsUp} accentColor={storeData.accentColor}>
                      <Carousel 
@@ -469,16 +486,27 @@ export default function StorePage() {
                         <CarouselContent className="-ml-4">
                         {bestSellers.map(product => (
                             <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                                <StoreProductCard product={product} accentColor={storeData.accentColor} />
+                                <StoreProductCard product={product} accentColor={storeData.accentColor} onViewDetails={handleViewProductDetails} />
                             </CarouselItem>
                         ))}
                         </CarouselContent>
-                         {bestSellers.length > 3 && <> <CarouselPrevious className="right-0 -translate-x-1/2 left-auto text-white" style={{backgroundColor: storeData.accentColor || 'hsl(var(--primary))'}} /> <CarouselNext className="left-0 translate-x-1/2 right-auto text-white" style={{backgroundColor: storeData.accentColor || 'hsl(var(--primary))'}} /> </>}
+                         {bestSellers.length > 3 && <> <CarouselPrevious className="right-0 -translate-x-1/2 left-auto text-white" style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}} /> <CarouselNext className="left-0 translate-x-1/2 right-auto text-white" style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}} /> </>}
                     </Carousel>
                 </StoreSection>
             )}
             
-            {/* Shop by Category Section */}
+            {/* Featured Collections */}
+            <FeaturedCollectionsSection 
+                collections={featuredCollectionsData} 
+                storeData={storeData}
+                onViewProductDetails={handleViewProductDetails}
+                onShowAllFromCollection={handleShowAllFromCollection}
+            />
+
+            {/* Special Offers */}
+            <SpecialOffersSection products={specialOffers} storeData={storeData} onViewProductDetails={handleViewProductDetails} />
+
+
             {storeData.storeCategories && storeData.storeCategories.length > 0 && (
                  <StoreSection title="تسوقي حسب الفئة" icon={Tag} accentColor={storeData.accentColor}>
                     <div className="flex flex-wrap gap-3">
@@ -505,12 +533,11 @@ export default function StorePage() {
                 </StoreSection>
             )}
 
-            {/* All Products Section */}
-            <StoreSection title={selectedStoreCategory === 'الكل' ? "جميع إبداعات المتجر" : `إبداعات من فئة: ${selectedStoreCategory}`} icon={ShoppingBag} accentColor={storeData.accentColor}>
+            <StoreSection title={selectedStoreCategory === 'الكل' ? "جميع إبداعات المتجر" : `إبداعات من فئة: ${selectedStoreCategory}`} icon={ShoppingBag} accentColor={storeData.accentColor} id="all-products-section">
                 {filteredProducts && filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     {filteredProducts.map(product => (
-                        <StoreProductCard key={product.id} product={product} accentColor={storeData.accentColor} />
+                        <StoreProductCard key={product.id} product={product} accentColor={storeData.accentColor} onViewDetails={handleViewProductDetails} />
                     ))}
                 </div>
                 ) : (
@@ -521,10 +548,67 @@ export default function StorePage() {
                 </div>
                 )}
             </StoreSection>
-
           </main>
         </div>
       </div>
+      {selectedProductModal && (
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[90vh] flex flex-col">
+            <DialogHeader className="pt-6 pr-6 pl-6 pb-2">
+                <DialogTitle className="text-3xl font-bold" style={{color: storeData?.accentColor || 'hsl(var(--primary))'}}>{selectedProductModal.name}</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 pb-6 overflow-y-auto flex-1">
+                <div className="relative aspect-square md:aspect-auto md:min-h-[300px] rounded-lg overflow-hidden border">
+                    <Image
+                        src={selectedProductModal.imageSrc}
+                        alt={selectedProductModal.name}
+                        fill
+                        className="object-cover transition-transform duration-500 hover:scale-105"
+                        data-ai-hint={selectedProductModal.dataAiHint}
+                    />
+                </div>
+                <div className="flex flex-col justify-between">
+                    <div>
+                        <p className="text-sm text-muted-foreground mb-1">
+                            الفئة: {selectedProductModal.category} • النوع: <span className="capitalize">{selectedProductModal.type}</span>
+                        </p>
+                        <DialogDescription className="text-md text-foreground/80 leading-relaxed mb-4 whitespace-pre-wrap">
+                            {selectedProductModal.longDescription || selectedProductModal.description}
+                        </DialogDescription>
+                        
+                        {selectedProductModal.averageRating && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                                <Star className="w-4 h-4" style={{fill: storeData?.accentColor || 'hsl(var(--accent-yellow))', color: storeData?.accentColor || 'hsl(var(--accent-yellow))'}}/>
+                                <span>{selectedProductModal.averageRating.toFixed(1)}</span>
+                                <span className="text-xs">({selectedProductModal.reviewCount} تقييمات)</span>
+                                 <Button variant="link" size="sm" className="p-0 h-auto text-xs" style={{color: storeData?.accentColor || 'hsl(var(--primary))'}}>قراءة التقييمات</Button>
+                            </div>
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-3xl font-bold mt-2 mb-4" style={{color: storeData?.accentColor || 'hsl(var(--accent-pink))'}}>{selectedProductModal.price}</p>
+                        {/* Quantity selector or other options can go here */}
+                    </div>
+                </div>
+            </div>
+             <DialogFooter className="p-6 border-t bg-muted/30 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto">
+                    متابعة التسوق
+                </Button>
+                <Button 
+                    type="button" 
+                    className="w-full sm:w-auto text-white text-lg py-3 px-6"
+                    style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                    // onClick={handleAddToCartFromModal} // Implement this
+                >
+                    {getModalActionText(selectedProductModal.type)}
+                </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
