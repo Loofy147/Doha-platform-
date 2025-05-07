@@ -1,18 +1,18 @@
 // src/components/layout/navbar.tsx
 'use client';
 
-import React from 'react'; 
+import React from 'react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
-  SheetHeader, // Added
-  SheetTitle,  // Added
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift } from 'lucide-react';
+import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo'; 
 
 const navItems = [
@@ -28,6 +28,7 @@ const navItems = [
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isLoggedIn = true; // Simulate user being logged in
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -48,12 +49,29 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10">
-            <Link href="/auth/login">تسجيل الدخول</Link>
-          </Button>
-          <Button size="sm" asChild className="hidden sm:inline-flex bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
-            <Link href="/auth/register">إنشاء حساب</Link>
-          </Button>
+          {isLoggedIn ? (
+            <>
+              <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
+                <Link href="/profile" className="flex items-center">
+                  <UserCircle size={18} className="ml-1.5" />
+                  حسابي
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
+                <LogOutIcon size={16} className="ml-1.5" />
+                تسجيل الخروج
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10">
+                <Link href="/auth/login">تسجيل الدخول</Link>
+              </Button>
+              <Button size="sm" asChild className="hidden sm:inline-flex bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
+                <Link href="/auth/register">إنشاء حساب</Link>
+              </Button>
+            </>
+          )}
           <div className="lg:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -64,12 +82,13 @@ export function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background">
                 <SheetHeader>
-                  <SheetTitle className="sr-only">القائمة</SheetTitle>
+                  <SheetTitle>
+                     <Link href="/" className="mb-6 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                       <WomenCommerceLogo className="h-12 w-auto" />
+                     </Link>
+                  </SheetTitle>
                 </SheetHeader>
-                <div className="p-6">
-                  <Link href="/" className="mb-6 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                     <WomenCommerceLogo className="h-12 w-auto" />
-                  </Link>
+                <div className="p-6 pt-2">
                   <nav className="flex flex-col gap-2">
                     {navItems.map((item) => (
                       <Button
@@ -86,12 +105,29 @@ export function Navbar() {
                       </Button>
                     ))}
                      <hr className="my-3"/>
-                     <Button variant="outline" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                       <Link href="/auth/login">تسجيل الدخول</Link>
-                     </Button>
-                     <Button className="w-full justify-start text-base py-2.5 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                       <Link href="/auth/register">إنشاء حساب</Link>
-                     </Button>
+                     {isLoggedIn ? (
+                       <>
+                          <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
+                           <Link href="/profile" className="flex items-center">
+                              <UserCircle size={18} className="ml-2.5" />
+                              حسابي
+                           </Link>
+                         </Button>
+                         <Button variant="outline" className="w-full justify-start text-base py-2.5" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
+                            <LogOutIcon size={18} className="ml-2.5" />
+                            تسجيل الخروج
+                         </Button>
+                       </>
+                     ) : (
+                       <>
+                        <Button variant="outline" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
+                          <Link href="/auth/login">تسجيل الدخول</Link>
+                        </Button>
+                        <Button className="w-full justify-start text-base py-2.5 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" asChild onClick={() => setIsMobileMenuOpen(false)}>
+                          <Link href="/auth/register">إنشاء حساب</Link>
+                        </Button>
+                       </>
+                     )}
                   </nav>
                 </div>
               </SheetContent>
