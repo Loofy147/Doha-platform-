@@ -5,13 +5,12 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, type LucideProps, Rocket, ShoppingBag } from 'lucide-react'; // Allow passing LucideIcon type
+import { ChevronLeft, type LucideProps, Rocket, ShoppingBag } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-// Define a mapping for icon names to components
 const iconMap: { [key: string]: React.ElementType<LucideProps> } = {
   Rocket,
   ShoppingBag,
-  // Add other icons here if needed
 };
 
 interface CallToActionBannerProps {
@@ -21,9 +20,14 @@ interface CallToActionBannerProps {
   buttonLink: string;
   imageSrc: string;
   dataAiHint: string;
-  iconName?: keyof typeof iconMap; // Use string key for icon
+  iconName?: keyof typeof iconMap;
   reverseLayout?: boolean;
 }
+
+const bannerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
 
 export function CallToActionBanner({
   title,
@@ -38,10 +42,19 @@ export function CallToActionBanner({
   const IconComponent = iconName ? iconMap[iconName] : null;
 
   return (
-    <section className={`py-16 lg:py-20 ${reverseLayout ? 'bg-secondary/5' : 'bg-primary/5'}`}>
+    <motion.section 
+      className={`py-16 lg:py-20 ${reverseLayout ? 'bg-secondary/5' : 'bg-primary/5'}`}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={bannerVariants}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`grid lg:grid-cols-2 gap-10 md:gap-16 items-center`}>
-          <div className={`text-center lg:text-right ${reverseLayout ? 'lg:order-2' : 'lg:order-1'}`}>
+          <motion.div 
+            className={`text-center lg:text-right ${reverseLayout ? 'lg:order-2' : 'lg:order-1'}`}
+            variants={bannerVariants} // Apply to inner elements for staggered effect if needed
+          >
             {IconComponent && <IconComponent className={`mx-auto lg:mx-0 h-12 w-12 mb-4 ${reverseLayout ? 'text-primary' : 'text-accent-pink'}`} />}
             <h2 className={`text-3xl font-bold tracking-tight sm:text-4xl mb-5 ${reverseLayout ? 'text-primary' : 'text-accent-pink'}`}>
               {title}
@@ -60,8 +73,11 @@ export function CallToActionBanner({
                 {buttonText} <ChevronLeft className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
               </Link>
             </Button>
-          </div>
-          <div className={`relative aspect-video rounded-xl overflow-hidden shadow-2xl ${reverseLayout ? 'lg:order-1' : 'lg:order-2'} group transform hover:scale-105 transition-transform duration-500 ease-out`}>
+          </motion.div>
+          <motion.div 
+            className={`relative aspect-video rounded-xl overflow-hidden shadow-2xl ${reverseLayout ? 'lg:order-1' : 'lg:order-2'} group transform hover:scale-105 transition-transform duration-500 ease-out`}
+            variants={bannerVariants}
+          >
             <Image
               src={imageSrc}
               alt={title}
@@ -70,9 +86,9 @@ export function CallToActionBanner({
               data-ai-hint={dataAiHint}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

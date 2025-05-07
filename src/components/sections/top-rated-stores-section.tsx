@@ -12,52 +12,52 @@ import { motion } from 'framer-motion';
 
 const mockTopRatedStores = [
   {
-    id: 'top-store-1',
-    name: 'مجوهرات أصالة',
-    avatarSrc: 'https://picsum.photos/seed/asala-avatar/80/80',
-    dataAiHint: 'woman jeweler smiling',
-    specialty: 'مجوهرات فضية وأحجار كريمة',
-    profileLink: '/store/lamsa-ibdaa', 
-    rating: 4.9,
-    reviewCount: 215,
-    bannerImage: 'https://picsum.photos/seed/asala-banner/400/150',
-    dataAiHintBanner: 'silver jewelry display',
-  },
-  {
-    id: 'top-store-2',
-    name: 'مخبز الأحلام',
-    avatarSrc: 'https://picsum.photos/seed/ahlam-avatar/80/80',
-    dataAiHint: 'woman baker cakes',
-    specialty: 'كيك وحلويات المناسبات',
-    profileLink: '/store/mathaq-albayt', 
+    id: 'lamsa-ibdaa', // Store slug as ID
+    name: 'لمسة إبداع نادية',
+    avatarSrc: 'https://picsum.photos/seed/nadia/100/100',
+    dataAiHint: 'woman artist smiling',
+    specialty: 'مجوهرات يدوية وفنون كروشيه',
+    profileLink: '/store/lamsa-ibdaa',
     rating: 4.8,
-    reviewCount: 180,
-    bannerImage: 'https://picsum.photos/seed/ahlam-banner/400/150',
-    dataAiHintBanner: 'wedding cake display',
-  },
-  {
-    id: 'top-store-3',
-    name: 'خزانة الأناقة',
-    avatarSrc: 'https://picsum.photos/seed/elegance-avatar/80/80',
-    dataAiHint: 'fashion designer dresses',
-    specialty: 'تأجير فساتين سهرة وعبايات',
-    profileLink: '/store/anaqa-lilijar', 
-    rating: 4.7,
     reviewCount: 150,
-    bannerImage: 'https://picsum.photos/seed/elegance-banner/400/150',
-    dataAiHintBanner: 'evening gowns rack',
+    bannerImage: 'https://picsum.photos/seed/lamsabanner1/400/150',
+    dataAiHintBanner: 'handmade crafts display',
   },
   {
-    id: 'top-store-4',
-    name: 'ريشة فنانة مبدعة',
-    avatarSrc: 'https://picsum.photos/seed/artist-avatar/80/80',
-    dataAiHint: 'woman artist painting',
-    specialty: 'لوحات فنية وديكورات جدارية',
-    profileLink: '/store/lamsa-ibdaa', 
-    rating: 4.8,
-    reviewCount: 130,
-    bannerImage: 'https://picsum.photos/seed/artist-banner/400/150',
-    dataAiHintBanner: 'art studio paintings',
+    id: 'mathaq-albayt', // Store slug as ID
+    name: 'مذاق البيت مع سارة',
+    avatarSrc: 'https://picsum.photos/seed/sara/100/100',
+    dataAiHint: 'woman baker smiling',
+    specialty: 'كيك وحلويات المناسبات الفاخرة',
+    profileLink: '/store/mathaq-albayt',
+    rating: 4.9,
+    reviewCount: 210,
+    bannerImage: 'https://picsum.photos/seed/mathaqbanner1/400/150',
+    dataAiHintBanner: 'assorted pastries display',
+  },
+  {
+    id: 'anaqa-lilijar', // Store slug as ID
+    name: 'أناقة للإيجار مع ليلى',
+    avatarSrc: 'https://picsum.photos/seed/laila/100/100',
+    dataAiHint: 'woman fashion designer stylish',
+    specialty: 'تأجير فساتين سهرة وعبايات راقية',
+    profileLink: '/store/anaqa-lilijar',
+    rating: 4.7,
+    reviewCount: 95,
+    bannerImage: 'https://picsum.photos/seed/anaqabanner1/400/150',
+    dataAiHintBanner: 'evening gowns display',
+  },
+  {
+    id: 'salon-farah', // Store slug as ID
+    name: 'صالون فرح للتجميل',
+    avatarSrc: 'https://picsum.photos/seed/farah/100/100',
+    dataAiHint: 'woman beautician smiling elegant',
+    specialty: 'خدمات تجميل وعناية بالشعر والبشرة',
+    profileLink: '/store/salon-farah',
+    rating: 4.9,
+    reviewCount: 180,
+    bannerImage: 'https://picsum.photos/seed/salonfarahbanner1/400/150',
+    dataAiHintBanner: 'modern salon interior luxury',
   },
 ];
 
@@ -100,11 +100,15 @@ export function TopRatedStoresSection() {
             >
             <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-accent-yellow focus-within:border-accent-yellow focus-within:ring-2 focus-within:ring-accent-yellow/50 h-full">
               <div className="relative h-32 sm:h-40 overflow-hidden rounded-t-xl">
-                <Image src={store.bannerImage} alt={`${store.name} banner`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" data-ai-hint={store.dataAiHintBanner}/>
-                <Avatar className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-20 h-20 sm:w-24 sm:h-24 border-4 border-background bg-background shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <AvatarImage src={store.avatarSrc} alt={store.name} data-ai-hint={store.dataAiHint} />
-                  <AvatarFallback className="text-2xl bg-primary/20 text-primary">{store.name.substring(0, 1)}</AvatarFallback>
-                </Avatar>
+                <Link href={store.profileLink} passHref className="block h-full">
+                  <Image src={store.bannerImage} alt={`${store.name} banner`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" data-ai-hint={store.dataAiHintBanner}/>
+                </Link>
+                <Link href={store.profileLink} passHref className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+                  <Avatar className="w-20 h-20 sm:w-24 sm:h-24 border-4 border-background bg-background shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <AvatarImage src={store.avatarSrc} alt={store.name} data-ai-hint={store.dataAiHint} />
+                    <AvatarFallback className="text-2xl bg-primary/20 text-primary">{store.name.substring(0, 1)}</AvatarFallback>
+                  </Avatar>
+                </Link>
               </div>
               <CardContent className="p-4 pt-12 sm:pt-14 text-center flex-grow flex flex-col">
                 <h3 className="text-lg font-semibold text-primary mb-1 group-hover:text-accent-pink transition-colors">
@@ -130,7 +134,7 @@ export function TopRatedStoresSection() {
         </div>
          <div className="mt-12 text-center">
           <Button size="lg" variant="default" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
-            <Link href="/stores"> 
+            <Link href="/stores">
               تصفحي كل المتاجر المبدعة <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>

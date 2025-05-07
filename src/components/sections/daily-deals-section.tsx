@@ -21,8 +21,8 @@ const mockDailyDeals = [
     originalPrice: '6,000 دج',
     dealPrice: '4,500 دج',
     storeName: 'حلويات الأحلام',
-    storeSlug: 'mathaq-albayt', 
-    productLink: '/products/mathaq-prod1', 
+    storeSlug: 'mathaq-albayt',
+    productLink: '/products/mathaq-prod1', // Assuming this product exists
   },
   {
     id: 'deal-daily-2',
@@ -30,9 +30,9 @@ const mockDailyDeals = [
     description: 'اطلبي أي قطعة إكسسوار من متجر "إبداعات نادية" واحصلي على توصيل مجاني داخل المدينة.',
     imageSrc: 'https://picsum.photos/seed/dailyjewelrydeal/350/220',
     dataAiHint: 'handmade necklace earring',
-    storeName: 'إبداعات نادية',
-    storeSlug: 'lamsa-ibdaa', 
-    productLink: '/store/lamsa-ibdaa?category=accessories', 
+    storeName: 'لمسة إبداع نادية',
+    storeSlug: 'lamsa-ibdaa',
+    productLink: '/store/lamsa-ibdaa?category=accessories',
   },
   {
     id: 'deal-daily-3',
@@ -40,15 +40,19 @@ const mockDailyDeals = [
     description: 'عرض اليوم: دللي بشرتك مع صابوننا الطبيعي المصنوع يدوياً.',
     imageSrc: 'https://picsum.photos/seed/dailysoapdeal/350/220',
     dataAiHint: 'handmade soap bars',
-    storeName: 'لمسة الطبيعة',
-    storeSlug: 'lamsa-ibdaa', 
-    productLink: '/products/common-prod1', 
+    storeName: 'لمسة الطبيعة (من لمسة إبداع)', // Example: If part of a larger store
+    storeSlug: 'lamsa-ibdaa', // Assuming a sub-category or specific product link
+    productLink: '/products/common-prod1', // Example generic product link
   },
 ];
 
 const cardVariants = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+  animate: (i: number) => ({ // Added index type
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.07, duration: 0.4, ease: "circOut" }
+  })
 };
 
 export function DailyDealsSection() {
@@ -76,39 +80,39 @@ export function DailyDealsSection() {
           onMouseLeave={plugin.current.reset}
           opts={{
             align: "start",
-            loop: true,
+            loop: mockDailyDeals.length > 2, // Loop if more than 2 items for better UX
             direction: "rtl",
           }}
         >
-          <CarouselContent className="-ml-4"> 
+          <CarouselContent className="-ml-4">
             {mockDailyDeals.map((deal, index) => (
-              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3"> 
-                <motion.div 
+              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <motion.div
                   className="p-1 h-full"
+                  custom={index}
                   variants={cardVariants}
                   initial="initial"
                   whileInView="animate"
                   viewport={{ once: true, amount: 0.3 }}
-                  custom={index}
                 >
                   <Card className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-pink/30 hover:border-accent-pink focus-within:border-accent-pink focus-within:ring-2 focus-within:ring-accent-pink/50">
                     <CardHeader className="p-0 relative">
-                      <div className="aspect-video relative overflow-hidden rounded-t-xl">
-                        <Image 
-                          src={deal.imageSrc} 
-                          alt={deal.title} 
-                          fill 
+                     <Link href={deal.productLink} passHref className="block aspect-video relative overflow-hidden rounded-t-xl">
+                        <Image
+                          src={deal.imageSrc}
+                          alt={deal.title}
+                          fill
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                           data-ai-hint={deal.dataAiHint}
                         />
                         <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center animate-pulse" style={{animationDuration: '2s'}}>
                           <Percent size={14} className="ml-1" /> عرض اليوم
                         </div>
-                      </div>
+                      </Link>
                     </CardHeader>
                     <CardContent className="p-4 flex-grow flex flex-col">
                       <CardTitle className="text-lg font-semibold text-primary mb-2 group-hover:text-accent-pink transition-colors">
-                        {deal.title}
+                        <Link href={deal.productLink}>{deal.title}</Link>
                       </CardTitle>
                       <CardDescription className="text-xs text-foreground/70 mb-2 flex-grow line-clamp-2">
                         {deal.description}
@@ -141,7 +145,7 @@ export function DailyDealsSection() {
 
         <div className="mt-12 text-center">
           <Button size="lg" variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10 group transform hover:scale-105 transition-transform duration-200">
-            <Link href="/deals?filter=daily">
+            <Link href="/products?filter=daily-deals">
               اكتشفي كل عروض اليوم <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>

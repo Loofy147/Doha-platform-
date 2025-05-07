@@ -6,56 +6,61 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Flame, Eye, ChevronLeft } from 'lucide-react'; 
+import { Flame, Eye, ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const mockBestsellers = [
   {
-    id: 'bestseller-1',
-    name: 'مجموعة مجوهرات "أناقة الفيروز"',
-    seller: 'مجوهرات أصالة',
-    sellerSlug: 'asala-jewelry',
-    imageSrc: 'https://picsum.photos/seed/turquoisejewelry/400/300',
-    dataAiHint: 'turquoise jewelry set',
-    price: '7,200 دج',
-    category: 'أناقة وإكسسوارات',
-    oldPrice: '8,500 دج',
+    id: 'lamsa-prod2', // Updated ID to match a product in lamsa-ibdaa store
+    name: 'مجموعة دُمى أميغورومي لطيفة',
+    seller: 'لمسة إبداع نادية', // Seller name for lamsa-ibdaa
+    sellerSlug: 'lamsa-ibdaa', // Correct slug
+    imageSrc: 'https://picsum.photos/seed/amigurumi/400/300',
+    dataAiHint: 'amigurumi dolls handmade',
+    price: '2,500 دج للقطعة',
+    category: 'ألعاب وهدايا يدوية',
   },
   {
-    id: 'bestseller-2',
-    name: 'كيكة الليمون المنعشة بالكريمة',
-    seller: 'مخبز الأحلام',
-    sellerSlug: 'mathaq-albayt',
-    imageSrc: 'https://picsum.photos/seed/lemoncake/400/300',
-    dataAiHint: 'lemon cake cream',
-    price: '4,500 دج',
-    category: 'حلويات ومأكولات شهية',
+    id: 'mathaq-prod1', // Updated ID
+    name: 'كيكة العسل الروسية الأصلية',
+    seller: 'مذاق البيت مع سارة', // Seller name for mathaq-albayt
+    sellerSlug: 'mathaq-albayt', // Correct slug
+    imageSrc: 'https://picsum.photos/seed/honeycake/400/300',
+    dataAiHint: 'russian honey cake',
+    price: '6,000 دج',
+    category: 'كيك ومناسبات',
+    oldPrice: '6,500 دج',
   },
   {
-    id: 'bestseller-3',
-    name: 'فستان سهرة "نجمة الليل" (للإيجار)',
-    seller: 'خزانة الأناقة',
-    sellerSlug: 'anaqa-lilijar',
-    imageSrc: 'https://picsum.photos/seed/nightstar_dress/400/300',
-    dataAiHint: 'dark blue evening dress',
-    price: '9,000 دج / لليلة',
+    id: 'anaqa-prod1', // Updated ID
+    name: 'فستان سهرة ذهبي مطرز فاخر (للإيجار)',
+    seller: 'أناقة للإيجار مع ليلى', // Seller name for anaqa-lilijar
+    sellerSlug: 'anaqa-lilijar', // Correct slug
+    imageSrc: 'https://picsum.photos/seed/golddress/400/300',
+    dataAiHint: 'gold sequin dress elegant',
+    price: '12,000 دج / لـ 3 أيام',
     category: 'تأجير إبداعات',
   },
    {
-    id: 'bestseller-4',
-    name: 'لوحة فنية "هدوء الطبيعة"',
-    seller: 'ريشة فنانة',
-    sellerSlug: 'lamsa-ibdaa',
-    imageSrc: 'https://picsum.photos/seed/natureart/400/300',
-    dataAiHint: 'nature landscape painting',
-    price: '6,800 دج',
-    category: 'لمسات منزلية وديكور',
+    id: 'farah-prod1', // Updated ID
+    name: 'زيت الأرغان المغربي النقي للشعر',
+    seller: 'صالون فرح للتجميل', // Seller name for salon-farah
+    sellerSlug: 'salon-farah', // Correct slug
+    imageSrc: 'https://picsum.photos/seed/arganoilhair/400/300',
+    dataAiHint: 'argan oil hair product',
+    price: '2,800 دج',
+    category: 'منتجات عناية بالشعر',
   },
 ];
 
 const cardVariants = {
   initial: { opacity: 0, y: 30, scale: 0.95 },
-  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } }
+  animate: (i: number) => ({ // Added index type
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { delay: i * 0.05, duration: 0.4, ease: "easeOut" } 
+  })
 };
 
 
@@ -76,19 +81,19 @@ export function BestsellersSection() {
           {mockBestsellers.map((product, index) => (
             <motion.div
               key={product.id}
+              custom={index}
               variants={cardVariants}
               initial="initial"
               whileInView="animate"
               viewport={{ once: true, amount: 0.2 }}
-              custom={index} // for staggered animation if needed
             >
             <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50 h-full">
               <CardHeader className="p-0 relative">
-                <div className="aspect-[4/3] relative overflow-hidden rounded-t-xl">
-                  <Image 
-                    src={product.imageSrc} 
-                    alt={product.name} 
-                    fill 
+                <Link href={`/products/${product.id}`} passHref className="block aspect-[4/3] relative overflow-hidden rounded-t-xl">
+                  <Image
+                    src={product.imageSrc}
+                    alt={product.name}
+                    fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                     data-ai-hint={product.dataAiHint}
                   />
@@ -97,7 +102,7 @@ export function BestsellersSection() {
                       خصم!
                     </div>
                   )}
-                </div>
+                </Link>
               </CardHeader>
               <CardContent className="p-4 flex-grow flex flex-col">
                 <p className="text-xs text-muted-foreground mb-1">{product.category}</p>

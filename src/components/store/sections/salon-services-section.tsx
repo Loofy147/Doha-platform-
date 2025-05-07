@@ -2,26 +2,19 @@
 'use client';
 
 import React from 'react';
-import type { StoreData } from '@/app/store/[storeId]/page';
+import type { Service, StoreData } from '@/lib/data/mock-store-data';
 import StoreSection from '@/components/store/store-section';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarPlus, Sparkle } from 'lucide-react'; // Changed from Scissors
-
-interface Service {
-  name: string;
-  price: string;
-  duration?: string;
-  description?: string;
-}
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { CalendarPlus, Sparkle } from 'lucide-react';
 
 interface SalonServicesSectionProps {
-  services: Service[];
+  services: Service[]; // Use the global Service type from mock-store-data
   storeData: StoreData | null;
-  onBookService: (serviceName: string) => void;
+  onViewServiceDetails: (service: Service) => void; // Changed to onViewServiceDetails for clarity
 }
 
-const SalonServicesSection: React.FC<SalonServicesSectionProps> = ({ services, storeData, onBookService }) => {
+const SalonServicesSection: React.FC<SalonServicesSectionProps> = ({ services, storeData, onViewServiceDetails }) => {
   if (!services || services.length === 0) {
     return (
         <StoreSection title="خدماتنا المميزة" icon={Sparkle} accentColor={storeData?.accentColor}>
@@ -39,7 +32,7 @@ const SalonServicesSection: React.FC<SalonServicesSectionProps> = ({ services, s
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {services.map((service, index) => (
-          <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow">
+          <Card key={service.id || index} className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
               <CardTitle className="text-xl" style={{color: storeData?.accentColor || 'hsl(var(--primary))'}}>{service.name}</CardTitle>
               {service.duration && <CardDescription className="text-sm text-muted-foreground">{service.duration}</CardDescription>}
@@ -54,7 +47,7 @@ const SalonServicesSection: React.FC<SalonServicesSectionProps> = ({ services, s
                 style={{backgroundColor: storeData?.accentColor || 'hsl(var(--primary))'}}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                onClick={() => onBookService(service.name)}
+                onClick={() => onViewServiceDetails(service)} // Pass the whole service object
                >
                 <CalendarPlus size={18} className="ml-2" /> احجزي موعدكِ
               </Button>

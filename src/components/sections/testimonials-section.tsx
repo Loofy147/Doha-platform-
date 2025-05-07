@@ -1,3 +1,4 @@
+// src/components/sections/testimonials-section.tsx
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const testimonials = [
   {
@@ -52,6 +54,19 @@ const testimonials = [
   },
 ];
 
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: (i: number) => ({ // Added index type
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  }),
+};
+
 export function TestimonialsSection() {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
@@ -77,14 +92,21 @@ export function TestimonialsSection() {
           opts={{
             align: "start",
             loop: true,
-            direction: "rtl", // Added for RTL layout
+            direction: "rtl", 
           }}
         >
           <CarouselContent>
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <div className="p-1 h-full">
-                  <Card className="h-full flex flex-col shadow-lg rounded-lg overflow-hidden bg-card">
+                <motion.div 
+                  className="p-1 h-full"
+                  custom={index}
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  <Card className="h-full flex flex-col shadow-lg rounded-lg overflow-hidden bg-card hover:shadow-xl transition-shadow">
                     <CardContent className="p-6 flex flex-col flex-grow items-center text-center">
                       <Avatar className="w-20 h-20 mb-4 border-2 border-primary">
                         <AvatarImage src={testimonial.avatar} alt={testimonial.name} data-ai-hint={testimonial.dataAiHint} />
@@ -105,12 +127,12 @@ export function TestimonialsSection() {
                       </p>
                     </CardContent>
                   </Card>
-                </div>
+                </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden sm:flex right-0 -translate-x-1/2 left-auto" /> {/* Adjusted for RTL */}
-          <CarouselNext className="hidden sm:flex left-0 translate-x-1/2 right-auto" /> {/* Adjusted for RTL */}
+          <CarouselPrevious className="hidden sm:flex right-0 -translate-x-1/2 left-auto" /> 
+          <CarouselNext className="hidden sm:flex left-0 translate-x-1/2 right-auto" /> 
         </Carousel>
       </div>
     </section>

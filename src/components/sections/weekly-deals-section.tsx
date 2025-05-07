@@ -20,9 +20,9 @@ const mockWeeklyDeals = [
     dataAiHint: 'skincare haircare set',
     originalPrice: '12,000 دج',
     dealPrice: '9,600 دج',
-    storeName: 'جمالكِ أولاً',
-    storeSlug: 'salon-farah', 
-    productLink: '/products/farah-prod2', 
+    storeName: 'صالون فرح للتجميل',
+    storeSlug: 'salon-farah',
+    productLink: '/products/farah-prod2', // Assuming this product exists
   },
   {
     id: 'deal-weekly-2',
@@ -30,9 +30,9 @@ const mockWeeklyDeals = [
     description: 'جددي منزلكِ مع استشارة تصميم داخلي أو خدمة تنفيذ ديكور بخصم مميز.',
     imageSrc: 'https://picsum.photos/seed/weeklydecor/400/250',
     dataAiHint: 'modern living room interior design',
-    storeName: 'لمسة فن للديكور',
-    storeSlug: 'lamsa-ibdaa', 
-    productLink: '/store/lamsa-ibdaa?category=services', 
+    storeName: 'لمسة إبداع نادية',
+    storeSlug: 'lamsa-ibdaa',
+    productLink: '/store/lamsa-ibdaa?category=services', // Link to services of the store
   },
   {
     id: 'deal-weekly-3',
@@ -40,15 +40,19 @@ const mockWeeklyDeals = [
     description: 'عرض أسبوعي شهي على تشكيلة مختارة من الحلويات الشرقية الأصيلة.',
     imageSrc: 'https://picsum.photos/seed/weeklysweetsdeal/400/250',
     dataAiHint: 'assorted oriental sweets',
-    storeName: 'حلويات الأصالة',
-    storeSlug: 'mathaq-albayt', 
+    storeName: 'مذاق البيت مع سارة',
+    storeSlug: 'mathaq-albayt',
     productLink: '/store/mathaq-albayt?category=sweets',
   },
 ];
 
 const cardVariants = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+  animate: (i: number) => ({ // Added index type
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.07, duration: 0.4, ease: "circOut" } 
+  })
 };
 
 export function WeeklyDealsSection() {
@@ -76,39 +80,39 @@ export function WeeklyDealsSection() {
           onMouseLeave={plugin.current.reset}
           opts={{
             align: "start",
-            loop: true,
+            loop: mockWeeklyDeals.length > 2, // Loop if more than 2 items for better UX
             direction: "rtl",
           }}
         >
-          <CarouselContent className="-ml-4"> 
+          <CarouselContent className="-ml-4">
             {mockWeeklyDeals.map((deal, index) => (
-              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3"> 
-                <motion.div 
+              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <motion.div
                   className="p-1 h-full"
+                  custom={index}
                   variants={cardVariants}
                   initial="initial"
                   whileInView="animate"
                   viewport={{ once: true, amount: 0.3 }}
-                  custom={index}
                 >
                   <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-purple/30 hover:border-accent-purple focus-within:border-accent-purple focus-within:ring-2 focus-within:ring-accent-purple/50">
                     <CardHeader className="p-0 relative">
-                      <div className="aspect-[16/10] relative overflow-hidden rounded-t-xl"> 
-                        <Image 
-                          src={deal.imageSrc} 
-                          alt={deal.title} 
-                          fill 
+                      <Link href={deal.productLink} passHref className="block aspect-[16/10] relative overflow-hidden rounded-t-xl">
+                        <Image
+                          src={deal.imageSrc}
+                          alt={deal.title}
+                          fill
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                           data-ai-hint={deal.dataAiHint}
                         />
                         <div className="absolute top-2 right-2 bg-accent-purple text-accent-purple-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center animate-pulse" style={{animationDelay: `${index * 0.1}s`, animationDuration: '2.2s'}}>
                           <Percent size={14} className="ml-1" /> عرض الأسبوع
                         </div>
-                      </div>
+                      </Link>
                     </CardHeader>
                     <CardContent className="p-4 flex-grow flex flex-col">
                       <CardTitle className="text-lg font-semibold text-primary mb-2 group-hover:text-accent-purple transition-colors">
-                        {deal.title}
+                         <Link href={deal.productLink}>{deal.title}</Link>
                       </CardTitle>
                       <CardDescription className="text-xs text-foreground/70 mb-2 flex-grow line-clamp-2">
                         {deal.description}
@@ -141,7 +145,7 @@ export function WeeklyDealsSection() {
 
         <div className="mt-12 text-center">
           <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
-            <Link href="/deals?filter=weekly">
+            <Link href="/products?filter=weekly-deals">
               تصفحي جميع عروض الأسبوع <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>

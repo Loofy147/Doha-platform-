@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { Product, StoreData } from '@/app/store/[storeId]/page';
+import type { Product, StoreData } from '@/lib/data/mock-store-data';
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreSection from '@/components/store/store-section';
 import { CakeSlice } from 'lucide-react';
