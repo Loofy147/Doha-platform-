@@ -34,6 +34,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
 const salesDataMonthly = [
   { month: "يناير", sales: Math.floor(Math.random() * 30000) + 5000, earnings: Math.floor(Math.random() * 20000) + 3000 },
@@ -50,6 +51,7 @@ const mockSellerProfile = {
   dataAiHint: "woman smiling store owner",
   sellerSince: "مارس 2023",
   profileCompletion: 85, // percentage
+  storeSlug: "lamsat-doha-creations" // Added storeSlug
 };
 
 const recentActivities = [
@@ -62,6 +64,7 @@ const recentActivities = [
 export default function SellerDashboardPage() {
   const [isClient, setIsClient] = useState(false);
   const [sellerName, setSellerName] = useState("مبدعتنا الغالية"); // Placeholder, fetch actual name
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsClient(true);
@@ -138,8 +141,8 @@ export default function SellerDashboardPage() {
             </div>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/dashboard/settings">
-                <Store size={18} className="ml-2"/> عرض المتجر العام (قريباً)
+            <Link href={`/store/${mockSellerProfile.storeSlug}`} >
+                <Store size={18} className="ml-2"/> عرض المتجر العام 
             </Link>
           </Button>
         </CardContent>
@@ -253,3 +256,4 @@ export default function SellerDashboardPage() {
     </div>
   );
 }
+

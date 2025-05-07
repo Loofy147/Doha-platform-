@@ -1,4 +1,3 @@
-// src/components/dashboard/seller-dashboard-header.tsx
 'use client';
 
 import React from 'react';
@@ -64,7 +63,6 @@ export function SellerDashboardHeader() {
   const pathname = usePathname();
   // Mock store slug, in a real app, this would come from user's session or store data
   const storeSlug = "my-mock-store"; 
-
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -210,3 +208,4 @@ export function SellerDashboardHeader() {
     </header>
   );
 }
+
