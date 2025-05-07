@@ -1,3 +1,4 @@
+// src/components/dashboard/seller-dashboard-header.tsx
 'use client';
 
 import React from 'react';
@@ -9,7 +10,6 @@ import {
   Settings,
   BarChart3,
   Bell,
-  LogOutIcon, // Renamed from LogOut to avoid conflict if used elsewhere
   PanelLeft,
   Search,
   Users,
@@ -19,10 +19,11 @@ import {
   CreditCard,
   Gift,
   Eye,
-  LayoutTemplate, // Added for Store Template
+  LayoutTemplate, 
   PlusCircle,
   UserCircle,
-  Heart
+  Heart,
+  LogOutIcon
 } from 'lucide-react';
 import {
   Breadcrumb,
@@ -31,7 +32,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'; // Added Breadcrumb imports
+} from '@/components/ui/breadcrumb'; 
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -49,14 +50,15 @@ import { WomenCommerceLogo } from '@/components/icons/logo';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { mockStoreDetails } from '@/lib/data/mock-store-data'; // For getting store slug
 
 const dashboardNavItems = [
     { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية', breadcrumb: 'الرئيسية' },
     { href: '/dashboard/products', icon: Package, label: 'المنتجات والخدمات', breadcrumb: 'المنتجات' },
     { href: '/dashboard/products/new', icon: PlusCircle, label: 'إضافة منتج جديد', parent: '/dashboard/products', breadcrumb: 'إضافة جديد'},
-    { href: '/dashboard/products/edit', icon: Package, label: 'تعديل المنتج', parent: '/dashboard/products', breadcrumb: 'تعديل', isDynamic: true }, // For dynamic routes like edit/[productId]
+    { href: '/dashboard/products/edit', icon: Package, label: 'تعديل المنتج', parent: '/dashboard/products', breadcrumb: 'تعديل', isDynamic: true }, 
     { href: '/dashboard/orders', icon: ShoppingBag, label: 'الطلبات الواردة', breadcrumb: 'الطلبات' },
-    { href: '/dashboard/orders', icon: ShoppingBag, label: 'تفاصيل الطلب', parent: '/dashboard/orders', breadcrumb: 'تفاصيل الطلب', isDynamic: true }, // For dynamic routes like orders/[orderId]
+    { href: '/dashboard/orders/[orderId]', icon: ShoppingBag, label: 'تفاصيل الطلب', parent: '/dashboard/orders', breadcrumb: 'تفاصيل الطلب', isDynamic: true },
     { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل', breadcrumb: 'العملاء' }, 
     { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات المتجر', breadcrumb: 'التحليلات' }, 
     { href: '/dashboard/marketing', icon: Gift, label: 'التسويق والعروض', breadcrumb: 'التسويق' }, 
@@ -76,8 +78,11 @@ const getBreadcrumbPath = (pathname: string) => {
     for (const segment of pathSegments) {
         const matchedNavItem = dashboardNavItems.find(item => {
             const itemBase = item.href.replace('/dashboard/', '');
-            if (item.isDynamic && segment.match(/^\S+$/) && itemBase.startsWith(pathSegments[pathSegments.indexOf(segment)-1] || '')) { // Basic check for dynamic part
-                return item.parent ? pathname.startsWith(item.parent) : false;
+            if (item.isDynamic && segment.match(/^[a-zA-Z0-9-]+$/) && item.href.includes(`[${itemBase.split('/').pop()?.replace(/\[|\]/g, '')}]`)) {
+                 // Basic check for dynamic part, assuming IDs are alphanumeric with hyphens
+                 // And the nav item href contains a placeholder like [orderId] or [productId]
+                 const dynamicParentPath = item.href.substring(0, item.href.lastIndexOf('/'));
+                 return pathname.startsWith(dynamicParentPath);
             }
             return itemBase === segment || (item.parent && item.parent.endsWith(pathSegments[pathSegments.indexOf(segment)-1] || ''));
         });
@@ -85,31 +90,23 @@ const getBreadcrumbPath = (pathname: string) => {
         currentPath += `/${segment}`;
         
         if (matchedNavItem) {
-            // If it's a dynamic route's child (e.g. /products/edit/123), use the parent's breadcrumb or a generic one
             if (matchedNavItem.isDynamic && matchedNavItem.parent) {
                 const parentItem = dashboardNavItems.find(p => p.href === matchedNavItem.parent);
-                if (parentItem && currentPath !== parentItem.href) { // Add parent if not already the current breadcrumb
+                if (parentItem && currentPath !== parentItem.href) { 
                      if (!breadcrumbs.find(b => b.href === parentItem.href)) {
                         breadcrumbs.push({ href: parentItem.href, label: parentItem.breadcrumb });
                      }
                 }
-                 breadcrumbs.push({ href: currentPath, label: `${matchedNavItem.breadcrumb} #${segment}` }); // e.g. تعديل المنتج #123
+                 breadcrumbs.push({ href: currentPath, label: `${matchedNavItem.breadcrumb} #${segment}` }); 
             } else {
                  breadcrumbs.push({ href: currentPath, label: matchedNavItem.breadcrumb });
             }
-        } else if (!isNaN(Number(segment)) || segment.length > 15) { // Likely an ID for a dynamic route not explicitly in navItems
+        } else if (segment.match(/^[a-zA-Z0-9-]+$/) && segment.length > 5) { // Heuristic for an ID
              const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-             const parentNavItem = dashboardNavItems.find(item => item.href === parentPath && item.isDynamic);
-             if (parentNavItem) {
-                breadcrumbs.push({ href: currentPath, label: `${parentNavItem.breadcrumb} #${segment}` });
-             } else {
-                // Fallback for unknown dynamic segments
-                breadcrumbs.push({ href: currentPath, label: segment });
+             const dynamicParentNavItem = dashboardNavItems.find(item => item.href.startsWith(parentPath + '/[') && item.isDynamic);
+             if (dynamicParentNavItem) {
+                breadcrumbs.push({ href: currentPath, label: `${dynamicParentNavItem.breadcrumb} #${segment}` });
              }
-        }
-         else {
-            // Fallback for unmatched segments (e.g. sub-pages not in navItems)
-            // breadcrumbs.push({ href: currentPath, label: segment.charAt(0).toUpperCase() + segment.slice(1) });
         }
     }
     return breadcrumbs.filter((value, index, self) => index === self.findIndex((t) => (t.href === value.href && t.label === value.label)));
@@ -118,7 +115,9 @@ const getBreadcrumbPath = (pathname: string) => {
 
 export function SellerDashboardHeader() {
   const pathname = usePathname();
-  const storeSlug = "my-mock-store"; 
+  // For demo purposes, let's assume the seller is managing the first store in mock data.
+  // In a real app, this would come from auth/seller context.
+  const currentSellerStoreSlug = mockStoreDetails.length > 0 ? mockStoreDetails[0].id : "default-store"; 
   const breadcrumbItems = getBreadcrumbPath(pathname);
 
   return (
@@ -173,18 +172,18 @@ export function SellerDashboardHeader() {
       </Breadcrumb>
 
 
-      <div className="ml-auto flex items-center gap-3"> {/* Changed to ml-auto to push to the end */}
+      <div className="ml-auto flex items-center gap-3"> 
         <Button variant="outline" size="sm" asChild className="hidden md:inline-flex border-accent-yellow text-accent-yellow hover:bg-accent-yellow/10 transition-all">
-            <Link href={`/store/${storeSlug}`} target="_blank">
+            <Link href={`/store/${currentSellerStoreSlug}`} target="_blank">
                 <Eye size={16} className="ml-2" /> معاينة متجري
             </Link>
         </Button>
         <div className="relative md:grow-0">
-            <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> {/* Changed to right-2.5 for RTL */}
+            <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> 
             <Input
             type="search"
             placeholder="بحث في لوحة التحكم..."
-            className="w-full rounded-lg bg-background pr-8 md:w-[200px] lg:w-[300px]" /* Changed to pr-8 for RTL */
+            className="w-full rounded-lg bg-background pr-8 md:w-[200px] lg:w-[300px]"
             />
         </div>
         <DropdownMenu>

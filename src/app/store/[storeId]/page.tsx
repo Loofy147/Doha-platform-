@@ -27,7 +27,7 @@ import {
   Share2,
   Mail,
   Sparkles,
-  TagIcon as LucideTagIcon, // Renamed to avoid conflict
+  TagIcon as LucideTagIcon, 
   ThumbsUp,
   Eye,
   ChevronLeft,
@@ -42,6 +42,8 @@ import {
   AlertCircle,
   Store as StoreIconLucide, 
   Clock,
+  Loader2,
+  PackageSearch,
 } from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {useToast} from '@/hooks/use-toast';
@@ -66,7 +68,7 @@ import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
 
-// Import specific section components
+// Import specific section components using React.lazy for code splitting
 const BakerySpecialsSection = React.lazy(() => import('@/components/store/sections/bakery-specials-section'));
 const SalonServicesSection = React.lazy(() => import('@/components/store/sections/salon-services-section'));
 const FashionLookbookSection = React.lazy(() => import('@/components/store/sections/fashion-lookbook-section'));
@@ -76,20 +78,63 @@ const ServiceProviderShowcaseSection = React.lazy(() => import('@/components/sto
 
 import {
   getStoreDataById,
-  StoreData,
-  Product,
-  Service,
-  ProductType,
-  StoreType,
-  mockStoreDetails // Assuming mockStoreDetails is also exported if needed for fallbacks or testing here
+  type StoreData,
+  type Product,
+  type Service,
+  type ProductType as ItemType, // Renamed to avoid conflict with React's ProductType
+  type StoreType,
+  mockStoreDetails 
 } from '@/lib/data/mock-store-data';
-
 
 interface FeaturedCollection {
   name: string;
-  items: (Product | Service)[]; // Can be products or services
-  type: ProductType;
+  items: (Product | Service)[]; 
+  type: ItemType;
 }
+
+const StoreLoadingSkeleton = () => (
+  <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div className="animate-pulse">
+      <Skeleton className="h-64 w-full rounded-lg mb-8" />
+      <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-20 relative z-10">
+        <Skeleton className="h-32 w-32 rounded-full border-4 border-muted" />
+        <div className="flex-1 space-y-4">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-full" />
+          <div className="flex gap-2">
+            <Skeleton className="h-8 w-24 rounded-full" />
+            <Skeleton className="h-8 w-32 rounded-full" />
+          </div>
+        </div>
+        <div className="flex gap-2">
+            <Skeleton className="h-10 w-28 rounded-md" />
+            <Skeleton className="h-10 w-28 rounded-md" />
+        </div>
+      </div>
+      <Skeleton className="h-40 w-full rounded-lg mb-10" />
+      <div className="mb-10">
+        <Skeleton className="h-10 w-1/3 mb-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array(4).fill(0).map((_, i) => (
+            <Card key={`skel-prod-${i}`} className="shadow-lg rounded-lg overflow-hidden">
+              <Skeleton className="aspect-square w-full" />
+              <CardContent className="p-4 space-y-2">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-6 w-1/3 mt-2" />
+              </CardContent>
+              <CardFooter className="p-3 border-t">
+                <Skeleton className="h-10 w-full" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+       <Skeleton className="h-52 w-full rounded-lg mb-10" />
+    </div>
+  </div>
+);
 
 const StorePage = () => {
   const router = useRouter();
@@ -106,19 +151,24 @@ const StorePage = () => {
     setIsMounted(true);
     if (storeId) {
       setIsLoading(true);
-      setTimeout(() => {
+      setTimeout(() => { // Simulate API delay
         const fetchedStoreData = getStoreDataById(storeId);
-        setStoreData(fetchedStoreData);
+        if (fetchedStoreData) {
+          setStoreData(fetchedStoreData);
+        } else {
+          console.warn(`Store with ID ${storeId} not found.`);
+          // Optionally, redirect to a 404 page or show an error message
+          // router.push('/not-found'); // Example
+        }
         setIsLoading(false);
-      }, 500); 
+      }, 700); 
     } else {
       setIsLoading(false);
     }
-  }, [storeId]);
+  }, [storeId, router]);
 
   const storeThemeStyle = useMemo(() => storeData?.themeStyle || 'light', [storeData]);
   const storeAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
-
 
   const handleViewItemDetails = (item: Product | Service) => {
     setSelectedItem(item);
@@ -135,7 +185,7 @@ const StorePage = () => {
     toast({
       title: `🛍️ ${item.name}`,
       description: `تم ${actionText.toLowerCase()} بنجاح (محاكاة)!`,
-      action: <Button variant="outline" size="sm" onClick={() => { /* navigate to cart/booking */ }}>متابعة</Button>,
+      action: <Button variant="outline" size="sm" onClick={() => { router.push('/cart'); /* navigate to cart/booking */ }}>متابعة</Button>,
     });
   };
 
@@ -170,6 +220,7 @@ const StorePage = () => {
       title: 'جاري التوجيه...',
       description: `سيتم عرض كل "${collection.name}". (قيد التطوير)`,
     });
+    // Example: router.push(`/store/${storeId}/collection/${collection.type}`);
   };
   
   const getStoreTypeSpecificIcon = (type?: StoreType) => {
@@ -179,7 +230,7 @@ const StorePage = () => {
         case 'salon': return Scissors;
         case 'crafts': return Palette;
         case 'rental': return CalendarDays; 
-        case 'service_provider': return Handshake; // Ensure Handshake is imported from lucide-react
+        case 'service_provider': return Handshake;
         default: return StoreIconLucide; 
     }
   };
@@ -187,76 +238,41 @@ const StorePage = () => {
 
 
   if (!isMounted || isLoading) { 
-    return (
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="animate-pulse">
-          <Skeleton className="h-64 w-full rounded-lg mb-8" />
-          <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-20 relative z-10">
-            <Skeleton className="h-32 w-32 rounded-full border-4 border-muted" />
-            <div className="flex-1 space-y-4">
-              <Skeleton className="h-10 w-3/4" />
-              <Skeleton className="h-6 w-full" />
-              <div className="flex gap-2">
-                <Skeleton className="h-8 w-24 rounded-full" />
-                <Skeleton className="h-8 w-32 rounded-full" />
-              </div>
-            </div>
-            <div className="flex gap-2">
-                <Skeleton className="h-10 w-28 rounded-md" />
-                <Skeleton className="h-10 w-28 rounded-md" />
-            </div>
-          </div>
-          <Skeleton className="h-40 w-full rounded-lg mb-10" />
-          <div className="mb-10">
-            <Skeleton className="h-10 w-1/3 mb-6" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <Card key={`skel-prod-${i}`} className="shadow-lg rounded-lg overflow-hidden">
-                  <Skeleton className="aspect-square w-full" />
-                  <CardContent className="p-4 space-y-2">
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                    <Skeleton className="h-6 w-1/3 mt-2" />
-                  </CardContent>
-                  <CardFooter className="p-3 border-t">
-                    <Skeleton className="h-10 w-full" />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </div>
-           <Skeleton className="h-52 w-full rounded-lg mb-10" />
-        </div>
-      </div>
-    );
+    return <StoreLoadingSkeleton />;
   }
 
   if (!storeData) {
     return (
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center min-h-screen flex flex-col justify-center items-center">
-        <AlertCircle className="w-16 h-16 text-destructive mb-4" />
-        <h1 className="text-3xl font-bold text-destructive mb-2">خطأ: المتجر غير موجود</h1>
-        <p className="text-lg text-muted-foreground mb-6">
+      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center min-h-screen flex flex-col justify-center items-center bg-background">
+        <PackageSearch className="w-24 h-24 text-destructive mb-6" />
+        <h1 className="text-4xl font-bold text-destructive mb-3">خطأ: المتجر غير موجود</h1>
+        <p className="text-xl text-muted-foreground mb-8 max-w-md">
           عذرًا، لم نتمكن من العثور على المتجر الذي تبحثين عنه. قد يكون الرابط غير صحيح أو تم حذف المتجر.
         </p>
-        <Button variant="outline" onClick={() => router.back()} className="text-lg px-6 py-3">
-          <ChevronLeft className="w-5 h-5 ml-2" /> العودة للخلف
+        <Button variant="outline" onClick={() => router.push('/')} className="text-lg px-8 py-3 border-primary text-primary hover:bg-primary/10">
+          <ChevronLeft className="w-5 h-5 ml-2" /> العودة للرئيسية
         </Button>
       </div>
     );
   }
+  
+  const SectionSuspenseFallback = () => (
+    <div className="py-10 text-center">
+        <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" style={{color: storeAccentColor}}/>
+        <p className="mt-4 text-muted-foreground">جاري تحميل محتوى المتجر...</p>
+    </div>
+  );
 
   return (
     <div className={cn(
-        "min-h-screen",
+        "min-h-screen transition-colors duration-500",
         storeThemeStyle === 'light' && "bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50 text-foreground",
         storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-100", 
         storeThemeStyle === 'playful' && "bg-yellow-50 text-yellow-900",
         storeThemeStyle === 'modern-minimal' && "bg-gray-100 text-gray-800",
         storeThemeStyle === 'dark' && "bg-gray-900 text-gray-200"
     )}>
-      <header className="relative">
+      <header className="relative group">
         <div className="h-48 md:h-64 lg:h-80 w-full overflow-hidden">
           <Carousel 
             plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]} 
@@ -270,13 +286,19 @@ const StorePage = () => {
                     src={src} 
                     alt={`${storeData.name} بانر ${index + 1}`} 
                     fill 
-                    className="object-cover" 
+                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" 
                     data-ai-hint={storeData.dataAiHintBanner[index % storeData.dataAiHintBanner.length]}
                     priority={index === 0} 
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
+             {storeData.bannerImages.length > 1 && (
+              <>
+                <CarouselPrevious className="absolute right-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
+                <CarouselNext className="absolute left-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
+              </>
+            )}
           </Carousel>
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-16 md:-mt-20 relative z-10">
@@ -300,14 +322,7 @@ const StorePage = () => {
               <div className="mt-2 flex items-center justify-center md:justify-start gap-2">
                 <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
                   <StoreTypeSpecificIcon className="w-4 h-4" />
-                  {storeData.storeType === 'general' ? 'متجر متنوع' : 
-                   storeData.storeType === 'bakery' ? 'مخبوزات وحلويات' :
-                   storeData.storeType === 'fashion' ? 'أزياء وموضة' :
-                   storeData.storeType === 'salon' ? 'صالون وخدمات تجميل' :
-                   storeData.storeType === 'crafts' ? 'حرف يدوية وفنون' :
-                   storeData.storeType === 'rental' ? 'خدمات تأجير' :
-                   storeData.storeType === 'service_provider' ? 'مقدم خدمات' :
-                   'متجر'}
+                  {storeData.productTypes.find(pt => pt.id === storeData.storeType)?.name || storeData.storeType}
                 </Badge>
                 <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
                   <Star className="w-4 h-4 fill-current" />
@@ -365,7 +380,7 @@ const StorePage = () => {
           </StoreSection>
         )}
 
-        <Suspense fallback={<Skeleton className="h-80 w-full" />}>
+        <Suspense fallback={<SectionSuspenseFallback />}>
             {storeData.storeType === 'bakery' && storeData.products && (
             <BakerySpecialsSection
                 products={storeData.products.filter(p => storeData.featuredProductIds?.includes(p.id) || p.isBestseller)}
@@ -377,7 +392,7 @@ const StorePage = () => {
             <SalonServicesSection
                 services={storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id))}
                 storeData={storeData}
-                onBookService={(service) => handleViewItemDetails(service as Service)} 
+                onViewServiceDetails={handleViewItemDetails} 
             />
             )}
             {storeData.storeType === 'fashion' && storeData.products && (
@@ -408,6 +423,33 @@ const StorePage = () => {
                 storeData={storeData}
                 onViewServiceDetails={handleViewItemDetails}
               />
+            )}
+            {storeData.storeType === 'general' && (storeData.products || storeData.services) && (
+              // A generic showcase for 'general' stores, perhaps combining products and services.
+              <StoreSection id="general-showcase" title="منتجات وخدمات مميزة" icon={ShoppingBag} accentColor={storeAccentColor} className="my-10">
+                 <div className="space-y-10">
+                    {storeData.products.length > 0 && (
+                      <div>
+                        <h3 className="text-2xl font-semibold mb-6 pb-2" style={{ borderBottom: `3px solid ${storeAccentColor}`}}>أبرز المنتجات</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                          {storeData.products.slice(0,4).map(product => 
+                            <StoreProductCard key={product.id} product={product} accentColor={storeAccentColor} onViewDetails={handleViewItemDetails} />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {storeData.services && storeData.services.length > 0 && (
+                      <div>
+                        <h3 className="text-2xl font-semibold mb-6 pb-2" style={{ borderBottom: `3px solid ${storeAccentColor}`}}>خدماتنا</h3>
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                           {storeData.services.slice(0,3).map(service => 
+                            <StoreServiceCard key={service.id} service={service} accentColor={storeAccentColor} onViewDetails={handleViewItemDetails} />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+              </StoreSection>
             )}
         </Suspense>
 
@@ -449,14 +491,18 @@ const StorePage = () => {
                       style={{borderColor: storeAccentColor, color: storeAccentColor}}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${storeAccentColor}1A`}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      className="group"
                     >
-                      عرض كل "{collection.name}" <ChevronLeft className="mr-2 h-5 w-5"/>
+                      عرض كل "{collection.name}" <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
                     </Button>
                   </div>
                 )}
               </div>
               )
             ))}
+             {featuredCollections.length === 0 && (
+                <p className="text-muted-foreground text-center py-8">لا توجد مجموعات مميزة لعرضها حاليًا في هذا المتجر.</p>
+            )}
           </div>
         </StoreSection>
 
@@ -526,22 +572,22 @@ const StorePage = () => {
                         className="h-full w-full"
                     >
                         <CarouselContent className="h-full">
-                        {((selectedItem as Product).images || [(selectedItem as Product).imageSrc || (selectedItem as Service).imageSrc || 'https://picsum.photos/800/600']).map((imgSrc, index) => (
+                        {((selectedItem as Product).images || [(selectedItem as Product).imageSrc || (selectedItem as Service).imageSrc || 'https://picsum.photos/800/600?grayscale']).map((imgSrc, index) => (
                             <CarouselItem key={index} className="h-full">
                             <Image
-                                src={imgSrc}
+                                src={imgSrc || 'https://picsum.photos/800/600?grayscale'}
                                 alt={`${selectedItem.name} - صورة ${index + 1}`}
                                 fill
                                 className="object-contain" 
-                                data-ai-hint={selectedItem.dataAiHint}
+                                data-ai-hint={selectedItem.dataAiHint || "product detail image"}
                             />
                             </CarouselItem>
                         ))}
                         </CarouselContent>
                         {((selectedItem as Product).images ? (selectedItem as Product).images.length > 1 : false) && (
                             <>
-                            <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" />
-                            <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" />
+                            <CarouselPrevious className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
+                            <CarouselNext className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
                             </>
                         )}
                     </Carousel>
@@ -586,7 +632,7 @@ const StorePage = () => {
               </Button>
               <Button 
                 type="button" 
-                className="text-white flex-1 sm:flex-none"
+                className="text-white flex-1 sm:flex-none shadow-md hover:shadow-lg transition-all"
                 style={{backgroundColor: storeAccentColor}}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}

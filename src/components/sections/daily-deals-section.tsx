@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { CalendarClock, Percent, Eye, ChevronLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { motion } from 'framer-motion';
 
 const mockDailyDeals = [
   {
@@ -20,8 +21,8 @@ const mockDailyDeals = [
     originalPrice: '6,000 دج',
     dealPrice: '4,500 دج',
     storeName: 'حلويات الأحلام',
-    storeSlug: 'mathaq-albayt', // Should match an actual store ID
-    productLink: '/products/mathaq-prod1', // Example link, adjust if product IDs change
+    storeSlug: 'mathaq-albayt', 
+    productLink: '/products/mathaq-prod1', 
   },
   {
     id: 'deal-daily-2',
@@ -30,7 +31,7 @@ const mockDailyDeals = [
     imageSrc: 'https://picsum.photos/seed/dailyjewelrydeal/350/220',
     dataAiHint: 'handmade necklace earring',
     storeName: 'إبداعات نادية',
-    storeSlug: 'lamsa-ibdaa', // Should match an actual store ID
+    storeSlug: 'lamsa-ibdaa', 
     productLink: '/store/lamsa-ibdaa?category=accessories', 
   },
   {
@@ -40,10 +41,15 @@ const mockDailyDeals = [
     imageSrc: 'https://picsum.photos/seed/dailysoapdeal/350/220',
     dataAiHint: 'handmade soap bars',
     storeName: 'لمسة الطبيعة',
-    storeSlug: 'lamsa-ibdaa', // Placeholder, change to relevant store
-    productLink: '/products/common-prod1', // Placeholder link
+    storeSlug: 'lamsa-ibdaa', 
+    productLink: '/products/common-prod1', 
   },
 ];
+
+const cardVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
 
 export function DailyDealsSection() {
   const plugin = React.useRef(
@@ -74,11 +80,18 @@ export function DailyDealsSection() {
             direction: "rtl",
           }}
         >
-          <CarouselContent className="-ml-4"> {/* Negative margin for item spacing */}
-            {mockDailyDeals.map((deal) => (
-              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3"> {/* Padding for spacing */}
-                <div className="p-1 h-full">
-                  <Card className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-pink/50 hover:border-accent-pink">
+          <CarouselContent className="-ml-4"> 
+            {mockDailyDeals.map((deal, index) => (
+              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3"> 
+                <motion.div 
+                  className="p-1 h-full"
+                  variants={cardVariants}
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true, amount: 0.3 }}
+                  custom={index}
+                >
+                  <Card className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-pink/30 hover:border-accent-pink focus-within:border-accent-pink focus-within:ring-2 focus-within:ring-accent-pink/50">
                     <CardHeader className="p-0 relative">
                       <div className="aspect-video relative overflow-hidden rounded-t-xl">
                         <Image 
@@ -88,7 +101,7 @@ export function DailyDealsSection() {
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                           data-ai-hint={deal.dataAiHint}
                         />
-                        <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center">
+                        <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center animate-pulse" style={{animationDuration: '2s'}}>
                           <Percent size={14} className="ml-1" /> عرض اليوم
                         </div>
                       </div>
@@ -101,7 +114,7 @@ export function DailyDealsSection() {
                         {deal.description}
                       </CardDescription>
                       <p className="text-xs text-muted-foreground mb-2">
-                        متوفر لدى: <Link href={`/store/${deal.storeSlug}`} className="text-accent-purple hover:underline">{deal.storeName}</Link>
+                        متوفر لدى: <Link href={`/store/${deal.storeSlug}`} className="text-accent-purple hover:underline font-medium">{deal.storeName}</Link>
                       </p>
                       <div className="flex items-baseline gap-2 mt-auto">
                         <p className="text-2xl font-bold text-accent-pink">{deal.dealPrice}</p>
@@ -111,14 +124,14 @@ export function DailyDealsSection() {
                       </div>
                     </CardContent>
                     <CardFooter className="p-3 border-t">
-                      <Button asChild variant="default" className="w-full bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground group/button">
+                      <Button asChild variant="default" className="w-full bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground group/button transform hover:scale-105 transition-transform duration-200">
                         <Link href={deal.productLink}>
-                          <Eye className="ml-2 h-4 w-4" /> اغتنمي العرض
+                          <Eye className="ml-2 h-4 w-4 group-hover/button:animate-ping-slow" style={{animationDuration: '1.5s'}} /> اغتنمي العرض
                         </Link>
                       </Button>
                     </CardFooter>
                   </Card>
-                </div>
+                </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -127,7 +140,7 @@ export function DailyDealsSection() {
         </Carousel>
 
         <div className="mt-12 text-center">
-          <Button size="lg" variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10 group">
+          <Button size="lg" variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10 group transform hover:scale-105 transition-transform duration-200">
             <Link href="/deals?filter=daily">
               اكتشفي كل عروض اليوم <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
@@ -137,17 +150,3 @@ export function DailyDealsSection() {
     </section>
   );
 }
-
-// Add to globals.css if not already present for animations
-/*
-@keyframes ping-slow {
-  75%, 100% {
-    transform: scale(1.1);
-    opacity: 0;
-  }
-}
-.animate-ping-slow {
-  animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-*/
-

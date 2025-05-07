@@ -6,7 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Flame, Eye, ChevronLeft } from 'lucide-react'; // Using ChevronLeft for RTL "View All"
+import { Flame, Eye, ChevronLeft } from 'lucide-react'; 
+import { motion } from 'framer-motion';
 
 const mockBestsellers = [
   {
@@ -24,7 +25,7 @@ const mockBestsellers = [
     id: 'bestseller-2',
     name: 'كيكة الليمون المنعشة بالكريمة',
     seller: 'مخبز الأحلام',
-    sellerSlug: 'ahlam-bakery',
+    sellerSlug: 'mathaq-albayt',
     imageSrc: 'https://picsum.photos/seed/lemoncake/400/300',
     dataAiHint: 'lemon cake cream',
     price: '4,500 دج',
@@ -34,7 +35,7 @@ const mockBestsellers = [
     id: 'bestseller-3',
     name: 'فستان سهرة "نجمة الليل" (للإيجار)',
     seller: 'خزانة الأناقة',
-    sellerSlug: 'elegance-closet',
+    sellerSlug: 'anaqa-lilijar',
     imageSrc: 'https://picsum.photos/seed/nightstar_dress/400/300',
     dataAiHint: 'dark blue evening dress',
     price: '9,000 دج / لليلة',
@@ -44,7 +45,7 @@ const mockBestsellers = [
     id: 'bestseller-4',
     name: 'لوحة فنية "هدوء الطبيعة"',
     seller: 'ريشة فنانة',
-    sellerSlug: 'artist-brush',
+    sellerSlug: 'lamsa-ibdaa',
     imageSrc: 'https://picsum.photos/seed/natureart/400/300',
     dataAiHint: 'nature landscape painting',
     price: '6,800 دج',
@@ -52,12 +53,18 @@ const mockBestsellers = [
   },
 ];
 
+const cardVariants = {
+  initial: { opacity: 0, y: 30, scale: 0.95 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
+
 export function BestsellersSection() {
   return (
     <section id="bestsellers" className="py-16 lg:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <Flame className="mx-auto h-12 w-12 text-primary animate-pulse" />
+          <Flame className="mx-auto h-12 w-12 text-primary animate-pulse" style={{animationDuration: '1.2s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             الأكثر مبيعاً وشهرة
           </h2>
@@ -66,8 +73,16 @@ export function BestsellersSection() {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {mockBestsellers.map((product) => (
-            <Card key={product.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-primary">
+          {mockBestsellers.map((product, index) => (
+            <motion.div
+              key={product.id}
+              variants={cardVariants}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, amount: 0.2 }}
+              custom={index} // for staggered animation if needed
+            >
+            <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50 h-full">
               <CardHeader className="p-0 relative">
                 <div className="aspect-[4/3] relative overflow-hidden rounded-t-xl">
                   <Image 
@@ -78,7 +93,7 @@ export function BestsellersSection() {
                     data-ai-hint={product.dataAiHint}
                   />
                    {product.oldPrice && (
-                    <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs font-semibold px-2 py-1 rounded-md shadow-md">
+                    <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs font-semibold px-2 py-1 rounded-md shadow-md animate-pulse" style={{animationDuration: '2.5s'}}>
                       خصم!
                     </div>
                   )}
@@ -90,9 +105,9 @@ export function BestsellersSection() {
                   <Link href={`/products/${product.id}`}>{product.name}</Link>
                 </CardTitle>
                 <CardDescription className="text-xs text-foreground/70 mb-2">
-                  من إبداع: <Link href={`/store/${product.sellerSlug}`} className="text-accent-purple hover:underline">{product.seller}</Link>
+                  من إبداع: <Link href={`/store/${product.sellerSlug}`} className="text-accent-purple hover:underline font-medium">{product.seller}</Link>
                 </CardDescription>
-                <div className="flex items-baseline gap-2 mt-auto">
+                <div className="flex items-baseline gap-2 mt-auto pt-2">
                   <p className="text-xl font-bold text-accent-pink">{product.price}</p>
                   {product.oldPrice && (
                     <p className="text-sm text-muted-foreground line-through">{product.oldPrice}</p>
@@ -100,17 +115,18 @@ export function BestsellersSection() {
                 </div>
               </CardContent>
               <CardFooter className="p-3 border-t">
-                <Button asChild variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors group/button">
+                <Button asChild variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 group/button transform hover:scale-105">
                   <Link href={`/products/${product.id}`}>
-                    <Eye className="ml-2 h-4 w-4 group-hover/button:text-primary-foreground" /> عرض التفاصيل
+                    <Eye className="ml-2 h-4 w-4 group-hover/button:animate-pulse" style={{animationDuration: '1s'}} /> عرض التفاصيل
                   </Link>
                 </Button>
               </CardFooter>
             </Card>
+            </motion.div>
           ))}
         </div>
         <div className="mt-12 text-center">
-          <Button size="lg" variant="default" asChild className="bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground shadow-md hover:shadow-lg transition-all duration-300 group">
+          <Button size="lg" variant="default" asChild className="bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
             <Link href="/products?sort=bestsellers">
               شاهدي كل المنتجات الرائجة <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>

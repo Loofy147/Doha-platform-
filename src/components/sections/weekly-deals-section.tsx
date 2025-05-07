@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { CalendarRange, Percent, Eye, ChevronLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { motion } from 'framer-motion';
 
 const mockWeeklyDeals = [
   {
@@ -20,8 +21,8 @@ const mockWeeklyDeals = [
     originalPrice: '12,000 دج',
     dealPrice: '9,600 دج',
     storeName: 'جمالكِ أولاً',
-    storeSlug: 'salon-farah', // Should match an actual store ID
-    productLink: '/products/farah-prod2', // Example link, adjust
+    storeSlug: 'salon-farah', 
+    productLink: '/products/farah-prod2', 
   },
   {
     id: 'deal-weekly-2',
@@ -30,8 +31,8 @@ const mockWeeklyDeals = [
     imageSrc: 'https://picsum.photos/seed/weeklydecor/400/250',
     dataAiHint: 'modern living room interior design',
     storeName: 'لمسة فن للديكور',
-    storeSlug: 'lamsa-ibdaa', // Placeholder, change to relevant store
-    productLink: '/store/lamsa-ibdaa?category=services', // General link to services
+    storeSlug: 'lamsa-ibdaa', 
+    productLink: '/store/lamsa-ibdaa?category=services', 
   },
   {
     id: 'deal-weekly-3',
@@ -40,10 +41,15 @@ const mockWeeklyDeals = [
     imageSrc: 'https://picsum.photos/seed/weeklysweetsdeal/400/250',
     dataAiHint: 'assorted oriental sweets',
     storeName: 'حلويات الأصالة',
-    storeSlug: 'mathaq-albayt', // Placeholder, change to relevant store
+    storeSlug: 'mathaq-albayt', 
     productLink: '/store/mathaq-albayt?category=sweets',
   },
 ];
+
+const cardVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
 
 export function WeeklyDealsSection() {
   const plugin = React.useRef(
@@ -74,13 +80,20 @@ export function WeeklyDealsSection() {
             direction: "rtl",
           }}
         >
-          <CarouselContent className="-ml-4"> {/* Negative margin for item spacing */}
-            {mockWeeklyDeals.map((deal) => (
-              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3"> {/* Padding for spacing */}
-                <div className="p-1 h-full">
-                  <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-purple/50 hover:border-accent-purple">
+          <CarouselContent className="-ml-4"> 
+            {mockWeeklyDeals.map((deal, index) => (
+              <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3"> 
+                <motion.div 
+                  className="p-1 h-full"
+                  variants={cardVariants}
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true, amount: 0.3 }}
+                  custom={index}
+                >
+                  <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-purple/30 hover:border-accent-purple focus-within:border-accent-purple focus-within:ring-2 focus-within:ring-accent-purple/50">
                     <CardHeader className="p-0 relative">
-                      <div className="aspect-[16/10] relative overflow-hidden rounded-t-xl"> {/* Adjusted aspect ratio */}
+                      <div className="aspect-[16/10] relative overflow-hidden rounded-t-xl"> 
                         <Image 
                           src={deal.imageSrc} 
                           alt={deal.title} 
@@ -88,7 +101,7 @@ export function WeeklyDealsSection() {
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                           data-ai-hint={deal.dataAiHint}
                         />
-                        <div className="absolute top-2 right-2 bg-accent-purple text-accent-purple-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center">
+                        <div className="absolute top-2 right-2 bg-accent-purple text-accent-purple-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center animate-pulse" style={{animationDelay: `${index * 0.1}s`, animationDuration: '2.2s'}}>
                           <Percent size={14} className="ml-1" /> عرض الأسبوع
                         </div>
                       </div>
@@ -101,7 +114,7 @@ export function WeeklyDealsSection() {
                         {deal.description}
                       </CardDescription>
                       <p className="text-xs text-muted-foreground mb-2">
-                        مقدم من: <Link href={`/store/${deal.storeSlug}`} className="text-accent-pink hover:underline">{deal.storeName}</Link>
+                        مقدم من: <Link href={`/store/${deal.storeSlug}`} className="text-accent-pink hover:underline font-medium">{deal.storeName}</Link>
                       </p>
                       <div className="flex items-baseline gap-2 mt-auto">
                         <p className="text-2xl font-bold text-accent-purple">{deal.dealPrice}</p>
@@ -111,14 +124,14 @@ export function WeeklyDealsSection() {
                       </div>
                     </CardContent>
                     <CardFooter className="p-3 border-t">
-                      <Button asChild variant="default" className="w-full bg-accent-purple hover:bg-accent-purple/90 text-accent-purple-foreground group/button">
+                      <Button asChild variant="default" className="w-full bg-accent-purple hover:bg-accent-purple/90 text-accent-purple-foreground group/button transform hover:scale-105 transition-transform duration-200">
                         <Link href={deal.productLink}>
-                          <Eye className="ml-2 h-4 w-4" /> استفيدي من العرض
+                          <Eye className="ml-2 h-4 w-4 group-hover/button:animate-ping-slow" style={{animationDuration: '1.6s'}} /> استفيدي من العرض
                         </Link>
                       </Button>
                     </CardFooter>
                   </Card>
-                </div>
+                </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -127,7 +140,7 @@ export function WeeklyDealsSection() {
         </Carousel>
 
         <div className="mt-12 text-center">
-          <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group">
+          <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
             <Link href="/deals?filter=weekly">
               تصفحي جميع عروض الأسبوع <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
