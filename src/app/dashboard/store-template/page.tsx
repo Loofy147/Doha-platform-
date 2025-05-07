@@ -5,13 +5,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input'; // Added import for Input
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Palette, LayoutTemplate, Save, Eye, Upload, Briefcase, Scissors, CookingPot, Shirt } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
-import type { StoreType } from '@/app/store/[storeId]/page';
+import type { StoreType } from '@/lib/data/mock-store-data'; // Adjusted path
 
 interface TemplateOption {
   id: StoreType;
@@ -36,6 +37,7 @@ const themeStyleOptions = [
     { label: "داكن وفخم", value: "elegant" }, // This would map to a dark theme variant
     { label: "مرح وحيوي", value: "playful" },
     { label: "عصري وبسيط", value: "modern-minimal" },
+    { label: "مظلم ليلي", value: "dark" },
 ];
 
 const accentColorOptions = [
@@ -118,15 +120,15 @@ export default function StoreTemplateSettingsPage() {
       <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center">
-            <LayoutTemplate size={36} className="ml-3 text-accent-yellow" /> تصميم وقالب متجركِ
+            <LayoutTemplate size={36} className="ml-3 text-accent-yellow" /> تصميم واجهة متجركِ
           </h1>
           <p className="mt-2 text-lg text-foreground/80">
-            اختاري القالب الذي يناسب طبيعة عملكِ، ثم خصصي الألوان والشعار لتعكسي هويتكِ الفريدة.
+            اختاري القالب الذي يعكس روح علامتك التجارية، وخصصي الألوان والشعار لمتجر ينبض بالحياة.
           </p>
         </div>
         <Link href={`/store/${storeSlug}`} passHref target="_blank">
           <Button variant="outline" className="border-accent-pink text-accent-pink hover:bg-accent-pink/10">
-            <Eye size={18} className="ml-2"/> معاينة المتجر الحالي
+            <Eye size={18} className="ml-2"/> معاينة المتجر 
           </Button>
         </Link>
       </header>
@@ -136,7 +138,7 @@ export default function StoreTemplateSettingsPage() {
         <Card className="shadow-xl">
           <CardHeader>
             <CardTitle className="text-2xl text-primary flex items-center"><LayoutTemplate className="ml-2 text-accent-purple" /> اختيار قالب المتجر</CardTitle>
-            <CardDescription>القالب يحدد طريقة عرض منتجاتكِ وخدماتكِ الأساسية.</CardDescription>
+            <CardDescription>كل قالب مصمم ليبرز جمال منتجاتك وخدماتك بطريقة فريدة.</CardDescription>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -171,7 +173,7 @@ export default function StoreTemplateSettingsPage() {
         <Card className="shadow-xl">
           <CardHeader>
             <CardTitle className="text-2xl text-primary flex items-center"><Palette className="ml-2 text-accent-pink" /> تخصيص مظهر المتجر</CardTitle>
-            <CardDescription>اجعلي متجركِ فريدًا بتغيير الألوان، الشعار، والبانر.</CardDescription>
+            <CardDescription>أضيفي لمستك الشخصية عبر الألوان، الشعار، والبانر الخاص بمتجرك.</CardDescription>
           </CardHeader>
           <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
             <div>
