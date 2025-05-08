@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,6 +14,7 @@ import Autoplay from "embla-carousel-autoplay";
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion'; // Correct import
 import { cn } from '@/lib/utils';
+import { useInView } from 'react-intersection-observer';
 
 
 const testimonials = [
@@ -72,54 +72,40 @@ const sectionVariants = {
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
+      delay: i * 0.07,
       duration: 0.4,
       ease: "easeOut",
-    },
-  },
+    }
+  })
 };
 
 
 export function TestimonialsSection() {
-  const [inView, setInView] = useState(false);
+    const { ref, inView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+    });
   const controls = useAnimation();
-  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          controls.start("visible");
-        }
-      });
-    };
-
-    const obs = new IntersectionObserver(handleIntersect, { threshold: 0.1 });
-    if (sectionRef.current) {
-      obs.observe(sectionRef.current);
-    }
-    setObserver(obs);
-
-    return () => {
-      observer?.disconnect();
-    };
-  }, [controls, observer]);
-
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
 
 
   return (
     <motion.section
       id="testimonials"
-      ref={sectionRef}
+      ref={ref}
       className="py-16 lg:py-24 bg-secondary/20 overflow-hidden"
       variants={sectionVariants}
       initial="hidden"
@@ -189,3 +175,4 @@ export function TestimonialsSection() {
     </motion.section>
   );
 }
+
