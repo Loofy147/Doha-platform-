@@ -1,4 +1,3 @@
-// src/app/page.tsx
 'use client';
 
 import Image from 'next/image';
@@ -46,7 +45,7 @@ const categories = [
   { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10' },
   { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/10' },
   { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات احترافية', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-  { name: 'جمال وعناية', icon: Scissors, href: '/products?category=جمال وعناية شخصية', dataAiHint: 'beauty wellness', color: 'text-pink-500', bgColor: 'bg-pink-500/10' },
+  { name: 'جمال وعناية', icon: Palette, href: '/products?category=جمال وعناية شخصية', dataAiHint: 'beauty wellness', color: 'text-pink-500', bgColor: 'bg-pink-500/10' },
 ];
 
 const sectionVariants = {
@@ -72,10 +71,10 @@ export default function HomePage() {
 
       
       <motion.div
-        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
+        variants={sectionVariants}
       >
         <CallToActionBanner
           title="✨ حان وقت التألق! انضمي لمبدعات لمسة ضحى ✨"
@@ -97,10 +96,10 @@ export default function HomePage() {
       <motion.section
         id="categories"
         className="py-16 lg:py-24 bg-secondary/20"
-        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
+        variants={sectionVariants}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -142,7 +141,6 @@ export default function HomePage() {
       </motion.section>
 
       <motion.div
-        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
