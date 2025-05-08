@@ -6,25 +6,29 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Sparkles,
-  Eye,
-  ChevronLeft,
+  DollarSign,
+  Package,
   Users,
+  LineChart,
+  Settings,
+  PlusCircle,
+  Bell,
   ShoppingBag,
   Palette,
   FileText,
-  CalendarDays,
-  PenLine,
+  Activity,
+  BarChartHorizontalBig,
+  MessageSquare,
+  Sparkles,
+  Store,
+  Star,
+  Eye,
+  LayoutTemplate, // Added for Store Template
+  Shirt, // Added Shirt icon
+  ChevronLeft,
   Home as HomeIcon,
-  Scissors,
+  CalendarDays,
+  PenLine
 } from 'lucide-react';
 import { AboutUsSection } from '@/components/sections/about-us-section';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
@@ -47,7 +51,7 @@ const categories = [
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.2 } }
 };
 
 const itemVariants = {
@@ -66,12 +70,12 @@ export default function HomePage() {
     <>
       <HeroSection />
 
-      {/* Seller CTA */}
+      
       <motion.div
+        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        variants={sectionVariants}
       >
         <CallToActionBanner
           title="✨ حان وقت التألق! انضمي لمبدعات لمسة ضحى ✨"
@@ -82,7 +86,6 @@ export default function HomePage() {
           dataAiHint="women entrepreneurs working"
           icon={ShoppingBag}
           reverseLayout
-          animationConfig={sectionVariants}
         />
       </motion.div>
 
@@ -94,10 +97,10 @@ export default function HomePage() {
       <motion.section
         id="categories"
         className="py-16 lg:py-24 bg-secondary/20"
+        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        variants={sectionVariants}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -111,8 +114,8 @@ export default function HomePage() {
             <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
               اكتشفي فئات متنوعة تلبي كل شغف واهتمام، من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة.
             </p>
-          </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
             {categories.map((category, index) => {
               const CategoryIcon = category.icon;
               return (
@@ -138,12 +141,11 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Shopper CTA */}
       <motion.div
+        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        variants={sectionVariants}
       >
         <CallToActionBanner
           title="💖 دللي نفسكِ! اكتشفي كنوز الإبداع المحلي 💖"
@@ -154,7 +156,6 @@ export default function HomePage() {
           dataAiHint="happy woman shopping online"
           icon={ShoppingBag}
           reverseLayout
-          animationConfig={sectionVariants}
         />
       </motion.div>
 
