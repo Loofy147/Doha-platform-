@@ -22,9 +22,18 @@ import {
   PanelLeft,
   Search,
   LayoutGrid,
-  Eye // Added Eye icon for View Store
+  Eye, // Added Eye icon for View Store
+  Star, // For reviews/ratings
+  UserCircle // For profile link
 } from 'lucide-react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'; // Fixed import path
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'; // Fixed import path
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -75,8 +84,8 @@ export function SellerDashboardHeader() {
       if (part === 'new') label = 'إضافة جديد';
       if (part === 'edit') label = 'تعديل';
       // Handle dynamic [id] segments - might need more logic to fetch the name
-      if (pathname.includes('/edit/') && part !== 'edit') label = `تعديل ${label}`;
-       if (pathname.includes('/orders/') && part !== 'orders') label = `طلب #${label}`;
+      if (pathname.includes('/edit/') && part !== 'edit' && index > 0) label = `تعديل #${pathParts[index -1] === 'products' ? 'منتج' : 'طلب'} ${label}`; // Basic label for ID
+       if (pathname.includes('/orders/') && part !== 'orders' && index > 0) label = `طلب #${label}`;
 
       return (
         <React.Fragment key={currentPath}>
@@ -250,36 +259,5 @@ export function SellerDashboardHeader() {
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
-  );
-}
-```
-  </change>
-  <change>
-    <file>src/app/dashboard/layout.tsx</file>
-    <description>Import SellerDashboardHeader correctly.</description>
-    <content><![CDATA[import type { Metadata } from 'next/server';
-import { SellerDashboardHeader } from '@/components/dashboard/seller-dashboard-header'; // Corrected import
-import { SellerDashboardSidebar } from '@/components/dashboard/seller-dashboard-sidebar';
-
-export const metadata: Metadata = {
-  title: 'لوحة تحكم المبدعة - لمسة ضحى',
-  description: 'إدارة متجرك ومنتجاتك على منصة لمسة ضحى.',
-};
-
-export default function SellerDashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex min-h-screen w-full bg-muted/40">
-      <SellerDashboardSidebar />
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:mr-14 flex-1"> {/* Changed sm:pl-14 to sm:mr-14 */}
-        <SellerDashboardHeader /> {/* This should now render correctly */}
-        <main className="flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          {children}
-        </main>
-      </div>
-    </div>
   );
 }
