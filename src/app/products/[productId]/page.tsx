@@ -40,7 +40,7 @@ import {
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"; // Correct import path and added CarouselApi
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from '@/lib/utils';
 import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ItemType as PublicItemType, type StoreType } from '@/lib/data/mock-store-data'; // Use PublicItemType alias
@@ -90,7 +90,30 @@ const ProductDetailLoadingSkeleton = () => (
         <Skeleton className="h-10 w-1/2 rounded-md" />
       </div>
     </div>
+     <StoreLoadingSkeleton /> {/* Added store skeleton */}
   </div>
+);
+
+// Skeleton for store section loading
+const StoreLoadingSkeleton = () => (
+    <div className="mt-16">
+        <Skeleton className="h-10 w-1/3 mb-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array(4).fill(0).map((_, i) => (
+            <Card key={`skel-related-${i}`} className="shadow-lg rounded-lg overflow-hidden">
+              <Skeleton className="aspect-square w-full" />
+              <CardContent className="p-4 space-y-2">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-6 w-1/3 mt-2" />
+              </CardContent>
+              <CardFooter className="p-3 border-t">
+                <Skeleton className="h-10 w-full" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+    </div>
 );
 
 export default function ProductDetailPage() {
@@ -99,38 +122,37 @@ export default function ProductDetailPage() {
   const productId = params.productId as string;
 
   const [item, setItem] = useState<Item | null>(null);
-  const [storeData, setStoreData] = useState<StoreData | null>(null); // Fix: Changed = to ,
+  const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null); // Added error state
+  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  // const [selectedImageIndex, setSelectedImageIndex] = useState(0); // Replaced with currentSlide
+  const [api, setApi] = useState<CarouselApi>(); // Carousel API state
+  const [currentSlide, setCurrentSlide] = useState(0); // Track current slide index
   const { toast } = useToast();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
-    let isMounted = true; // Flag to prevent state updates on unmounted component
+    let isMounted = true;
     if (productId) {
       setIsLoading(true);
-      setError(null); // Reset error on new fetch
+      setError(null);
       const timer = setTimeout(async () => {
         try {
-          // Simulate API call (replace with actual fetch)
-          // Use Promise.all for potentially concurrent fetches
-          const [fetchedItemData, fetchedStoreData] = await Promise.all([
-            getProductById(productId) || getServiceById(productId),
-            getStoreDataById(productId.split('-')[0]) // Assuming store ID is part of product ID prefix
-          ]);
+          const fetchedItemData = getProductById(productId) || getServiceById(productId);
+          const relatedStoreId = fetchedItemData?.sellerId || productId.split('-')[0]; // Derive store ID
+          const fetchedStoreData = relatedStoreId ? getStoreDataById(relatedStoreId) : null;
 
-          if (!isMounted) return; // Exit if component unmounted
+          if (!isMounted) return;
 
           if (fetchedItemData) {
             setItem(fetchedItemData);
-            const relatedStore = fetchedStoreData || getStoreDataById(fetchedItemData.sellerId); // Fallback to item's sellerId if needed
-            if (relatedStore) {
-              setStoreData(relatedStore);
+            if (fetchedStoreData) {
+              setStoreData(fetchedStoreData);
             } else {
-              setError(`تعذر العثور على المتجر المرتبط بهذا العنصر (ID: ${fetchedItemData.sellerId}).`);
+              setError(`تعذر العثور على المتجر المرتبط (ID: ${relatedStoreId}).`);
               setStoreData(null);
+              console.warn(`Store data not found for ID: ${relatedStoreId}`);
             }
           } else {
             setError(`تعذر العثور على العنصر المطلوب (ID: ${productId}).`);
@@ -138,17 +160,16 @@ export default function ProductDetailPage() {
             setStoreData(null);
           }
         } catch (err) {
-          if (!isMounted) return;
-          console.error("Error fetching product details:", err);
-          setError("حدث خطأ أثناء جلب تفاصيل العنصر. يرجى المحاولة مرة أخرى.");
-          setItem(null);
-          setStoreData(null);
+           if (!isMounted) return;
+           console.error("Error fetching product details:", err);
+           setError("حدث خطأ أثناء جلب تفاصيل العنصر. يرجى المحاولة مرة أخرى.");
+           setItem(null);
+           setStoreData(null);
         } finally {
-           if (isMounted) setIsLoading(false);
+          if (isMounted) setIsLoading(false);
         }
-      }, 700); // Simulate network delay
+      }, 700);
 
-      // Cleanup function
       return () => {
         isMounted = false;
         clearTimeout(timer);
@@ -157,13 +178,25 @@ export default function ProductDetailPage() {
       setError("معرف العنصر غير متوفر.");
       setIsLoading(false);
     }
-  }, [productId]); // Removed toast dependency
+  }, [productId]); // Removed unnecessary dependencies like router, toast
+
+  useEffect(() => {
+    if (!api) return;
+    setCurrentSlide(api.selectedScrollSnap()); // Set initial slide index
+    api.on("select", () => {
+      setCurrentSlide(api.selectedScrollSnap()); // Update index on slide change
+    });
+    // Cleanup listener
+    return () => {
+      api.off("select", () => setCurrentSlide(api.selectedScrollSnap()));
+    };
+  }, [api]);
 
   const storeAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
 
   const handlePrimaryAction = async (selectedItem: Item) => {
     setIsAddingToCart(true);
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
     setIsAddingToCart(false);
 
     const actionText = selectedItem.type === 'بيع' ? 'أضيف للسلة' : selectedItem.type === 'إيجار' ? 'احجزي الآن' : 'استفسري/احجزي الخدمة';
@@ -179,7 +212,7 @@ export default function ProductDetailPage() {
   };
 
   const handleThumbnailClick = (index: number) => {
-    setSelectedImageIndex(index);
+    api?.scrollTo(index); // Use carousel API to navigate
   };
 
   // --- Render Logic ---
@@ -203,10 +236,14 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (!item || !storeData) {
-    // Use a more specific Not Found component if available
-    return <NotFound title="العنصر أو المتجر غير موجود" message="عذرًا، العنصر أو المتجر الذي تبحثين عنه غير متوفر حاليًا." />;
+  if (!item) { // Check if item is null after loading and no error
+    return <NotFound title="العنصر غير موجود" message="عذرًا، العنصر الذي تبحثين عنه غير متوفر حاليًا." />;
   }
+
+  if (!storeData) { // Added check for storeData as well
+      return <NotFound title="المتجر غير موجود" message="عذرًا، المتجر المرتبط بهذا العنصر غير متوفر حاليًا." />;
+  }
+
 
   const itemImages = (item as Product).images || [(item as Product).imageSrc || (item as Service).imageSrc || 'https://picsum.photos/800/600?grayscale'];
 
@@ -236,44 +273,43 @@ export default function ProductDetailPage() {
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Image Carousel */}
             <motion.div className="space-y-4" variants={fadeInUp}>
-                 <div className="relative shadow-xl rounded-xl overflow-hidden group border border-border/50">
-                    <AnimatePresence initial={false} mode="wait">
-                     <motion.div
-                        key={selectedImageIndex}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="aspect-square md:min-h-[450px]"
-                     >
-                        <Image
-                            src={itemImages[selectedImageIndex]}
-                            alt={`${item.name} - صورة ${selectedImageIndex + 1}`}
-                            fill
-                            className="object-contain rounded-lg p-2" // Added padding
-                            data-ai-hint={item.dataAiHint || 'product image'}
-                            priority={selectedImageIndex === 0}
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                     </motion.div>
-                    </AnimatePresence>
+                 <Carousel
+                    setApi={setApi} // Pass setApi to get the API instance
+                    className="relative shadow-xl rounded-xl overflow-hidden group border border-border/50"
+                    opts={{ loop: itemImages.length > 1 }}
+                 >
+                    <CarouselContent>
+                        {itemImages.map((imgSrc, index) => (
+                            <CarouselItem key={index}>
+                                <div className="aspect-square md:min-h-[450px] relative"> {/* Container for image */}
+                                    <Image
+                                        src={imgSrc}
+                                        alt={`${item.name} - صورة ${index + 1}`}
+                                        fill
+                                        className="object-contain rounded-lg p-2" // Use contain and add padding
+                                        data-ai-hint={item.dataAiHint || 'product image'}
+                                        priority={index === 0}
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                    />
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
                      {itemImages.length > 1 && (
                         <>
                             <CarouselPrevious
-                                onClick={() => setSelectedImageIndex(prev => (prev - 1 + itemImages.length) % itemImages.length)}
                                 className="absolute left-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card w-8 h-8"
                                 style={{color: storeAccentColor}}
                                 aria-label="الصورة السابقة"
                             />
                             <CarouselNext
-                                onClick={() => setSelectedImageIndex(prev => (prev + 1) % itemImages.length)}
                                 className="absolute right-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card w-8 h-8"
                                 style={{color: storeAccentColor}}
                                 aria-label="الصورة التالية"
                              />
                         </>
                      )}
-                </div>
+                </Carousel>
                 {itemImages.length > 1 && (
                     <div className="grid grid-cols-5 gap-2">
                         {itemImages.map((imgSrc, index) => (
@@ -282,7 +318,7 @@ export default function ProductDetailPage() {
                                 onClick={() => handleThumbnailClick(index)}
                                 className={cn(
                                     "aspect-square rounded-md overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                                    selectedImageIndex === index ? 'border-primary ring-2 ring-primary/50 ring-offset-2' : 'border-border/50 hover:border-muted-foreground/50'
+                                    currentSlide === index ? 'border-primary ring-2 ring-primary/50 ring-offset-2' : 'border-border/50 hover:border-muted-foreground/50' // Use currentSlide for active state
                                 )}
                                 aria-label={`عرض الصورة ${index + 1}`}
                                 whileHover={{ scale: 1.05 }}

@@ -222,15 +222,15 @@ const CarouselPrevious = React.forwardRef<
       className={cn(
         "absolute h-8 w-8 rounded-full",
         orientation === "horizontal"
-          ? isRtl ? "-right-12 top-1/2 -translate-y-1/2" : "-left-12 top-1/2 -translate-y-1/2"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+          ? isRtl ? "right-2 top-1/2 -translate-y-1/2" : "left-2 top-1/2 -translate-y-1/2" // Adjusted RTL/LTR positions
+          : "top-2 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
     >
-      {isRtl && orientation === "horizontal" ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />}
+      {isRtl && orientation === "horizontal" ? <ArrowRight className="h-4 w-4" /> : <ArrowLeft className="h-4 w-4" />} {/* Corrected Icon Logic */}
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -252,15 +252,15 @@ const CarouselNext = React.forwardRef<
       className={cn(
         "absolute h-8 w-8 rounded-full",
         orientation === "horizontal"
-          ? isRtl ? "-left-12 top-1/2 -translate-y-1/2" : "-right-12 top-1/2 -translate-y-1/2"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+          ? isRtl ? "left-2 top-1/2 -translate-y-1/2" : "right-2 top-1/2 -translate-y-1/2" // Adjusted RTL/LTR positions
+          : "bottom-2 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
     >
-      {isRtl && orientation === "horizontal" ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+      {isRtl && orientation === "horizontal" ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />} {/* Corrected Icon Logic */}
       <span className="sr-only">Next slide</span>
     </Button>
   );
