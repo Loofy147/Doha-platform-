@@ -24,7 +24,6 @@ import {
   LayoutTemplate,
   Download, // Import Download
   HomeIcon, // Keep HomeIcon
-  CalendarDays, // Keep CalendarDays
   Handshake, // Keep Handshake
   Shirt, // Added Shirt for fashion category
   Users2, // Added Users2 for customers card
@@ -32,6 +31,7 @@ import {
   LayoutGrid, // Added LayoutGrid for categories card
   BarChart3, // Added BarChart3 for reports card
   Zap, // Added Zap for quick actions
+  LayoutDashboard // Added LayoutDashboard icon import
 } from 'lucide-react';
 import { Button } from '@/components/ui/button'; // Add Button import
 import {
@@ -59,6 +59,14 @@ import { TestimonialsSection } from '@/components/sections/testimonials-section'
 import { ContactSection } from '@/components/sections/contact-section';
 import { motion } from 'framer-motion';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+const categories = [
+  { name: 'أزياء وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10' },
+  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10' },
+  { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10' },
+  { name: 'تأجير إبداعات', icon: Handshake, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/10' },
+  { name: 'خدمات احترافية', icon: Handshake, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
+];
 
 const salesData = [
   { month: "يناير", sales: Math.floor(Math.random() * 5000) + 1000 },
@@ -158,7 +166,7 @@ export default function HomePage() {
      <div className="flex flex-col min-h-screen">
       <HeroSection />
 
-      {/* Admin Dashboard Snippet */}
+      {/* Admin Dashboard Snippet - Moved to a separate component if needed */}
        <motion.section
         className="py-12 bg-muted/40"
         variants={sectionVariants}
@@ -203,11 +211,9 @@ export default function HomePage() {
                     </CardContent>
                  <CardFooter className="pt-2">
                         <Button variant="ghost" size="sm" asChild className="text-xs text-primary hover:underline p-0 h-auto">
-                            {card.href ? (
-                                <Link href={card.href}>عرض التفاصيل</Link>
-                            ) : (
-                                <span>عرض التفاصيل</span>
-                            )}
+                            <Link href={card.href ?? '#'}>{/* Fallback href added */}
+                              عرض التفاصيل
+                            </Link>
                         </Button>
                     </CardFooter>
               </Card>
@@ -267,23 +273,52 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+        {/* Dynamic Sections */}
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={sectionVariants}
+        >
+         <DailyDealsSection />
+        </motion.div>
 
-      {/* Dynamic Sections */}
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
-        <DailyDealsSection />
-      </motion.div>
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+             variants={sectionVariants}
+        >
          <BestsellersSection />
-      </motion.div>
-       <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+        </motion.div>
+
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+             variants={sectionVariants}
+        >
          <WeeklyDealsSection />
-      </motion.div>
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+        </motion.div>
+
+        <motion.div
+             initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+             variants={sectionVariants}
+        >
         <TopRatedStoresSection />
-      </motion.div>
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+        </motion.div>
+
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+             variants={sectionVariants}
+        >
         <AboutUsSection />
-      </motion.div>
+        </motion.div>
+
         {/* Seller CTA */}
         <motion.div
             variants={sectionVariants}
@@ -321,12 +356,23 @@ export default function HomePage() {
             />
         </motion.div>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+             variants={sectionVariants}
+        >
         <TestimonialsSection />
-      </motion.div>
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+        </motion.div>
+
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+             variants={sectionVariants}
+        >
         <ContactSection />
-      </motion.div>
+        </motion.div>
     </div>
   );
 }
