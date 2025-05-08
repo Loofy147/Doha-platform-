@@ -1,4 +1,3 @@
-// src/app/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -20,7 +19,6 @@ import {
   Sparkles,
   Store,
   Star,
-  Eye,
   LayoutTemplate, // Added for Store Template
   Download, // Import Download
   HomeIcon, // Keep HomeIcon
@@ -44,7 +42,6 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -57,14 +54,12 @@ import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
 import { ContactSection } from '@/components/sections/contact-section';
-import { motion } from 'framer-motion';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import ClientContactSection from '@/components/sections/client-contact-section'; // Import the new client component
-
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Import the logo component
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 } }
 };
 
 export default function HomePage() {
@@ -77,20 +72,24 @@ export default function HomePage() {
     if (!isClient) {
         return (
             <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-                <Skeleton className="w-full h-[50vh] rounded-lg mb-8" />
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                  <Skeleton className="w-full h-32 rounded-lg mb-8" />
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                      {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-48 rounded-lg" />)}
-                  </div>
-                  <Skeleton className="w-full h-64 rounded-lg mt-8" />
+                <div className="flex items-center justify-between space-y-2">
+                    <h2 className="text-3xl font-bold tracking-tight text-primary">لمسة ضحى</h2>
+                </div>
+                <Skeleton className="w-full h-32 rounded-lg" />
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
+                </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Skeleton className="h-64 rounded-lg" />
+                    <Skeleton className="h-64 rounded-lg" />
                 </div>
             </div>
         );
     }
 
   return (
-     <div className="flex flex-col min-h-screen">
+     <div className="flex flex-col min-h-screen bg-background">
+      
       <HeroSection />
 
         {/* Sections with Framer Motion */}
@@ -187,7 +186,6 @@ export default function HomePage() {
 
         {/* Wrap ContactSection usage */}
         <ClientContactSection />
-
     </div>
   );
 }
