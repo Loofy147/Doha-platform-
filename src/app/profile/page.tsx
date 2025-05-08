@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { Award, MessageCircle, Users, Heart, Sun, Zap, UserCircle2, Settings2, ShoppingCart, ListOrdered, Lock, MapPin, CreditCard, Bell, Edit3, LogOut, ShieldCheck, Gift } from 'lucide-react';
+import { Award, MessageCircle, Users, Heart, Sun, Zap, UserCircle2, Settings2, ShoppingCart, ListOrdered, Lock, MapPin, CreditCard, Bell, Edit3, LogOut, ShieldCheck, Gift, LayoutDashboard } from 'lucide-react'; // Added LayoutDashboard
 import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton'; // Import Skeleton
 
 interface BadgeInfo {
   id: string;
@@ -35,6 +36,7 @@ const userProfileData = {
   avatarSrc: 'https://picsum.photos/128/128?random=userProfile',
   dataAiHint: 'woman smiling portrait',
   points: 1250,
+  isSeller: true, // Added flag to indicate if the user is also a seller
 };
 
 const earnedBadges = mockBadges.filter(badge => badge.earned);
@@ -51,21 +53,23 @@ export default function ProfilePage() {
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="animate-pulse">
-          <div className="h-10 bg-muted rounded w-1/4 mb-8"></div>
-          <div className="bg-card shadow-lg rounded-lg p-6 md:p-8 mb-8">
+          <Skeleton className="h-10 w-1/4 mb-8 rounded" />
+          <Card className="shadow-lg rounded-lg p-6 md:p-8 mb-8">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="h-24 w-24 bg-muted rounded-full"></div>
-              <div className="flex-1 space-y-3">
-                <div className="h-8 bg-muted rounded w-1/2"></div>
-                <div className="h-4 bg-muted rounded w-3/4"></div>
-                <div className="h-4 bg-muted rounded w-1/3"></div>
+              <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-full" />
+              <div className="flex-1 space-y-3 text-center md:text-right">
+                <Skeleton className="h-8 bg-muted rounded w-1/2 mx-auto md:mx-0" />
+                <Skeleton className="h-4 bg-muted rounded w-3/4 mx-auto md:mx-0" />
+                <Skeleton className="h-4 bg-muted rounded w-1/3 mx-auto md:mx-0" />
+                <Skeleton className="h-6 bg-muted rounded w-1/4 mx-auto md:mx-0" />
               </div>
+              <Skeleton className="h-10 w-36 rounded-md self-center md:self-start" />
             </div>
-          </div>
-          <div className="h-12 bg-muted rounded w-full mb-6"></div>
-          <div className="bg-card shadow-lg rounded-lg p-6 md:p-8">
-             <div className="h-40 bg-muted rounded"></div>
-          </div>
+          </Card>
+          <Skeleton className="h-12 w-full mb-6 rounded" />
+          <Card className="shadow-lg rounded-lg p-6 md:p-8">
+             <Skeleton className="h-40 bg-muted rounded" />
+          </Card>
         </div>
       </div>
     );
@@ -97,8 +101,16 @@ export default function ProfilePage() {
               <div className="mt-3 text-lg font-semibold text-accent-yellow">
                 ✨ نقاط الولاء: {userProfileData.points.toLocaleString()} نقطة
               </div>
+              {/* Seller Dashboard Link */}
+              {userProfileData.isSeller && (
+                <Button variant="outline" size="sm" asChild className="mt-3 border-accent-purple text-accent-purple hover:bg-accent-purple/10">
+                  <Link href="/dashboard">
+                    <LayoutDashboard size={16} className="ml-2"/> لوحة تحكم متجري
+                  </Link>
+                </Button>
+              )}
             </div>
-            <Button variant="outline" className="mt-4 md:mt-0 self-center md:self-start border-accent-purple text-accent-purple hover:bg-accent-purple/10">
+             <Button variant="outline" className="mt-4 md:mt-0 self-center md:self-start border-accent-purple text-accent-purple hover:bg-accent-purple/10">
               <Edit3 size={18} className="ml-2" /> تعديل الملف الشخصي
             </Button>
           </div>
@@ -152,7 +164,7 @@ export default function ProfilePage() {
               ) : (
                 <p className="text-muted-foreground text-center py-8">لم تحصلي على أي أوسمة بعد. تفاعلي أكثر لتجميعها!</p>
               )}
-              
+
               <Separator className="my-6" />
               <h3 className="text-lg font-semibold text-primary mb-3">أوسمة يمكنكِ الحصول عليها</h3>
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -185,7 +197,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="wishlist">
            <Card>
             <CardHeader>

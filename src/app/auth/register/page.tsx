@@ -10,9 +10,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group" // Import RadioGroup
 import { useToast } from '@/hooks/use-toast';
-import { UserPlus, Mail, KeyRound, User, LogIn } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { UserPlus, Mail, KeyRound, User, LogIn, Briefcase, ShoppingBag } from 'lucide-react'; // Added icons
+import { WomenCommerceLogo } from '@/components/icons/logo';
 
 const registrationFormSchema = z.object({
   fullName: z.string().min(2, { message: "يجب أن يتكون الاسم الكامل من حرفين على الأقل." }),
@@ -23,10 +24,11 @@ const registrationFormSchema = z.object({
     .regex(/[0-9]/, { message: "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل."})
     .regex(/[^a-zA-Z0-9]/, { message: "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل."}),
   confirmPassword: z.string().min(1, { message: "الرجاء تأكيد كلمة المرور." }),
+  accountType: z.enum(['customer', 'seller'], { required_error: "الرجاء تحديد نوع الحساب."}), // Added account type
   agreeToTerms: z.boolean().refine(val => val === true, { message: "يجب الموافقة على الشروط والأحكام للتسجيل." }),
 }).refine(data => data.password === data.confirmPassword, {
   message: "كلمتا المرور غير متطابقتين.",
-  path: ["confirmPassword"], 
+  path: ["confirmPassword"],
 });
 
 type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
@@ -49,15 +51,21 @@ export default function RegisterPage() {
     resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       agreeToTerms: false,
+      accountType: 'customer', // Default to customer
     }
   });
 
   const onSubmit: SubmitHandler<RegistrationFormValues> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log('Registration Attempt:', data);
+    // Add logic to handle different account types if necessary
+    const welcomeMessage = data.accountType === 'seller'
+      ? "مرحبًا بكِ كمبدعة في لمسة ضحى! يرجى التحقق من بريدك الإلكتروني لخطوات تفعيل متجرك."
+      : "أهلاً بك في لمسة ضحى! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.";
+
     toast({
       title: 'تم التسجيل بنجاح (محاكاة)',
-      description: "أهلاً بك في لمسة ضحى! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
+      description: welcomeMessage,
       variant: 'default',
     });
     reset();
@@ -89,9 +97,9 @@ export default function RegisterPage() {
            <Link href="/" className="mb-4 inline-block">
             <WomenCommerceLogo className="h-16 w-auto" />
           </Link>
-          <CardTitle className="text-3xl font-bold text-primary">أنشئي حسابكِ</CardTitle>
+          <CardTitle className="text-3xl font-bold text-primary">أنشئي حسابكِ في لمسة ضحى</CardTitle>
           <CardDescription className="text-foreground/80">
-            انضمي إلى مجتمعنا من المبدعات والمتسوقات الداعمات في لمسة ضحى.
+            انضمي إلى مجتمعنا من المبدعات والمتسوقات الداعمات.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -100,10 +108,10 @@ export default function RegisterPage() {
               <Label htmlFor="fullName" className="flex items-center mb-1">
                 <User size={16} className="mr-2 text-accent-pink" /> الاسم الكامل
               </Label>
-              <Input 
-                id="fullName" 
-                {...register('fullName')} 
-                placeholder="اسمك الكامل" 
+              <Input
+                id="fullName"
+                {...register('fullName')}
+                placeholder="اسمكِ الكامل"
                 className={errors.fullName ? 'border-destructive' : ''}
               />
               {errors.fullName && <p className="mt-1 text-sm text-destructive">{errors.fullName.message}</p>}
@@ -112,11 +120,11 @@ export default function RegisterPage() {
               <Label htmlFor="email" className="flex items-center mb-1">
                 <Mail size={16} className="mr-2 text-accent-pink" /> عنوان البريد الإلكتروني
               </Label>
-              <Input 
-                id="email" 
-                type="email" 
-                {...register('email')} 
-                placeholder="you@example.com" 
+              <Input
+                id="email"
+                type="email"
+                {...register('email')}
+                placeholder="you@example.com"
                 className={errors.email ? 'border-destructive' : ''}
               />
               {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
@@ -125,11 +133,11 @@ export default function RegisterPage() {
               <Label htmlFor="password" className="flex items-center mb-1">
                 <KeyRound size={16} className="mr-2 text-accent-pink" /> كلمة المرور
               </Label>
-              <Input 
-                id="password" 
-                type="password" 
-                {...register('password')} 
-                placeholder="اختاري كلمة مرور قوية" 
+              <Input
+                id="password"
+                type="password"
+                {...register('password')}
+                placeholder="اختاري كلمة مرور قوية"
                 className={errors.password ? 'border-destructive' : ''}
               />
               {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
@@ -138,16 +146,48 @@ export default function RegisterPage() {
               <Label htmlFor="confirmPassword" className="flex items-center mb-1">
                 <KeyRound size={16} className="mr-2 text-accent-pink" /> تأكيد كلمة المرور
               </Label>
-              <Input 
-                id="confirmPassword" 
-                type="password" 
-                {...register('confirmPassword')} 
-                placeholder="أعيدي إدخال كلمة المرور" 
+              <Input
+                id="confirmPassword"
+                type="password"
+                {...register('confirmPassword')}
+                placeholder="أعيدي إدخال كلمة المرور"
                 className={errors.confirmPassword ? 'border-destructive' : ''}
               />
               {errors.confirmPassword && <p className="mt-1 text-sm text-destructive">{errors.confirmPassword.message}</p>}
             </div>
-            <div className="items-top flex space-x-2">
+
+             {/* Account Type Selection */}
+            <div>
+              <Label className="flex items-center mb-3">
+                 <UserPlus size={16} className="mr-2 text-accent-purple" /> نوع الحساب
+              </Label>
+               <Controller
+                name="accountType"
+                control={control}
+                render={({ field }) => (
+                    <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col sm:flex-row gap-4"
+                    >
+                        <Label htmlFor="customer" className="flex items-center space-x-2 p-3 border rounded-md cursor-pointer hover:bg-primary/5 flex-1">
+                            <RadioGroupItem value="customer" id="customer" />
+                            <ShoppingBag size={18} className="text-accent-yellow" />
+                            <span>متسوقة (أريد الشراء والاكتشاف)</span>
+                        </Label>
+                        <Label htmlFor="seller" className="flex items-center space-x-2 p-3 border rounded-md cursor-pointer hover:bg-primary/5 flex-1">
+                            <RadioGroupItem value="seller" id="seller" />
+                            <Briefcase size={18} className="text-accent-pink"/>
+                            <span>مبدعة (أريد البيع/التأجير/تقديم خدمة)</span>
+                        </Label>
+                    </RadioGroup>
+                )}
+                />
+                {errors.accountType && <p className="mt-1 text-sm text-destructive">{errors.accountType.message}</p>}
+            </div>
+
+
+            <div className="items-top flex space-x-2 pt-2">
                <Controller
                 name="agreeToTerms"
                 control={control}
