@@ -17,9 +17,9 @@ export interface Product {
   isNew?: boolean;
   isBestseller?: boolean;
   dataAiHint: string;
-  images: string[]; // Array of image URLs for product details dialog (can include imageSrc)
+  images?: string[]; // Array of image URLs for product details dialog (can include imageSrc)
   sellerId: string; // To link product to a store
-  storeSlug: string; // Added for easier linking from product cards
+  storeSlug: string; // Store identifier (slug)
   sku?: string;
   tags?: string[];
   availability?: 'متوفر' | 'نفذ المخزون' | 'قريباً';
@@ -42,7 +42,7 @@ export interface Service {
   dataAiHint?: string;
   type: 'خدمة'; // Ensure type is 'خدمة'
   sellerId: string;
-  storeSlug: string; // Added for easier linking
+  storeSlug: string; // Store identifier (slug)
   availability?: string; // e.g., "الحجز المسبق مطلوب", "أيام محددة"
   location?: 'عبر الإنترنت' | 'في موقع العميل' | 'في مقرنا';
   tags?: string[];
@@ -131,8 +131,8 @@ const commonProducts: Product[] = [
     isBestseller: true,
     dataAiHint: 'leather handbag fashion',
     images: ['https://picsum.photos/seed/leatherbag/800/600', 'https://picsum.photos/seed/bagdetail/800/600', 'https://picsum.photos/seed/bagmodel/800/600'],
-    sellerId: 'anaqa-lilijar',
-    storeSlug: 'anaqa-lilijar',
+    sellerId: 'anaqa-lilijar', // Assign to a relevant store
+    storeSlug: 'anaqa-lilijar', // Assign to a relevant store
     tags: ['حقيبة', 'جلد طبيعي', 'أزياء', 'نسائية'],
     availability: 'متوفر',
   }
@@ -712,8 +712,10 @@ export const mockStoreDetails: StoreData[] = [
   }
 ];
 
-// Detailed product data for seller dashboard (matches what's used in `getSellerProductsSummary` and `getDetailedSellerProductById`)
+// Seller dashboard specific data types and functions
+
 export type SellerProductStatus = 'نشط' | 'غير نشط' | 'بانتظار الموافقة' | 'نفذ المخزون';
+
 export interface DetailedSellerProduct {
   id: string;
   name: string;
@@ -722,7 +724,7 @@ export interface DetailedSellerProduct {
   detailsForAI: string; // For AI description generation
   description: string; // Main description for display
   story: string; // Optional seller's story about the product
-  price: string; // Always string, might be " عند الطلب" or numeric for 'بيع'
+  price: string; // Price for 'بيع', might be empty for others
   stock?: string; // For 'بيع'
   discountPercentage?: string; // For 'بيع'
   isTaxable?: boolean; // For 'بيع'
@@ -731,7 +733,7 @@ export interface DetailedSellerProduct {
   rentalDeposit?: string; // For 'إيجار'
   rentalAvailability?: string; // For 'إيجار'
   servicePriceType?: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'; // For 'خدمة'
-  servicePrice?: string; // This is the actual price value for service, 'price' field in Product/Service is display string.
+  servicePrice?: string; // Service price value, may differ from display price
   serviceDuration?: string; // For 'خدمة'
   serviceLocation?: string; // For 'خدمة'
   imageSrc: string; // Primary image
@@ -746,130 +748,150 @@ export interface DetailedSellerProduct {
 
 
 // Initial detailed product list for seller dashboard
-export const allSellerProductsList: DetailedSellerProduct[] = [
-  // Example Product 1 (Sale)
+// This list should reflect the items assigned to a SPECIFIC seller (e.g., lamsa-ibdaa)
+export let allSellerProductsList: DetailedSellerProduct[] = [
+  // Products from lamsa-ibdaa store
   {
-    id: 'sprod1',
-    name: 'أقراط فضية مرصعة بحجر الفيروز',
+    id: 'common-prod1',
+    name: 'مجموعة شموع معطرة فاخرة',
     productType: 'بيع',
-    category: 'أزياء وإكسسوارات',
-    detailsForAI: 'أقراط فضية نسائية، مصنوعة يدويًا، حجر فيروز طبيعي، تصميم عصري وأنيق، مناسبة للهدايا والمناسبات اليومية.',
-    description: 'تألقي بلمسة من الأصالة والجمال مع هذه الأقراط الفضية المصنوعة يدويًا، والمرصعة بحجر الفيروز الطبيعي الساحر. تصميمها العصري يجمع بين الأناقة والبساطة، مما يجعلها قطعة مثالية لإطلالاتكِ اليومية أو كهدية تعبر عن ذوقكِ الرفيع.\n\nتتميز هذه الأقراط بجودة الفضة العالية وحرفية الصنع الدقيقة، مع تركيز على إبراز جمال حجر الفيروز بألوانه الزاهية التي تضفي حيوية وجاذبية. خفيفة الوزن ومريحة للارتداء طوال اليوم.\n\nاقتني هذه القطعة الفريدة الآن وأضيفي لمسة من السحر الطبيعي إلى صندوق مجوهراتكِ، أو قدميها كهدية لا تُنسى لمن تحبين!',
-    story: 'كل قطعة أصنعها تحمل شغفي بالأحجار الكريمة وسحر الفضة. هذه الأقراط مستوحاة من زرقة السماء الصافية.',
-    price: '3500',
-    stock: '15',
-    discountPercentage: '5',
-    isTaxable: false,
-    imageSrc: 'https://picsum.photos/seed/sprod1/200/200',
-    images: ['https://picsum.photos/seed/sprod1/200/200', 'https://picsum.photos/seed/sprod1-detail1/200/200', 'https://picsum.photos/seed/sprod1-detail2/200/200'],
-    dataAiHint: 'silver turquoise earrings',
-    dateAdded: '2024-05-01',
+    category: 'هدايا وديكور',
+    detailsForAI: 'ثلاث شموع عطرية، يدوية الصنع، شمع صويا طبيعي، زيوت عطرية فاخرة (لافندر، فانيليا، خشب صندل). هدية مثالية.',
+    description: 'ثلاث شموع يدوية الصنع بروائح تبعث على الاسترخاء: لافندر، فانيليا، وخشب الصندل. مصنوعة من شمع الصويا الطبيعي وزيوت عطرية نقية.',
+    story: 'صنعت بحب لتنير أمسياتكِ وتملأها بالسكينة.',
+    price: '3500', // Raw price for seller
+    stock: '25',
+    imageSrc: 'https://picsum.photos/seed/candleset/200/200',
+    images: ['https://picsum.photos/seed/candleset/800/600', 'https://picsum.photos/seed/candlelav/800/600', 'https://picsum.photos/seed/candlevan/800/600'],
+    dataAiHint: 'scented candles gift',
+    dateAdded: '2024-05-10',
     status: 'نشط',
-    sku: 'EAR-SIL-TRQ-001',
-    tags: ['مجوهرات', 'فضة', 'فيروز', 'أقراط', 'يدوي'],
+    tags: ['شموع', 'هدايا', 'ديكور', 'استرخاء'],
     preparationTime: 'جاهز للشحن',
   },
-  // Example Product 2 (Rental)
   {
-    id: 'sprod2',
-    name: 'فستان سهرة أحمر طويل (للإيجار)',
-    productType: 'إيجار',
-    category: 'تأجير إبداعات',
-    detailsForAI: 'فستان سهرة طويل، لون أحمر، تصميم فاخر من الساتان، مناسب للحفلات الكبرى والمناسبات الرسمية. قصة حورية البحر.',
-    description: 'تألقي كالنجمات في هذا الفستان الأحمر الساحر. تصميمه الطويل وقماشه الفاخر يمنحانكِ إطلالة ملكية. مثالي لحفلات الزفاف، الخطوبة، أو أي مناسبة ترغبين في أن تكوني فيها محط الأنظار. خدمة الإيجار تشمل التنظيف الجاف والتعديلات البسيطة.',
-    story: 'صمم هذا الفستان ليجسد الأنوثة والقوة. كل تفصيل فيه يعكس شغفنا بالموضة الراقية. ارتديه واشعري بالتميز.',
-    price: '', // Rental price is in rentalPrice
-    rentalPrice: '8000',
-    rentalPeriod: 'يوم',
-    rentalDeposit: '4000',
-    rentalAvailability: 'متوفر للحجز. يرجى التحقق من التقويم للمواعيد المتاحة.',
-    imageSrc: 'https://picsum.photos/seed/sprod2/200/200',
-    images: ['https://picsum.photos/seed/sprod2/200/200', 'https://picsum.photos/seed/sprod2-model/200/200'],
-    dataAiHint: 'red evening gown',
-    dateAdded: '2024-04-20',
-    status: 'نشط',
-    tags: ['فستان سهرة', 'إيجار', 'أحمر', 'ساتان', 'مناسبات'],
-  },
-  // Example Product 3 (Service)
-  {
-    id: 'sprod3',
-    name: 'كيكة عيد ميلاد مخصصة (شوكولاتة)',
-    productType: 'خدمة',
-    category: 'حلويات ومأكولات شهية',
-    detailsForAI: 'كيكة شوكولاتة غنية، تصميم مخصص حسب الطلب للمناسبات السعيدة، أعياد الميلاد، وحفلات التخرج. نستخدم أجود أنواع الشوكولاتة والمكونات الطازجة.',
-    description: 'احتفلي بلحظاتكِ الحلوة مع كيكة الشوكولاتة الفاخرة المصممة خصيصًا لكِ. نستخدم أجود أنواع الشوكولاتة البلجيكية والمكونات الطازجة لضمان مذاق لا يُنسى. شاركينا فكرتكِ أو اختاري من تصاميمنا المبتكرة. يمكن إضافة رسالة شخصية.',
-    story: 'شغفنا بالحلويات يدفعنا لابتكار كيكات ليست فقط لذيذة، بل هي تحف فنية تليق بمناسباتكم الغالية. كل كيكة هي قصة حب نرويها بالسكر والشوكولاتة.',
-    price: '', // Service price is in servicePrice fields
-    servicePriceType: 'حسب_الطلب',
-    servicePrice: 'عند الطلب', // This will be used for display in the summary
-    serviceDuration: 'يعتمد على التصميم',
-    serviceLocation: 'الاستلام من المطبخ أو التوصيل (بتكلفة إضافية)',
-    imageSrc: 'https://picsum.photos/seed/sprod3/200/200',
-    images: ['https://picsum.photos/seed/sprod3/200/200', 'https://picsum.photos/seed/sprod3-design/200/200'],
-    dataAiHint: 'custom chocolate cake',
-    dateAdded: '2024-04-15',
-    status: 'نشط',
-    tags: ['كيك', 'شوكولاتة', 'عيد ميلاد', 'مخصص', 'حلويات'],
-    preparationTime: 'يتطلب حجز مسبق بـ 3 أيام',
-  },
-  {
-    id: 'sprod4',
-    name: 'لوحة زيتية تجريدية "ألوان الربيع"',
+    id: 'lamsa-prod1',
+    name: 'شال كروشيه ملون فاخر',
     productType: 'بيع',
-    category: 'فن ومقتنيات',
-    detailsForAI: 'لوحة زيتية تجريدية بألوان زاهية مستوحاة من فصل الربيع، قطعة فنية فريدة لتزيين منزلك أو مكتبك. مقاس 50x70 سم. موقعة من الفنانة.',
-    description: 'أضيفي لمسة فنية راقية إلى مساحتكِ مع هذه اللوحة الزيتية التجريدية المفعمة بالحياة. "ألوان الربيع" هي قطعة فريدة تجسد تناغم الألوان وانسيابية الخطوط، مما يجعلها نقطة جذب محورية في أي غرفة. مرسومة على قماش كانفاس عالي الجودة بألوان زيتية ثابتة.',
-    story: 'كل ضربة فرشاة هي تعبير عن إحساس، وكل لون يحكي قصة. هذه اللوحة هي دعوة للتأمل في جمال الطبيعة المتجدد وانعكاساته على الروح.',
-    price: '12000',
-    stock: '1',
-    discountPercentage: '10',
-    isTaxable: true,
-    imageSrc: 'https://picsum.photos/seed/sprod4/200/200',
-    images: ['https://picsum.photos/seed/sprod4/200/200', 'https://picsum.photos/seed/sprod4-wall/200/200'],
-    dataAiHint: 'abstract oil painting',
-    dateAdded: '2024-03-10',
-    status: 'غير نشط',
-    sku: 'ART-OIL-ABS-005',
-    tags: ['لوحة زيتية', 'فن تجريدي', 'ديكور منزل', 'ألوان الربيع'],
+    category: 'أزياء وإكسسوارات يدوية',
+    detailsForAI: 'شال كروشيه ملون، خيوط صوف عالية الجودة، دافئ، أنيق، مناسب للشتاء والأمسيات الباردة.',
+    description: 'شال دافئ مصنوع يدويًا بخيوط صوف عالية الجودة وألوان زاهية تناسب كل الأذواق. مثالي للأمسيات الباردة أو كإضافة أنيقة لملابسك.',
+    story: 'كل غرزة في هذا الشال تحكي قصة دفء وألوان.',
+    price: '4800',
+    stock: '8',
+    imageSrc: 'https://picsum.photos/seed/crochetshawl/200/200',
+    images: ['https://picsum.photos/seed/crochetshawl/800/600', 'https://picsum.photos/seed/shawldetail/800/600', 'https://picsum.photos/seed/shawlmodel/800/600'],
+    dataAiHint: 'crochet shawl colorful',
+    dateAdded: '2024-05-01',
+    status: 'نشط',
+    tags: ['كروشيه', 'شال', 'صوف', 'يدوي'],
+    preparationTime: 'جاهز للشحن',
   },
   {
-    id: 'sprod5',
-    name: 'استشارة تصميم داخلي (ساعة)',
+    id: 'lamsa-prod2',
+    name: 'مجموعة دُمى أميغورومي لطيفة',
+    productType: 'بيع',
+    category: 'ألعاب وهدايا يدوية',
+    detailsForAI: 'دمى أميغورومي بالكروشيه، حيوانات وشخصيات، قطن آمن للأطفال، هدية مثالية للمواليد والأطفال.',
+    description: 'دُمى كروشيه محببة للأطفال، مصنوعة بدقة من خيوط قطنية آمنة وناعمة. تصميمات متنوعة لشخصيات حيوانات ودمى كلاسيكية. هدية مثالية للصغار.',
+    story: 'أصنع هذه الدمى بحب لتكون رفيقةً لأطفالكم في عالم الخيال.',
+    price: '2500',
+    stock: '20',
+    imageSrc: 'https://picsum.photos/seed/amigurumi/200/200',
+    images: ['https://picsum.photos/seed/amigurumi/800/600', 'https://picsum.photos/seed/dollgroup/800/600', 'https://picsum.photos/seed/dollplay/800/600'],
+    dataAiHint: 'amigurumi dolls handmade',
+    dateAdded: '2024-04-25',
+    status: 'نشط',
+    tags: ['أميغورومي', 'دمى', 'كروشيه', 'أطفال', 'هدايا'],
+  },
+  {
+    id: 'lamsa-prod3',
+    name: 'لوحة فنية مرسومة يدويًا "أزهار الربيع"',
+    productType: 'بيع',
+    category: 'فن وديكور يدوي',
+    detailsForAI: 'لوحة زيتية أصلية، فن تجريدي، ألوان مشرقة، زهور الربيع، مقاس 50x70 سم، مع إطار خشبي.',
+    description: 'لوحة زيتية أصلية بألوان مشرقة تجسد جمال الطبيعة، مثالية لتزيين منزلك أو مكتبك. مقاس 50x70 سم. إطار خشبي متين.',
+    story: 'هذه اللوحة هي دعوة للتأمل في جمال الطبيعة المتجدد وانعكاساته على الروح.',
+    price: '7200',
+    stock: '1', // Example: only one available
+    imageSrc: 'https://picsum.photos/seed/springflowersart/200/200',
+    images: ['https://picsum.photos/seed/springflowersart/800/600', 'https://picsum.photos/seed/artdetail1/800/600'],
+    dataAiHint: 'spring flowers painting',
+    dateAdded: '2024-04-10',
+    status: 'نشط',
+    tags: ['لوحة زيتية', 'فن تجريدي', 'ديكور', 'أزهار'],
+  },
+  // Service from lamsa-ibdaa store
+  {
+    id: 'lamsa-serv1',
+    name: 'ورشة تعليم أساسيات الكروشيه',
     productType: 'خدمة',
-    category: 'خدمات احترافية',
-    detailsForAI: 'جلسة استشارة تصميم داخلي لمدة ساعة لمساعدتك في تنسيق مساحتك، اختيار الألوان، وتوزيع الأثاث بشكل مثالي. عبر الإنترنت أو حضوريًا (حسب الاتفاق).',
-    description: 'حوّلي منزلكِ إلى تحفة فنية تعكس ذوقكِ وشخصيتكِ. نقدم لكِ استشارة تصميم داخلي مخصصة لمدة ساعة، نساعدكِ فيها على تحقيق أقصى استفادة من مساحتكِ، واختيار الألوان والأثاث المناسب، وخلق جو متناغم ومريح. سيتم تقديم مقترحات عملية ومبتكرة.',
-    story: 'خبرة سنوات في عالم التصميم الداخلي نضعها بين يديكِ لمساعدتكِ على تحقيق منزل أحلامكِ. نصغي لاحتياجاتك ونحولها إلى واقع جميل وعملي.',
-    price: '',
-    servicePriceType: 'بالساعة',
-    servicePrice: '5000',
-    serviceDuration: '60 دقيقة',
-    serviceLocation: 'عبر الإنترنت أو حضوري',
-    imageSrc: 'https://picsum.photos/seed/sprod5/200/200',
-    images: ['https://picsum.photos/seed/sprod5/200/200', 'https://picsum.photos/seed/sprod5-moodboard/200/200'],
-    dataAiHint: 'interior design consultation',
-    dateAdded: '2024-05-05',
-    status: 'بانتظار الموافقة',
-    tags: ['تصميم داخلي', 'استشارة', 'ديكور', 'خدمة احترافية'],
-    preparationTime: 'يتطلب تحديد موعد',
+    category: 'ورش عمل فنية',
+    detailsForAI: 'ورشة عمل تعليمية للمبتدئين في فن الكروشيه، مدة 3 ساعات، تشمل المواد والأدوات، موقع الورشة في مقرنا، الحجز مسبق.',
+    description: 'انضمي إلى ورشتنا لتعلم أساسيات فن الكروشيه، من اختيار الخيوط والإبر إلى تنفيذ الغرز الأساسية وصنع قطعة بسيطة. الورشة مناسبة للمبتدئات تمامًا.',
+    story: 'أحب مشاركة شغفي بالكروشيه ومساعدة الأخريات على اكتشاف متعة هذه الحرفة.',
+    price: '', // Service price is in servicePrice fields
+    servicePriceType: 'ثابت',
+    servicePrice: '3000',
+    serviceDuration: '3 ساعات',
+    serviceLocation: 'في مقرنا',
+    imageSrc: 'https://picsum.photos/seed/crochetworkshop/200/200',
+    images: ['https://picsum.photos/seed/crochetworkshop/800/600'],
+    dataAiHint: 'crochet workshop beginner',
+    dateAdded: '2024-05-15',
+    status: 'نشط',
+    tags: ['ورشة عمل', 'كروشيه', 'تعليم', 'حرف يدوية'],
+    preparationTime: 'الحجز المسبق مطلوب',
   },
-  {
-    id: 'sprod6',
-    name: 'مجموعة شموع عطرية يدوية الصنع',
+  { // Adding another product for testing pagination/filtering
+    id: 'lamsa-prod4',
+    name: 'مفرش طاولة كروشيه دائري',
     productType: 'بيع',
     category: 'مستلزمات منزلية وديكور',
-    detailsForAI: 'مجموعة من ثلاث شموع عطرية مصنوعة يدويًا من شمع الصويا الطبيعي والزيوت العطرية الفاخرة. روائح متنوعة: لافندر، فانيليا، وخشب الصندل. مثالية كهدية أو للاسترخاء.',
-    description: 'استرخي وأضيفي لمسة دافئة إلى منزلكِ مع مجموعتنا من الشموع العطرية المصنوعة يدويًا. كل شمعة مصنوعة بحب من شمع الصويا الطبيعي الصديق للبيئة، ومعطرة بزيوت عطرية نقية لتمنحكِ تجربة استرخاء فريدة. تأتي في عبوات زجاجية أنيقة.',
-    story: 'صنعت بحب لتنير أمسياتكِ وتملأها بالسكينة والعبير الفواح. كل شمعة تحمل أمنية بالهدوء والسعادة.',
-    price: '2200',
-    stock: '0',
-    imageSrc: 'https://picsum.photos/seed/sprod6/200/200',
-    images: ['https://picsum.photos/seed/sprod6/200/200', 'https://picsum.photos/seed/sprod6-group/200/200'],
-    dataAiHint: 'handmade scented candles',
-    dateAdded: '2024-02-28',
+    detailsForAI: 'مفرش طاولة دائري مصنوع بالكروشيه، قطر 60 سم، لون بيج، تصميم كلاسيكي.',
+    description: 'مفرش طاولة دائري أنيق مصنوع بدقة بالكروشيه، يضفي لمسة تقليدية ودافئة على ديكور منزلك. قطر 60 سم.',
+    story: 'مستوحى من تصاميم الجدات، يحمل دفء التراث.',
+    price: '2800',
+    stock: '5',
+    imageSrc: 'https://picsum.photos/seed/crochettablecloth/200/200',
+    dataAiHint: 'crochet tablecloth round',
+    dateAdded: '2024-01-20',
+    status: 'غير نشط',
+    tags: ['كروشيه', 'مفرش طاولة', 'ديكور', 'يدوي'],
+  },
+   {
+    id: 'lamsa-prod5',
+    name: 'حقيبة يد كروشيه عملية',
+    productType: 'بيع',
+    category: 'أزياء وإكسسوارات يدوية',
+    detailsForAI: 'حقيبة يد كروشيه عملية، لون أزرق داكن، مبطنة، حزام كتف قابل للتعديل.',
+    description: 'حقيبة يد كروشيه عملية وأنيقة، مثالية للاستخدام اليومي. مبطنة من الداخل وبحزام كتف مريح وقابل للتعديل.',
+    story: 'حقيبة تجمع بين العملية وجمال الحرف اليدوية.',
+    price: '3200',
+    stock: '0', // Out of stock
+    imageSrc: 'https://picsum.photos/seed/crochetbag/200/200',
+    dataAiHint: 'crochet handbag blue',
+    dateAdded: '2024-03-05',
     status: 'نفذ المخزون',
-    isTaxable: false,
-    tags: ['شموع', 'عطرية', 'يدوية', 'ديكور', 'هدية'],
+    tags: ['حقيبة', 'كروشيه', 'يدوي', 'أزياء'],
+  },
+   {
+    id: 'lamsa-serv2',
+    name: 'تصميم شعار يدوي لعلامة تجارية',
+    productType: 'خدمة',
+    category: 'خدمات احترافية',
+    detailsForAI: 'خدمة تصميم شعار فريد بلمسة فنية يدوية (رقمي أو مرسوم)، يعكس هوية علامتك التجارية.',
+    description: 'هل تبحثين عن شعار فريد يعبر عن علامتك التجارية؟ نقدم خدمة تصميم شعارات بلمسة فنية يدوية تمزج بين الأصالة والإبداع. سيتم تصميم الشعار بناءً على رؤيتك ومتطلباتك.',
+    story: 'نؤمن بأن الشعار هو روح العلامة التجارية، ونصممه بشغف ليعكس قصتك.',
+    price: '',
+    servicePriceType: 'بالمشروع',
+    servicePrice: '15000', // Example project price
+    serviceDuration: '3-5 أيام عمل',
+    imageSrc: 'https://picsum.photos/seed/logodesigncraft/200/200',
+    dataAiHint: 'logo design handmade',
+    dateAdded: '2024-05-18',
+    status: 'بانتظار الموافقة',
+    tags: ['تصميم شعار', 'علامة تجارية', 'يدوي', 'خدمة'],
   },
 ];
 
@@ -881,7 +903,10 @@ export const getSellerProductsSummary = () => allSellerProductsList.map(p => {
   } else if (p.productType === 'إيجار') {
     priceDisplay = `${parseInt(p.rentalPrice || '0').toLocaleString()} دج / ${p.rentalPeriod || 'فترة'}`;
   } else if (p.productType === 'خدمة') {
-    priceDisplay = p.servicePriceType === 'حسب_الطلب' ? 'عند الطلب' : `${parseInt(p.servicePrice || '0').toLocaleString()} دج${p.servicePriceType === 'بالساعة' ? '/ساعة' : ''}`;
+    priceDisplay = p.servicePrice || 'عند الطلب'; // Use servicePrice for display if available
+     if (p.servicePriceType === 'بالساعة' && p.servicePrice !== 'عند الطلب') {
+         priceDisplay += '/ساعة';
+     }
   }
 
   return {
@@ -902,48 +927,67 @@ export const getDetailedSellerProductById = (id: string): DetailedSellerProduct 
   return allSellerProductsList.find(p => p.id === id);
 };
 
-// Function to get all products for a specific store ID (slug)
-export const getProductsByStoreId = (storeId: string): Product[] => {
-  const store = mockStoreDetails.find(s => s.id === storeId);
-  return store ? store.products : [];
+// --- Functions for Public Store Pages ---
+
+// Function to get store data by ID (slug)
+export const getStoreDataById = (storeId: string): StoreData | undefined => {
+  return mockStoreDetails.find(store => store.id === storeId);
 };
 
-// Function to get all services for a specific store ID (slug)
-export const getServicesByStoreId = (storeId: string): Service[] => {
-  const store = mockStoreDetails.find(s => s.id === storeId);
-  return store && store.services ? store.services : [];
-};
 
-// Function to get a specific product by its ID
+// Function to get a specific product by its ID (looking across all stores)
 export const getProductById = (productId: string): Product | undefined => {
   for (const store of mockStoreDetails) {
     const product = store.products.find(p => p.id === productId);
-    if (product) return product;
+    if (product) return { ...product, sellerId: store.id, storeSlug: store.id }; // Add sellerId and storeSlug
   }
   return undefined;
 };
 
-// Function to get a specific service by its ID
+// Function to get a specific service by its ID (looking across all stores)
 export const getServiceById = (serviceId: string): Service | undefined => {
     for (const store of mockStoreDetails) {
         if (store.services) {
             const service = store.services.find(s => s.id === serviceId);
-            if (service) return service;
+            if (service) return { ...service, sellerId: store.id, storeSlug: store.id }; // Add sellerId and storeSlug
         }
     }
     return undefined;
 };
 
-// Function to get all products from all stores
+// Function to get all products from all stores for the main products page
 export const getAllPlatformProducts = (): Product[] => {
-    return mockStoreDetails.reduce((acc, store) => acc.concat(store.products), [] as Product[]);
+    return mockStoreDetails.reduce((acc, store) => {
+        const storeProducts = store.products.map(p => ({
+            ...p,
+            sellerId: store.id, // Ensure sellerId is present
+            storeSlug: store.id  // Ensure storeSlug is present
+        }));
+        return acc.concat(storeProducts);
+    }, [] as Product[]);
 };
 
-// Function to get all services from all stores
+// Function to get all services from all stores for the main products page
 export const getAllPlatformServices = (): Service[] => {
-    return mockStoreDetails.reduce((acc, store) => acc.concat(store.services || []), [] as Service[]);
+    return mockStoreDetails.reduce((acc, store) => {
+        const storeServices = (store.services || []).map(s => ({
+            ...s,
+            sellerId: store.id, // Ensure sellerId is present
+            storeSlug: store.id  // Ensure storeSlug is present
+        }));
+        return acc.concat(storeServices);
+    }, [] as Service[]);
 };
 
-export const getStoreDataById = (storeId: string): StoreData | undefined => {
-  return mockStoreDetails.find(store => store.id === storeId);
+
+// Function to get all products for a specific store ID (slug) for the store page
+export const getProductsByStoreId = (storeId: string): Product[] => {
+  const store = mockStoreDetails.find(s => s.id === storeId);
+  return store ? store.products.map(p => ({ ...p, sellerId: store.id, storeSlug: store.id })) : [];
+};
+
+// Function to get all services for a specific store ID (slug) for the store page
+export const getServicesByStoreId = (storeId: string): Service[] => {
+  const store = mockStoreDetails.find(s => s.id === storeId);
+  return store && store.services ? store.services.map(s => ({ ...s, sellerId: store.id, storeSlug: store.id })) : [];
 };

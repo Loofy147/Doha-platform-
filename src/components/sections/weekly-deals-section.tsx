@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 const mockWeeklyDeals = [
   {
     id: 'deal-weekly-1',
+    productLink: '/products/farah-prod2', // Link to a specific product or a category/offer page
     title: 'باقة العناية المتكاملة بخصم 20% هذا الأسبوع',
     description: 'احصلي على مجموعة منتجات العناية بالبشرة والشعر الفاخرة بسعر لا يُقاوم طوال هذا الأسبوع.',
     imageSrc: 'https://picsum.photos/seed/weeklyskincaredeal/400/250',
@@ -22,36 +23,35 @@ const mockWeeklyDeals = [
     dealPrice: '9,600 دج',
     storeName: 'صالون فرح للتجميل',
     storeSlug: 'salon-farah',
-    productLink: '/products/farah-prod2', // Assuming this product exists
   },
   {
     id: 'deal-weekly-2',
+    productLink: '/store/lamsa-ibdaa?category=services', // Link to store services category
     title: 'خصم 15% على جميع خدمات تصميم الديكور هذا الأسبوع',
     description: 'جددي منزلكِ مع استشارة تصميم داخلي أو خدمة تنفيذ ديكور بخصم مميز.',
     imageSrc: 'https://picsum.photos/seed/weeklydecor/400/250',
     dataAiHint: 'modern living room interior design',
     storeName: 'لمسة إبداع نادية',
     storeSlug: 'lamsa-ibdaa',
-    productLink: '/store/lamsa-ibdaa?category=services', // Link to services of the store
   },
   {
     id: 'deal-weekly-3',
+    productLink: '/store/mathaq-albayt?category=sweets', // Link to store sweets category
     title: 'اشتري قطعتين من الحلويات الشرقية واحصل على الثالثة بنصف السعر!',
     description: 'عرض أسبوعي شهي على تشكيلة مختارة من الحلويات الشرقية الأصيلة.',
     imageSrc: 'https://picsum.photos/seed/weeklysweetsdeal/400/250',
     dataAiHint: 'assorted oriental sweets',
     storeName: 'مذاق البيت مع سارة',
     storeSlug: 'mathaq-albayt',
-    productLink: '/store/mathaq-albayt?category=sweets',
   },
 ];
 
 const cardVariants = {
   initial: { opacity: 0, y: 20 },
-  animate: (i: number) => ({ // Added index type
+  animate: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.07, duration: 0.4, ease: "circOut" } 
+    transition: { delay: i * 0.07, duration: 0.4, ease: "circOut" }
   })
 };
 
@@ -61,9 +61,20 @@ export function WeeklyDealsSection() {
   );
 
   return (
-    <section id="weekly-deals" className="py-16 lg:py-24 bg-background">
+    <motion.section
+      id="weekly-deals"
+      className="py-16 lg:py-24 bg-background"
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ staggerChildren: 0.1 }}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          variants={cardVariants}
+          custom={0} // Start animation immediately
+        >
           <CalendarRange className="mx-auto h-12 w-12 text-accent-purple" />
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             صفقات الأسبوع المميزة
@@ -71,8 +82,8 @@ export function WeeklyDealsSection() {
           <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
             عروض أسبوعية متجددة على أفضل المنتجات والخدمات. لا تدعي الفرصة تفوتكِ!
           </p>
-        </div>
-        
+        </motion.div>
+
         <Carousel
           plugins={[plugin.current]}
           className="w-full"
@@ -80,7 +91,7 @@ export function WeeklyDealsSection() {
           onMouseLeave={plugin.current.reset}
           opts={{
             align: "start",
-            loop: mockWeeklyDeals.length > 2, // Loop if more than 2 items for better UX
+            loop: mockWeeklyDeals.length > 2,
             direction: "rtl",
           }}
         >
@@ -89,7 +100,7 @@ export function WeeklyDealsSection() {
               <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <motion.div
                   className="p-1 h-full"
-                  custom={index}
+                  custom={index + 1} // Stagger animation for cards
                   variants={cardVariants}
                   initial="initial"
                   whileInView="animate"
@@ -143,14 +154,18 @@ export function WeeklyDealsSection() {
           <CarouselNext className="hidden sm:flex right-0 translate-x-1/2 md:translate-x-8 text-primary bg-card/80 hover:bg-card border-primary" />
         </Carousel>
 
-        <div className="mt-12 text-center">
+        <motion.div
+          className="mt-12 text-center"
+          variants={cardVariants}
+          custom={mockWeeklyDeals.length + 1} // Animate button after cards
+        >
           <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
             <Link href="/products?filter=weekly-deals">
               تصفحي جميع عروض الأسبوع <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

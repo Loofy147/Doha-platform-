@@ -11,20 +11,20 @@ import { motion } from 'framer-motion';
 
 const mockBestsellers = [
   {
-    id: 'lamsa-prod2', // Updated ID to match a product in lamsa-ibdaa store
+    id: 'lamsa-prod2', // Product ID
     name: 'مجموعة دُمى أميغورومي لطيفة',
     seller: 'لمسة إبداع نادية', // Seller name for lamsa-ibdaa
-    sellerSlug: 'lamsa-ibdaa', // Correct slug
+    sellerSlug: 'lamsa-ibdaa', // Store Slug/ID
     imageSrc: 'https://picsum.photos/seed/amigurumi/400/300',
     dataAiHint: 'amigurumi dolls handmade',
     price: '2,500 دج للقطعة',
     category: 'ألعاب وهدايا يدوية',
   },
   {
-    id: 'mathaq-prod1', // Updated ID
+    id: 'mathaq-prod1', // Product ID
     name: 'كيكة العسل الروسية الأصلية',
     seller: 'مذاق البيت مع سارة', // Seller name for mathaq-albayt
-    sellerSlug: 'mathaq-albayt', // Correct slug
+    sellerSlug: 'mathaq-albayt', // Store Slug/ID
     imageSrc: 'https://picsum.photos/seed/honeycake/400/300',
     dataAiHint: 'russian honey cake',
     price: '6,000 دج',
@@ -32,20 +32,20 @@ const mockBestsellers = [
     oldPrice: '6,500 دج',
   },
   {
-    id: 'anaqa-prod1', // Updated ID
+    id: 'anaqa-prod1', // Product ID
     name: 'فستان سهرة ذهبي مطرز فاخر (للإيجار)',
     seller: 'أناقة للإيجار مع ليلى', // Seller name for anaqa-lilijar
-    sellerSlug: 'anaqa-lilijar', // Correct slug
+    sellerSlug: 'anaqa-lilijar', // Store Slug/ID
     imageSrc: 'https://picsum.photos/seed/golddress/400/300',
     dataAiHint: 'gold sequin dress elegant',
     price: '12,000 دج / لـ 3 أيام',
     category: 'تأجير إبداعات',
   },
    {
-    id: 'farah-prod1', // Updated ID
+    id: 'farah-prod1', // Product ID
     name: 'زيت الأرغان المغربي النقي للشعر',
     seller: 'صالون فرح للتجميل', // Seller name for salon-farah
-    sellerSlug: 'salon-farah', // Correct slug
+    sellerSlug: 'salon-farah', // Store Slug/ID
     imageSrc: 'https://picsum.photos/seed/arganoilhair/400/300',
     dataAiHint: 'argan oil hair product',
     price: '2,800 دج',
@@ -55,20 +55,31 @@ const mockBestsellers = [
 
 const cardVariants = {
   initial: { opacity: 0, y: 30, scale: 0.95 },
-  animate: (i: number) => ({ // Added index type
+  animate: (i: number) => ({
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { delay: i * 0.05, duration: 0.4, ease: "easeOut" } 
+    transition: { delay: i * 0.05, duration: 0.4, ease: "easeOut" }
   })
 };
 
 
 export function BestsellersSection() {
   return (
-    <section id="bestsellers" className="py-16 lg:py-24 bg-background">
+    <motion.section
+      id="bestsellers"
+      className="py-16 lg:py-24 bg-background"
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ staggerChildren: 0.1 }}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          variants={cardVariants}
+          custom={0} // Start animation immediately
+        >
           <Flame className="mx-auto h-12 w-12 text-primary animate-pulse" style={{animationDuration: '1.2s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             الأكثر مبيعاً وشهرة
@@ -76,12 +87,12 @@ export function BestsellersSection() {
           <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
             اكتشفي القطع والخدمات التي خطفت قلوب عميلاتنا وأصبحت حديث مجتمع لمسة ضحى.
           </p>
-        </div>
+        </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {mockBestsellers.map((product, index) => (
             <motion.div
               key={product.id}
-              custom={index}
+              custom={index + 1} // Stagger animation for cards
               variants={cardVariants}
               initial="initial"
               whileInView="animate"
@@ -130,14 +141,18 @@ export function BestsellersSection() {
             </motion.div>
           ))}
         </div>
-        <div className="mt-12 text-center">
+        <motion.div
+          className="mt-12 text-center"
+          variants={cardVariants}
+          custom={mockBestsellers.length + 1} // Animate button after cards
+        >
           <Button size="lg" variant="default" asChild className="bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
             <Link href="/products?sort=bestsellers">
               شاهدي كل المنتجات الرائجة <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
