@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardTitle, CardFooter, CardHeader } from '@/components/ui/card';
-import { Sparkles, Eye, ChevronLeft, Users, CalendarDays, ShoppingBag, Store, Edit3, Search, PenLine, Flame, Award } from 'lucide-react';
+import { Sparkles, Eye, ChevronLeft, Users, CalendarDays, ShoppingBag, Store, PenLine, Flame, Award, Rocket, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, MessageSquare, Info } from 'lucide-react'; // Added CalendarDays, Rocket, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, MessageSquare, Info
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { HeroSection } from '@/components/sections/hero-section';
 import { AboutUsSection } from '@/components/sections/about-us-section';
@@ -18,7 +18,7 @@ import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { CallToActionBanner } from '@/components/sections/call-to-action-banner';
 import { motion } from 'framer-motion';
-import { Rocket } from 'lucide-react'; // Ensure Rocket is imported
+// Removed import { Rocket } from 'lucide-react'; // Ensure Rocket is imported
 
 const categories = [
   { name: 'أناقة وإكسسوارات', icon: ShoppingBag, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink' },
@@ -58,23 +58,24 @@ export default function HomePage() {
     <>
       <HeroSection />
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-        <CallToActionBanner
-          title="✨ انضمي إلى مبدعات لمسة ضحى! ✨"
-          description="هل تمتلكين موهبة فريدة أو منتجات تفيض بالإبداع؟ حان الوقت لتشاركي العالم بلمستكِ الخاصة! افتحي متجركِ الرقمي معنا اليوم واكتشفي فرصًا لا حدود لها للنمو والتمكين."
-          buttonText="افتحي متجركِ الآن"
-          buttonLink="/sell-with-us"
-          imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
-          dataAiHint="women entrepreneurs working"
-          icon={Rocket}
-          animationConfig={{ // Pass animation config to child
-            variants: sectionVariants,
-            initial:"hidden",
-            whileInView:"visible",
-            viewport:{ once: true, amount: 0.2 }
-          }}
-        />
-      </motion.div>
+       {/* Seller CTA */}
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={sectionVariants}
+        >
+            <CallToActionBanner
+            title="✨ انضمي إلى مبدعات لمسة ضحى! ✨"
+            description="هل تمتلكين موهبة فريدة أو منتجات تفيض بالإبداع؟ حان الوقت لتشاركي العالم بلمستكِ الخاصة! افتحي متجركِ الرقمي معنا اليوم واكتشفي فرصًا لا حدود لها للنمو والتمكين."
+            buttonText="افتحي متجركِ الآن"
+            buttonLink="/sell-with-us"
+            imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
+            dataAiHint="women entrepreneurs working"
+            icon={Rocket}
+            animationConfig={sectionVariants} // Pass animation config
+            />
+        </motion.div>
 
       <DailyDealsSection />
       <WeeklyDealsSection />
@@ -110,22 +111,22 @@ export default function HomePage() {
                   key={category.name}
                   custom={index}
                   variants={categoryCardVariants} // Individual card animation with stagger
-                  // initial, whileInView, viewport are handled by the parent section
                   whileHover={{ y: -8, scale: 1.03, transition: { duration: 0.2 } }}
                 >
                   <Link href={category.href} className="group block h-full">
-                    <Card className="text-center p-6 bg-card rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50">
-                      <CardContent className="p-0 flex flex-col items-center justify-center">
-                        <motion.div
-                          className={`mb-4 ${category.color}`}
-                          whileHover={{ scale: 1.15, rotate: 5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                        >
-                          <CategoryIcon size={28} className="mx-auto h-10 w-10" />
-                        </motion.div>
-                        <h3 className="text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
-                      </CardContent>
-                    </Card>
+                     {/* Card Styling - Consider adding more engaging visual elements */}
+                     <Card className="text-center p-6 bg-card rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50">
+                        <CardContent className="p-0 flex flex-col items-center justify-center">
+                           <motion.div
+                           className={`mb-4 ${category.color} p-3 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 shadow-inner`} // Added gradient background & padding
+                           whileHover={{ scale: 1.15, rotate: 5 }}
+                           transition={{ type: "spring", stiffness: 300 }}
+                           >
+                           <CategoryIcon size={28} className="mx-auto h-8 w-8" /> {/* Slightly larger icon */}
+                           </motion.div>
+                           <h3 className="text-sm sm:text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
+                        </CardContent>
+                     </Card>
                   </Link>
                 </motion.div>
               );
@@ -138,7 +139,7 @@ export default function HomePage() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             >
-            <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
+            <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200 rounded-full px-8 py-3">
               <Link href="/products">
                 عرض كل الفئات والمنتجات <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
               </Link>
@@ -147,24 +148,26 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-        <CallToActionBanner
-          title="💖 اكتشفي كنوز الإبداع المحلي! 💖"
-          description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
-          buttonText="تسوقي الآن"
-          buttonLink="/products"
-          imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
-          dataAiHint="happy woman shopping online"
-          icon={ShoppingBag}
-          reverseLayout
-           animationConfig={{ // Pass animation config to child
-            variants: sectionVariants,
-            initial:"hidden",
-            whileInView:"visible",
-            viewport:{ once: true, amount: 0.2 }
-          }}
-        />
-       </motion.div>
+
+       {/* Shopper CTA */}
+        <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={sectionVariants}
+        >
+            <CallToActionBanner
+            title="💖 اكتشفي كنوز الإبداع المحلي! 💖"
+            description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
+            buttonText="تسوقي الآن"
+            buttonLink="/products"
+            imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
+            dataAiHint="happy woman shopping online"
+            icon={ShoppingBag}
+            reverseLayout
+            animationConfig={sectionVariants} // Pass animation config
+            />
+        </motion.div>
 
       <AboutUsSection />
       <TestimonialsSection />
@@ -172,3 +175,4 @@ export default function HomePage() {
     </>
   );
 }
+    
