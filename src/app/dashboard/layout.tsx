@@ -1,5 +1,5 @@
 import type { Metadata } from 'next/server';
-import { SellerDashboardHeader } from '@/components/dashboard/seller-dashboard-header';
+import { SellerDashboardHeader } from '@/components/dashboard/seller-dashboard-header'; // Corrected import
 import { SellerDashboardSidebar } from '@/components/dashboard/seller-dashboard-sidebar';
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export default function SellerDashboardLayout({
     <div className="flex min-h-screen w-full bg-muted/40">
       <SellerDashboardSidebar />
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:mr-14 flex-1"> {/* Changed sm:pl-14 to sm:mr-14 */}
-        <SellerDashboardHeader />
+        <SellerDashboardHeader /> {/* This should now render correctly */}
         <main className="flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           {children}
         </main>

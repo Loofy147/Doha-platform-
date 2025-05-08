@@ -1,29 +1,30 @@
+// src/components/dashboard/seller-dashboard-header.tsx
 'use client';
 
 import React from 'react';
 import Link from 'next/link';
 import {
   Home,
-  ShoppingCart,
   Package,
-  Users2,
-  Store, // Changed from Package2 to Store for sellers for clarity
-  LayoutGrid,
+  ShoppingBag,
+  Users,
   BarChart3,
   Settings,
+  Palette,
+  FileText,
+  PlusCircle,
+  Gift,
+  CreditCard,
+  MessageSquare,
+  LayoutTemplate, // Added for templates
   Bell,
   LogOut,
   PanelLeft,
   Search,
+  LayoutGrid,
+  Eye // Added Eye icon for View Store
 } from 'lucide-react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'; // Fixed import path
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -37,39 +38,45 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
 import { usePathname } from 'next/navigation';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge'; // Import Badge
 
-const adminNavItems = [
-    { href: '/admin', icon: Home, label: 'لوحة التحكم' },
-    { href: '/admin/orders', icon: ShoppingCart, label: 'الطلبات' },
-    { href: '/admin/products', icon: Package, label: 'المنتجات' },
-    { href: '/admin/customers', icon: Users2, label: 'العملاء' },
-    { href: '/admin/sellers', icon: Store, label: 'البائعات' },
-    { href: '/admin/categories', icon: LayoutGrid, label: 'الفئات' },
-    { href: '/admin/reports', icon: BarChart3, label: 'التقارير' },
-    { href: '/admin/settings', icon: Settings, label: 'الإعدادات' },
+const sellerNavItems = [
+    { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
+    { href: '/dashboard/products', icon: Package, label: 'منتجاتي وخدماتي' },
+    { href: '/dashboard/orders', icon: ShoppingBag, label: 'طلباتي الواردة' },
+    // { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل' }, // Placeholder/Future
+    // { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات متجري' }, // Placeholder/Future
+    // { href: '/dashboard/marketing', icon: Gift, label: 'التسويق والعروض' }, // Placeholder/Future
+    // { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير' }, // Placeholder/Future
+    { href: '/dashboard/store-template', icon: LayoutTemplate, label: 'قالب وتصميم المتجر'},
+    { href: '/dashboard/settings', icon: Settings, label: 'إعدادات المتجر العامة' },
 ];
 
+const MOCK_SELLER_SLUG = "lamsa-ibdaa"; // Replace with dynamic slug later
 
-export function AdminHeader() {
+export function SellerDashboardHeader() {
   const pathname = usePathname();
 
+  // Function to generate breadcrumbs based on the current pathname
   const getBreadcrumbItems = () => {
-    const pathParts = pathname.split('/').filter(part => part && part !== 'admin'); // filter out 'admin' base path
-    let currentPath = '/admin';
+    const pathParts = pathname.split('/').filter(part => part && part !== 'dashboard'); // filter out 'dashboard' base path
+    let currentPath = '/dashboard';
     const breadcrumbItems = pathParts.map((part, index) => {
       currentPath += `/${part}`;
       const isLast = index === pathParts.length - 1;
-      // Basic localization - could be improved with a proper i18n solution
-      let label = part.charAt(0).toUpperCase() + part.slice(1);
-      if (part === 'orders') label = 'الطلبات';
-      if (part === 'products') label = 'المنتجات';
-      if (part === 'customers') label = 'العملاء';
-      if (part === 'sellers') label = 'البائعات';
-      if (part === 'categories') label = 'الفئات';
-      if (part === 'reports') label = 'التقارير';
-      if (part === 'settings') label = 'الإعدادات';
-      if (part === 'new') label = 'إضافة جديد';
 
+      // Basic localization - improve later
+      let label = part.charAt(0).toUpperCase() + part.slice(1);
+      if (part === 'products') label = 'منتجاتي';
+      if (part === 'orders') label = 'طلباتي';
+      if (part === 'settings') label = 'الإعدادات';
+      if (part === 'store-template') label = 'تصميم المتجر';
+      if (part === 'new') label = 'إضافة جديد';
+      if (part === 'edit') label = 'تعديل';
+      // Handle dynamic [id] segments - might need more logic to fetch the name
+      if (pathname.includes('/edit/') && part !== 'edit') label = `تعديل ${label}`;
+       if (pathname.includes('/orders/') && part !== 'orders') label = `طلب #${label}`;
 
       return (
         <React.Fragment key={currentPath}>
@@ -89,7 +96,6 @@ export function AdminHeader() {
     return breadcrumbItems;
   };
 
-
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -99,66 +105,109 @@ export function AdminHeader() {
             <span className="sr-only">فتح/إغلاق القائمة</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-xs bg-sidebar">
-          <nav className="grid gap-6 text-lg font-medium">
+        <SheetContent side="right" className="sm:max-w-xs bg-sidebar text-sidebar-foreground"> {/* Changed side to right */}
+          <nav className="grid gap-6 text-lg font-medium p-4">
             <Link
-              href="/admin"
-              className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+              href="/dashboard"
+              className="group flex h-10 shrink-0 items-center justify-start gap-2 rounded-full text-lg font-semibold text-sidebar-primary md:text-base mb-4"
             >
               <WomenCommerceLogo className="h-10 w-auto" />
               <span className="sr-only">لمسة ضحى - لوحة التحكم</span>
             </Link>
-            {adminNavItems.map(item => (
+            {sellerNavItems.map(item => (
                 <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-4 px-2.5 ${pathname === item.href ? 'text-sidebar-primary font-semibold' : 'text-sidebar-foreground hover:text-sidebar-primary'}`}
+                className={`flex items-center gap-4 px-2.5 rounded-md py-2 transition-colors ${pathname.startsWith(item.href) ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold' : 'text-sidebar-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/10'}`}
               >
                 <item.icon className="h-5 w-5" />
                 {item.label}
               </Link>
             ))}
+             <Button variant="outline" className="mt-6 border-sidebar-border text-sidebar-muted-foreground hover:bg-sidebar-accent/20 hover:text-sidebar-foreground" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
+                <LogOut className="mr-2 h-4 w-4" />
+                تسجيل الخروج
+            </Button>
           </nav>
         </SheetContent>
       </Sheet>
+
       <Breadcrumb className="hidden md:flex">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/admin" className="text-muted-foreground hover:text-primary">لوحة التحكم</Link>
+              <Link href="/dashboard" className="text-muted-foreground hover:text-primary">لوحة التحكم</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           {getBreadcrumbItems()}
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="relative ml-auto flex-1 md:grow-0">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+
+      <div className="relative ml-auto flex items-center gap-4 md:grow-0">
+        <Button variant="outline" size="sm" asChild className="hidden sm:flex">
+            <Link href={`/store/${MOCK_SELLER_SLUG}`} target="_blank" rel="noopener noreferrer">
+                <Eye size={16} className="ml-2" /> عرض متجري
+            </Link>
+        </Button>
+        {/* Search can be added back if needed */}
+        {/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="بحث..."
+          placeholder="بحث في لوحة التحكم..."
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-        />
+        /> */}
       </div>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             size="icon"
-            className="overflow-hidden rounded-full"
+            className="overflow-hidden rounded-full relative ml-4" /* Added ml-4 for spacing */
           >
-             <Bell className="h-5 w-5 text-muted-foreground" /> 
+             <Bell className="h-5 w-5 text-muted-foreground" />
+             {/* Example Notification Badge - replace 3 with actual count */}
+             <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 text-white text-[8px] items-center justify-center">3</span>
+             </span>
              <span className="sr-only">الإشعارات</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>الإشعارات</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-80">
+          <DropdownMenuLabel className="flex justify-between items-center">
+            <span>الإشعارات الهامة</span>
+            <Badge variant="destructive">3 جديدة</Badge>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>طلب جديد #1234</DropdownMenuItem>
-          <DropdownMenuItem>طلب بائعة جديد معلق</DropdownMenuItem>
+          <DropdownMenuItem className="flex items-start gap-2">
+            <ShoppingBag size={16} className="text-green-500 mt-1"/>
+            <div>
+                <p className="text-xs font-medium">طلب جديد #ORD701</p>
+                <p className="text-xs text-muted-foreground">من نورة السالم - منذ 5 دقائق</p>
+            </div>
+          </DropdownMenuItem>
+           <DropdownMenuItem className="flex items-start gap-2">
+            <MessageSquare size={16} className="text-blue-500 mt-1"/>
+            <div>
+                <p className="text-xs font-medium">رسالة جديدة</p>
+                <p className="text-xs text-muted-foreground">من أمل عبدالله بخصوص إيجار فستان</p>
+            </div>
+          </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-start gap-2">
+            <Star size={16} className="text-yellow-500 mt-1"/>
+            <div>
+                <p className="text-xs font-medium">تقييم جديد (5 نجوم)</p>
+                <p className="text-xs text-muted-foreground">على منتج أقراط فضية - بواسطة هند</p>
+            </div>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>عرض كل الإشعارات</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/notifications" className="text-center justify-center text-primary hover:underline">عرض كل الإشعارات</Link>
+            </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -166,31 +215,71 @@ export function AdminHeader() {
             size="icon"
             className="overflow-hidden rounded-full"
           >
-            <img
-              src="https://picsum.photos/32/32?random=admin"
-              width={36}
-              height={36}
-              alt="صورة حساب المسؤول"
-              data-ai-hint="admin avatar"
-              className="overflow-hidden rounded-full"
-            />
+            <Avatar className="h-9 w-9">
+              <AvatarImage src="https://picsum.photos/seed/seller_avatar/40/40" alt="صورة حساب البائعة" data-ai-hint="woman smiling seller" />
+              <AvatarFallback>ضح</AvatarFallback> {/* Example Fallback */}
+            </Avatar>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+          <DropdownMenuLabel>حساب المبدعة</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-            الإعدادات
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/settings">
+              <Settings className="mr-2 h-4 w-4" />
+              إعدادات المتجر
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>الدعم</DropdownMenuItem>
+           <DropdownMenuItem asChild>
+            <Link href="/profile"> {/* Link to the main user profile */}
+              <UserCircle className="mr-2 h-4 w-4" />
+              ملفي الشخصي (عام)
+            </Link>
+          </DropdownMenuItem>
+           <DropdownMenuItem asChild>
+            <Link href="/help-center">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              المساعدة والدعم
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => alert('تسجيل الخروج (محاكاة)')}>
             <LogOut className="mr-2 h-4 w-4" />
             تسجيل الخروج
-            </DropdownMenuItem>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
+  );
+}
+```
+  </change>
+  <change>
+    <file>src/app/dashboard/layout.tsx</file>
+    <description>Import SellerDashboardHeader correctly.</description>
+    <content><![CDATA[import type { Metadata } from 'next/server';
+import { SellerDashboardHeader } from '@/components/dashboard/seller-dashboard-header'; // Corrected import
+import { SellerDashboardSidebar } from '@/components/dashboard/seller-dashboard-sidebar';
+
+export const metadata: Metadata = {
+  title: 'لوحة تحكم المبدعة - لمسة ضحى',
+  description: 'إدارة متجرك ومنتجاتك على منصة لمسة ضحى.',
+};
+
+export default function SellerDashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex min-h-screen w-full bg-muted/40">
+      <SellerDashboardSidebar />
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:mr-14 flex-1"> {/* Changed sm:pl-14 to sm:mr-14 */}
+        <SellerDashboardHeader /> {/* This should now render correctly */}
+        <main className="flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }
