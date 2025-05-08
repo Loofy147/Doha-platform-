@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Package, PlusCircle, Search, Filter, ArrowUpDown, LayoutGrid, List } from 'lucide-react';
-import { useToast } from '@/lib/hooks/use-toast'; // Corrected path
+import { useToast } from '@/hooks/use-toast'; // Corrected import path
 import { Skeleton } from '@/components/ui/skeleton';
 import { allSellerProductsList, getDetailedSellerProductById, DetailedSellerProduct, SellerProductStatus, ProductType, deleteSellerProduct, updateSellerProduct } from '@/lib/data/mock-seller-data';
 import { DashboardProductCard } from '@/components/dashboard/dashboard-product-card';
@@ -26,13 +26,13 @@ export default function SellerProductsPage() {
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
   // Initialize state with data from mock-seller-data
-  const [products, setProducts = useState(allSellerProductsList);
+  const [products, setProducts] = useState<DetailedSellerProduct[]>(allSellerProductsList); // Explicit type
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
   const [selectedStatus, setSelectedStatus] = useState('الكل');
   const [selectedType, setSelectedType] = useState('الكل');
-  const [sortBy, setSortBy] = useState('dateAddedDesc');
-  const [viewMode, setViewMode] = useState('grid');
+  const [sortBy, setSortBy] = useState<SortOption>('dateAddedDesc'); // Explicit type
+  const [viewMode, setViewMode] = useState<ViewMode>('grid'); // Explicit type
 
   useEffect(() => {
     setIsClient(true);
@@ -96,7 +96,7 @@ export default function SellerProductsPage() {
   }, [products, searchTerm, selectedCategory, selectedStatus, selectedType, sortBy]);
 
   // Function to toggle product status using the imported update function
-  const toggleProductStatus = (productId) => {
+  const toggleProductStatus = (productId: string) => {
     const productToUpdate = products.find(p => p.id === productId);
     if (!productToUpdate) return;
 
@@ -120,7 +120,7 @@ export default function SellerProductsPage() {
   };
 
   // Function to delete product using the imported delete function
-  const deleteProductHandler = (productId) => {
+  const deleteProductHandler = (productId: string) => {
     const productToDelete = products.find(p => p.id === productId);
     if (!productToDelete) return;
 
@@ -237,7 +237,7 @@ export default function SellerProductsPage() {
             </div>
              <div className="flex items-center gap-1">
               <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <Select value={selectedStatus} onValueChange={(value) => setSelectedStatus(value)}>
+              <Select value={selectedStatus} onValueChange={(value: SellerProductStatus | 'الكل') => setSelectedStatus(value)}>
                 <SelectTrigger className="w-full bg-background text-xs">
                   <SelectValue placeholder="الحالة" />
                 </SelectTrigger>
@@ -250,7 +250,7 @@ export default function SellerProductsPage() {
             </div>
              <div className="flex items-center gap-1">
               <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <Select value={selectedType} onValueChange={(value) => setSelectedType(value)}>
+              <Select value={selectedType} onValueChange={(value: ProductType | 'الكل') => setSelectedType(value)}>
                 <SelectTrigger className="w-full bg-background text-xs">
                   <SelectValue placeholder="النوع" />
                 </SelectTrigger>
@@ -264,7 +264,7 @@ export default function SellerProductsPage() {
             {/* Add Sort Select */}
             <div className="flex items-center gap-1">
                  <ArrowUpDown className="h-4 w-4 text-muted-foreground flex-shrink-0"/>
-                 <Select value={sortBy} onValueChange={(value) => setSortBy(value)}>
+                 <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
                      <SelectTrigger className="w-full bg-background text-xs"><SelectValue placeholder="ترتيب حسب"/></SelectTrigger>
                      <SelectContent>
                          <SelectItem value="dateAddedDesc" className="text-xs">الأحدث أولاً</SelectItem>

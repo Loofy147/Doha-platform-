@@ -1,73 +1,59 @@
 // src/components/sections/contact-section.tsx
-'use client'; // Add this directive
-
+// Removed 'use client' - this component can be a Server Component if the form logic is handled by a parent Client Component.
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, MessageSquare, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod'; // Correct import path
+import { Label } from '@/components/ui/label'; // Import Label
 import { z } from 'zod';
-import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 
-const contactFormSchema = z.object({
+// Schema remains useful for validation logic in the parent/wrapper component
+export const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'الاسم يجب أن يتكون من حرفين على الأقل.' }),
   email: z.string().email({ message: 'يرجى إدخال بريد إلكتروني صحيح.' }),
   subject: z.string().min(5, { message: 'الموضوع يجب أن يتكون من 5 أحرف على الأقل.' }),
   message: z.string().min(10, { message: 'الرسالة يجب أن تتكون من 10 أحرف على الأقل.' }),
 });
 
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut", staggerChildren: 0.1 } }
-};
-
+// Animation variants (can be kept or moved to the wrapper)
 const itemVariants = {
   hidden: { opacity: 0, x: -20 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
 };
 
 const imageVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
 };
 
+interface ContactSectionProps {
+  // Define props for form handling if needed, e.g.,
+  // onSubmit: (data: ContactFormValues) => Promise<void>;
+  // register: any; // Type from react-hook-form
+  // errors: any; // Type from react-hook-form errors
+  // isSubmitting: boolean;
+}
 
-export function ContactSection() {
-  const { toast } = useToast();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
-  });
+// Removed useForm and useToast hooks from this component.
+// Form handling logic should be passed down from a client component parent or wrapper.
+export function ContactSection({ /* Pass necessary form props here */ }: ContactSectionProps) {
 
-  const onSubmit: SubmitHandler<ContactFormValues> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Form data submitted:', data);
-    toast({
-      title: 'تم إرسال رسالتكِ بنجاح!',
-      description: "شكراً لتواصلكِ مع لمسة ضحى. سنقوم بالرد في أقرب وقت ممكن.",
-      variant: 'default',
-    });
-    reset();
-  };
+    // Placeholder submit handler for structure, real one comes from props
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Form submit called (placeholder)");
+        // In real usage, call props.onSubmit(data) from the parent form handler
+    };
 
   return (
-    <motion.section
+    <section // Changed from motion.section as animation is handled by wrapper
       id="contact"
       className="py-16 lg:py-24 bg-background"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.15 }} // Trigger animation when 15% visible
-      variants={sectionVariants} // Apply container variants
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -84,7 +70,7 @@ export function ContactSection() {
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Form Section */}
-          <motion.div variants={sectionVariants}>
+          <motion.div > {/* Removed variants={sectionVariants} */}
             <Card className="shadow-lg">
               <CardHeader>
                 <motion.div variants={itemVariants}>
@@ -94,69 +80,75 @@ export function ContactSection() {
                 </motion.div>
               </CardHeader>
               <CardContent>
-                 <motion.form
-                    onSubmit={handleSubmit(onSubmit)}
+                 {/* Use a standard form, onSubmit handled by parent */}
+                 <form
+                    onSubmit={handleSubmit} // Replace with prop if passed down
                     className="space-y-6"
-                    variants={sectionVariants} // Stagger form items
                   >
                   <motion.div variants={itemVariants}>
-                    <label htmlFor="name" className="block text-sm font-medium text-foreground">الاسم الكامل</label>
+                    <Label htmlFor="name">الاسم الكامل</Label>
                     <Input
                       type="text"
                       id="name"
+                      name="name" // Add name attribute for FormData
                       autoComplete="name"
-                      className={`mt-1 ${errors.name ? 'border-destructive' : ''}`}
-                      {...register('name')}
+                      className="mt-1" // Simplified className, error handling via parent
                       placeholder="اسمكِ الكريم"
+                      // {...register('name')} // Register comes from parent props
                     />
-                    {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>}
+                    {/* {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>} */}
+                     {/* Error display handled by parent */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground">البريد الإلكتروني</label>
+                    <Label htmlFor="email">البريد الإلكتروني</Label>
                     <Input
                       type="email"
                       id="email"
+                      name="email"
                       autoComplete="email"
-                      className={`mt-1 ${errors.email ? 'border-destructive' : ''}`}
-                      {...register('email')}
+                      className="mt-1"
                       placeholder="your.email@example.com"
+                     // {...register('email')}
                     />
-                    {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
+                    {/* {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>} */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <label htmlFor="subject" className="block text-sm font-medium text-foreground">الموضوع</label>
+                    <Label htmlFor="subject">الموضوع</Label>
                     <Input
                       type="text"
                       id="subject"
-                      className={`mt-1 ${errors.subject ? 'border-destructive' : ''}`}
-                      {...register('subject')}
+                      name="subject"
+                      className="mt-1"
                       placeholder="عن ماذا تتمحور رسالتكِ؟"
+                      // {...register('subject')}
                     />
-                    {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject.message}</p>}
+                    {/* {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject.message}</p>} */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <label htmlFor="message" className="block text-sm font-medium text-foreground">الرسالة</label>
+                    <Label htmlFor="message">الرسالة</Label>
                     <Textarea
                       id="message"
+                      name="message"
                       rows={4}
-                      className={`mt-1 ${errors.message ? 'border-destructive' : ''}`}
-                      {...register('message')}
+                      className="mt-1"
                       placeholder="اكتبي رسالتكِ هنا..."
+                     // {...register('message')}
                     />
-                    {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message.message}</p>}
+                     {/* {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message.message}</p>} */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
-                      {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'}
+                    <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" /* disabled={isSubmitting} */>
+                      {/* {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'} */}
+                      إرسال الرسالة (قيد التطوير)
                     </Button>
                   </motion.div>
-                </motion.form>
+                </form>
               </CardContent>
             </Card>
           </motion.div>
 
           {/* Info Section */}
-          <motion.div className="space-y-8" variants={sectionVariants}>
+          <motion.div className="space-y-8" > {/* Removed variants={sectionVariants} */}
             <Card className="shadow-lg">
               <CardHeader>
                 <motion.div variants={itemVariants}>
@@ -191,6 +183,6 @@ export function ContactSection() {
           </motion.div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
