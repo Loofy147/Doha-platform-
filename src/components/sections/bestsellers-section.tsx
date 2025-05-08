@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Button } from '@/components/ui/button';
 import { Flame, Eye, ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils'; // Import cn utility
 
 const mockBestsellers = [
   {
@@ -53,31 +54,36 @@ const mockBestsellers = [
   },
 ];
 
-const cardVariants = {
-  initial: { opacity: 0, y: 30, scale: 0.95 },
-  animate: (i: number) => ({
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, duration: 0.5 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { delay: i * 0.05, duration: 0.4, ease: "easeOut" }
+    transition: { delay: i * 0.07, duration: 0.5, ease: "easeOut" }
   })
 };
-
 
 export function BestsellersSection() {
   return (
     <motion.section
       id="bestsellers"
       className="py-16 lg:py-24 bg-background"
-      initial="initial"
-      whileInView="animate"
+      variants={sectionVariants} // Apply container variants
+      initial="hidden" // Changed from 'initial'
+      whileInView="visible" // Changed from 'animate'
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.1 }}
+      transition={{ staggerChildren: 0.1 }} // Ensure stagger works with whileInView
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={cardVariants}
+          variants={itemVariants} // Use item variants for header
           custom={0} // Start animation immediately
         >
           <Flame className="mx-auto h-12 w-12 text-primary animate-pulse" style={{animationDuration: '1.2s'}}/>
@@ -93,12 +99,14 @@ export function BestsellersSection() {
             <motion.div
               key={product.id}
               custom={index + 1} // Stagger animation for cards
-              variants={cardVariants}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.2 }}
+              variants={itemVariants} // Apply item variants to each card container
+              // Removed initial/whileInView from individual cards
             >
-            <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50 h-full">
+            <Card className={cn(
+                "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col",
+                "border border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50 h-full",
+                "transform hover:-translate-y-1.5" // Add lift effect
+             )}>
               <CardHeader className="p-0 relative">
                 <Link href={`/products/${product.id}`} passHref className="block aspect-[4/3] relative overflow-hidden rounded-t-xl">
                   <Image
@@ -143,7 +151,7 @@ export function BestsellersSection() {
         </div>
         <motion.div
           className="mt-12 text-center"
-          variants={cardVariants}
+          variants={itemVariants}
           custom={mockBestsellers.length + 1} // Animate button after cards
         >
           <Button size="lg" variant="default" asChild className="bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">

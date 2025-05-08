@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod'; // Corrected import
+import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
@@ -24,17 +24,17 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut", staggerChildren: 0.1 } }
 };
 
-const formItemVariants = {
+const itemVariants = {
   hidden: { opacity: 0, x: -20 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
 };
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 }}
+const imageVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
 };
 
 
@@ -46,7 +46,7 @@ export function ContactSection() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema), // Corrected usage
+    resolver: zodResolver(contactFormSchema),
   });
 
   const onSubmit: SubmitHandler<ContactFormValues> = async (data) => {
@@ -66,13 +66,13 @@ export function ContactSection() {
       className="py-16 lg:py-24 bg-background"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={sectionVariants}
+      viewport={{ once: true, amount: 0.15 }} // Trigger animation when 15% visible
+      variants={sectionVariants} // Apply container variants
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={sectionVariants}
+          variants={itemVariants} // Animate header block
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             تواصلي معنا
@@ -83,21 +83,23 @@ export function ContactSection() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          <motion.div
-            variants={containerVariants} // Container for form items
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+          {/* Form Section */}
+          <motion.div variants={sectionVariants}>
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl text-primary flex items-center gap-2">
-                  <MessageSquare size={24} className="text-accent-pink" /> أرسلي لنا رسالة
-                </CardTitle>
+                <motion.div variants={itemVariants}>
+                  <CardTitle className="text-2xl text-primary flex items-center gap-2">
+                    <MessageSquare size={24} className="text-accent-pink" /> أرسلي لنا رسالة
+                  </CardTitle>
+                </motion.div>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <motion.div variants={formItemVariants}>
+                 <motion.form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-y-6"
+                    variants={sectionVariants} // Stagger form items
+                  >
+                  <motion.div variants={itemVariants}>
                     <label htmlFor="name" className="block text-sm font-medium text-foreground">الاسم الكامل</label>
                     <Input
                       type="text"
@@ -109,7 +111,7 @@ export function ContactSection() {
                     />
                     {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>}
                   </motion.div>
-                  <motion.div variants={formItemVariants}>
+                  <motion.div variants={itemVariants}>
                     <label htmlFor="email" className="block text-sm font-medium text-foreground">البريد الإلكتروني</label>
                     <Input
                       type="email"
@@ -121,7 +123,7 @@ export function ContactSection() {
                     />
                     {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
                   </motion.div>
-                  <motion.div variants={formItemVariants}>
+                  <motion.div variants={itemVariants}>
                     <label htmlFor="subject" className="block text-sm font-medium text-foreground">الموضوع</label>
                     <Input
                       type="text"
@@ -132,7 +134,7 @@ export function ContactSection() {
                     />
                     {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject.message}</p>}
                   </motion.div>
-                  <motion.div variants={formItemVariants}>
+                  <motion.div variants={itemVariants}>
                     <label htmlFor="message" className="block text-sm font-medium text-foreground">الرسالة</label>
                     <Textarea
                       id="message"
@@ -143,28 +145,31 @@ export function ContactSection() {
                     />
                     {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message.message}</p>}
                   </motion.div>
-                  <motion.div variants={formItemVariants}>
+                  <motion.div variants={itemVariants}>
                     <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
                       {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'}
                     </Button>
                   </motion.div>
-                </form>
+                </motion.form>
               </CardContent>
             </Card>
           </motion.div>
 
+          {/* Info Section */}
           <motion.div className="space-y-8" variants={sectionVariants}>
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl text-primary flex items-center gap-2">
-                  <Info size={24} className="text-accent-purple" /> معلومات المنصة
-                </CardTitle>
+                <motion.div variants={itemVariants}>
+                    <CardTitle className="text-2xl text-primary flex items-center gap-2">
+                    <Info size={24} className="text-accent-purple" /> معلومات المنصة
+                    </CardTitle>
+                </motion.div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-foreground/80">
+                <motion.p className="text-foreground/80" variants={itemVariants}>
                   لمسة ضحى هي منصة إلكترونية تجمع رائدات الأعمال الموهوبات بالباحثات عن الإبداع. نعمل بشغف لتمكين المرأة اقتصاديًا.
-                </p>
-                 <div className="aspect-video rounded-md overflow-hidden border">
+                </motion.p>
+                 <motion.div className="aspect-video rounded-md overflow-hidden border" variants={imageVariants}>
                   <Image
                     src="https://picsum.photos/800/450?random=15"
                     alt="صورة تعبر عن التعاون النسائي والإبداع عبر الإنترنت"
@@ -173,14 +178,14 @@ export function ContactSection() {
                     className="object-cover w-full h-full"
                     data-ai-hint="women online business"
                   />
-                </div>
-                <p className="flex items-center gap-3 text-foreground/80">
+                </motion.div>
+                <motion.p className="flex items-center gap-3 text-foreground/80" variants={itemVariants}>
                   <Mail size={20} className="text-accent-pink" />
                   <span>support@lamsadoha.com</span>
-                </p>
-                 <p className="text-sm text-muted-foreground">
+                </motion.p>
+                 <motion.p className="text-sm text-muted-foreground" variants={itemVariants}>
                   للتواصل مع مبدعات محددات، يرجى الرجوع إلى صفحات متاجرهن بعد تسجيل الدخول.
-                </p>
+                </motion.p>
               </CardContent>
             </Card>
           </motion.div>

@@ -14,7 +14,7 @@ const fadeInUp = {
 
 const containerVariants = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.2 }}
+  animate: { transition: { staggerChildren: 0.15 }} // Slightly adjusted stagger
 };
 
 export function HeroSection() {
@@ -41,24 +41,24 @@ export function HeroSection() {
         />
       </motion.div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <motion.div variants={fadeInUp} transition={{ delay: 0.2 }}>
+        <motion.div variants={fadeInUp} transition={{ duration: 0.5, ease: "easeOut" }}>
           <Sparkles className="mx-auto h-16 w-16 text-accent-yellow mb-6 animate-pulse" style={{ animationDuration: '1.5s' }} />
         </motion.div>
         <motion.h1
           className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl drop-shadow-md"
-          variants={fadeInUp} transition={{ delay: 0.4 }}
+          variants={fadeInUp} transition={{ duration: 0.6, ease: "easeOut" }}
         >
           مرحباً بكِ في عالم <span className="text-accent-pink hover:text-accent-yellow transition-colors duration-300">لمسة ضحى</span>
         </motion.h1>
         <motion.p
           className="mt-6 max-w-3xl mx-auto text-lg text-foreground/90 sm:text-xl md:text-2xl leading-relaxed"
-          variants={fadeInUp} transition={{ delay: 0.6 }}
+          variants={fadeInUp} transition={{ duration: 0.7, ease: "easeOut" }}
         >
           بوابتكِ لاكتشاف إبداعات نسائية فريدة، ودعم رائدات أعمال طموحات. هنا، كل لمسة تحكي قصة، وكل منتج يحمل شغفًا.
         </motion.p>
         <motion.div
           className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6"
-          variants={fadeInUp} transition={{ delay: 0.8, staggerChildren: 0.2 }}
+          variants={containerVariants} // Use container for stagger effect on buttons
         >
           <motion.div variants={fadeInUp}>
             <Button size="lg" asChild className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out px-8 py-3 text-base rounded-full group">

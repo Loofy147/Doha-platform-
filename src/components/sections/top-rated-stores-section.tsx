@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Award, Star, Eye, ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const mockTopRatedStores = [
   {
@@ -57,44 +58,45 @@ const mockTopRatedStores = [
   },
 ];
 
-const cardVariants = {
-  initial: { opacity: 0, y: 20, scale: 0.98 },
-  animate: (i: number) => ({
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, duration: 0.5 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.98 },
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      delay: i * 0.1,
-      duration: 0.4,
+      delay: i * 0.08, // Adjust delay for smoother entry
+      duration: 0.5,
       ease: "easeOut",
     },
   }),
 };
 
-const sectionVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { staggerChildren: 0.1 } }
-};
 
 export function TopRatedStoresSection() {
   return (
     <motion.section
       id="top-stores"
       className="py-16 lg:py-24 bg-secondary/10"
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: true, amount: 0.2 }}
       variants={sectionVariants} // Apply container variants
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={cardVariants}
+          variants={itemVariants} // Use item variants for header
           custom={0} // Start animation immediately
         >
           <Award className="mx-auto h-12 w-12 text-accent-yellow animate-bounce" style={{animationDuration: '1.8s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            مبدعاتنا المتألقات
+            مبدعاتنا المتألقات ⭐
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
             تعرفي على المتاجر التي حازت على أعلى التقييمات بفضل جودة منتجاتها وخدماتها الاستثنائية.
@@ -105,10 +107,14 @@ export function TopRatedStoresSection() {
             <motion.div
               key={store.id}
               custom={index + 1} // Stagger animation for cards
-              variants={cardVariants}
-              // Removed initial/whileInView from individual cards, handled by parent
+              variants={itemVariants}
+              // Removed initial/whileInView from individual cards
             >
-            <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-accent-yellow focus-within:border-accent-yellow focus-within:ring-2 focus-within:ring-accent-yellow/50 h-full">
+            <Card className={cn(
+                "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col",
+                "border border-transparent hover:border-accent-yellow focus-within:border-accent-yellow focus-within:ring-2 focus-within:ring-accent-yellow/50 h-full",
+                 "transform hover:-translate-y-1.5" // Add lift effect
+            )}>
               <div className="relative h-32 sm:h-40 overflow-hidden rounded-t-xl">
                 <Link href={`/store/${store.id}`} passHref className="block h-full">
                   <Image src={store.bannerImage} alt={`${store.name} banner`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" data-ai-hint={store.dataAiHintBanner}/>
@@ -124,7 +130,7 @@ export function TopRatedStoresSection() {
                 <h3 className="text-lg font-semibold text-primary mb-1 group-hover:text-accent-pink transition-colors">
                   <Link href={`/store/${store.id}`}>{store.name}</Link>
                 </h3>
-                <p className="text-xs text-accent-purple font-medium mb-2">{store.specialty}</p>
+                <p className="text-xs text-accent-purple font-medium mb-2 line-clamp-2">{store.specialty}</p>
                 <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-3 mt-auto">
                   <Star className="h-4 w-4 text-accent-yellow fill-accent-yellow" />
                   <span>{store.rating.toFixed(1)}</span>
@@ -144,7 +150,7 @@ export function TopRatedStoresSection() {
         </div>
          <motion.div
           className="mt-12 text-center"
-          variants={cardVariants}
+          variants={itemVariants}
           custom={mockTopRatedStores.length + 1} // Animate button after cards
          >
           <Button size="lg" variant="default" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">

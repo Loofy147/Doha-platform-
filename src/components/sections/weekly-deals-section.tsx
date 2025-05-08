@@ -10,6 +10,7 @@ import { CalendarRange, Percent, Eye, ChevronLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const mockWeeklyDeals = [
   {
@@ -44,48 +45,59 @@ const mockWeeklyDeals = [
     storeName: 'مذاق البيت مع سارة',
     storeSlug: 'mathaq-albayt',
   },
+   {
+    id: 'deal-weekly-4',
+    productLink: '/products?category=أزياء وإكسسوارات يدوية', // Link to category
+    title: 'شحن مجاني للطلبات فوق 5,000 دج من الإكسسوارات اليدوية!',
+    description: 'تسوقي أجمل الإكسسوارات المصنوعة بحب واستمتعي بشحن مجاني هذا الأسبوع.',
+    imageSrc: 'https://picsum.photos/seed/weeklyjewelryship/400/250',
+    dataAiHint: 'handmade jewelry display',
+    storeName: 'متاجر متنوعة', // Representing multiple stores
+    storeSlug: '', // No specific store slug
+  },
 ];
 
-const cardVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, duration: 0.4, ease: "circOut" }
-  })
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, duration: 0.5 } }
 };
 
-const sectionVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { staggerChildren: 0.1 } }
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.98 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" }
+  })
 };
 
 export function WeeklyDealsSection() {
   const plugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
+    Autoplay({ delay: 5500, stopOnInteraction: true }) // Slightly longer delay
   );
 
   return (
     <motion.section
       id="weekly-deals"
       className="py-16 lg:py-24 bg-background"
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: true, amount: 0.2 }}
       variants={sectionVariants} // Apply container variants
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={cardVariants}
+          variants={itemVariants} // Use item variants for header
           custom={0} // Start animation immediately
         >
-          <CalendarRange className="mx-auto h-12 w-12 text-accent-purple" />
+          <CalendarRange className="mx-auto h-12 w-12 text-accent-purple animate-pulse" style={{animationDuration: '1.6s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            صفقات الأسبوع المميزة
+            صفقات الأسبوع المتجددة ⏳
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-            عروض أسبوعية متجددة على أفضل المنتجات والخدمات. لا تدعي الفرصة تفوتكِ!
+            عروض أسبوعية مميزة على أفضل المنتجات والخدمات. لا تدعي الفرصة تفوتكِ!
           </p>
         </motion.div>
 
@@ -106,10 +118,14 @@ export function WeeklyDealsSection() {
                 <motion.div
                   className="p-1 h-full"
                   custom={index + 1} // Stagger animation for cards
-                  variants={cardVariants}
+                  variants={itemVariants}
                   // Removed initial/whileInView from individual cards
                 >
-                  <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-purple/30 hover:border-accent-purple focus-within:border-accent-purple focus-within:ring-2 focus-within:ring-accent-purple/50">
+                  <Card className={cn(
+                    "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full",
+                    "border-2 border-accent-purple/30 hover:border-accent-purple focus-within:border-accent-purple focus-within:ring-2 focus-within:ring-accent-purple/50",
+                    "transform hover:-translate-y-1.5" // Add lift effect
+                    )}>
                     <CardHeader className="p-0 relative">
                       <Link href={deal.productLink} passHref className="block aspect-[16/10] relative overflow-hidden rounded-t-xl">
                         <Image
@@ -132,12 +148,15 @@ export function WeeklyDealsSection() {
                         {deal.description}
                       </CardDescription>
                       <p className="text-xs text-muted-foreground mb-2">
-                        مقدم من: <Link href={`/store/${deal.storeSlug}`} className="text-accent-pink hover:underline font-medium">{deal.storeName}</Link>
+                         <Link href={deal.storeSlug ? `/store/${deal.storeSlug}` : '/stores'} className="text-accent-pink hover:underline font-medium">{deal.storeName}</Link>
                       </p>
                       <div className="flex items-baseline gap-2 mt-auto">
-                        <p className="text-2xl font-bold text-accent-purple">{deal.dealPrice}</p>
+                         {deal.dealPrice && <p className="text-2xl font-bold text-accent-purple">{deal.dealPrice}</p>}
                         {deal.originalPrice && (
-                          <p className="text-md text-muted-foreground line-through">{deal.originalPrice}</p>
+                          <p className={cn("text-md text-muted-foreground", deal.dealPrice && "line-through")}>{deal.originalPrice}</p>
+                        )}
+                         {!deal.dealPrice && !deal.originalPrice && ( // Case for free shipping etc.
+                           <p className="text-xl font-bold text-accent-purple">عرض خاص!</p>
                         )}
                       </div>
                     </CardContent>
@@ -159,7 +178,7 @@ export function WeeklyDealsSection() {
 
         <motion.div
           className="mt-12 text-center"
-          variants={cardVariants}
+          variants={itemVariants}
           custom={mockWeeklyDeals.length + 1} // Animate button after cards
         >
           <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">

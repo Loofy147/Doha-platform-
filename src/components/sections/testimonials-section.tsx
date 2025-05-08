@@ -1,4 +1,4 @@
-// src/components/sections/testimonials-section.tsx
+
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,8 +12,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, useAnimation } from 'framer-motion'; // Correct import
+import { cn } from '@/lib/utils';
+
 
 const testimonials = [
   {
@@ -83,23 +85,50 @@ const cardVariants = {
 
 
 export function TestimonialsSection() {
+  const [inView, setInView] = useState(false);
+  const controls = useAnimation();
+  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          controls.start("visible");
+        }
+      });
+    };
+
+    const obs = new IntersectionObserver(handleIntersect, { threshold: 0.1 });
+    if (sectionRef.current) {
+      obs.observe(sectionRef.current);
+    }
+    setObserver(obs);
+
+    return () => {
+      observer?.disconnect();
+    };
+  }, [controls, observer]);
+
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
-  )
+  );
+
 
   return (
     <motion.section
       id="testimonials"
+      ref={sectionRef}
       className="py-16 lg:py-24 bg-secondary/20 overflow-hidden"
       variants={sectionVariants}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }} // Trigger animation when 10% is visible
+      animate={controls}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
             className="text-center mb-12"
-            variants={cardVariants} // Use card variant for header block
+            variants={cardVariants}
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             أصداء من مجتمع لمسة ضحى
@@ -116,7 +145,7 @@ export function TestimonialsSection() {
           onMouseLeave={plugin.current.reset}
           opts={{
             align: "start",
-            loop: true,
+            loop: testimonials.length > 2,
             direction: "rtl",
           }}
         >
@@ -127,9 +156,6 @@ export function TestimonialsSection() {
                 <motion.div
                   className="p-1 h-full"
                   variants={cardVariants}
-                  // initial="hidden" // Already handled by parent stagger
-                  // whileInView="visible" // Already handled by parent stagger
-                  viewport={{ once: true, amount: 0.3 }}
                 >
                   <Card className="h-full flex flex-col shadow-lg rounded-lg overflow-hidden bg-card hover:shadow-xl transition-shadow border border-border/30">
                     <CardContent className="p-6 flex flex-col flex-grow items-center text-center">
@@ -144,7 +170,7 @@ export function TestimonialsSection() {
                           <Star key={i} className="h-5 w-5 text-accent-yellow fill-accent-yellow" />
                         ))}
                         {Array(5 - testimonial.rating).fill(0).map((_, i) => (
-                           <Star key={i + testimonial.rating} className="h-5 w-5 text-accent-yellow/50" /> // Dimmed empty stars
+                           <Star key={`empty-${i}`} className="h-5 w-5 text-accent-yellow/50" /> // Dimmed empty stars, ensure unique key
                         ))}
                       </div>
                       <p className="text-sm text-foreground/80 leading-relaxed flex-grow">

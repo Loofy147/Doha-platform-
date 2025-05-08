@@ -11,9 +11,11 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose // Import SheetClose
 } from '@/components/ui/sheet';
 import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo'; 
+import { WomenCommerceLogo } from '@/components/icons/logo';
+import { motion } from 'framer-motion';
 
 const navItems = [
   { label: 'الرئيسية', href: '/', icon: <HomeIcon size={16} /> },
@@ -24,6 +26,11 @@ const navItems = [
   { label: 'عن لمسة ضحى', href: '/#about', icon: <Info size={16} /> },
   { label: 'تواصل معنا', href: '/#contact', icon: <MessageSquare size={16} /> },
 ];
+
+const navItemVariants = {
+  hover: { scale: 1.05, color: "hsl(var(--primary))" },
+  tap: { scale: 0.95 }
+};
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,12 +46,14 @@ export function Navbar() {
 
         <nav className="hidden lg:flex gap-0.5 items-center">
           {navItems.map((item) => (
-            <Button key={item.label} variant="ghost" asChild>
-              <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground hover:text-primary flex items-center px-2 py-2">
-                {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })}
-                {item.label}
-              </Link>
-            </Button>
+             <motion.div key={item.label} whileHover="hover" whileTap="tap" variants={navItemVariants}>
+                 <Button variant="ghost" asChild>
+                    <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground flex items-center px-2 py-2">
+                        {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })}
+                        {item.label}
+                    </Link>
+                 </Button>
+             </motion.div>
           ))}
         </nav>
 
@@ -52,32 +61,42 @@ export function Navbar() {
           {isLoggedIn ? (
             <>
               {isSeller && (
-                <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
-                  <Link href="/dashboard" className="flex items-center">
-                    <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" />
-                    لوحة تحكم متجري
-                  </Link>
-                </Button>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
+                    <Link href="/dashboard" className="flex items-center">
+                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" />
+                      لوحة تحكم متجري
+                    </Link>
+                  </Button>
+                </motion.div>
               )}
-              <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
-                <Link href="/profile" className="flex items-center">
-                  <UserCircle size={18} className="ml-1.5" />
-                  حسابي
-                </Link>
-              </Button>
-              <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
-                <LogOutIcon size={16} className="ml-1.5" />
-                تسجيل الخروج
-              </Button>
+               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
+                    <Link href="/profile" className="flex items-center">
+                      <UserCircle size={18} className="ml-1.5" />
+                      حسابي
+                    </Link>
+                  </Button>
+               </motion.div>
+               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
+                    <LogOutIcon size={16} className="ml-1.5" />
+                    تسجيل الخروج
+                  </Button>
+               </motion.div>
             </>
           ) : (
             <>
-              <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10">
-                <Link href="/auth/login">تسجيل الدخول</Link>
-              </Button>
-              <Button size="sm" asChild className="hidden sm:inline-flex bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
-                <Link href="/auth/register">إنشاء حساب</Link>
-              </Button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10">
+                  <Link href="/auth/login">تسجيل الدخول</Link>
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Button size="sm" asChild className="hidden sm:inline-flex bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
+                  <Link href="/auth/register">إنشاء حساب</Link>
+                </Button>
+              </motion.div>
             </>
           )}
           <div className="lg:hidden">
@@ -91,44 +110,50 @@ export function Navbar() {
               <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background">
                 <SheetHeader className="p-4 border-b">
                   <SheetTitle>
-                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
+                    <SheetClose asChild>
+                     <Link href="/" className="flex items-center gap-2">
                        <WomenCommerceLogo className="h-12 w-auto" />
                      </Link>
+                    </SheetClose>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="p-4 pt-2">
                   <nav className="flex flex-col gap-2">
                     {navItems.map((item) => (
-                      <Button
-                        key={item.label}
-                        variant="ghost"
-                        asChild
-                        className="justify-start text-base py-2.5"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Link href={item.href} className="flex items-center">
-                          {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })}
-                          {item.label}
-                        </Link>
-                      </Button>
+                      <SheetClose key={item.label} asChild>
+                         <Button
+                           variant="ghost"
+                           asChild
+                           className="justify-start text-base py-2.5"
+                         >
+                          <Link href={item.href} className="flex items-center">
+                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })}
+                            {item.label}
+                          </Link>
+                         </Button>
+                      </SheetClose>
                     ))}
                      <hr className="my-3"/>
                      {isLoggedIn ? (
                        <>
                           {isSeller && (
-                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
+                           <SheetClose asChild>
+                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
                                 <Link href="/dashboard" className="flex items-center">
                                   <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" />
                                   لوحة تحكم متجري
                                 </Link>
                             </Button>
+                           </SheetClose>
                           )}
-                          <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                           <Link href="/profile" className="flex items-center">
-                              <UserCircle size={18} className="ml-2.5" />
-                              حسابي
-                           </Link>
-                         </Button>
+                         <SheetClose asChild>
+                           <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
+                             <Link href="/profile" className="flex items-center">
+                                <UserCircle size={18} className="ml-2.5" />
+                                حسابي
+                             </Link>
+                           </Button>
+                         </SheetClose>
                          <Button variant="outline" className="w-full justify-start text-base py-2.5" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
                             <LogOutIcon size={18} className="ml-2.5" />
                             تسجيل الخروج
@@ -136,12 +161,16 @@ export function Navbar() {
                        </>
                      ) : (
                        <>
-                        <Button variant="outline" className="w-full justify-start text-base py-2.5" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                          <Link href="/auth/login">تسجيل الدخول</Link>
-                        </Button>
-                        <Button className="w-full justify-start text-base py-2.5 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" asChild onClick={() => setIsMobileMenuOpen(false)}>
-                          <Link href="/auth/register">إنشاء حساب</Link>
-                        </Button>
+                         <SheetClose asChild>
+                           <Button variant="outline" className="w-full justify-start text-base py-2.5" asChild>
+                             <Link href="/auth/login">تسجيل الدخول</Link>
+                           </Button>
+                         </SheetClose>
+                         <SheetClose asChild>
+                           <Button className="w-full justify-start text-base py-2.5 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" asChild>
+                             <Link href="/auth/register">إنشاء حساب</Link>
+                           </Button>
+                         </SheetClose>
                        </>
                      )}
                   </nav>

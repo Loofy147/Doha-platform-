@@ -3,8 +3,8 @@
 
 import Image from 'next/image';
 import { Users, Lightbulb, Briefcase } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card'; // Added Card imports
+import { motion } from 'framer-motion'; // Ensure framer-motion is imported
+import { Card, CardContent } from '@/components/ui/card';
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
