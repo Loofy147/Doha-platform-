@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card'; // Removed unused imports
-import { Sparkles, Eye, ChevronLeft, Users, CalendarDays, ShoppingBag, Store, Edit3, Search, PenLine } from 'lucide-react'; // Added Search
+import { Card, CardContent, CardDescription, CardTitle, CardFooter, CardHeader } from '@/components/ui/card';
+import { Sparkles, Eye, ChevronLeft, Users, CalendarDays, ShoppingBag, Store, Edit3, Search, PenLine, Flame, Award } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { HeroSection } from '@/components/sections/hero-section';
 import { AboutUsSection } from '@/components/sections/about-us-section';
@@ -18,19 +18,19 @@ import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { CallToActionBanner } from '@/components/sections/call-to-action-banner';
 import { motion } from 'framer-motion';
-import { Rocket } from 'lucide-react'; // Explicitly importing Rocket
+import { Rocket } from 'lucide-react'; // Ensure Rocket is imported
 
 const categories = [
   { name: 'أناقة وإكسسوارات', icon: ShoppingBag, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink' },
   { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow' },
   { name: 'لمسات منزلية وديكور', icon: Store, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple' },
-  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500' }, // Updated category name
+  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500' },
   { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات احترافية', dataAiHint: 'professional services', color: 'text-blue-500' },
 ];
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 } } // Added staggerChildren
 };
 
 const categoryCardVariants = {
@@ -47,26 +47,34 @@ const categoryCardVariants = {
   })
 };
 
+const buttonVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: "backOut" }}
+};
+
+
 export default function HomePage() {
   return (
     <>
       <HeroSection />
 
-      <CallToActionBanner
-        title="✨ انضمي إلى مبدعات لمسة ضحى! ✨"
-        description="هل تمتلكين موهبة فريدة أو منتجات تفيض بالإبداع؟ حان الوقت لتشاركي العالم بلمستكِ الخاصة! افتحي متجركِ الرقمي معنا اليوم واكتشفي فرصًا لا حدود لها للنمو والتمكين."
-        buttonText="افتحي متجركِ الآن"
-        buttonLink="/sell-with-us"
-        imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
-        dataAiHint="women entrepreneurs working"
-        icon={Rocket} // Pass the component itself
-        animationConfig={{ // Consistent animation config
-          initial: { opacity: 0, x: -50 },
-          whileInView: { opacity: 1, x: 0 },
-          transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
-          viewport: { once: true, amount: 0.3 }
-        }}
-      />
+      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
+        <CallToActionBanner
+          title="✨ انضمي إلى مبدعات لمسة ضحى! ✨"
+          description="هل تمتلكين موهبة فريدة أو منتجات تفيض بالإبداع؟ حان الوقت لتشاركي العالم بلمستكِ الخاصة! افتحي متجركِ الرقمي معنا اليوم واكتشفي فرصًا لا حدود لها للنمو والتمكين."
+          buttonText="افتحي متجركِ الآن"
+          buttonLink="/sell-with-us"
+          imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
+          dataAiHint="women entrepreneurs working"
+          icon={Rocket}
+          animationConfig={{ // Pass animation config to child
+            variants: sectionVariants,
+            initial:"hidden",
+            whileInView:"visible",
+            viewport:{ once: true, amount: 0.2 }
+          }}
+        />
+      </motion.div>
 
       <DailyDealsSection />
       <WeeklyDealsSection />
@@ -79,18 +87,21 @@ export default function HomePage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        variants={sectionVariants}
+        variants={sectionVariants} // Container animation
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <motion.div
+            className="text-center mb-12"
+            variants={sectionVariants} // Animate header elements together
+          >
             <Users className="mx-auto h-12 w-12 text-primary" />
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-              تصفحي عوالم الإبداع الأنثوي
+              تصفحي عالمنا الإبداعي
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-              انغمسي في فئات متنوعة تُرضي كل شغف واهتمام، من أناقة الموضة ولمسات الديكور، إلى فنون الطهي والخدمات المبتكرة.
+              اكتشفي فئات متنوعة تلبي كل شغف واهتمام، من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة.
             </p>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {categories.map((category, index) => {
               const CategoryIcon = category.icon;
@@ -98,10 +109,8 @@ export default function HomePage() {
                 <motion.div
                   key={category.name}
                   custom={index}
-                  variants={categoryCardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.1 }}
+                  variants={categoryCardVariants} // Individual card animation with stagger
+                  // initial, whileInView, viewport are handled by the parent section
                   whileHover={{ y: -8, scale: 1.03, transition: { duration: 0.2 } }}
                 >
                   <Link href={category.href} className="group block h-full">
@@ -122,7 +131,13 @@ export default function HomePage() {
               );
             })}
           </div>
-           <motion.div className="mt-12 text-center" variants={sectionVariants}>
+           <motion.div
+            className="mt-12 text-center"
+            variants={buttonVariants} // Animate button separately
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            >
             <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
               <Link href="/products">
                 عرض كل الفئات والمنتجات <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
@@ -132,22 +147,24 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-       <CallToActionBanner
-        title="💖 اكتشفي كنوز الإبداع المحلي! 💖"
-        description="تصفحي آلاف المنتجات والخدمات الفريدة المقدمة من مبدعات شغوفات. كل قطعة تروي حكاية، وكل خدمة تُقدّم بلمسة شخصية لا مثيل لها. ادعمي المواهب المحلية واحصلي على ما يُعبّر عن ذوقكِ الرفيع."
-        buttonText="تسوقي الآن"
-        buttonLink="/products"
-        imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
-        dataAiHint="happy woman shopping online"
-        icon={ShoppingBag} // Pass the component itself
-        reverseLayout
-         animationConfig={{ // Consistent animation config
-          initial: { opacity: 0, x: 50 },
-          whileInView: { opacity: 1, x: 0 },
-          transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
-          viewport: { once: true, amount: 0.3 }
-        }}
-      />
+      <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
+        <CallToActionBanner
+          title="💖 اكتشفي كنوز الإبداع المحلي! 💖"
+          description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
+          buttonText="تسوقي الآن"
+          buttonLink="/products"
+          imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
+          dataAiHint="happy woman shopping online"
+          icon={ShoppingBag}
+          reverseLayout
+           animationConfig={{ // Pass animation config to child
+            variants: sectionVariants,
+            initial:"hidden",
+            whileInView:"visible",
+            viewport:{ once: true, amount: 0.2 }
+          }}
+        />
+       </motion.div>
 
       <AboutUsSection />
       <TestimonialsSection />
