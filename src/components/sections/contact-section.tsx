@@ -1,5 +1,5 @@
 // src/components/sections/contact-section.tsx
-'use client';
+'use client'; // Add this directive
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod'; // Correct import path
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';

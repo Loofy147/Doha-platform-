@@ -1,9 +1,8 @@
 
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { LayoutGrid, PlusCircle, Trash2 } from "lucide-react";
+import { LayoutGrid, Trash2 } from "lucide-react";
+import { CategoryForm } from "./category-form"; // Import the new client component
 
 // Mock categories for display
 const mockCategories = [
@@ -15,6 +14,7 @@ const mockCategories = [
   { id: 'cat6', name: 'خدمات احترافية', productCount: 20 }, // Services - More professional sounding
 ];
 
+// This remains a Server Component
 export default function AdminCategoriesPage() {
   return (
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
@@ -40,6 +40,7 @@ export default function AdminCategoriesPage() {
                         <p className="text-xs text-muted-foreground">{category.productCount} منتجات/خدمات</p>
                       </div>
                       <div className="flex gap-2">
+                        {/* Add client components or server actions for these later */}
                         <Button variant="outline" size="sm">تعديل</Button>
                         <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4"/></Button>
                       </div>
@@ -54,32 +55,8 @@ export default function AdminCategoriesPage() {
         </div>
 
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <PlusCircle className="mr-2 h-5 w-5 text-accent-pink" /> إضافة فئة جديدة
-              </CardTitle>
-            </CardHeader>
-            <form onSubmit={(e) => e.preventDefault()}>
-                <CardContent className="space-y-4">
-                <div>
-                    <Label htmlFor="categoryName">اسم الفئة</Label>
-                    <Input id="categoryName" placeholder="مثال: مشغولات يدوية فنية" />
-                </div>
-                <div>
-                    <Label htmlFor="categorySlug">المعرف (صديق لمحركات البحث)</Label>
-                    <Input id="categorySlug" placeholder="مثال: مشغولات-يدوية-فنية" />
-                </div>
-                <div>
-                    <Label htmlFor="categoryDescription">الوصف (اختياري)</Label>
-                    <Input id="categoryDescription" placeholder="وصف موجز للفئة" />
-                </div>
-                </CardContent>
-                <CardFooter>
-                <Button type="submit" className="w-full">إضافة الفئة</Button>
-                </CardFooter>
-            </form>
-          </Card>
+          {/* Use the client component for the form */}
+          <CategoryForm />
         </div>
       </div>
     </div>
