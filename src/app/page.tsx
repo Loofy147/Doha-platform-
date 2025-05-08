@@ -1,4 +1,4 @@
-// src/app/dashboard/page.tsx
+// src/app/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -34,7 +34,6 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -75,10 +74,35 @@ export default function SellerDashboardPage() {
   }, []);
   
   const dashboardStats = [
-    { title: "إجمالي الإيرادات", value: "125,800 دج", icon: <DollarSign className="text-green-500" />, trend: "+15% هذا الشهر", bgColor: "bg-green-500/10", borderColor: "border-green-500" },
-    { title: "الطلبات الجديدة", value: "12", icon: <ShoppingBag className="text-blue-500" />, trend: "+3 اليوم", bgColor: "bg-blue-500/10", borderColor: "border-blue-500"},
-    { title: "المنتجات المعروضة", value: "42", icon: <Package className="text-purple-500" />, trend: "5 غير نشطة", bgColor: "bg-purple-500/10", borderColor: "border-purple-500" },
-    { title: "تقييمات العملاء", value: "4.8 نجوم", icon: <Star className="text-yellow-500" />, trend: " (85 تقييم)", bgColor: "bg-yellow-500/10", borderColor: "border-yellow-500" },
+    { 
+      title: "إجمالي الإيرادات", 
+      value: "125,800 دج", 
+      icon: <DollarSign className="text-green-500" />, 
+      href: "/admin/reports/revenue",
+      trend: "+15% هذا الشهر",
+      color: "green"
+    },
+    { 
+      title: "الطلبات الجديدة", 
+      value: "12", 
+      icon: <ShoppingBag className="text-blue-500" />, 
+      href: "/admin/orders", 
+      color: "blue"
+    },
+    { 
+      title: "المنتجات المعروضة", 
+      value: "42", 
+      icon: <Package className="text-purple-500" />, 
+      href: "/admin/products",
+      color: "purple"
+    },
+    { 
+      title: "تقييمات العملاء", 
+      value: "4.8 نجوم", 
+      icon: <Star className="text-yellow-500" />, 
+      href: "/admin/customers",
+      color: "yellow"
+    },
   ];
 
   const quickActions = [
@@ -90,91 +114,136 @@ export default function SellerDashboardPage() {
     { label: "سياسات المتجر", icon: FileText, href: "/dashboard/settings#policies", color: "text-teal-500" },
   ];
 
-  if (!isClient) {
-    return (
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-         <Skeleton className="h-10 w-1/3 mb-2" />
-        <Skeleton className="h-6 w-1/2 mb-8" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Skeleton className="lg:col-span-2 h-80 rounded-lg" />
-          <Skeleton className="h-80 rounded-lg" />
-        </div>
-      </div>
-    );
-  }
+    if (!isClient) {
+        return (
+            <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+                <div className="flex items-center justify-between space-y-2">
+                    <h2 className="text-3xl font-bold tracking-tight text-primary">لوحة تحكم المسؤول</h2>
+                </div>
+                <Skeleton className="w-full h-32 rounded-lg" />
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
+                </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Skeleton className="h-64 rounded-lg" />
+                    <Skeleton className="h-64 rounded-lg" />
+                </div>
+            </div>
+        );
+    }
 
   return (
-    <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 bg-background">
-      <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+    <div className="flex-1 space-y-6 p-4 md:p-8 pt-6 bg-background">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-2 md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            لوحة تحكم متجركِ الإبداعي
-          </h1>
-          <p className="mt-1 text-lg text-foreground/80">
-            أهلاً بكِ مجددًا، {sellerName}! هنا تديرين كل ما يخص متجركِ على لمسة ضحى.
-          </p>
+            <h2 className="text-3xl font-bold tracking-tight text-primary">لوحة تحكم لمسة ضحى</h2>
+            <p className="text-muted-foreground">نظرة عامة على نشاط منصة لمسة ضحى.</p>
         </div>
-         <Button asChild className="mt-4 sm:mt-0 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground shadow-md">
-            <Link href="/dashboard/products/new" className="flex items-center gap-2">
-                <PlusCircle size={20} /> أضيفي لمسة إبداعية جديدة
-            </Link>
-        </Button>
-      </header>
+        <div className="flex items-center space-x-2">
+            <Button variant="outline" asChild>
+                <Link href="/admin/reports">
+                    <Download className="mr-2 h-4 w-4" />
+                    تحميل التقرير
+                </Link>
+            </Button>
+        </div>
+      </div>
 
-      {/* Seller Profile Snippet */}
-      <Card className="mb-8 shadow-lg border-l-4 border-accent-pink bg-card">
-        <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-6">
-          <Avatar className="h-20 w-20 border-2 border-primary">
-            <AvatarImage src={mockSellerProfile.avatarSrc} alt={sellerName} data-ai-hint={mockSellerProfile.dataAiHint} />
-            <AvatarFallback>{sellerName.substring(0, 1)}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 text-center sm:text-right">
-            <h2 className="text-xl font-semibold text-primary">{mockSellerProfile.storeName}</h2>
-            <p className="text-sm text-muted-foreground">مبدعة في لمسة ضحى منذ: {mockSellerProfile.sellerSince}</p>
-            <div className="mt-2">
-              <div className="flex justify-between items-center mb-1">
-                 <span className="text-xs font-medium text-muted-foreground">إكتمال ملف المتجر</span>
-                 <span className="text-xs font-semibold text-accent-pink">{mockSellerProfile.profileCompletion}%</span>
-              </div>
-              <Progress value={mockSellerProfile.profileCompletion} aria-label="إكتمال ملف المتجر" className="h-2" />
-            </div>
-          </div>
-          <Button variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10">
-            <Link href={`/store/${mockSellerProfile.storeSlug}`} target="_blank" rel="noopener noreferrer">
-                <Eye size={18} className="ml-2"/> عرض المتجر العام 
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
-
-
-      {/* Stats Cards */}
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {dashboardStats.map((card) => (
-          <Card key={card.title} className={`shadow-md hover:shadow-lg transition-shadow border-l-4 ${card.borderColor} ${card.bgColor}`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {card.title}
-              </CardTitle>
-              {card.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">{card.value}</div>
-              {card.trend && <p className="text-xs text-muted-foreground">{card.trend}</p>}
-            </CardContent>
-             <CardFooter>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {overviewCards.map((card) => (
+            <Card key={card.title} className={`shadow-lg border-l-4 border-${card.color}-500`}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {card.title}
+                </CardTitle>
+                {card.icon}
+                </CardHeader>
+                <CardContent>
+                <div className="text-2xl font-bold text-primary">{card.value}</div>
+                {card.trend && <p className="text-xs text-muted-foreground">{card.trend}</p>}
+                </CardContent>
+                <CardFooter>
                     <Button variant="ghost" size="sm" asChild className="text-xs text-primary hover:underline p-0 h-auto">
-                        <Link href={card.href}>عرض التفاصيل</Link>
+                        {card.href ? (
+                            <Link href={card.href}>عرض التفاصيل</Link>
+                        ) : (
+                            <span>عرض التفاصيل</span>
+                        )}
                     </Button>
                 </CardFooter>
-          </Card>
-        ))}
-      </section>
+            </Card>
+            ))}
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="lg:col-span-2 shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-primary flex items-center"><LineChart className="mr-2 text-accent-purple" /> اتجاهات المبيعات</CardTitle>
+                    <CardDescription>أداء المبيعات لآخر 6 أشهر.</CardDescription>
+                </CardHeader>
+                <CardContent className="pl-2">
+                    <ResponsiveContainer width="100%" height={300}>
+                        <AreaChart data={salesData}>
+                            <defs>
+                                <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
+                            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value/1000} ألف دج`} />
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                            <Tooltip contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)"}} cursor={{fill: "hsla(var(--primary)/0.1)"}}/>
+                            <Area type="monotone" dataKey="sales" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </CardContent>
+            </Card>
+
+            <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-primary flex items-center"><Activity className="mr-2 text-accent-pink"/> النشاطات الأخيرة</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ScrollArea className="h-[300px]">
+                    <div className="space-y-4">
+                        {recentActivities.map((activity) => (
+                        <div key={activity.id} className="flex items-start space-x-3 p-2 hover:bg-muted/50 rounded-md">
+                            <Avatar className="h-8 w-8 border">
+                                <AvatarImage src={activity.avatarSrc} alt={activity.user} data-ai-hint={activity.dataAiHint} />
+                                <AvatarFallback>{activity.user.substring(0,1)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                            <p className="text-sm font-medium text-foreground leading-none">{activity.description}</p>
+                            <p className="text-xs text-muted-foreground">{activity.time}</p>
+                            </div>
+                        </div>
+                        ))}
+                    </div>
+                    </ScrollArea>
+                </CardContent>
+                 <CardFooter className="border-t pt-4">
+                    <Button variant="outline" size="sm" className="w-full">عرض كل النشاطات</Button>
+                </CardFooter>
+            </Card>
+        </div>
+
+        <Card className="shadow-lg">
+            <CardHeader>
+                <CardTitle className="text-primary flex items-center"><Zap className="mr-2 text-accent-yellow"/> إجراءات سريعة</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {quickActions.map((action) => (
+                    <Button key={action.label} variant="outline" asChild className="flex flex-col h-24 items-center justify-center p-4 text-center hover:bg-primary/5 border-dashed border-primary/30 hover:border-primary">
+                        <Link href={action.href}>
+                            {action.icon}
+                            <span className="mt-1 text-xs sm:text-sm">{action.label}</span>
+                        </Link>
+                    </Button>
+                ))}
+            </CardContent>
+        </Card>
 
     </div>
   );
 }
-
