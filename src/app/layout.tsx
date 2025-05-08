@@ -1,10 +1,11 @@
-import type { Metadata, Viewport } from 'next';
+import type { Metadata, Viewport } from 'next/server';
+import React from 'react';
 import { Poppins, Merriweather, Noto_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-// Removed unused Vercel imports: SpeedInsights and Analytics
+// Removed Vercel Analytics and SpeedInsights imports as they were causing errors and not installed/configured.
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -14,7 +15,7 @@ const poppins = Poppins({
 });
 
 const merriweather = Merriweather({
-  subsets: ['latin', 'latin-ext'], // Added latin-ext for broader character support if needed
+  subsets: ['latin', 'latin-ext'],
   display: 'swap',
   variable: '--font-merriweather',
   weight: ['300', '400', '700', '900'],
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
   description: 'منصة لمسة ضحى: سوقكِ الشامل لاكتشاف، بيع، أو تأجير المنتجات والخدمات من رائدات أعمال موهوبات. انضمي إلى مجتمعنا الداعم اليوم!',
   keywords: ['لمسة ضحى', 'رائدات أعمال', 'تجارة إلكترونية', 'بيع عبر الإنترنت', 'تأجير منتجات', 'سوق خدمات', 'منتجات يدوية', 'المرأة في الأعمال', 'تمكين المرأة', 'الجزائر'],
   authors: [{ name: 'فريق لمسة ضحى' }],
-  manifest: '/manifest.json', // Added for PWA support
+  manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
@@ -60,19 +61,18 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'لمسة ضحى - إبداع يلامس حياتكِ',
     description: 'اكتشفي إبداعات نسائية فريدة وادعمي رائدات الأعمال.',
-    // creator: '@YourTwitterHandle', // Add your Twitter handle
     images: ['https://lamsadoha.vercel.app/twitter-image.png'], // Replace with actual Twitter image URL
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: [ // Added light/dark theme colors
-    { media: '(prefers-color-scheme: light)', color: '#EAA4C6' }, // Primary Pink
-    { media: '(prefers-color-scheme: dark)', color: '#3A1E35' }, // Dark Purple-Pink from dark theme background/card
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#EAA4C6' },
+    { media: '(prefers-color-scheme: dark)', color: '#3A1E35' },
   ],
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1, // Keep maximumScale=1 to prevent zooming, common for web apps
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -85,13 +85,14 @@ export default function RootLayout({
       <body className="font-arabic antialiased bg-background text-foreground">
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <main className="flex-grow">{children}</main>
+          {/* Using React.Suspense for potentially lazy-loaded components */}
+          <React.Suspense fallback={<div className="flex-grow flex items-center justify-center"><p>جاري التحميل...</p></div>}>
+            <main className="flex-grow">{children}</main>
+          </React.Suspense>
           <Footer />
         </div>
         <Toaster />
-        {/* Add Vercel Analytics and Speed Insights here if/when installed */}
-        {/* <Analytics /> */}
-        {/* <SpeedInsights /> */}
+        {/* Vercel Analytics and Speed Insights can be re-added here if installed */}
       </body>
     </html>
   );

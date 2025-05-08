@@ -8,15 +8,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Package, PlusCircle, Search, Filter, ArrowUpDown, LayoutGrid, List } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/lib/hooks/use-toast'; // Corrected path
 import { Skeleton } from '@/components/ui/skeleton';
-import { allSellerProductsList, getDetailedSellerProductById, DetailedSellerProduct, SellerProductStatus, ProductType } from '@/lib/data/mock-seller-data'; // Import from updated location
-import { DashboardProductCard } from '@/components/dashboard/dashboard-product-card'; // Import the new card component
+import { allSellerProductsList, getDetailedSellerProductById, DetailedSellerProduct, SellerProductStatus, ProductType, deleteSellerProduct, updateSellerProduct } from '@/lib/data/mock-seller-data';
+import { DashboardProductCard } from '@/components/dashboard/dashboard-product-card';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils'; // Import cn utility
 
 const productCategories = ['الكل', ...new Set(allSellerProductsList.map(p => p.category))];
-const productStatuses: (SellerProductStatus | 'الكل')[] = ['الكل', 'نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'];
-const productTypes: (ProductType | 'الكل')[] = ['الكل', 'بيع', 'إيجار', 'خدمة'];
+const productStatuses = ['الكل', 'نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'];
+const productTypes = ['الكل', 'بيع', 'إيجار', 'خدمة'];
 type SortOption = 'dateAddedDesc' | 'dateAddedAsc' | 'nameAsc' | 'nameDesc' | 'priceAsc' | 'priceDesc' | 'stockAsc' | 'stockDesc';
 type ViewMode = 'grid' | 'list';
 
@@ -24,23 +25,24 @@ type ViewMode = 'grid' | 'list';
 export default function SellerProductsPage() {
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
-  const [products, setProducts] = useState<DetailedSellerProduct[]>(allSellerProductsList);
+  // Initialize state with data from mock-seller-data
+  const [products, setProducts = useState(allSellerProductsList);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
-  const [selectedStatus, setSelectedStatus] = useState<SellerProductStatus | 'الكل'>('الكل');
-  const [selectedType, setSelectedType] = useState<ProductType | 'الكل'>('الكل');
-  const [sortBy, setSortBy] = useState<SortOption>('dateAddedDesc');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [selectedStatus, setSelectedStatus] = useState('الكل');
+  const [selectedType, setSelectedType] = useState('الكل');
+  const [sortBy, setSortBy] = useState('dateAddedDesc');
+  const [viewMode, setViewMode] = useState('grid');
 
   useEffect(() => {
     setIsClient(true);
-    // Initial load is done via useState initialization
+    // No need to fetch initial data again, it's set in useState
   }, []);
 
   const filteredAndSortedProducts = useMemo(() => {
-    let tempProducts = [...products]; // Create a mutable copy
+    let tempProducts = [...products]; // Use the state variable 'products'
 
-    // Filtering
+    // Filtering logic (remains the same)
     if (selectedCategory !== 'الكل') {
       tempProducts = tempProducts.filter(p => p.category === selectedCategory);
     }
@@ -61,7 +63,7 @@ export default function SellerProductsPage() {
       );
     }
 
-    // Sorting
+    // Sorting logic (remains the same)
     tempProducts.sort((a, b) => {
       switch (sortBy) {
         case 'dateAddedAsc':
@@ -93,26 +95,51 @@ export default function SellerProductsPage() {
     return tempProducts;
   }, [products, searchTerm, selectedCategory, selectedStatus, selectedType, sortBy]);
 
-  const toggleProductStatus = (productId: string) => {
-    const updatedProducts = products.map(p =>
-        p.id === productId ? { ...p, status: p.status === 'نشط' ? 'غير نشط' : 'نشط' } : p
-    );
-    setProducts(updatedProducts);
-    // In a real app, update allSellerProductsList or call API here
-    const targetProduct = updatedProducts.find(p => p.id === productId);
-    toast({ title: `تم تحديث حالة "${targetProduct?.name}" إلى "${targetProduct?.status}"`, variant: "default" });
+  // Function to toggle product status using the imported update function
+  const toggleProductStatus = (productId) => {
+    const productToUpdate = products.find(p => p.id === productId);
+    if (!productToUpdate) return;
+
+    const newStatus = productToUpdate.status === 'نشط' ? 'غير نشط' : 'نشط';
+    const updatedProduct = { ...productToUpdate, status: newStatus };
+
+    // Update the product in the main data source (mock for now)
+    const success = updateSellerProduct(updatedProduct);
+
+    if (success) {
+      // Update the local state to reflect the change immediately
+      setProducts(prevProducts =>
+        prevProducts.map(p =>
+          p.id === productId ? updatedProduct : p
+        )
+      );
+      toast({ title: `تم تحديث حالة "${updatedProduct.name}" إلى "${newStatus}"`, variant: "default" });
+    } else {
+      toast({ title: "خطأ", description: "لم يتم العثور على المنتج لتحديث حالته.", variant: "destructive" });
+    }
   };
 
-  const deleteProduct = (productId: string) => {
+  // Function to delete product using the imported delete function
+  const deleteProductHandler = (productId) => {
     const productToDelete = products.find(p => p.id === productId);
-    const updatedProducts = products.filter(p => p.id !== productId);
-    setProducts(updatedProducts);
-     // In a real app, update allSellerProductsList or call API here
-    toast({ title: "تم حذف المنتج!", description: `"${productToDelete?.name}" تم حذفه من متجرك.`, variant: "destructive" });
+    if (!productToDelete) return;
+
+    // Delete the product from the main data source (mock for now)
+    const success = deleteSellerProduct(productId);
+
+    if (success) {
+      // Update the local state
+      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+      toast({ title: "تم حذف المنتج!", description: `"${productToDelete.name}" تم حذفه من متجرك.`, variant: "destructive" });
+    } else {
+      toast({ title: "خطأ", description: "لم يتم العثور على المنتج لحذفه.", variant: "destructive" });
+    }
   };
+
 
   if (!isClient) {
-    return (
+    // Skeleton loader (remains the same)
+     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
          <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <Skeleton className="h-10 w-2/5" />
@@ -124,16 +151,20 @@ export default function SellerProductsPage() {
              <Skeleton className="h-4 w-3/4" />
           </CardHeader>
           <CardContent>
-             <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
-                <Skeleton className="h-10 flex-grow" />
-                <Skeleton className="h-10 w-48" />
-                <Skeleton className="h-10 w-48" />
-                 <Skeleton className="h-10 w-48" />
+             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 items-center p-4 bg-muted/30 rounded-lg border">
+                <Skeleton className="h-10 sm:col-span-2 md:col-span-1 lg:col-span-2" />
+                <Skeleton className="h-10" />
+                <Skeleton className="h-10" />
+                <Skeleton className="h-10" />
+                <div className="flex gap-2 justify-end lg:col-start-5">
+                    <Skeleton className="h-8 w-8" />
+                    <Skeleton className="h-8 w-8" />
+                </div>
              </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {Array(8).fill(0).map((_, i) => (
                    <Card key={i} className="overflow-hidden">
-                     <Skeleton className="aspect-video w-full"/>
+                     <Skeleton className="aspect-square w-full"/>
                      <CardContent className="p-4 space-y-2">
                         <Skeleton className="h-5 w-3/4"/>
                         <Skeleton className="h-4 w-full"/>
@@ -146,6 +177,9 @@ export default function SellerProductsPage() {
                 ))}
             </div>
           </CardContent>
+           <CardFooter className="border-t pt-4">
+                <Skeleton className="h-4 w-1/4"/>
+            </CardFooter>
         </Card>
       </div>
     );
@@ -203,7 +237,7 @@ export default function SellerProductsPage() {
             </div>
              <div className="flex items-center gap-1">
               <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <Select value={selectedStatus} onValueChange={(value) => setSelectedStatus(value as SellerProductStatus | 'الكل')}>
+              <Select value={selectedStatus} onValueChange={(value) => setSelectedStatus(value)}>
                 <SelectTrigger className="w-full bg-background text-xs">
                   <SelectValue placeholder="الحالة" />
                 </SelectTrigger>
@@ -216,7 +250,7 @@ export default function SellerProductsPage() {
             </div>
              <div className="flex items-center gap-1">
               <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <Select value={selectedType} onValueChange={(value) => setSelectedType(value as ProductType | 'الكل')}>
+              <Select value={selectedType} onValueChange={(value) => setSelectedType(value)}>
                 <SelectTrigger className="w-full bg-background text-xs">
                   <SelectValue placeholder="النوع" />
                 </SelectTrigger>
@@ -230,7 +264,7 @@ export default function SellerProductsPage() {
             {/* Add Sort Select */}
             <div className="flex items-center gap-1">
                  <ArrowUpDown className="h-4 w-4 text-muted-foreground flex-shrink-0"/>
-                 <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                 <Select value={sortBy} onValueChange={(value) => setSortBy(value)}>
                      <SelectTrigger className="w-full bg-background text-xs"><SelectValue placeholder="ترتيب حسب"/></SelectTrigger>
                      <SelectContent>
                          <SelectItem value="dateAddedDesc" className="text-xs">الأحدث أولاً</SelectItem>
@@ -268,7 +302,7 @@ export default function SellerProductsPage() {
                   transition={{ duration: 0.3 }}
                   className={cn(
                       "grid gap-6",
-                      viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
+                      viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1" // Apply dynamic grid class
                   )}
                 >
                 {filteredAndSortedProducts.map((product, index) => (
@@ -280,22 +314,13 @@ export default function SellerProductsPage() {
                         transition={{ duration: 0.2, delay: index * 0.03 }}
                         layout // Animate layout changes
                     >
-                        {viewMode === 'grid' ? (
-                             <DashboardProductCard
-                                product={product}
-                                onToggleStatus={toggleProductStatus}
-                                onDelete={deleteProduct}
-                            />
-                        ) : (
-                             // Add a List Item component variant if needed for list view
-                             // For now, using the card but maybe in a different layout later
-                            <DashboardProductCard
-                                product={product}
-                                onToggleStatus={toggleProductStatus}
-                                onDelete={deleteProduct}
-                                className="flex flex-row items-center" // Example: Modify layout for list
-                            />
-                        )}
+                         <DashboardProductCard
+                            product={product}
+                            onToggleStatus={toggleProductStatus}
+                            onDelete={deleteProductHandler} // Use the new handler
+                            // Pass className conditionally for list view if a different style is desired
+                            // className={viewMode === 'list' ? 'flex flex-row items-center' : ''}
+                        />
                      </motion.div>
                 ))}
               </motion.div>

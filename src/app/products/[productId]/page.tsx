@@ -15,7 +15,7 @@ import {
   Star,
   MessageSquare,
   ChevronLeft,
-  TagIcon as LucideTagIcon,
+  LucideProps, // Import LucideProps
   Heart,
   Share2,
   ShieldCheck,
@@ -23,7 +23,7 @@ import {
   Clock,
   Info,
   AlertCircle,
-  Store,
+  Store as StoreIcon, // Renamed Store icon
   DollarSign,
   CalendarDays,
   Handshake,
@@ -47,6 +47,7 @@ import StoreSection from '@/components/store/store-section';
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import { motion, AnimatePresence } from 'framer-motion';
+import { NotFound } from '@/components/layout/not-found'; // Import a dedicated NotFound component
 
 type Item = Product | Service;
 
@@ -61,58 +62,108 @@ const staggerContainer = {
   animate: { transition: { staggerChildren: 0.1 } }
 };
 
+// Separate Loading component
+const ProductDetailLoadingSkeleton = () => (
+  <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <Skeleton className="h-8 w-32 mb-6 rounded-md" />
+    <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+      <div className="space-y-4">
+          <Skeleton className="aspect-square md:h-[500px] rounded-xl" />
+          <div className="grid grid-cols-5 gap-2">
+            {Array.from({length: 5}).map((_, i) => <Skeleton key={i} className="aspect-square rounded-md"/>)}
+          </div>
+      </div>
+      <div className="space-y-6">
+        <Skeleton className="h-6 w-1/3 rounded" />
+        <Skeleton className="h-12 w-4/5 rounded" />
+        <Skeleton className="h-6 w-1/2 rounded" />
+        <Skeleton className="h-5 w-1/4 rounded" />
+        <div className="flex gap-2">
+          <Skeleton className="h-8 w-20 rounded-full" />
+          <Skeleton className="h-8 w-20 rounded-full" />
+        </div>
+        <Skeleton className="h-24 w-full rounded-lg" />
+        <Skeleton className="h-12 w-1/3 rounded-lg" />
+        <Skeleton className="h-12 w-full rounded-lg" />
+        <Skeleton className="h-10 w-1/2 rounded-md" />
+        <Skeleton className="h-10 w-1/2 rounded-md" />
+      </div>
+    </div>
+  </div>
+);
+
 export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
   const productId = params.productId as string;
 
   const [item, setItem] = useState<Item | null>(null);
-  const [storeData, setStoreData] = useState<StoreData | null>(null);
+  const [storeData, setStoreData = useState<StoreData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null); // Added error state
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { toast } = useToast();
-  const [isAddingToCart, setIsAddingToCart] = useState(false); // Loading state for cart button
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
+    let isMounted = true; // Flag to prevent state updates on unmounted component
     if (productId) {
       setIsLoading(true);
-      // Simulate API call
-      const timer = setTimeout(() => {
-        let foundItem: Item | undefined = getProductById(productId);
-        if (!foundItem) {
-          foundItem = getServiceById(productId);
-        }
+      setError(null); // Reset error on new fetch
+      const timer = setTimeout(async () => {
+        try {
+          // Simulate API call (replace with actual fetch)
+          // Use Promise.all for potentially concurrent fetches
+          const [fetchedItemData, fetchedStoreData] = await Promise.all([
+            getProductById(productId) || getServiceById(productId),
+            getStoreDataById(productId.split('-')[0]) // Assuming store ID is part of product ID prefix
+          ]);
 
-        if (foundItem) {
-          setItem(foundItem);
-          const relatedStore = getStoreDataById(foundItem.sellerId);
-          setStoreData(relatedStore || null);
-        } else {
+          if (!isMounted) return; // Exit if component unmounted
+
+          if (fetchedItemData) {
+            setItem(fetchedItemData);
+            const relatedStore = fetchedStoreData || getStoreDataById(fetchedItemData.sellerId); // Fallback to item's sellerId if needed
+            if (relatedStore) {
+              setStoreData(relatedStore);
+            } else {
+              setError(`تعذر العثور على المتجر المرتبط بهذا العنصر (ID: ${fetchedItemData.sellerId}).`);
+              setStoreData(null);
+            }
+          } else {
+            setError(`تعذر العثور على العنصر المطلوب (ID: ${productId}).`);
+            setItem(null);
+            setStoreData(null);
+          }
+        } catch (err) {
+          if (!isMounted) return;
+          console.error("Error fetching product details:", err);
+          setError("حدث خطأ أثناء جلب تفاصيل العنصر. يرجى المحاولة مرة أخرى.");
           setItem(null);
           setStoreData(null);
-          // Optional: Show a toast message if item not found immediately
-          // toast({ title: "خطأ", description: `العنصر المطلوب غير موجود.`, variant: "destructive" });
+        } finally {
+           if (isMounted) setIsLoading(false);
         }
-        setIsLoading(false);
       }, 700); // Simulate network delay
 
-      // Cleanup function to clear timeout if component unmounts
-      return () => clearTimeout(timer);
+      // Cleanup function
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
     } else {
-      setIsLoading(false); // Handle cases where productId might be missing
+      setError("معرف العنصر غير متوفر.");
+      setIsLoading(false);
     }
-  }, [productId, toast]); // Added toast to dependency array
+  }, [productId]); // Removed toast dependency
 
   const storeAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
 
   const handlePrimaryAction = async (selectedItem: Item) => {
-    if (selectedItem.type === 'بيع') {
-        setIsAddingToCart(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setIsAddingToCart(false);
-    }
+    setIsAddingToCart(true);
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
+    setIsAddingToCart(false);
 
     const actionText = selectedItem.type === 'بيع' ? 'أضيف للسلة' : selectedItem.type === 'إيجار' ? 'احجزي الآن' : 'استفسري/احجزي الخدمة';
     toast({
@@ -122,7 +173,7 @@ export default function ProductDetailPage() {
     });
   };
 
-   const handleQuantityChange = (change: number) => {
+  const handleQuantityChange = (change: number) => {
     setQuantity(prev => Math.max(1, prev + change));
   };
 
@@ -130,50 +181,30 @@ export default function ProductDetailPage() {
     setSelectedImageIndex(index);
   };
 
+  // --- Render Logic ---
+
   if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <Skeleton className="h-8 w-32 mb-6 rounded-md" />
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="space-y-4">
-             <Skeleton className="aspect-square md:h-[500px] rounded-xl" />
-             <div className="grid grid-cols-5 gap-2">
-                {Array.from({length: 5}).map((_, i) => <Skeleton key={i} className="aspect-square rounded-md"/>)}
-             </div>
-          </div>
-          <div className="space-y-6">
-            <Skeleton className="h-6 w-1/3 rounded" />
-            <Skeleton className="h-12 w-4/5 rounded" />
-            <Skeleton className="h-6 w-1/2 rounded" />
-            <Skeleton className="h-5 w-1/4 rounded" />
-            <div className="flex gap-2">
-              <Skeleton className="h-8 w-20 rounded-full" />
-              <Skeleton className="h-8 w-20 rounded-full" />
-            </div>
-            <Skeleton className="h-24 w-full rounded-lg" />
-            <Skeleton className="h-12 w-1/3 rounded-lg" />
-            <Skeleton className="h-12 w-full rounded-lg" />
-            <Skeleton className="h-10 w-1/2 rounded-md" />
-            <Skeleton className="h-10 w-1/2 rounded-md" />
-          </div>
-        </div>
-      </div>
-    );
+    return <ProductDetailLoadingSkeleton />;
   }
 
-  if (!item || !storeData) {
-    return (
+  if (error) {
+     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
-        <AlertCircle className="w-16 h-16 text-destructive mb-4 animate-pulse" />
-        <h1 className="text-3xl font-bold text-destructive mb-2">لم يتم العثور على العنصر</h1>
-        <p className="text-lg text-muted-foreground mb-6">
-          عذرًا، العنصر الذي تبحثين عنه أو متجره غير متوفر حاليًا أو قد تم حذفه.
+        <AlertCircle className="w-16 h-16 text-destructive mb-4" />
+        <h1 className="text-3xl font-bold text-destructive mb-2">خطأ في تحميل العنصر</h1>
+        <p className="text-lg text-muted-foreground mb-6 max-w-md">
+          {error}
         </p>
         <Button variant="outline" onClick={() => router.push('/products')} className="text-lg px-6 py-3 border-primary text-primary hover:bg-primary/10">
           <ChevronLeft className="w-5 h-5 ml-2" /> العودة لصفحة المنتجات
         </Button>
       </div>
     );
+  }
+
+  if (!item || !storeData) {
+    // Use a more specific Not Found component if available
+    return <NotFound title="العنصر أو المتجر غير موجود" message="عذرًا، العنصر أو المتجر الذي تبحثين عنه غير متوفر حاليًا." />;
   }
 
   const itemImages = (item as Product).images || [(item as Product).imageSrc || (item as Service).imageSrc || 'https://picsum.photos/800/600?grayscale'];
@@ -186,6 +217,9 @@ export default function ProductDetailPage() {
     ? item.rawPrice.toLocaleString() + ' دج'
     : null;
 
+  // Define a specific icon type based on LucideProps
+  const LucideTagIcon = () => null;
+  const TagIcon = LucideTagIcon as React.ElementType<LucideProps>;
 
   return (
     <motion.div
@@ -202,6 +236,7 @@ export default function ProductDetailPage() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
+            {/* Image Carousel */}
             <motion.div className="space-y-4" variants={fadeInUp}>
                  <div className="relative shadow-xl rounded-xl overflow-hidden group border border-border/50">
                     <AnimatePresence initial={false} mode="wait">
@@ -268,6 +303,7 @@ export default function ProductDetailPage() {
                 )}
             </motion.div>
 
+            {/* Item Details */}
             <motion.div className="space-y-6" variants={staggerContainer}>
                 <motion.div variants={fadeInUp}>
                     <Card className="shadow-xl border-primary/10 overflow-hidden">
@@ -328,14 +364,21 @@ export default function ProductDetailPage() {
                                 </motion.div>
                             )}
 
+                            {/* Corrected Tag rendering */}
                             {(item as Product | Service).tags && (item as Product | Service).tags!.length > 0 && (
                                 <motion.div variants={fadeInUp} className="mt-3">
                                     <p className="text-sm font-medium mb-1.5" style={{color: storeAccentColor}}>كلمات مفتاحية:</p>
                                     <div className="flex flex-wrap gap-1.5">
-                                    {(item as Product | Service).tags!.map(tag => <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5">{tag}</Badge>)}
+                                    {(item as Product | Service).tags!.map(tag =>
+                                        <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 flex items-center gap-1">
+                                            {/* <TagIcon size={12} /> */} {/* Render the Lucide Tag icon here if needed */}
+                                            {tag}
+                                        </Badge>
+                                    )}
                                     </div>
                                 </motion.div>
                             )}
+
 
                             <Separator className="my-5"/>
 
@@ -397,7 +440,7 @@ export default function ProductDetailPage() {
                     <Card className="shadow-md border-secondary/50">
                         <CardHeader>
                             <CardTitle className="text-lg flex items-center gap-2" style={{color: storeAccentColor}}>
-                            <Store size={20}/> معلومات المتجر والشحن
+                            <StoreIcon size={20}/> معلومات المتجر والشحن
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3 text-sm text-foreground/80">
@@ -428,9 +471,11 @@ export default function ProductDetailPage() {
             </motion.div>
         </div>
 
+        {/* Related Items Section */}
         <motion.div variants={fadeInUp}>
             <StoreSection id="related-items" title="قد يعجبك أيضاً من نفس المتجر" icon={Sparkles} accentColor={storeAccentColor} className="mt-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Filter and display related products/services */}
                 {storeData.products.filter(p => p.id !== item.id && p.category === item.category).slice(0, 4).map(relatedItem => (
                     <StoreProductCard key={relatedItem.id} product={relatedItem as Product} accentColor={storeAccentColor} onViewDetails={() => router.push(`/products/${relatedItem.id}`)} />
                 ))}
@@ -438,6 +483,7 @@ export default function ProductDetailPage() {
                     <StoreServiceCard key={relatedItem.id} service={relatedItem as Service} accentColor={storeAccentColor} onViewDetails={() => router.push(`/products/${relatedItem.id}`)} />
                 ))}
                 </div>
+                {/* Message if no related items */}
                 {(storeData.products.filter(p => p.id !== item.id && p.category === item.category).length === 0 && (!storeData.services || storeData.services.filter(s => s.id !== item.id && s.category === item.category).length === 0)) && (
                     <p className="text-muted-foreground text-center py-4">لا توجد عناصر مشابهة من هذا المتجر حالياً.</p>
                 )}
