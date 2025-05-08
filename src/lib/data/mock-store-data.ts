@@ -1039,7 +1039,9 @@ const lamsaIbdaaServices: DetailedSellerProduct[] = lamsaIbdaaStore && lamsaIbda
 
 
 // Combine and export for the seller dashboard
-export const allSellerProductsList: DetailedSellerProduct[] = [
+// Use let instead of const to allow modification by deleteSellerProduct
+// @ts-ignore
+let allSellerProductsList: DetailedSellerProduct[] = [
     ...lamsaIbdaaProducts,
     ...lamsaIbdaaServices,
 ];
@@ -1152,4 +1154,3 @@ export const deleteSellerProduct = (productId: string): boolean => {
     });
     return allSellerProductsList.length < initialLength;
 };
-
