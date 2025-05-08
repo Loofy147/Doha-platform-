@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata } from 'next/server';
 import { SellerDashboardHeader } from '@/components/dashboard/seller-dashboard-header';
 import { SellerDashboardSidebar } from '@/components/dashboard/seller-dashboard-sidebar';
 
