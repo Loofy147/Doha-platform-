@@ -8,11 +8,6 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, type LucideProps, Rocket, ShoppingBag } from 'lucide-react';
 import { motion, type MotionProps } from 'framer-motion';
 
-const iconMap: { [key: string]: React.ElementType<LucideProps> } = {
-  Rocket,
-  ShoppingBag,
-};
-
 interface CallToActionBannerProps {
   title: string;
   description: string;
@@ -20,7 +15,7 @@ interface CallToActionBannerProps {
   buttonLink: string;
   imageSrc: string;
   dataAiHint: string;
-  iconName?: keyof typeof iconMap;
+  icon?: React.ElementType<LucideProps>; // Accept icon component directly
   reverseLayout?: boolean;
   animationConfig?: MotionProps; // Allow custom animation config
 }
@@ -49,11 +44,10 @@ export function CallToActionBanner({
   buttonLink,
   imageSrc,
   dataAiHint,
-  iconName,
+  icon: IconComponent, // Use the passed component directly
   reverseLayout = false,
   animationConfig = defaultAnimation,
 }: CallToActionBannerProps) {
-  const IconComponent = iconName ? iconMap[iconName] : null;
 
   return (
     <motion.section

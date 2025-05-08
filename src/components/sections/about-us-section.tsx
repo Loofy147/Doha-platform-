@@ -15,10 +15,16 @@ const itemVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
 };
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2 } }
+};
+
+
 export function AboutUsSection() {
   return (
-    <motion.section 
-      id="about" 
+    <motion.section
+      id="about"
       className="py-16 lg:py-24 bg-secondary/20"
       initial="hidden"
       whileInView="visible"
@@ -37,11 +43,12 @@ export function AboutUsSection() {
             <p className="text-lg text-foreground/80 mb-6">
               رؤيتنا هي بناء مجتمع نسائي قوي ومتكاتف، يحقق الاستقلال المالي والتمكين الذاتي من خلال بيئة رقمية آمنة، ملهمة، ومصممة خصيصًا لتطلعات المرأة العصرية. نهدف إلى أن تكون "لمسة ضحى" الشرارة التي تشعل الإبداع وتحول الأحلام إلى واقع ملموس.
             </p>
-            <motion.div 
+            <motion.div
               className="space-y-4"
+              variants={containerVariants} // Apply stagger container variants here
               initial="hidden"
               whileInView="visible"
-              variants={{ visible: { transition: { staggerChildren: 0.2 }}}}
+              viewport={{ once: true, amount: 0.2 }} // Adjust viewport for stagger trigger
             >
               <motion.div className="flex items-start gap-3" variants={itemVariants}>
                 <Users size={24} className="text-accent-pink mt-1 flex-shrink-0" />
@@ -66,7 +73,7 @@ export function AboutUsSection() {
               </motion.div>
             </motion.div>
           </motion.div>
-          <motion.div 
+          <motion.div
             className="order-1 lg:order-2 rounded-lg overflow-hidden shadow-xl aspect-video"
             variants={sectionVariants}
             initial={{ opacity: 0, scale: 0.9 }}

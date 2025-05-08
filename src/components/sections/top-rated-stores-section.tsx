@@ -71,6 +71,11 @@ const cardVariants = {
   }),
 };
 
+const sectionVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
 export function TopRatedStoresSection() {
   return (
     <motion.section
@@ -79,7 +84,7 @@ export function TopRatedStoresSection() {
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.1 }}
+      variants={sectionVariants} // Apply container variants
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -101,9 +106,7 @@ export function TopRatedStoresSection() {
               key={store.id}
               custom={index + 1} // Stagger animation for cards
               variants={cardVariants}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.1 }}
+              // Removed initial/whileInView from individual cards, handled by parent
             >
             <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col border border-transparent hover:border-accent-yellow focus-within:border-accent-yellow focus-within:ring-2 focus-within:ring-accent-yellow/50 h-full">
               <div className="relative h-32 sm:h-40 overflow-hidden rounded-t-xl">
@@ -145,7 +148,7 @@ export function TopRatedStoresSection() {
           custom={mockTopRatedStores.length + 1} // Animate button after cards
          >
           <Button size="lg" variant="default" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
-            <Link href="/stores">
+            <Link href="/stores"> {/* Link to a potential future page listing all stores */}
               تصفحي كل المتاجر المبدعة <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>

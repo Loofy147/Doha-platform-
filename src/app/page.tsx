@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardTitle, CardFooter, CardHeader } from '@/components/ui/card';
-import { Sparkles, Eye, ChevronRight, Users, CalendarDays, ShoppingBag, Store, Edit3, Search, PenLine } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card'; // Removed unused imports
+import { Sparkles, Eye, ChevronLeft, Users, CalendarDays, ShoppingBag, Store, Edit3, Search, PenLine } from 'lucide-react'; // Added Search
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { HeroSection } from '@/components/sections/hero-section';
 import { AboutUsSection } from '@/components/sections/about-us-section';
@@ -18,13 +18,14 @@ import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { CallToActionBanner } from '@/components/sections/call-to-action-banner';
 import { motion } from 'framer-motion';
+import { Rocket } from 'lucide-react'; // Explicitly importing Rocket
 
 const categories = [
-  { name: 'أناقة وإكسسوارات', icon: ShoppingBag, href: '/products?category=fashion', dataAiHint: 'fashion accessories', color: 'text-accent-pink' },
-  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=sweets', dataAiHint: 'sweets treats', color: 'text-accent-yellow' },
-  { name: 'لمسات منزلية وديكور', icon: Store, href: '/products?category=home-decor', dataAiHint: 'home decor', color: 'text-accent-purple' },
-  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=rental', dataAiHint: 'rental items', color: 'text-green-500' },
-  { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=services', dataAiHint: 'professional services', color: 'text-blue-500' },
+  { name: 'أناقة وإكسسوارات', icon: ShoppingBag, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink' },
+  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow' },
+  { name: 'لمسات منزلية وديكور', icon: Store, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple' },
+  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500' }, // Updated category name
+  { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات احترافية', dataAiHint: 'professional services', color: 'text-blue-500' },
 ];
 
 const sectionVariants = {
@@ -58,11 +59,12 @@ export default function HomePage() {
         buttonLink="/sell-with-us"
         imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
         dataAiHint="women entrepreneurs working"
-        iconName="Rocket"
-        animationConfig={{
+        icon={Rocket} // Pass the component itself
+        animationConfig={{ // Consistent animation config
           initial: { opacity: 0, x: -50 },
           whileInView: { opacity: 1, x: 0 },
-          transition: { duration: 0.6, delay: 0.2 }
+          transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+          viewport: { once: true, amount: 0.3 }
         }}
       />
 
@@ -71,8 +73,8 @@ export default function HomePage() {
       <BestsellersSection />
       <TopRatedStoresSection />
 
-      <motion.section 
-        id="categories" 
+      <motion.section
+        id="categories"
         className="py-16 lg:py-24 bg-secondary/10"
         initial="hidden"
         whileInView="visible"
@@ -123,7 +125,7 @@ export default function HomePage() {
            <motion.div className="mt-12 text-center" variants={sectionVariants}>
             <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
               <Link href="/products">
-                عرض كل الفئات والمنتجات <ChevronRight className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
+                عرض كل الفئات والمنتجات <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
               </Link>
             </Button>
           </motion.div>
@@ -137,15 +139,16 @@ export default function HomePage() {
         buttonLink="/products"
         imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
         dataAiHint="happy woman shopping online"
-        iconName="ShoppingBag"
+        icon={ShoppingBag} // Pass the component itself
         reverseLayout
-         animationConfig={{
+         animationConfig={{ // Consistent animation config
           initial: { opacity: 0, x: 50 },
           whileInView: { opacity: 1, x: 0 },
-          transition: { duration: 0.6, delay: 0.2 }
+          transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+          viewport: { once: true, amount: 0.3 }
         }}
       />
-      
+
       <AboutUsSection />
       <TestimonialsSection />
       <ContactSection />

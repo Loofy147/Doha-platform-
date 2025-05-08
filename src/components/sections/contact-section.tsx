@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod'; // Corrected import
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
@@ -32,6 +32,12 @@ const formItemVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
 };
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 }}
+};
+
+
 export function ContactSection() {
   const { toast } = useToast();
   const {
@@ -40,7 +46,7 @@ export function ContactSection() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: zodResolver(contactFormSchema), // Corrected usage
   });
 
   const onSubmit: SubmitHandler<ContactFormValues> = async (data) => {
@@ -55,8 +61,8 @@ export function ContactSection() {
   };
 
   return (
-    <motion.section 
-      id="contact" 
+    <motion.section
+      id="contact"
       className="py-16 lg:py-24 bg-background"
       initial="hidden"
       whileInView="visible"
@@ -64,17 +70,25 @@ export function ContactSection() {
       variants={sectionVariants}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          variants={sectionVariants}
+        >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             تواصلي معنا
           </h2>
           <p className="mt-4 text-lg text-foreground/80">
             هل لديكِ أي أسئلة أو اقتراحات تخص منصة لمسة ضحى؟ نسعد دائمًا بسماع صوتكِ!
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          <motion.div variants={sectionVariants}>
+          <motion.div
+            variants={containerVariants} // Container for form items
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl text-primary flex items-center gap-2">

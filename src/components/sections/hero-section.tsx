@@ -12,13 +12,18 @@ const fadeInUp = {
   animate: { opacity: 1, y: 0 },
 };
 
+const containerVariants = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.2 }}
+};
+
 export function HeroSection() {
   return (
-    <motion.section 
+    <motion.section
       className="relative bg-gradient-to-br from-pink-100 via-purple-50 to-yellow-50 py-24 md:py-40 overflow-hidden"
+      variants={containerVariants}
       initial="initial"
       animate="animate"
-      transition={{ staggerChildren: 0.2 }}
     >
       <motion.div
         className="absolute inset-0 opacity-25"
@@ -41,7 +46,7 @@ export function HeroSection() {
         </motion.div>
         <motion.h1
           className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl drop-shadow-md"
-          variants={fadeInUp}  transition={{ delay: 0.4 }}
+          variants={fadeInUp} transition={{ delay: 0.4 }}
         >
           مرحباً بكِ في عالم <span className="text-accent-pink hover:text-accent-yellow transition-colors duration-300">لمسة ضحى</span>
         </motion.h1>

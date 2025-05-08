@@ -92,13 +92,13 @@ export function TestimonialsSection() {
           opts={{
             align: "start",
             loop: true,
-            direction: "rtl", 
+            direction: "rtl",
           }}
         >
           <CarouselContent>
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <motion.div 
+                <motion.div
                   className="p-1 h-full"
                   custom={index}
                   variants={cardVariants}
@@ -131,8 +131,8 @@ export function TestimonialsSection() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden sm:flex right-0 -translate-x-1/2 left-auto" /> 
-          <CarouselNext className="hidden sm:flex left-0 translate-x-1/2 right-auto" /> 
+          <CarouselPrevious className="hidden sm:flex right-0 -translate-x-1/2 left-auto" />
+          <CarouselNext className="hidden sm:flex left-0 translate-x-1/2 right-auto" />
         </Carousel>
       </div>
     </section>

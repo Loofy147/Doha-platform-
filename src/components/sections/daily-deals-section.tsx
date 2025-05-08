@@ -21,14 +21,14 @@ const mockDailyDeals = [
     dataAiHint: 'strawberry cake slice',
     originalPrice: '6,000 دج',
     dealPrice: '4,500 دج',
-    storeName: 'حلويات الأحلام',
+    storeName: 'مذاق البيت مع سارة', // Corrected store name
     storeSlug: 'mathaq-albayt',
   },
   {
     id: 'deal-daily-2',
     productId: 'lamsa-prod1', // Link to a relevant product or category page in store
     title: 'توصيل مجاني لطلبات الإكسسوارات اليوم!',
-    description: 'اطلبي أي قطعة إكسسوار من متجر "إبداعات نادية" واحصلي على توصيل مجاني داخل المدينة.',
+    description: 'اطلبي أي قطعة إكسسوار من متجر "لمسة إبداع نادية" واحصلي على توصيل مجاني داخل المدينة.', // Corrected store name
     imageSrc: 'https://picsum.photos/seed/dailyjewelrydeal/350/220',
     dataAiHint: 'handmade necklace earring',
     storeName: 'لمسة إبداع نادية',
@@ -37,12 +37,12 @@ const mockDailyDeals = [
   {
     id: 'deal-daily-3',
     productId: 'common-prod1', // Link to a relevant product
-    title: 'اشترِ قطعتين صابون يدوي واحصل على الثالثة مجاناً!',
-    description: 'عرض اليوم: دللي بشرتك مع صابوننا الطبيعي المصنوع يدوياً.',
-    imageSrc: 'https://picsum.photos/seed/dailysoapdeal/350/220',
-    dataAiHint: 'handmade soap bars',
-    storeName: 'لمسة الطبيعة (من لمسة إبداع)', // Example: If part of a larger store
-    storeSlug: 'lamsa-ibdaa', // Assuming a sub-category or specific product link
+    title: 'اشترِ قطعتين شمع معطر واحصل على الثالثة مجاناً!', // Updated product name
+    description: 'عرض اليوم: دللي حواسك مع شموع الصويا الطبيعية المصنوعة يدوياً.', // Updated description
+    imageSrc: 'https://picsum.photos/seed/dailycandlesdeal/350/220', // Updated image seed
+    dataAiHint: 'handmade scented candles',
+    storeName: 'لمسة إبداع نادية', // Corrected store name
+    storeSlug: 'lamsa-ibdaa', // Assuming candle is from this store
   },
 ];
 
@@ -53,6 +53,11 @@ const cardVariants = {
     y: 0,
     transition: { delay: i * 0.07, duration: 0.4, ease: "circOut" }
   })
+};
+
+const sectionVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { staggerChildren: 0.1 } }
 };
 
 export function DailyDealsSection() {
@@ -67,7 +72,7 @@ export function DailyDealsSection() {
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.1 }}
+      variants={sectionVariants} // Apply container variants
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -102,9 +107,7 @@ export function DailyDealsSection() {
                   className="p-1 h-full"
                   custom={index + 1} // Stagger animation for cards
                   variants={cardVariants}
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{ once: true, amount: 0.3 }}
+                  // Removed initial/whileInView from individual cards
                 >
                   <Card className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-pink/30 hover:border-accent-pink focus-within:border-accent-pink focus-within:ring-2 focus-within:ring-accent-pink/50">
                     <CardHeader className="p-0 relative">

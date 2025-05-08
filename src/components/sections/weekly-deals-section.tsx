@@ -55,6 +55,11 @@ const cardVariants = {
   })
 };
 
+const sectionVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
 export function WeeklyDealsSection() {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
@@ -67,7 +72,7 @@ export function WeeklyDealsSection() {
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.1 }}
+      variants={sectionVariants} // Apply container variants
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -102,9 +107,7 @@ export function WeeklyDealsSection() {
                   className="p-1 h-full"
                   custom={index + 1} // Stagger animation for cards
                   variants={cardVariants}
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{ once: true, amount: 0.3 }}
+                  // Removed initial/whileInView from individual cards
                 >
                   <Card className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full border-2 border-accent-purple/30 hover:border-accent-purple focus-within:border-accent-purple focus-within:ring-2 focus-within:ring-accent-purple/50">
                     <CardHeader className="p-0 relative">
