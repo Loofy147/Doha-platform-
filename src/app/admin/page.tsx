@@ -1,3 +1,4 @@
+// src/app/admin/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -133,9 +134,11 @@ export default function AdminDashboardPage() {
             <p className="text-muted-foreground">نظرة عامة على نشاط منصة لمسة ضحى.</p>
         </div>
         <div className="flex items-center space-x-2">
-            <Button variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                تحميل التقرير
+            <Button variant="outline" asChild>
+                <Link href="/admin/reports">
+                    <Download className="mr-2 h-4 w-4" />
+                    تحميل التقرير
+                </Link>
             </Button>
         </div>
       </div>
