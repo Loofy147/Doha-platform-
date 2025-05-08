@@ -35,14 +35,15 @@ import {
   Eye,
   MapPin,
   Loader2,
-  Percent
+  Percent,
+  Tag as TagIcon, // Added TagIcon
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from '@/lib/utils';
-import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ProductType as ItemType } from '@/lib/data/mock-store-data';
+import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ItemType as PublicItemType, type StoreType } from '@/lib/data/mock-store-data'; // Use PublicItemType alias
 import StoreSection from '@/components/store/store-section';
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
@@ -98,7 +99,7 @@ export default function ProductDetailPage() {
   const productId = params.productId as string;
 
   const [item, setItem] = useState<Item | null>(null);
-  const [storeData, setStoreData = useState<StoreData | null>(null);
+  const [storeData, setStoreData] = useState<StoreData | null>(null); // Fix: Changed = to ,
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Added error state
   const [quantity, setQuantity] = useState(1);
@@ -217,9 +218,6 @@ export default function ProductDetailPage() {
     ? item.rawPrice.toLocaleString() + ' دج'
     : null;
 
-  // Define a specific icon type based on LucideProps
-  const LucideTagIcon = () => null;
-  const TagIcon = LucideTagIcon as React.ElementType<LucideProps>;
 
   return (
     <motion.div
@@ -371,7 +369,7 @@ export default function ProductDetailPage() {
                                     <div className="flex flex-wrap gap-1.5">
                                     {(item as Product | Service).tags!.map(tag =>
                                         <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 flex items-center gap-1">
-                                            {/* <TagIcon size={12} /> */} {/* Render the Lucide Tag icon here if needed */}
+                                             <TagIcon size={12} /> {/* Render the Lucide Tag icon here */}
                                             {tag}
                                         </Badge>
                                     )}
