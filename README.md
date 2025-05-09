@@ -45,7 +45,7 @@
 *   **Genkit (Firebase Genkit)**: لإضافة ميزات الذكاء الاصطناعي مثل توليد أوصاف المنتجات.
 *   **Zod**: للتحقق من صحة البيانات في النماذج وواجهات API.
 *   **(محاكاة الواجهة الخلفية)**: حاليًا، تعتمد المنصة على بيانات وهمية ووظائف محاكاة لواجهة خلفية مثل المصادقة وقاعدة البيانات. في التطبيق الفعلي، سيتم استخدام حلول مثل Firebase، Supabase، أو واجهة خلفية مخصصة.
-*   **Pexels API**: (عبر سكربت) لتحميل صور منتجات مبدئية.
+*   **Pexels API & Picsum Photos**: (عبر سكربت أو مباشرة) لتحميل صور منتجات ومتاجر مبدئية.
 
 ## البدء والتشغيل (للمطورين)
 
@@ -68,13 +68,14 @@
     ```
 5.  **إعداد متغيرات البيئة**:
     *   قم بنسخ ملف `.env.example` (إذا كان موجودًا) إلى `.env.local`.
-    *   املأ المتغيرات المطلوبة مثل مفاتيح API لخدمات Google AI (لـ Genkit) و **`PEXELS_API_KEY`** (لتحميل صور المنتجات).
+    *   املأ المتغيرات المطلوبة مثل مفاتيح API لخدمات Google AI (لـ Genkit) و **`PEXELS_API_KEY`** (لتحميل صور المنتجات إذا كنت ستستخدم السكربت).
     *   للحصول على مفتاح Pexels API، قم بزيارة [Pexels API](https://www.pexels.com/api/) وقم بإنشاء حساب.
     *   **هام:** لا تقم بإضافة ملف `.env.local` إلى نظام التحكم في الإصدار (مثل Git).
     ```bash
-    cp .env.example .env.local # (إذا كان .env.example موجودًا)
+    # cp .env.example .env.local # (إذا كان .env.example موجودًا)
     # ثم قم بتحرير .env.local وأضف:
     # PEXELS_API_KEY="YOUR_PEXELS_API_KEY_HERE" 
+    # GOOGLE_API_KEY="YOUR_GOOGLE_AI_API_KEY_HERE" 
     ```
 6.  **تحميل صور المنتجات (اختياري، لمرة واحدة)**:
     *   تم إضافة سكربت `scripts/download-products.js` لتحميل صور مبدئية للمنتجات من Pexels.
@@ -85,8 +86,7 @@
         # أو
         yarn download:products
         ```
-    *   سيقوم هذا السكربت بإنشاء مجلدات `public/assets/products/{category}` وتحميل 5 صور لكل فئة (shoes, bags, cosmetics).
-    *   يمكنك تعديل السكربت في `scripts/download-products.js` لتغيير الفئات أو عدد الصور.
+    *   سيقوم هذا السكربت بإنشاء مجلدات `public/assets/products/{category}` وتحميل صور.
 7.  **تشغيل خادم التطوير (Next.js)**:
     ```bash
     npm run dev
@@ -105,119 +105,17 @@
     npm run genkit:watch
     ```
 
-## مكون معرض المنتجات (ProductGallery)
+## خارطة الطريق / الخطوات التالية (Roadmap / Next Steps)
 
-تم إنشاء مكون `src/components/product-gallery.tsx` لعرض الصور التي تم تحميلها بواسطة سكربت `download:products`. هذا المكون:
-*   يتوقع أن تكون الصور موجودة في `public/assets/products/{category}/{category}-{i+1}.jpg`.
-*   يعرض الصور في شبكة (grid) منظمة حسب الفئة.
-*   يستخدم مكون `next/image` لتحسين أداء الصور.
-*   يمكن مشاهدة مثال على استخدام هذا المكون في صفحة `/gallery` (إذا تم إنشاؤها).
+هذه خارطة طريق مقترحة لتحسين وتطوير منصة "لمسة ضحى". (نقطة تفتيش: `resetnow`)
 
-## البناء للإنتاج (Building for Production)
+1.  **تحسينات الواجهة الأمامية والأساسية (UI/UX Core Improvements)**:
+    *   **الهوية البصرية المتكاملة**: ضمان تطبيق متناسق للوحة الألوان (`#EAA4C6`, `#BFA2DB`, `#FFD966`) والخطوط (Poppins, Merriweather) عبر جميع مكونات المنصة.
+    *   **تحسين تجربة المستخدم في التصفح**: تعزيز وضوح وسلاسة التنقل في الصفحة الرئيسية، صفحات الفئات، وصفحات المتاجر والمنتجات.
+    *   **استخدام الأيقونات (Lucide Icons)**: توحيد استخدام أيقونات `lucide-react` في جميع أنحاء التطبيق لضمان التناسق البصري وتقليل الاعتماد على SVGs مخصصة عند وجود بديل.
+    *   **تحسينات على صفحة المتجر (`/store/[storeId]`)**:
+        *   عرض معلومات المتجر بشكل جذاب وواضح.
+        *   تفعيل فلاتر المنتجات/الخدمات داخل المتجر.
+        *   إضافة أقسام مخصصة بناءً
 
-لتجهيز التطبيق للنشر الفعلي:
-
-```bash
-npm run build
-# أو
-yarn build
-```
-
-سيقوم هذا الأمر بإنشاء نسخة محسّنة من التطبيق في مجلد `.next`.
-
-## النشر (Deployment)
-
-### منصة Vercel (مُوصى به)
-
-تُعد Vercel المنصة المثالية لنشر تطبيقات Next.js.
-
-1.  **إنشاء حساب**: قم بإنشاء حساب على [Vercel](https://vercel.com/) واربطه بحسابك على GitHub, GitLab, أو Bitbucket.
-2.  **استيراد المشروع**: في لوحة تحكم Vercel، اختر "Add New..." -> "Project". قم باستيراد مستودع Git الخاص بك.
-3.  **إعداد المشروع**:
-    *   ستقوم Vercel عادةً بالكشف عن إعدادات Next.js تلقائيًا.
-    *   **Framework Preset**: تأكد من أنه Next.js.
-    *   **Root Directory**: اتركه عادةً كما هو (الجذر الرئيسي للمستودع).
-    *   **Build Command**: يجب أن يكون `npm run build` أو `yarn build`.
-    *   **Output Directory**: سيتم اكتشافه تلقائيًا (عادةً `.next`).
-    *   **Install Command**: `npm install` أو `yarn install`.
-4.  **متغيرات البيئة**:
-    *   انتقل إلى إعدادات المشروع على Vercel -> "Environment Variables".
-    *   أضف جميع المتغيرات المطلوبة من ملف `.env.local` هنا (بما في ذلك `PEXELS_API_KEY` إذا كنت ستعيد تشغيل سكربت التحميل على Vercel، على الرغم من أن الصور يجب أن تكون جزءًا من الـ build أو مخزنة بشكل دائم). **لا تقم برفع ملف `.env.local` إلى Git.**
-    *   تأكد من تحديد البيئات المناسبة (Production, Preview, Development) لكل متغير.
-5.  **النشر**: اضغط على زر "Deploy". سيقوم Vercel ببناء ونشر التطبيق.
-6.  **النشر التلقائي**: بعد الإعداد الأولي، سيقوم Vercel تلقائيًا ببناء ونشر التحديثات عند كل `push` للفرع الرئيسي (أو الفروع المحددة).
-
-ملف `vercel.json` الموجود في المشروع يُستخدم لتحديد بعض الإعدادات الأساسية مثل نسخة Node.js المطلوبة.
-
-### منصات أخرى
-
-يمكن أيضًا نشر التطبيق على منصات أخرى تدعم Node.js مثل Netlify, AWS Amplify, Google Cloud Run, Azure App Service, أو خادم خاص. ستحتاج إلى تهيئة إعدادات البناء والتشغيل (عادةً `npm run start` بعد `npm run build`) وتكوين متغيرات البيئة على المنصة المختارة.
-
-## .gitignore
-
-تأكد من أن ملف `.gitignore` الخاص بك يستبعد الملفات والمجلدات غير الضرورية أو الحساسة من التحكم في الإصدار، مثل:
-
-```gitignore
-# Dependencies
-/node_modules
-
-# Build artifacts
-/.next/
-/out/
-
-# Environment variables
-.env*.local
-.env
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDE / System files
-.DS_Store
-*.pem
-*.key
-
-# Downloaded Pexels Images (if you don't want to commit them)
-# It's generally better to commit static assets if they are part of the build
-# But if they are numerous or frequently changing via script, consider .gitignore
-# /public/assets/products/
-```
-
-## ميزات مستقبلية محتملة
-
-*   **نظام حجز متقدم للخدمات**: مع خيارات تخصيص الوقت وتأكيدات آلية.
-*   **بث مباشر للتسوق (Live Shopping)**: تفاعل مباشر بين البائعات والعملاء.
-*   **برامج ولاء متقدمة ونظام أوسمة**: لتعزيز التفاعل والمشاركة.
-*   **تكامل مع شركات شحن إضافية**: لتوسيع نطاق التوصيل.
-*   **تطبيقات جوال أصلية (Native Mobile Apps)**: لتحسين تجربة المستخدم على الهواتف.
-*   **أدوات تسويق متقدمة للبائعات**: مثل حملات البريد الإلكتروني المستهدفة وتحليلات العملاء.
-
-## المساهمة
-
-نرحب بالمساهمات لتحسين وتطوير منصة "لمسة ضحى". يرجى الرجوع إلى إرشادات المساهمة (CONTRIBUTING.md - إن وجدت) قبل تقديم أي طلبات سحب (Pull Requests).
-
-## الترخيص
-
-هذا المشروع مرخص بموجب ترخيص [اسم الترخيص - مثال: MIT License].
-
----
-
-نأمل أن تكون "لمسة ضحى" مصدر إلهام وفرصة لكل امرأة مبدعة تسعى لتحقيق أحلامها.
-
----
-**أوامر Git المقترحة بعد التغييرات:**
-```bash
-git add scripts/download-products.js src/components/product-gallery.tsx src/app/gallery/page.tsx package.json .env README.md
-git commit -m "feat: Add Pexels product image downloader script and gallery component
-
-- Added Node.js script to download images from Pexels API.
-- Integrated pexels library.
-- Added 'download:products' script to package.json.
-- Created ProductGallery component to display downloaded images.
-- Added example page /gallery to showcase ProductGallery.
-- Updated README with instructions for image download script and PEXELS_API_KEY setup.
-- Added PEXELS_API_KEY placeholder to .env.
-"
-```
+    
