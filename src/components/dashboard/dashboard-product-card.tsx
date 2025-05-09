@@ -95,7 +95,8 @@ export function DashboardProductCard({ product, onToggleStatus, onDelete }: Dash
               <Link href={`/dashboard/products/edit/${product.id}`}>{product.name}</Link>
             </CardTitle>
              <Badge variant={product.productType === 'بيع' ? 'secondary' : product.productType === 'إيجار' ? 'outline' : 'default'} className="capitalize text-xs px-1.5 py-0.5 whitespace-nowrap flex items-center gap-1 flex-shrink-0">
-                 <TypeIcon size={12}/> {product.productType}
+                 <TypeIcon size={14}/> {/* Increased size from 12 to 14 */}
+                 {product.productType}
              </Badge>
         </div>
         <CardDescription className="text-xs text-muted-foreground line-clamp-2">{product.description}</CardDescription>

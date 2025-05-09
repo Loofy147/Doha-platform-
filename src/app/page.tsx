@@ -5,25 +5,26 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Sparkles, // Kept for title
-  Wand2, // New for Fashion
   Home as HomeIcon, // Standard Home
-  PenLine, // To be replaced
-  ShoppingBag as ShoppingBagIcon, 
-  Store as StoreIcon, // To be replaced by Rocket for Seller CTA
-  Flame, 
-  Award, 
-  Users as UsersIcon, 
-  Lightbulb, 
-  Briefcase, // New for Professional Services
-  MessageSquare, 
-  ChevronLeft, 
-  Eye, 
   PackageSearch, // New for Discover products in categories section title
-  CalendarClock, // New for Rental
-  CakeSlice, // New for Sweets
+  ShoppingBag as ShoppingBagIcon,
   Rocket, // New for CTAs (Sell with us)
   ShoppingBasket, // New for CTAs (Shop now)
   LayoutDashboard, // For admin link
+  Wand2, // For Fashion category
+  CakeSlice, // For Sweets category
+  CalendarClock, // For Rental category
+  Briefcase, // For Professional Services category
+  Flame,
+  Award,
+  Users as UsersIcon,
+  Lightbulb,
+  MessageSquare,
+  ChevronLeft,
+  Eye,
+  Search,
+  Store,
+  Edit3,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -109,7 +110,7 @@ export default function HomePage() {
     }
 
   return (
-     <motion.div 
+     <motion.div
         className="flex flex-col min-h-screen bg-background overflow-x-hidden"
         variants={pageEntryVariants}
         initial="hidden"
@@ -134,9 +135,11 @@ export default function HomePage() {
                        اكتشفي فئات متنوعة تلبي كل شغف واهتمام، من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة.
                     </p>
                 </motion.div>
-                <motion.div 
+                <motion.div
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                     variants={{ visible: { transition: { staggerChildren: 0.05 }}}}
+                    initial="hidden" // Added initial for consistency, parent whileInView handles animation trigger
+                    animate="visible" // Added animate for consistency
                 >
                     {categories.map((category, index) => {
                         const IconComponent = category.icon;
@@ -144,14 +147,14 @@ export default function HomePage() {
                         <motion.div
                             key={category.name}
                             variants={categoryCardVariants}
-                            custom={index} 
-                            className="h-full" 
+                            custom={index}
+                            className="h-full"
                         >
                             <Link href={category.href} className="group block h-full">
                                 <Card className={cn("text-center p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105", category.bgColor)}>
                                     <CardContent className="p-0 flex flex-col items-center justify-center">
                                         <div className={`mb-4 group-hover:scale-110 transition-transform duration-300 ${category.color}`}>
-                                            <IconComponent size={28} className="mx-auto h-10 w-10" />
+                                            <IconComponent size={40} className="mx-auto h-10 w-10" /> {/* Adjusted size to 40 */}
                                         </div>
                                         <h3 className="text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
                                     </CardContent>
@@ -225,7 +228,10 @@ export default function HomePage() {
         <TestimonialsSection />
         </motion.div>
 
-        <ContactSection />
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+         <ContactSection />
+        </motion.div>
+
 
         <div className="py-12 bg-muted/30 text-center">
             <motion.div
