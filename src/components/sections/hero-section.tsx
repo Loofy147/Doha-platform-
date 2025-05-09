@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Sparkles, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, Sparkles } from 'lucide-react'; // Changed ArrowLeft to Sparkles
 import { motion } from 'framer-motion';
 
 const fadeInUp = {
@@ -14,7 +14,7 @@ const fadeInUp = {
 
 const containerVariants = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.15 }} // Slightly adjusted stagger
+  animate: { transition: { staggerChildren: 0.15 }} 
 };
 
 export function HeroSection() {
@@ -41,24 +41,24 @@ export function HeroSection() {
         />
       </motion.div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <motion.div variants={fadeInUp} transition={{ duration: 0.5, ease: "easeOut" }}>
+        <motion.div variants={fadeInUp} transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}>
           <Sparkles className="mx-auto h-16 w-16 text-accent-yellow mb-6 animate-pulse" style={{ animationDuration: '1.5s' }} />
         </motion.div>
         <motion.h1
           className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl drop-shadow-md"
-          variants={fadeInUp} transition={{ duration: 0.6, ease: "easeOut" }}
+          variants={fadeInUp} transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
         >
           مرحباً بكِ في عالم <span className="text-accent-pink hover:text-accent-yellow transition-colors duration-300">لمسة ضحى</span>
         </motion.h1>
         <motion.p
           className="mt-6 max-w-3xl mx-auto text-lg text-foreground/90 sm:text-xl md:text-2xl leading-relaxed"
-          variants={fadeInUp} transition={{ duration: 0.7, ease: "easeOut" }}
+          variants={fadeInUp} transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
         >
           بوابتكِ لاكتشاف إبداعات نسائية فريدة، ودعم رائدات أعمال طموحات. هنا، كل لمسة تحكي قصة، وكل منتج يحمل شغفًا.
         </motion.p>
         <motion.div
           className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6"
-          variants={containerVariants} // Use container for stagger effect on buttons
+          variants={{ initial: {}, animate: {transition: { staggerChildren: 0.1, delayChildren: 0.4 }} }} // Stagger buttons
         >
           <motion.div variants={fadeInUp}>
             <Button size="lg" asChild className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out px-8 py-3 text-base rounded-full group">
@@ -70,7 +70,7 @@ export function HeroSection() {
           <motion.div variants={fadeInUp}>
             <Button size="lg" variant="outline" asChild className="shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 text-base rounded-full group">
               <Link href="/sell-with-us">
-                 انضمي لمبدعاتنا <ArrowLeft className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                 <Sparkles className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:text-accent-yellow" /> انضمي لمبدعاتنا {/* Changed icon to Sparkles and adjusted margin */}
               </Link>
             </Button>
           </motion.div>

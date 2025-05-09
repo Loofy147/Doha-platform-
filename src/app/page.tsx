@@ -4,13 +4,13 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  Sparkles, // Kept for title
-  Home as HomeIcon, // Standard Home
-  PackageSearch, // New for Discover products in categories section title
+  Sparkles,
+  Home as HomeIcon,
+  PackageSearch,
   ShoppingBag as ShoppingBagIcon,
-  Rocket, // New for CTAs (Sell with us)
-  ShoppingBasket, // New for CTAs (Shop now)
-  LayoutDashboard, // For admin link
+  Rocket,
+  ShoppingBasket,
+  LayoutDashboard,
   Wand2, // For Fashion category
   CakeSlice, // For Sweets category
   CalendarClock, // For Rental category
@@ -18,11 +18,11 @@ import {
   Flame,
   Award,
   Users as UsersIcon,
-  Lightbulb,
+  Lightbulb, // Replaced SearchHeart
   MessageSquare,
   ChevronLeft,
   Eye,
-  Search,
+  Search, // Re-added Search
   Store,
   Edit3,
 } from 'lucide-react';
@@ -31,9 +31,9 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardTitle,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { HeroSection } from '@/components/sections/hero-section';
@@ -77,8 +77,8 @@ const categories = [
   { name: 'أزياء وإكسسوارات', icon: Wand2, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
   { name: 'حلويات ومأكولات شهية', icon: CakeSlice, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
   { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
-  { name: 'تأجير إبداعات', icon: CalendarClock, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/5 hover:bg-green-500/10' },
-  { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/5 hover:bg-blue-500/10' },
+  { name: 'تأجير إبداعات', icon: CalendarClock, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-primary', bgColor: 'bg-primary/10 hover:bg-primary/15' }, // Color updated to primary theme
+  { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-secondary', bgColor: 'bg-secondary/10 hover:bg-secondary/15' }, // Color updated to secondary theme
 ];
 
 export default function HomePage() {
@@ -117,7 +117,7 @@ export default function HomePage() {
         animate="visible"
       >
       <HeroSection />
-      
+
       <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
@@ -138,8 +138,8 @@ export default function HomePage() {
                 <motion.div
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                     variants={{ visible: { transition: { staggerChildren: 0.05 }}}}
-                    initial="hidden" // Added initial for consistency, parent whileInView handles animation trigger
-                    animate="visible" // Added animate for consistency
+                    initial="hidden"
+                    animate="visible"
                 >
                     {categories.map((category, index) => {
                         const IconComponent = category.icon;
@@ -154,7 +154,7 @@ export default function HomePage() {
                                 <Card className={cn("text-center p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105", category.bgColor)}>
                                     <CardContent className="p-0 flex flex-col items-center justify-center">
                                         <div className={`mb-4 group-hover:scale-110 transition-transform duration-300 ${category.color}`}>
-                                            <IconComponent size={40} className="mx-auto h-10 w-10" /> {/* Adjusted size to 40 */}
+                                            <IconComponent size={40} className="mx-auto h-10 w-10" />
                                         </div>
                                         <h3 className="text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
                                     </CardContent>
@@ -166,7 +166,7 @@ export default function HomePage() {
                 </motion.div>
             </div>
         </motion.section>
-      
+
       {/* Seller CTA */}
       <motion.div
         variants={sectionVariants}
