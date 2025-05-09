@@ -15,7 +15,7 @@ import {
   Star,
   MessageSquare,
   ChevronLeft,
-  LucideProps, // Import LucideProps
+  LucideProps,
   Heart,
   Share2,
   ShieldCheck,
@@ -23,7 +23,7 @@ import {
   Clock,
   Info,
   AlertCircle,
-  Store as StoreIcon, // Renamed Store icon
+  Store as StoreIcon,
   DollarSign,
   CalendarDays,
   Handshake,
@@ -36,32 +36,38 @@ import {
   MapPin,
   Loader2,
   Percent,
-  Tag as TagIcon, // Added TagIcon
+  TagIcon,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"; // Correct import path and added CarouselApi
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from '@/lib/utils';
-import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ItemType as PublicItemType, type StoreType } from '@/lib/data/mock-store-data'; // Use PublicItemType alias
+import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ItemType as PublicItemType, type StoreType } from '@/lib/data/mock-store-data';
 import StoreSection from '@/components/store/store-section';
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
-import { motion, AnimatePresence } from 'framer-motion';
-import { NotFound } from '@/components/layout/not-found'; // Import a dedicated NotFound component
+import { motion, type MotionProps } from 'framer-motion';
+import { NotFound } from '@/components/layout/not-found';
 
 type Item = Product | Service;
 
 // Animation Variants
-const fadeInUp = {
+const pageEntryVariants: MotionProps = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
+const staggerContainerVariants: MotionProps = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+};
+
+const itemVariants: MotionProps = { // Renamed from fadeInUp for clarity
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
 };
 
-const staggerContainer = {
-  initial: {},
-  animate: { transition: { staggerChildren: 0.1 } }
-};
 
 // Separate Loading component
 const ProductDetailLoadingSkeleton = () => (
@@ -90,11 +96,10 @@ const ProductDetailLoadingSkeleton = () => (
         <Skeleton className="h-10 w-1/2 rounded-md" />
       </div>
     </div>
-     <StoreLoadingSkeleton /> {/* Added store skeleton */}
+     <StoreLoadingSkeleton />
   </div>
 );
 
-// Skeleton for store section loading
 const StoreLoadingSkeleton = () => (
     <div className="mt-16">
         <Skeleton className="h-10 w-1/3 mb-6" />
@@ -126,9 +131,8 @@ export default function ProductDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  // const [selectedImageIndex, setSelectedImageIndex] = useState(0); // Replaced with currentSlide
-  const [api, setApi] = useState<CarouselApi>(); // Carousel API state
-  const [currentSlide, setCurrentSlide] = useState(0); // Track current slide index
+  const [api, setApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { toast } = useToast();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
@@ -140,7 +144,7 @@ export default function ProductDetailPage() {
       const timer = setTimeout(async () => {
         try {
           const fetchedItemData = getProductById(productId) || getServiceById(productId);
-          const relatedStoreId = fetchedItemData?.sellerId || productId.split('-')[0]; // Derive store ID
+          const relatedStoreId = fetchedItemData?.sellerId || productId.split('-')[0];
           const fetchedStoreData = relatedStoreId ? getStoreDataById(relatedStoreId) : null;
 
           if (!isMounted) return;
@@ -178,21 +182,20 @@ export default function ProductDetailPage() {
       setError("معرف العنصر غير متوفر.");
       setIsLoading(false);
     }
-  }, [productId]); // Removed unnecessary dependencies like router, toast
+  }, [productId]);
 
   useEffect(() => {
     if (!api) return;
-    setCurrentSlide(api.selectedScrollSnap()); // Set initial slide index
+    setCurrentSlide(api.selectedScrollSnap());
     api.on("select", () => {
-      setCurrentSlide(api.selectedScrollSnap()); // Update index on slide change
+      setCurrentSlide(api.selectedScrollSnap());
     });
-    // Cleanup listener
     return () => {
       api.off("select", () => setCurrentSlide(api.selectedScrollSnap()));
     };
   }, [api]);
 
-  const storeAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
+  const effectiveAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
 
   const handlePrimaryAction = async (selectedItem: Item) => {
     setIsAddingToCart(true);
@@ -212,10 +215,9 @@ export default function ProductDetailPage() {
   };
 
   const handleThumbnailClick = (index: number) => {
-    api?.scrollTo(index); // Use carousel API to navigate
+    api?.scrollTo(index);
   };
 
-  // --- Render Logic ---
 
   if (isLoading) {
     return <ProductDetailLoadingSkeleton />;
@@ -236,11 +238,11 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (!item) { // Check if item is null after loading and no error
+  if (!item) {
     return <NotFound title="العنصر غير موجود" message="عذرًا، العنصر الذي تبحثين عنه غير متوفر حاليًا." />;
   }
 
-  if (!storeData) { // Added check for storeData as well
+  if (!storeData) {
       return <NotFound title="المتجر غير موجود" message="عذرًا، المتجر المرتبط بهذا العنصر غير متوفر حاليًا." />;
   }
 
@@ -259,34 +261,33 @@ export default function ProductDetailPage() {
   return (
     <motion.div
         className="container mx-auto px-4 py-12 sm:px-6 lg:px-8"
+        variants={pageEntryVariants}
         initial="initial"
         animate="animate"
-        variants={staggerContainer}
     >
-        <motion.div variants={fadeInUp}>
+        <motion.div variants={itemVariants}>
             <Button variant="outline" size="sm" className="mb-8 group border-border hover:bg-muted/50" onClick={() => router.back()}>
                 <ChevronLeft size={16} className="ml-1 transition-transform group-hover:-translate-x-1"/>
                 العودة
             </Button>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {/* Image Carousel */}
-            <motion.div className="space-y-4" variants={fadeInUp}>
+        <motion.div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start" variants={staggerContainerVariants}>
+            <motion.div className="space-y-4" variants={itemVariants}>
                  <Carousel
-                    setApi={setApi} // Pass setApi to get the API instance
+                    setApi={setApi}
                     className="relative shadow-xl rounded-xl overflow-hidden group border border-border/50"
                     opts={{ loop: itemImages.length > 1 }}
                  >
                     <CarouselContent>
                         {itemImages.map((imgSrc, index) => (
                             <CarouselItem key={index}>
-                                <div className="aspect-square md:min-h-[450px] relative"> {/* Container for image */}
+                                <div className="aspect-square md:min-h-[450px] relative">
                                     <Image
                                         src={imgSrc}
                                         alt={`${item.name} - صورة ${index + 1}`}
                                         fill
-                                        className="object-contain rounded-lg p-2" // Use contain and add padding
+                                        className="object-contain rounded-lg p-2"
                                         data-ai-hint={item.dataAiHint || 'product image'}
                                         priority={index === 0}
                                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -299,12 +300,12 @@ export default function ProductDetailPage() {
                         <>
                             <CarouselPrevious
                                 className="absolute left-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card w-8 h-8"
-                                style={{color: storeAccentColor}}
+                                style={{color: effectiveAccentColor}}
                                 aria-label="الصورة السابقة"
                             />
                             <CarouselNext
                                 className="absolute right-3 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card w-8 h-8"
-                                style={{color: storeAccentColor}}
+                                style={{color: effectiveAccentColor}}
                                 aria-label="الصورة التالية"
                              />
                         </>
@@ -317,9 +318,10 @@ export default function ProductDetailPage() {
                                 key={`thumb-${index}`}
                                 onClick={() => handleThumbnailClick(index)}
                                 className={cn(
-                                    "aspect-square rounded-md overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                                    currentSlide === index ? 'border-primary ring-2 ring-primary/50 ring-offset-2' : 'border-border/50 hover:border-muted-foreground/50' // Use currentSlide for active state
+                                    "aspect-square rounded-md overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2",
+                                    currentSlide === index ? 'ring-2 ring-offset-2' : 'border-border/50 hover:border-muted-foreground/50'
                                 )}
+                                style={ currentSlide === index ? {borderColor: effectiveAccentColor, ringColor: `${effectiveAccentColor}80`} : {}}
                                 aria-label={`عرض الصورة ${index + 1}`}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
@@ -337,36 +339,35 @@ export default function ProductDetailPage() {
                 )}
             </motion.div>
 
-            {/* Item Details */}
-            <motion.div className="space-y-6" variants={staggerContainer}>
-                <motion.div variants={fadeInUp}>
+            <motion.div className="space-y-6" variants={staggerContainerVariants}>
+                <motion.div variants={itemVariants}>
                     <Card className="shadow-xl border-primary/10 overflow-hidden">
                         <CardHeader className="bg-gradient-to-br from-card via-secondary/10 to-card pb-4">
                            <div className="flex justify-between items-start gap-2">
                                 <div>
-                                    <Badge variant="outline" className="mb-2 capitalize text-xs px-2 py-0.5" style={{borderColor: storeAccentColor, color: storeAccentColor}}>
+                                    <Badge variant="outline" className="mb-2 capitalize text-xs px-2 py-0.5" style={{borderColor: effectiveAccentColor, color: effectiveAccentColor}}>
                                         {item.type} / {item.category}
                                     </Badge>
-                                    <CardTitle className="text-3xl lg:text-4xl font-bold" style={{color: storeAccentColor}}>
+                                    <CardTitle className="text-3xl lg:text-4xl font-bold" style={{color: effectiveAccentColor}}>
                                         {item.name}
                                     </CardTitle>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <Button variant="ghost" size="icon" className="text-destructive/70 hover:text-destructive h-8 w-8" title="أضف إلى المفضلة">
+                                    <Button variant="ghost" size="icon" className="text-destructive/70 hover:text-destructive h-8 w-8" title="أضف إلى المفضلة" aria-label="إضافة إلى المفضلة">
                                         <Heart className="w-5 h-5"/>
                                     </Button>
-                                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary h-8 w-8" title="مشاركة">
+                                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary h-8 w-8" title="مشاركة" aria-label="مشاركة المنتج">
                                         <Share2 className="w-5 h-5"/>
                                     </Button>
                                 </div>
                            </div>
                            <Link href={`/store/${storeData.id}`} className="flex items-center gap-2 pt-3 group">
-                                <Avatar className="h-10 w-10 border-2" style={{borderColor: storeAccentColor}}>
+                                <Avatar className="h-10 w-10 border-2" style={{borderColor: effectiveAccentColor}}>
                                     <AvatarImage src={storeData.sellerAvatar} alt={storeData.sellerName} data-ai-hint={storeData.dataAiHintSellerAvatar}/>
                                     <AvatarFallback>{storeData.sellerName.substring(0,1)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <span className="text-sm font-medium text-primary group-hover:underline">{storeData.sellerName}</span>
+                                    <span className="text-sm font-medium text-primary group-hover:underline" style={{color: effectiveAccentColor}}>{storeData.sellerName}</span>
                                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                         <Star size={12} className="fill-current text-accent-yellow"/> {storeData.rating.toFixed(1)} ({storeData.reviewsCount} تقييم للمتجر)
                                     </div>
@@ -374,38 +375,37 @@ export default function ProductDetailPage() {
                             </Link>
                         </CardHeader>
                         <CardContent className="pt-4 space-y-5">
-                            <motion.p variants={fadeInUp} className="text-base text-foreground/85 leading-relaxed whitespace-pre-line">
+                            <motion.p variants={itemVariants} className="text-base text-foreground/85 leading-relaxed whitespace-pre-line">
                                 {item.longDescription || item.description}
                             </motion.p>
 
                             {item.type === 'بيع' && (item as Product).preparationTime && (
-                                <motion.div variants={fadeInUp}>
+                                <motion.div variants={itemVariants}>
                                     <Badge variant="secondary"><Clock size={14} className="ml-1"/> وقت التجهيز: {(item as Product).preparationTime}</Badge>
                                 </motion.div>
                             )}
                             {item.type === 'إيجار' && (item as Product).rentalTerms && (
-                                <motion.div variants={fadeInUp} className="text-sm text-muted-foreground space-y-1 border-l-2 pl-3 py-1" style={{borderColor: storeAccentColor}}>
-                                    <p className="font-medium text-foreground" style={{color: storeAccentColor}}>شروط الإيجار:</p>
+                                <motion.div variants={itemVariants} className="text-sm text-muted-foreground space-y-1 border-l-2 pl-3 py-1" style={{borderColor: effectiveAccentColor}}>
+                                    <p className="font-medium text-foreground" style={{color: effectiveAccentColor}}>شروط الإيجار:</p>
                                     {(item as Product).rentalTerms?.minDuration && <p><CalendarDays size={14} className="inline ml-1"/> أقل مدة: {(item as Product).rentalTerms?.minDuration}</p>}
                                     {(item as Product).rentalTerms?.deposit && <p><DollarSign size={14} className="inline ml-1"/> التأمين: {(item as Product).rentalTerms?.deposit}</p>}
                                 </motion.div>
                             )}
                             {item.type === 'خدمة' && (
-                                <motion.div variants={fadeInUp} className="text-sm text-muted-foreground space-y-1 border-l-2 pl-3 py-1" style={{borderColor: storeAccentColor}}>
-                                    <p className="font-medium text-foreground" style={{color: storeAccentColor}}>تفاصيل الخدمة:</p>
+                                <motion.div variants={itemVariants} className="text-sm text-muted-foreground space-y-1 border-l-2 pl-3 py-1" style={{borderColor: effectiveAccentColor}}>
+                                    <p className="font-medium text-foreground" style={{color: effectiveAccentColor}}>تفاصيل الخدمة:</p>
                                     {(item as Service).duration && <p><Clock size={14} className="inline ml-1"/> المدة: {(item as Service).duration}</p>}
                                     {(item as Service).location && <p><MapPin size={14} className="inline ml-1"/> المكان: {(item as Service).location}</p>}
                                 </motion.div>
                             )}
 
-                            {/* Corrected Tag rendering */}
                             {(item as Product | Service).tags && (item as Product | Service).tags!.length > 0 && (
-                                <motion.div variants={fadeInUp} className="mt-3">
-                                    <p className="text-sm font-medium mb-1.5" style={{color: storeAccentColor}}>كلمات مفتاحية:</p>
+                                <motion.div variants={itemVariants} className="mt-3">
+                                    <p className="text-sm font-medium mb-1.5" style={{color: effectiveAccentColor}}>كلمات مفتاحية:</p>
                                     <div className="flex flex-wrap gap-1.5">
                                     {(item as Product | Service).tags!.map(tag =>
-                                        <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 flex items-center gap-1">
-                                             <TagIcon size={12} /> {/* Render the Lucide Tag icon here */}
+                                        <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 flex items-center gap-1" style={{borderColor: `${effectiveAccentColor}80`, color: effectiveAccentColor}}>
+                                             <TagIcon size={12} />
                                             {tag}
                                         </Badge>
                                     )}
@@ -413,12 +413,11 @@ export default function ProductDetailPage() {
                                 </motion.div>
                             )}
 
-
                             <Separator className="my-5"/>
 
-                            <motion.div variants={fadeInUp} className="space-y-4">
+                            <motion.div variants={itemVariants} className="space-y-4">
                                <div className="flex items-baseline justify-center md:justify-start gap-2">
-                                <p className="text-4xl font-extrabold" style={{color: storeAccentColor}}>
+                                <p className="text-4xl font-extrabold" style={{color: effectiveAccentColor}}>
                                     {displayPrice}
                                 </p>
                                 {originalPriceDisplay && (
@@ -445,9 +444,10 @@ export default function ProductDetailPage() {
                                 <Button
                                     size="lg"
                                     className="w-full text-lg py-6 px-8 shadow-lg text-white hover:opacity-90 transition-opacity flex items-center justify-center"
-                                    style={{backgroundColor: storeAccentColor}}
+                                    style={{backgroundColor: effectiveAccentColor}}
                                     onClick={() => handlePrimaryAction(item)}
                                     disabled={isAddingToCart || (item as Product).availability === 'نفذ المخزون'}
+                                    aria-label={isAddingToCart ? 'جاري الإضافة...' : (item as Product).availability === 'نفذ المخزون' ? 'غير متوفر حاليًا' : item.type === 'بيع' ? 'أضيفي إلى السلة' : item.type === 'إيجار' ? 'احجزي الآن' : 'احجزي/استفسري عن الخدمة'}
                                 >
                                     {isAddingToCart ? (
                                         <Loader2 className="ml-2 h-5 w-5 animate-spin" />
@@ -470,15 +470,15 @@ export default function ProductDetailPage() {
                     </Card>
                 </motion.div>
 
-                 <motion.div variants={fadeInUp}>
+                 <motion.div variants={itemVariants}>
                     <Card className="shadow-md border-secondary/50">
                         <CardHeader>
-                            <CardTitle className="text-lg flex items-center gap-2" style={{color: storeAccentColor}}>
+                            <CardTitle className="text-lg flex items-center gap-2" style={{color: effectiveAccentColor}}>
                             <StoreIcon size={20}/> معلومات المتجر والشحن
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3 text-sm text-foreground/80">
-                            <Button variant="outline" size="sm" className="w-full mb-2 hover:bg-primary/10 border-primary text-primary" asChild>
+                            <Button variant="outline" size="sm" className="w-full mb-2 hover:bg-primary/10" style={{borderColor: effectiveAccentColor, color: effectiveAccentColor}} asChild>
                                 <Link href={`/store/${storeData.id}`}> <Eye size={16} className="ml-2"/> زيارة متجر {storeData.name} </Link>
                             </Button>
                             {storeData.policies?.shippingPolicy && (
@@ -503,21 +503,18 @@ export default function ProductDetailPage() {
                     </Card>
                  </motion.div>
             </motion.div>
-        </div>
+        </motion.div>
 
-        {/* Related Items Section */}
-        <motion.div variants={fadeInUp}>
-            <StoreSection id="related-items" title="قد يعجبك أيضاً من نفس المتجر" icon={Sparkles} accentColor={storeAccentColor} className="mt-16">
+        <motion.div variants={itemVariants}>
+            <StoreSection id="related-items" title="قد يعجبك أيضاً من نفس المتجر" icon={Sparkles} accentColor={effectiveAccentColor} className="mt-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Filter and display related products/services */}
                 {storeData.products.filter(p => p.id !== item.id && p.category === item.category).slice(0, 4).map(relatedItem => (
-                    <StoreProductCard key={relatedItem.id} product={relatedItem as Product} accentColor={storeAccentColor} onViewDetails={() => router.push(`/products/${relatedItem.id}`)} />
+                    <StoreProductCard key={relatedItem.id} product={relatedItem as Product} accentColor={effectiveAccentColor} onViewDetails={() => router.push(`/products/${relatedItem.id}`)} />
                 ))}
                 {storeData.services && storeData.services.filter(s => s.id !== item.id && s.category === item.category).slice(0, 4).map(relatedItem => (
-                    <StoreServiceCard key={relatedItem.id} service={relatedItem as Service} accentColor={storeAccentColor} onViewDetails={() => router.push(`/products/${relatedItem.id}`)} />
+                    <StoreServiceCard key={relatedItem.id} service={relatedItem as Service} accentColor={effectiveAccentColor} onViewDetails={() => router.push(`/products/${relatedItem.id}`)} />
                 ))}
                 </div>
-                {/* Message if no related items */}
                 {(storeData.products.filter(p => p.id !== item.id && p.category === item.category).length === 0 && (!storeData.services || storeData.services.filter(s => s.id !== item.id && s.category === item.category).length === 0)) && (
                     <p className="text-muted-foreground text-center py-4">لا توجد عناصر مشابهة من هذا المتجر حالياً.</p>
                 )}
