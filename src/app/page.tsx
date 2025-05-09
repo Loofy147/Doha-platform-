@@ -6,11 +6,11 @@ import Link from 'next/link';
 import {
   Sparkles,
   Eye,
-  ChevronLeft, // Changed from ChevronRight for RTL consistency
+  ChevronLeft,
   Users,
   HomeIcon,
   PenLine,
-  Shirt, // Added Shirt icon
+  Shirt,
   Heart,
   Star,
   DollarSign,
@@ -29,11 +29,12 @@ import {
   Palette,
   FileText,
   PlusCircle,
-  Store as StoreIcon, // Aliased Store to avoid conflict
-  ShoppingBag as ShoppingBagIcon, // Aliased ShoppingBag
-  CalendarDays, // Added CalendarDays icon
+  Store as StoreIcon, 
+  ShoppingBag as ShoppingBagIcon,
+  CalendarDays,
   Download,
-  LayoutDashboard, // Added LayoutDashboard for admin link
+  LayoutDashboard,
+  Search,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -56,7 +57,8 @@ import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-se
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
 import ClientContactSection from '@/components/sections/client-contact-section';
 import { WomenCommerceLogo } from '@/components/icons/logo';
-import { motion } from 'framer-motion'; // Ensure motion is imported
+import { motion } from 'framer-motion';
+import { IconUsageExample } from '@/components/icons/icon-usage-example'; // Import the new component
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -107,6 +109,7 @@ export default function HomePage() {
   return (
      <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
       <HeroSection />
+      
         <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
@@ -130,12 +133,14 @@ export default function HomePage() {
                         return (
                         <motion.div key={category.name} variants={categoryVariants}>
                             <Link href={category.href} className="group block">
-                                <div className={`text-center p-6 ${category.bgColor} rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105`}>
-                                    <div className={`mb-4 group-hover:scale-110 transition-transform duration-300 ${category.color}`}>
-                                        <IconComponent size={28} className="mx-auto h-10 w-10" />
-                                    </div>
-                                    <h3 className="text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
-                                </div>
+                                <Card className={`text-center p-6 ${category.bgColor} rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105`}>
+                                    <CardContent className="p-0 flex flex-col items-center justify-center">
+                                        <div className={`mb-4 group-hover:scale-110 transition-transform duration-300 ${category.color}`}>
+                                            <IconComponent size={28} className="mx-auto h-10 w-10" />
+                                        </div>
+                                        <h3 className="text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
+                                    </CardContent>
+                                </Card>
                             </Link>
                         </motion.div>
                         );
@@ -143,6 +148,43 @@ export default function HomePage() {
                 </motion.div>
             </div>
         </motion.section>
+
+        {/* Seller CTA */}
+      <motion.div
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <CallToActionBanner
+          title="انضمي إلى مبدعات لمسة ضحى!"
+          description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
+          buttonText="افتحي متجرك الآن"
+          buttonLink="/sell-with-us"
+          imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
+          dataAiHint="women entrepreneurs working"
+          icon={StoreIcon}
+        />
+      </motion.div>
+
+      {/* Shopper CTA */}
+      <motion.div
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <CallToActionBanner
+          title="اكتشفي كنوز الإبداع المحلي!"
+          description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
+          buttonText="تسوقي الآن"
+          buttonLink="/products"
+          imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
+          dataAiHint="happy woman shopping online"
+          icon={ShoppingBagIcon}
+          reverseLayout={true}
+        />
+      </motion.div>
 
         <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <DailyDealsSection />
@@ -164,36 +206,46 @@ export default function HomePage() {
         <AboutUsSection />
         </motion.div>
 
-        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-            <CallToActionBanner
-                title="انضمي إلى مبدعات لمسة ضحى!"
-                description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
-                buttonText="افتحي متجرك الآن"
-                buttonLink="/sell-with-us"
-                imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
-                dataAiHint="women entrepreneurs working"
-                icon={StoreIcon}
-            />
-        </motion.div>
-
-        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-            <CallToActionBanner
-                title="اكتشفي كنوز الإبداع المحلي!"
-                description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
-                buttonText="تسوقي الآن"
-                buttonLink="/products"
-                imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
-                dataAiHint="happy woman shopping online"
-                icon={ShoppingBagIcon}
-                reverseLayout={true}
-            />
-        </motion.div>
 
         <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
         <TestimonialsSection />
         </motion.div>
 
         <ClientContactSection />
+        
+        {/* Icon Usage Example Section */}
+        <motion.section
+            className="py-16 lg:py-24 bg-background"
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+        >
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <IconUsageExample />
+            </div>
+        </motion.section>
+
+
+        {/* Admin Dashboard Link Section */}
+        <div className="py-12 bg-muted/30 text-center">
+            <motion.div
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.1 }}
+            >
+                <h3 className="text-2xl font-semibold text-primary mb-4">إدارة المنصة</h3>
+                <p className="text-foreground/80 mb-6 max-w-md mx-auto">
+                    وصول سريع إلى لوحة التحكم الإدارية لإدارة كافة جوانب منصة لمسة ضحى.
+                </p>
+                <Button asChild size="lg">
+                   <Link href="/admin">
+                       <LayoutDashboard className="mr-2 h-5 w-5" /> الذهاب للوحة التحكم الكاملة
+                   </Link>
+                </Button>
+            </motion.div>
+        </div>
     </div>
   );
 }
