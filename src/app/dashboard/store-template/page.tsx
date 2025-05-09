@@ -5,22 +5,24 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input'; 
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Palette, LayoutTemplate, Save, Eye, Upload, Briefcase, Scissors, CookingPot, Shirt, Camera, BookOpen, CalendarCheck, Font, LayoutGrid as LayoutGridIcon } from 'lucide-react';
+import { Palette, LayoutTemplate, Save, Eye, Upload, Briefcase, Scissors, CookingPot, Shirt, Camera, BookOpen, CalendarCheck, Font, LayoutGrid as LayoutGridIcon, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
-import type { StoreType } from '@/lib/data/mock-store-data'; 
+import type { StoreType } from '@/lib/data/mock-store-data';
 import { Separator } from '@/components/ui/separator';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface TemplateOption {
   id: StoreType;
   name: string;
   description: string;
   icon: React.ElementType;
-  previewImage?: string; 
+  previewImage?: string;
   dataAiHintPreview?: string;
 }
 
@@ -37,7 +39,7 @@ const availableTemplates: TemplateOption[] = [
 
 const themeStyleOptions = [
     { label: "فاتح وأنيق (افتراضي)", value: "light" },
-    { label: "داكن وفخم", value: "elegant" }, 
+    { label: "داكن وفخم", value: "elegant" },
     { label: "مرح وحيوي", value: "playful" },
     { label: "عصري وبسيط", value: "modern-minimal" },
     { label: "مظلم ليلي", value: "dark" },
@@ -65,11 +67,24 @@ const layoutOptions = [
     { label: "بطاقات كبيرة (للصور البارزة)", value: "spacious" },
 ];
 
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: (i: number) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { delay: i * 0.05, duration: 0.3, ease: "easeOut" }
+  })
+};
 
 export default function StoreTemplateSettingsPage() {
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
-  
+
   const [selectedTemplate, setSelectedTemplate] = useState<StoreType>('general');
   const [selectedThemeStyle, setSelectedThemeStyle] = useState<string>('light');
   const [selectedAccentColor, setSelectedAccentColor] = useState<string>('hsl(var(--accent-pink))');
@@ -78,11 +93,11 @@ export default function StoreTemplateSettingsPage() {
   const [selectedLayoutType, setSelectedLayoutType] = useState<string>('default');
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>("https://picsum.photos/seed/mylogo/200/100"); 
+  const [logoPreview, setLogoPreview] = useState<string | null>("https://picsum.photos/seed/mylogo/200/100");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [bannerPreview, setBannerPreview] = useState<string | null>("https://picsum.photos/seed/mybanner/1200/300"); 
+  const [bannerPreview, setBannerPreview] = useState<string | null>("https://picsum.photos/seed/mybanner/1200/300");
 
-  const storeSlug = "my-mock-store"; 
+  const storeSlug = "my-mock-store";
 
   useEffect(() => {
     setIsClient(true);
@@ -109,15 +124,15 @@ export default function StoreTemplateSettingsPage() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Store Template Settings Submitted:", { 
-        selectedTemplate, 
-        selectedThemeStyle, 
-        selectedAccentColor, 
+    console.log("Store Template Settings Submitted:", {
+        selectedTemplate,
+        selectedThemeStyle,
+        selectedAccentColor,
         selectedPrimaryFont,
         selectedSecondaryFont,
         selectedLayoutType,
-        logoFile: logoFile?.name, 
-        bannerFile: bannerFile?.name 
+        logoFile: logoFile?.name,
+        bannerFile: bannerFile?.name
     });
     toast({
       title: "تم حفظ إعدادات تصميم المتجر بنجاح!",
@@ -143,8 +158,16 @@ export default function StoreTemplateSettingsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
-      <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <motion.div
+      className="container mx-auto px-4 py-12 sm:px-6 lg:px-8"
+      initial="hidden"
+      animate="visible"
+      variants={sectionVariants}
+    >
+      <motion.header
+        className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+        variants={itemVariants} custom={0}
+      >
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center">
             <LayoutTemplate size={36} className="ml-3 text-accent-yellow" /> تصميم واجهة متجركِ
@@ -155,22 +178,26 @@ export default function StoreTemplateSettingsPage() {
         </div>
         <Link href={`/store/${storeSlug}`} passHref target="_blank">
           <Button variant="outline" className="border-accent-pink text-accent-pink hover:bg-accent-pink/10">
-            <Eye size={18} className="ml-2"/> معاينة المتجر 
+            <Eye size={18} className="ml-2"/> معاينة المتجر
           </Button>
         </Link>
-      </header>
+      </motion.header>
 
       <form onSubmit={handleSubmit} className="space-y-10">
+        <motion.div variants={itemVariants} custom={1}>
         <Card className="shadow-xl border-primary/10">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl text-primary flex items-center"><LayoutTemplate className="ml-2 text-accent-purple" /> اختيار قالب المتجر</CardTitle>
             <CardDescription>كل قالب مصمم ليبرز جمال منتجاتك وخدماتك بطريقة فريدة.</CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {availableTemplates.map((template) => (
-                <Card 
-                  key={template.id} 
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              variants={{visible: {transition: {staggerChildren: 0.05 }}}}
+            >
+              {availableTemplates.map((template, index) => (
+                <motion.div key={template.id} custom={index} variants={itemVariants}>
+                <Card
                   className={`cursor-pointer transition-all hover:shadow-2xl ${selectedTemplate === template.id ? 'ring-2 ring-offset-2' : 'border-border/30'} rounded-xl`}
                   onClick={() => setSelectedTemplate(template.id)}
                   style={selectedTemplate === template.id ? {borderColor: selectedAccentColor || 'hsl(var(--primary))', ringColor: selectedAccentColor || 'hsl(var(--primary))'} : {}}
@@ -182,7 +209,7 @@ export default function StoreTemplateSettingsPage() {
                       </div>
                     )}
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <template.icon size={20} style={{color: selectedTemplate === template.id ? selectedAccentColor : 'hsl(var(--primary))'}} /> 
+                      <template.icon size={20} style={{color: selectedTemplate === template.id ? selectedAccentColor : 'hsl(var(--primary))'}} />
                       {template.name}
                     </CardTitle>
                   </CardHeader>
@@ -190,11 +217,14 @@ export default function StoreTemplateSettingsPage() {
                     <p className="text-xs text-muted-foreground">{template.description}</p>
                   </CardContent>
                 </Card>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div variants={itemVariants} custom={2}>
         <Card className="shadow-xl border-primary/10">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl text-primary flex items-center"><Palette className="ml-2 text-accent-pink" /> تخصيص مظهر المتجر</CardTitle>
@@ -275,7 +305,9 @@ export default function StoreTemplateSettingsPage() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div variants={itemVariants} custom={3}>
         <CardFooter className="border-t pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-card mt-10 pb-8">
             <p className="text-sm text-muted-foreground">
                 اختاري القالب أولاً، ثم خصصي الألوان والهوية البصرية لمتجرك.
@@ -289,8 +321,8 @@ export default function StoreTemplateSettingsPage() {
             </Button>
           </div>
         </CardFooter>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 }
-```
