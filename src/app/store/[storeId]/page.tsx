@@ -2,7 +2,7 @@
 'use client';
 
 import React, {useEffect, useState, useMemo, Suspense} from 'react';
-import {useParams, useRouter as useNavigationRouter } from 'next/navigation'; // Renamed useRouter to useNavigationRouter
+import {useParams, useRouter as useNavigationRouter } from 'next/navigation'; 
 import Image from 'next/image';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
@@ -88,7 +88,7 @@ import {
   type ItemType as PublicItemType,
   type StoreType,
   type Review
-} from '@/lib/data/mock-store-data';
+} from '@/lib/data/mock-store-data'; // Corrected import path
 import { motion, type MotionProps } from 'framer-motion';
 
 
@@ -115,7 +115,13 @@ const itemVariants: MotionProps = {
 
 
 const StoreLoadingSkeleton = () => (
-  <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+  <motion.div 
+    className="container mx-auto px-4 py-12 sm:px-6 lg:px-8"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.3 }}
+  >
     <div className="animate-pulse">
       <Skeleton className="h-48 md:h-64 lg:h-80 w-full rounded-lg mb-8" />
       <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-16 md:-mt-20 relative z-10">
@@ -162,7 +168,7 @@ const StoreLoadingSkeleton = () => (
       </div>
        <Skeleton className="h-52 w-full rounded-lg mb-10" />
     </div>
-  </div>
+  </motion.div>
 );
 
 const StorePage = () => {
@@ -187,10 +193,9 @@ const StorePage = () => {
         const fetchedStoreData = getStoreDataById(storeId);
         if (fetchedStoreData) {
           setStoreData(fetchedStoreData);
-          console.log(`Store ID: ${storeId}, Type: ${fetchedStoreData.storeType}, Theme: ${fetchedStoreData.themeStyle}, Accent: ${fetchedStoreData.accentColor}`);
         } else {
           console.warn(`Store with ID ${storeId} not found.`);
-          setStoreData(null);
+          setStoreData(null); 
         }
         setIsLoading(false);
       }, 700);
@@ -250,14 +255,10 @@ const StorePage = () => {
 
 
   const handleShowAllFromCollection = (collection: FeaturedCollection) => {
-    // This would typically navigate to a filtered view of this store's products/services
-    // For now, it's a toast message.
     toast({
       title: 'جاري التوجيه...',
       description: `سيتم عرض كل "${collection.name}" من متجر ${storeData?.name}. (قيد التطوير)`,
     });
-    // Example navigation (if a general products page supports store filtering)
-    // router.push(`/products?storeId=${storeData?.id}&type=${collection.type}`);
   };
 
   const getStoreTypeSpecificIcon = (type?: StoreType): React.ElementType<LucideProps> => {
@@ -294,7 +295,7 @@ const StorePage = () => {
       className={cn(
         "min-h-screen transition-colors duration-500",
         storeThemeStyle === 'light' && "bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50 text-foreground",
-        storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-100",
+        storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-100", // Updated from bg-slate-50
         storeThemeStyle === 'playful' && "bg-yellow-50 text-yellow-900",
         storeThemeStyle === 'modern-minimal' && "bg-gray-100 text-gray-800",
         storeThemeStyle === 'dark' && "bg-gray-900 text-gray-200"
@@ -306,7 +307,7 @@ const StorePage = () => {
       <motion.header className="relative group" variants={itemVariants}>
         <div className="h-48 md:h-64 lg:h-80 w-full overflow-hidden">
           <Carousel
-            plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
+            plugins={storeData.bannerImages.length > 1 ? [Autoplay({ delay: 5000, stopOnInteraction: false })] : []}
             opts={{ loop: storeData.bannerImages.length > 1 }}
             className="h-full w-full"
             setApi={setCarouselApi}
@@ -352,9 +353,6 @@ const StorePage = () => {
                 {storeData.name}
               </h1>
               {storeData.slogan && <p className="mt-1 text-md md:text-lg" style={{ color: storeThemeStyle === 'elegant' || storeThemeStyle === 'dark' ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground))'}}>{storeData.slogan}</p>}
-               <p className="text-xs text-muted-foreground mt-1">
-                Type: {storeData.storeType} | Theme: {storeData.themeStyle}
-              </p>
               <div className="mt-2 flex items-center justify-center md:justify-start gap-2">
                 <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
                   <StoreTypeSpecificIcon className="w-4 h-4" />

@@ -45,6 +45,7 @@ export interface Product {
   };
   discountPercentage?: string; // For sales
   originalPriceDisplay?: string; // For sales with discount
+  ingredients?: string[]; // For bakery items
 }
 
 export interface Service {
@@ -67,6 +68,7 @@ export interface Service {
   tags?: string[];
   averageRating?: number; // Add rating possibility for services
   reviewCount?: number; // Add review count for services
+  stylistName?: string; // For salon services
 }
 
 
@@ -84,7 +86,7 @@ export interface StoreData {
   dataAiHintLogo: string;
   bannerImages: string[];
   dataAiHintBanner: string[];
-  heroImages?: string[]; // Optional
+  heroImages?: string[]; 
   products: Product[];
   services?: Service[];
   storeType: StoreType;
@@ -112,12 +114,12 @@ export interface StoreData {
     shippingPolicy?: string;
     customPolicy?: { title: string, content: string };
   };
-  productTypes: ProductTypeCollection[]; // Categories of products/services offered by the store
+  productTypes: ProductTypeCollection[]; 
   openingHours?: string[];
   specialAnnouncements?: string[];
-  featuredProductIds?: string[]; // IDs of products to feature on store homepage
-  featuredServiceIds?: string[]; // IDs of services to feature
-  reviews?: Review[]; // Add reviews to store data
+  featuredProductIds?: string[]; 
+  featuredServiceIds?: string[]; 
+  reviews?: Review[]; 
 }
 
 const commonProducts: Product[] = [
@@ -136,8 +138,8 @@ const commonProducts: Product[] = [
     isNew: true,
     dataAiHint: 'scented candles gift',
     images: ['https://picsum.photos/seed/candleset/800/600', 'https://picsum.photos/seed/candlelav/800/600', 'https://picsum.photos/seed/candlevan/800/600'],
-    sellerId: 'lamsa-ibdaa', // Will be overridden by the specific store
-    storeSlug: 'lamsa-ibdaa', // Will be overridden
+    sellerId: 'lamsa-ibdaa', 
+    storeSlug: 'lamsa-ibdaa', 
     tags: ['شموع', 'هدايا', 'ديكور', 'استرخاء', 'صويا'],
     availability: 'متوفر',
     sku: 'LD-SC-SET3-LVFS',
@@ -157,8 +159,8 @@ const commonProducts: Product[] = [
     isBestseller: true,
     dataAiHint: 'leather handbag fashion',
     images: ['https://picsum.photos/seed/leatherbag/800/600', 'https://picsum.photos/seed/bagdetail/800/600', 'https://picsum.photos/seed/bagmodel/800/600'],
-    sellerId: 'anaqa-lilijar', // Default, might be sold by fashion stores too
-    storeSlug: 'anaqa-lilijar', // Default
+    sellerId: 'anaqa-lilijar', 
+    storeSlug: 'anaqa-lilijar', 
     tags: ['حقيبة', 'جلد طبيعي', 'أزياء', 'نسائية', 'عملية'],
     availability: 'متوفر',
     sku: 'ANQ-HB-LTHR-BLK',
@@ -168,7 +170,7 @@ const commonProducts: Product[] = [
 export const mockStoreDetails: StoreData[] = [
   // Store 1: Crafts Store (Lamsa Ibdaa) - using 'lamsa-ibdaa' as ID (slug)
   {
-    id: 'lamsa-ibdaa', // This is the storeSlug
+    id: 'lamsa-ibdaa', 
     name: 'لمسة إبداع نادية',
     slogan: 'حيث تتحول الخيوط والألوان إلى فن يروي قصصًا.',
     story: 'منذ صغري وأنا أعشق الألوان وتفاصيل الحرف اليدوية. "لمسة إبداع" هي مساحتي التي أشارك فيها هذا الشغف من خلال قطع فنية فريدة مصنوعة بحب وإتقان، كل قطعة تحمل جزءًا من روحي. أهدف لإضفاء لمسة جمال وفرح على حياتكم اليومية.',
@@ -242,7 +244,7 @@ export const mockStoreDetails: StoreData[] = [
         sku: 'LD-ART-OIL-SPRFL',
       },
        {
-        id: 'lamsa-prod4', // Added previously for seller dashboard
+        id: 'lamsa-prod4', 
         name: 'مفرش طاولة كروشيه دائري',
         description: 'مفرش طاولة دائري أنيق مصنوع بدقة بالكروشيه.',
         longDescription: 'مفرش طاولة دائري أنيق مصنوع بدقة بالكروشيه، يضفي لمسة تقليدية ودافئة على ديكور منزلك. قطر 60 سم. لون بيج طبيعي.',
@@ -259,7 +261,7 @@ export const mockStoreDetails: StoreData[] = [
         sku: 'LD-TBL-CRCHT-RND60',
       },
        {
-        id: 'lamsa-prod5', // Added previously for seller dashboard
+        id: 'lamsa-prod5', 
         name: 'حقيبة يد كروشيه عملية',
         description: 'حقيبة يد كروشيه عملية وأنيقة، مثالية للاستخدام اليومي.',
         longDescription: 'حقيبة يد كروشيه عملية وأنيقة، مثالية للاستخدام اليومي. مبطنة من الداخل وبحزام كتف مريح وقابل للتعديل. لون أزرق داكن.',
@@ -270,7 +272,7 @@ export const mockStoreDetails: StoreData[] = [
         sellerId: 'lamsa-ibdaa',
         storeSlug: 'lamsa-ibdaa',
         tags: ['حقيبة', 'كروشيه', 'يدوي', 'أزياء'],
-        availability: 'نفذ المخزون', // Example of out of stock
+        availability: 'نفذ المخزون', 
         sku: 'LD-BAG-CRCHT-NVY',
       },
     ],
@@ -297,7 +299,7 @@ export const mockStoreDetails: StoreData[] = [
         reviewCount: 15,
       },
        {
-        id: 'lamsa-serv2', // Added previously for seller dashboard
+        id: 'lamsa-serv2', 
         name: 'تصميم شعار يدوي لعلامة تجارية',
         description: 'خدمة تصميم شعار فريد بلمسة فنية يدوية (رقمي أو مرسوم).',
         longDescription: 'هل تبحثين عن شعار فريد يعبر عن علامتك التجارية؟ نقدم خدمة تصميم شعارات بلمسة فنية يدوية تمزج بين الأصالة والإبداع. سيتم تصميم الشعار بناءً على رؤيتك ومتطلباتك، مع تقديم 3 نماذج أولية ومراجعتين. النسخة النهائية رقمية.',
@@ -317,10 +319,10 @@ export const mockStoreDetails: StoreData[] = [
       }
     ],
     storeType: 'crafts',
-    accentColor: 'hsl(var(--accent-purple))', // Purple for crafts
+    accentColor: 'hsl(var(--accent-purple))', 
     themeStyle: 'playful',
     rating: 4.8,
-    reviewsCount: 195, // Sum of product/service reviews
+    reviewsCount: 195, 
     sellerName: 'نادية كريم',
     sellerAvatar: 'https://picsum.photos/seed/nadia/100/100',
     dataAiHintSellerAvatar: 'woman artist smiling',
@@ -343,9 +345,8 @@ export const mockStoreDetails: StoreData[] = [
     ]
   },
 
-  // Store 2: Bakery Store (Mathaq AlBayt) - using 'mathaq-albayt' as ID (slug)
   {
-    id: 'mathaq-albayt', // This is the storeSlug
+    id: 'mathaq-albayt', 
     name: 'مذاق البيت مع سارة',
     slogan: 'حلويات تقليدية وعصرية تُحضّر بحب وجودة تليق بكم.',
     story: 'ورثت حب الطهي والحلويات من جدتي، وأضفت إليه لمستي الخاصة. في "مذاق البيت"، أقدم لكم أشهى الحلويات المصنوعة من أجود المكونات الطبيعية، كأنها أُعدت في منزلكم. كل قطعة هي دعوة لتذوق السعادة.',
@@ -364,9 +365,9 @@ export const mockStoreDetails: StoreData[] = [
         name: 'كيكة العسل الروسية الأصلية',
         description: 'طبقات رقيقة من كيك العسل مع كريمة الزبدة الغنية، تحفة فنية.',
         longDescription: 'طبقات رقيقة متعددة من كيك العسل الرقيق مع كريمة الزبدة الغنية والقشطة، تحفة فنية تذوب في الفم. مثالية للمناسبات الخاصة والاحتفالات العائلية. تكفي 8-10 أشخاص.',
-        price: '6,000 دج',
-        originalPriceDisplay: '6,500 دج', // Example for deal display
-        discountPercentage: '8', // Example discount
+        price: '5,520 دج', // Price after 8% discount
+        originalPriceDisplay: '6,000 دج', 
+        discountPercentage: '8', 
         rawPrice: 6000,
         imageSrc: 'https://picsum.photos/seed/honeycake/400/300',
         category: 'كيك ومناسبات',
@@ -382,6 +383,7 @@ export const mockStoreDetails: StoreData[] = [
         availability: 'متوفر',
         preparationTime: 'يحتاج يوم للتجهيز',
         sku: 'MB-CK-HNY-RU',
+        ingredients: ['دقيق', 'عسل طبيعي', 'زبدة', 'بيض', 'كريمة حامضة', 'سكر']
       },
       {
         id: 'mathaq-prod2',
@@ -400,6 +402,7 @@ export const mockStoreDetails: StoreData[] = [
         tags: ['معمول', 'تمر', 'جوز', 'فستق', 'حلويات عربية', 'عيد'],
         availability: 'متوفر',
         sku: 'MB-SWT-MML-MIX24',
+        ingredients: ['سميد', 'سمن بلدي', 'تمر', 'جوز', 'فستق حلبي', 'سكر', 'ماء ورد']
       },
        {
         id: 'mathaq-prod3',
@@ -419,6 +422,7 @@ export const mockStoreDetails: StoreData[] = [
         tags: ['بقلاوة', 'مكسرات', 'عسل', 'حلويات تقليدية', 'صينية'],
         availability: 'متوفر',
         sku: 'MB-SWT-BKLV-MIX1KG',
+        ingredients: ['عجين الفيلو', 'فستق', 'جوز', 'لوز', 'سمن', 'عسل', 'سكر']
       }
     ],
     services: [
@@ -445,10 +449,10 @@ export const mockStoreDetails: StoreData[] = [
       }
     ],
     storeType: 'bakery',
-    accentColor: 'hsl(35, 85%, 60%)', // Warm Orange for bakery
-    themeStyle: 'light', // Example theme style
+    accentColor: 'hsl(35, 85%, 60%)', 
+    themeStyle: 'light', 
     rating: 4.9,
-    reviewsCount: 307, // Sum of product/service reviews
+    reviewsCount: 307, 
     sellerName: 'سارة عبدالله',
     sellerAvatar: 'https://picsum.photos/seed/sara/100/100',
     dataAiHintSellerAvatar: 'woman baker smiling',
@@ -474,9 +478,8 @@ export const mockStoreDetails: StoreData[] = [
     ]
   },
 
-  // Store 3: Fashion Rental (Anaqa Lilijar) - using 'anaqa-lilijar' as ID (slug)
   {
-    id: 'anaqa-lilijar', // This is the storeSlug
+    id: 'anaqa-lilijar', 
     name: 'أناقة للإيجار مع ليلى',
     slogan: 'فساتين سهرة وعبايات فاخرة لمناسباتكِ التي لا تُنسى.',
     story: 'أؤمن بأن كل امرأة تستحق أن تتألق في مناسباتها الخاصة دون الحاجة لإنفاق الكثير. "أناقة للإيجار" يوفر لكِ تشكيلة متنوعة من فساتين السهرة والعبايات الراقية بتصاميم عصرية وكلاسيكية. مهمتنا هي أن نجعلكِ تشعرين بالثقة والجمال في كل خطوة.',
@@ -496,8 +499,8 @@ export const mockStoreDetails: StoreData[] = [
         name: 'فستان سهرة ذهبي مطرز فاخر',
         description: 'فستان طويل بقصة حورية البحر، مطرز بالكامل بالترتر الذهبي.',
         longDescription: 'فستان طويل بقصة حورية البحر، مطرز بالكامل بالترتر الذهبي، مثالي للسهرات الفخمة وحفلات الزفاف. يأتي مع شال مطابق. خدمة التعديل البسيط متوفرة (لا يشمل التقصير الدائم).',
-        price: '12,000 دج / 3 أيام', // Adjusted display price
-        rawPrice: 12000, // Base price for the period
+        price: '12,000 دج / 3 أيام', 
+        rawPrice: 12000, 
         imageSrc: 'https://picsum.photos/seed/golddress/400/300',
         category: 'فساتين سهرة راقية',
         type: 'إيجار',
@@ -550,11 +553,11 @@ export const mockStoreDetails: StoreData[] = [
         sku: 'ANQ-CFTN-GRNVLV-RENT',
       },
     ],
-    storeType: 'fashion', // Or 'rental'
-    accentColor: 'hsl(var(--accent-pink))', // Pink for fashion/rental
-    themeStyle: 'elegant', // Example theme
+    storeType: 'fashion', 
+    accentColor: 'hsl(var(--accent-pink))', 
+    themeStyle: 'elegant', 
     rating: 4.7,
-    reviewsCount: 215, // Sum of product reviews
+    reviewsCount: 215, 
     sellerName: 'ليلى الشريف',
     sellerAvatar: 'https://picsum.photos/seed/laila/100/100',
     dataAiHintSellerAvatar: 'woman fashion designer stylish',
@@ -575,9 +578,8 @@ export const mockStoreDetails: StoreData[] = [
     ]
   },
 
-  // Store 4: Beauty Salon (Salon Farah) - using 'salon-farah' as ID (slug)
   {
-    id: 'salon-farah', // This is the storeSlug
+    id: 'salon-farah', 
     name: 'صالون فرح للتجميل والعناية',
     slogan: 'جمالك يبدأ من هنا... عناية فائقة ولمسات احترافية تبرز تألقك.',
     story: 'في صالون فرح، نؤمن بأن الجمال الحقيقي ينبع من الثقة بالنفس. فريقنا من الخبيرات مستعد لتقديم أفضل خدمات العناية بالشعر، البشرة، والمكياج لتبرزي أجمل ما فيكِ في جو من الراحة والاسترخاء. نستخدم منتجات عالية الجودة ونهتم بأدق التفاصيل لضمان رضاكِ التام.',
@@ -636,8 +638,8 @@ export const mockStoreDetails: StoreData[] = [
         description: 'نقدم أحدث قصات الشعر التي تناسب شكل وجهك ونوع شعرك.',
         longDescription: 'نقدم أحدث قصات الشعر التي تناسب شكل وجهك ونوع شعرك، مع تصفيف متقن يدوم طويلاً ويبرز جمالك الطبيعي. يشمل الاستشارة، الغسيل الفاخر، والقص الدقيق، والتصفيف النهائي (سيشوار أو تجعيد خفيف).',
         price: 'ابتداءً من 2,500 دج',
-        rawPrice: 2500, // Starting price
-        priceType: 'حسب_الطلب', // Price varies
+        rawPrice: 2500, 
+        priceType: 'حسب_الطلب', 
         duration: '60-90 دقيقة',
         category: 'خدمات الشعر',
         type: 'خدمة',
@@ -650,15 +652,16 @@ export const mockStoreDetails: StoreData[] = [
         tags: ['قص شعر', 'تصفيف', 'صبغة', 'صالون نسائي', 'ستايل'],
         averageRating: 4.9,
         reviewCount: 75,
+        stylistName: 'مدام فرح'
       },
       {
         id: 'farah-serv2',
         name: 'علاج بروتين وكيراتين للشعر التالف',
         description: 'أعيدي الحيوية واللمعان والنعومة لشعرك مع علاجاتنا المتخصصة.',
         longDescription: 'أعيدي الحيوية واللمعان والنعومة لشعرك مع علاجاتنا المتخصصة بالبروتين والكيراتين البرازيلي الأصلي التي تصلح التلف وتقوي الخصلات من الجذور. نتائج تدوم طويلاً ومظهر صحي وجذاب.',
-        price: '9,000 - 18,000 دج', // Price range
-        rawPrice: 9000, // Starting price
-        priceType: 'حسب_الطلب', // Depends on hair
+        price: '9,000 - 18,000 دج', 
+        rawPrice: 9000, 
+        priceType: 'حسب_الطلب', 
         duration: '2-3.5 ساعات',
         category: 'علاجات الشعر',
         type: 'خدمة',
@@ -671,6 +674,7 @@ export const mockStoreDetails: StoreData[] = [
         tags: ['بروتين شعر', 'كيراتين', 'علاج الشعر', 'شعر تالف', 'نعومة'],
         averageRating: 4.8,
         reviewCount: 55,
+        stylistName: 'خبيرة العناية بالشعر - ليلى'
       },
       {
         id: 'farah-serv3',
@@ -692,6 +696,7 @@ export const mockStoreDetails: StoreData[] = [
         tags: ['مكياج سهرة', 'مكياج احترافي', 'مناسبات', 'تجميل', 'كونتور'],
         averageRating: 5.0,
         reviewCount: 30,
+        stylistName: 'خبيرة المكياج - ريم'
       },
       {
         id: 'farah-serv4',
@@ -713,13 +718,14 @@ export const mockStoreDetails: StoreData[] = [
         tags: ['تنظيف بشرة', 'عناية بالوجه', 'سبا', 'نضارة', 'بخار'],
         averageRating: 4.7,
         reviewCount: 20,
+        stylistName: 'خبيرة البشرة - سناء'
       },
     ],
     storeType: 'salon',
-    accentColor: 'hsl(330, 70%, 65%)', // Vibrant Pink for salon
-    themeStyle: 'modern-minimal', // Example theme
+    accentColor: 'hsl(330, 70%, 65%)', 
+    themeStyle: 'modern-minimal', 
     rating: 4.9,
-    reviewsCount: 180, // Sum of product/service reviews
+    reviewsCount: 180, 
     sellerName: 'فرح حسين',
     sellerAvatar: 'https://picsum.photos/seed/farah/100/100',
     dataAiHintSellerAvatar: 'woman beautician smiling elegant',
@@ -744,10 +750,8 @@ export const mockStoreDetails: StoreData[] = [
         { id: 'r11', authorName: 'هدى م.', rating: 4, comment: 'زيت الأرغان رائع جدًا، شعري أصبح أكثر نعومة ولمعانًا.', date: '2024-05-09T09:00:00Z', itemId: 'farah-prod1', storeId: 'salon-farah'},
     ]
   },
-
-  // Store 5: General Store (Souq Albanat) - using 'souq-albanat' as ID (slug)
   {
-    id: 'souq-albanat', // This is the storeSlug
+    id: 'souq-albanat', 
     name: 'سوق البنات المتنوع',
     slogan: 'كل ما تحتاجينه في مكان واحد... وأكثر!',
     story: 'سوق البنات هو وجهتكِ الأولى لكل ما هو جديد ومميز. نجمع لكِ بين المنتجات اليدوية، الأزياء العصرية، مستلزمات المنزل الأنيقة، وحتى الخدمات الفريدة. هدفنا توفير تجربة تسوق ممتعة وشاملة تلبي جميع اهتماماتك.',
@@ -825,9 +829,9 @@ export const mockStoreDetails: StoreData[] = [
         name: 'خدمة تغليف الهدايا بشكل احترافي',
         description: 'اجعلي هديتك أكثر تميزًا مع خدمة تغليف احترافية ومبتكرة.',
         longDescription: 'نقدم خدمة تغليف هدايا احترافية لجميع المناسبات. اختاري من بين مجموعة متنوعة من أوراق التغليف الفاخرة، الشرائط الملونة، والبطاقات المعبرة، ودعينا نضيف لمسة سحرية لهديتكِ لجعلها لا تُنسى.',
-        price: '500 دج - 1500 دج', // Price range
-        rawPrice: 500, // Starting price
-        priceType: 'حسب_الطلب', // Depends on size/materials
+        price: '500 دج - 1500 دج', 
+        rawPrice: 500, 
+        priceType: 'حسب_الطلب', 
         duration: '15-30 دقيقة',
         category: 'خدمات عامة',
         type: 'خدمة',
@@ -843,10 +847,10 @@ export const mockStoreDetails: StoreData[] = [
       }
     ],
     storeType: 'general',
-    accentColor: 'hsl(180, 70%, 50%)', // Teal for general store
-    themeStyle: 'light', // Example theme
+    accentColor: 'hsl(180, 70%, 50%)', 
+    themeStyle: 'light', 
     rating: 4.6,
-    reviewsCount: 205, // Sum of product/service reviews
+    reviewsCount: 205, 
     sellerName: 'فريق سوق البنات',
     sellerAvatar: 'https://picsum.photos/seed/souqavatar/100/100',
     dataAiHintSellerAvatar: 'group diverse women smiling',
@@ -872,150 +876,109 @@ export const mockStoreDetails: StoreData[] = [
   }
 ];
 
-// --- Functions for Public Store Pages ---
+// Type alias for public item
+export type ItemType = Product | Service;
 
-// Function to get store data by ID (slug)
+
 export const getStoreDataById = (storeId: string): StoreData | undefined => {
   return mockStoreDetails.find(store => store.id === storeId);
 };
 
-// Function to get a specific product by its ID (looking across all stores)
 export const getProductById = (productId: string): Product | undefined => {
   for (const store of mockStoreDetails) {
     const product = store.products.find(p => p.id === productId);
-    if (product) return { ...product, sellerId: store.id, storeSlug: store.id }; // Add sellerId and storeSlug
+    if (product) return { ...product, sellerId: store.id, storeSlug: store.id };
   }
   return undefined;
 };
 
-// Function to get a specific service by its ID (looking across all stores)
 export const getServiceById = (serviceId: string): Service | undefined => {
     for (const store of mockStoreDetails) {
         if (store.services) {
             const service = store.services.find(s => s.id === serviceId);
-            if (service) return { ...service, sellerId: store.id, storeSlug: store.id }; // Add sellerId and storeSlug
+            if (service) return { ...service, sellerId: store.id, storeSlug: store.id }; 
         }
     }
     return undefined;
 };
 
-// Function to get all products from all stores for the main products page
 export const getAllPlatformProducts = (): Product[] => {
     return mockStoreDetails.reduce((acc, store) => {
         const storeProducts = store.products.map(p => ({
             ...p,
-            sellerId: store.id, // Ensure sellerId is present
-            storeSlug: store.id  // Ensure storeSlug is present
+            sellerId: store.id, 
+            storeSlug: store.id  
         }));
         return acc.concat(storeProducts);
     }, [] as Product[]);
 };
 
-// Function to get all services from all stores for the main products page
 export const getAllPlatformServices = (): Service[] => {
     return mockStoreDetails.reduce((acc, store) => {
         const storeServices = (store.services || []).map(s => ({
             ...s,
-            sellerId: store.id, // Ensure sellerId is present
-            storeSlug: store.id  // Ensure storeSlug is present
+            sellerId: store.id, 
+            storeSlug: store.id  
         }));
         return acc.concat(storeServices);
     }, [] as Service[]);
 };
 
-// Function to get all products for a specific store ID (slug) for the store page
 export const getProductsByStoreId = (storeId: string): Product[] => {
   const store = mockStoreDetails.find(s => s.id === storeId);
   return store ? store.products.map(p => ({ ...p, sellerId: store.id, storeSlug: store.id })) : [];
 };
 
-// Function to get all services for a specific store ID (slug) for the store page
 export const getServicesByStoreId = (storeId: string): Service[] => {
   const store = mockStoreDetails.find(s => s.id === storeId);
   return store && store.services ? store.services.map(s => ({ ...s, sellerId: store.id, storeSlug: store.id })) : [];
 };
 
 
-// --- Seller Dashboard Specific Data ---
-// Note: The seller dashboard only needs data for *one* specific seller.
-// We'll use 'lamsa-ibdaa' as the example seller for the dashboard data.
-
 export type SellerProductStatus = 'نشط' | 'غير نشط' | 'بانتظار الموافقة' | 'نفذ المخزون';
 
-export interface DetailedSellerProduct {
-  id: string;
-  name: string;
-  productType: ProductType; // Use the global ProductType
-  category: string;
-  detailsForAI: string; // For AI description generation
-  description: string; // Main description for display
-  story?: string; // Optional seller's story about the product
-  price: string; // Raw price string for seller input (might differ from public display)
-  stock?: string; // For 'بيع'
-  discountPercentage?: string; // For 'بيع'
-  isTaxable?: boolean; // For 'بيع'
-  rentalPrice?: string; // For 'إيجار'
-  rentalPeriod?: 'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'; // For 'إيجار'
-  rentalDeposit?: string; // For 'إيجار'
-  rentalAvailability?: string; // For 'إيجار'
-  servicePriceType?: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'; // For 'خدمة'
-  servicePrice?: string; // Service price value for seller input
-  serviceDuration?: string; // For 'خدمة'
-  serviceLocation?: string; // For 'خدمة'
-  imageSrc: string; // Primary image
-  images?: string[]; // Additional images
-  dataAiHint: string;
-  dateAdded: string; // ISO date string
-  status: SellerProductStatus;
-  sku?: string;
-  tags?: string[];
-  preparationTime?: string;
-}
 
+const lamsaIbdaaStoreForDashboard = mockStoreDetails.find(store => store.id === 'lamsa-ibdaa');
 
-// Filter mockStoreDetails to get only 'lamsa-ibdaa' data for the dashboard
-const lamsaIbdaaStore = mockStoreDetails.find(store => store.id === 'lamsa-ibdaa');
-
-// Map products and services from the specific store to DetailedSellerProduct format
-const lamsaIbdaaProducts: DetailedSellerProduct[] = lamsaIbdaaStore ? lamsaIbdaaStore.products.map(p => ({
+const lamsaIbdaaProductsForDashboard: DetailedSellerProduct[] = lamsaIbdaaStoreForDashboard ? lamsaIbdaaStoreForDashboard.products.map(p => ({
   id: p.id,
   name: p.name,
   productType: p.type,
   category: p.category,
-  detailsForAI: `${p.name}, ${p.category}, ${p.tags?.join(', ')}, ${p.description.substring(0, 50)}...`, // Example AI details
+  detailsForAI: `${p.name}, ${p.category}, ${p.tags?.join(', ')}, ${p.description.substring(0, 50)}...`, 
   description: p.longDescription || p.description,
-  story: lamsaIbdaaStore.story || '', // Seller story can be generic or per product
-  price: p.rawPrice?.toString() || '', // Use rawPrice for seller input if available
-  stock: p.type === 'بيع' ? (Math.floor(Math.random() * 50) + 1).toString() : undefined, // Random stock for demo
+  story: lamsaIbdaaStoreForDashboard.story || '', 
+  price: p.rawPrice?.toString() || '', 
+  stock: p.type === 'بيع' ? (Math.floor(Math.random() * 50) + 1).toString() : undefined, 
   discountPercentage: p.discountPercentage,
-  isTaxable: Math.random() < 0.2, // Random taxable for demo
+  isTaxable: Math.random() < 0.2, 
   rentalPrice: p.type === 'إيجار' ? p.rawPrice?.toString() : undefined,
   rentalPeriod: p.rentalTerms?.period,
   rentalDeposit: p.rentalTerms?.deposit,
-  rentalAvailability: p.availability, // Use general availability for rental notes initially
-  servicePriceType: undefined, // Not a service
+  rentalAvailability: p.availability, 
+  servicePriceType: undefined, 
   servicePrice: undefined,
   serviceDuration: undefined,
   serviceLocation: undefined,
   imageSrc: p.imageSrc,
   images: p.images,
   dataAiHint: p.dataAiHint,
-  dateAdded: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(), // Random date within last 30 days
-  status: p.availability === 'نفذ المخزون' ? 'نفذ المخزون' : (Math.random() < 0.1 ? 'بانتظار الموافقة' : (Math.random() < 0.15 ? 'غير نشط' : 'نشط')), // Random status
+  dateAdded: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(), 
+  status: p.availability === 'نفذ المخزون' ? 'نفذ المخزون' : (Math.random() < 0.1 ? 'بانتظار الموافقة' : (Math.random() < 0.15 ? 'غير نشط' : 'نشط')), 
   sku: p.sku,
   tags: p.tags,
   preparationTime: p.preparationTime,
 })) : [];
 
-const lamsaIbdaaServices: DetailedSellerProduct[] = lamsaIbdaaStore && lamsaIbdaaStore.services ? lamsaIbdaaStore.services.map(s => ({
+const lamsaIbdaaServicesForDashboard: DetailedSellerProduct[] = lamsaIbdaaStoreForDashboard && lamsaIbdaaStoreForDashboard.services ? lamsaIbdaaStoreForDashboard.services.map(s => ({
   id: s.id,
   name: s.name,
   productType: s.type,
   category: s.category,
   detailsForAI: `${s.name}, ${s.category}, ${s.tags?.join(', ')}, ${s.description.substring(0, 50)}...`,
   description: s.longDescription || s.description,
-  story: lamsaIbdaaStore.story || '',
-  price: '', // Price managed by service fields
+  story: lamsaIbdaaStoreForDashboard.story || '',
+  price: '', 
   stock: undefined,
   discountPercentage: undefined,
   isTaxable: undefined,
@@ -1024,30 +987,26 @@ const lamsaIbdaaServices: DetailedSellerProduct[] = lamsaIbdaaStore && lamsaIbda
   rentalDeposit: undefined,
   rentalAvailability: undefined,
   servicePriceType: s.priceType,
-  servicePrice: s.rawPrice?.toString() || s.price, // Use raw or formatted if raw is unavailable
+  servicePrice: s.rawPrice?.toString() || s.price, 
   serviceDuration: s.duration,
   serviceLocation: s.location,
   imageSrc: s.imageSrc || 'https://picsum.photos/seed/serviceplaceholder/200/200',
   images: s.imageSrc ? [s.imageSrc] : undefined,
   dataAiHint: s.dataAiHint || 'service image',
-  dateAdded: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(), // Random date within last 60 days
+  dateAdded: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(), 
   status: Math.random() < 0.1 ? 'بانتظار الموافقة' : (Math.random() < 0.1 ? 'غير نشط' : 'نشط'),
   sku: `SERV-${s.id.substring(0, 4).toUpperCase()}`,
   tags: s.tags,
   preparationTime: s.availability,
 })) : [];
 
-
-// Combine and export for the seller dashboard
-// Use let instead of const to allow modification by deleteSellerProduct
 // @ts-ignore
 let allSellerProductsList: DetailedSellerProduct[] = [
-    ...lamsaIbdaaProducts,
-    ...lamsaIbdaaServices,
+    ...lamsaIbdaaProductsForDashboard,
+    ...lamsaIbdaaServicesForDashboard,
 ];
 
 
-// Function to get product/service summary for the seller's dashboard list
 export const getSellerProductsSummary = () => allSellerProductsList.map(p => {
   let priceDisplay = '';
   if (p.productType === 'بيع') {
@@ -1081,49 +1040,47 @@ export const getSellerProductsSummary = () => allSellerProductsList.map(p => {
   };
 });
 
-// Function to get a specific product/service *for the seller dashboard* by its ID
 export const getDetailedSellerProductById = (id: string): DetailedSellerProduct | undefined => {
   return allSellerProductsList.find(p => p.id === id);
 };
 
-// Function to simulate updating a product in the seller's list (for demo purposes)
 export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): boolean => {
     const index = allSellerProductsList.findIndex(p => p.id === updatedProduct.id);
     if (index !== -1) {
         allSellerProductsList[index] = updatedProduct;
-        // In a real app, you would also need to update the corresponding item
-        // within the `mockStoreDetails` array if the changes should reflect publicly.
-        const storeIndex = mockStoreDetails.findIndex(s => s.id === updatedProduct.productType); // Assuming productType matches store ID for now
-        if (storeIndex !== -1) {
+        
+        const storeToUpdate = mockStoreDetails.find(s => s.id === (lamsaIbdaaStoreForDashboard?.id || 'lamsa-ibdaa'));
+        if (storeToUpdate) {
             if (updatedProduct.productType === 'خدمة') {
-                const serviceIndex = mockStoreDetails[storeIndex].services?.findIndex(s => s.id === updatedProduct.id);
-                if (serviceIndex !== undefined && serviceIndex !== -1 && mockStoreDetails[storeIndex].services) {
-                   // Map back DetailedSellerProduct to Service format (simplified example)
-                   mockStoreDetails[storeIndex].services![serviceIndex] = {
-                       ...mockStoreDetails[storeIndex].services![serviceIndex],
+                const serviceIndex = storeToUpdate.services?.findIndex(s => s.id === updatedProduct.id);
+                if (serviceIndex !== undefined && serviceIndex !== -1 && storeToUpdate.services) {
+                   storeToUpdate.services[serviceIndex] = {
+                       ...storeToUpdate.services[serviceIndex],
                        name: updatedProduct.name,
-                       description: updatedProduct.description.substring(0, 150), // Shorten for display
+                       description: updatedProduct.description.substring(0, 150), 
                        longDescription: updatedProduct.description,
-                       price: updatedProduct.servicePrice || 'عند الطلب', // Use updated service price
+                       price: updatedProduct.servicePrice || 'عند الطلب', 
+                       priceType: updatedProduct.servicePriceType,
                        category: updatedProduct.category,
                        imageSrc: updatedProduct.imageSrc,
                        tags: updatedProduct.tags,
                        duration: updatedProduct.serviceDuration,
-                       location: updatedProduct.serviceLocation as any, // Cast might be needed
-                       availability: updatedProduct.preparationTime,
+                       location: updatedProduct.serviceLocation as any, 
+                       availability: updatedProduct.preparationTime, 
                    };
                 }
-            } else {
-                const productIndex = mockStoreDetails[storeIndex].products.findIndex(p => p.id === updatedProduct.id);
+            } else { 
+                const productIndex = storeToUpdate.products.findIndex(p => p.id === updatedProduct.id);
                  if (productIndex !== -1) {
-                     // Map back DetailedSellerProduct to Product format (simplified example)
-                     mockStoreDetails[storeIndex].products[productIndex] = {
-                        ...mockStoreDetails[storeIndex].products[productIndex],
+                     storeToUpdate.products[productIndex] = {
+                        ...storeToUpdate.products[productIndex],
                         name: updatedProduct.name,
                         description: updatedProduct.description.substring(0, 150),
                         longDescription: updatedProduct.description,
-                        price: updatedProduct.price ? `${parseInt(updatedProduct.price).toLocaleString()} دج` : '', // Format price
-                        rawPrice: parseInt(updatedProduct.price || '0'),
+                        price: updatedProduct.productType === 'بيع'
+                            ? (updatedProduct.price ? `${parseInt(updatedProduct.price).toLocaleString()} دج` : '')
+                            : (updatedProduct.rentalPrice ? `${parseInt(updatedProduct.rentalPrice).toLocaleString()} دج / ${updatedProduct.rentalPeriod || 'فترة'}` : ''),
+                        rawPrice: parseInt(updatedProduct.productType === 'بيع' ? (updatedProduct.price || '0') : (updatedProduct.rentalPrice || '0')),
                         category: updatedProduct.category,
                         imageSrc: updatedProduct.imageSrc,
                         images: updatedProduct.images,
@@ -1132,6 +1089,7 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
                         sku: updatedProduct.sku,
                         rentalTerms: updatedProduct.productType === 'إيجار' ? { period: updatedProduct.rentalPeriod, deposit: updatedProduct.rentalDeposit, minDuration: 'غير محدد'} : undefined,
                         discountPercentage: updatedProduct.discountPercentage,
+                        preparationTime: updatedProduct.preparationTime,
                      };
                  }
             }
@@ -1141,16 +1099,18 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
     return false;
 };
 
-// Function to simulate deleting a product (for demo)
 export const deleteSellerProduct = (productId: string): boolean => {
     const initialLength = allSellerProductsList.length;
     allSellerProductsList = allSellerProductsList.filter(p => p.id !== productId);
-    // Also remove from public store data
+    
     mockStoreDetails.forEach(store => {
         store.products = store.products.filter(p => p.id !== productId);
         if(store.services) {
             store.services = store.services.filter(s => s.id !== productId);
         }
+         // Update featured IDs
+        store.featuredProductIds = store.featuredProductIds?.filter(id => id !== productId);
+        store.featuredServiceIds = store.featuredServiceIds?.filter(id => id !== productId);
     });
     return allSellerProductsList.length < initialLength;
 };
