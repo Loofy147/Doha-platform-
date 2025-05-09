@@ -1,8 +1,7 @@
-
 // src/components/layout/navbar.tsx
 'use client';
 
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,10 +10,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose 
+  SheetClose
 } from '@/components/ui/sheet';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, ListOrdered, Image as ImageIconLucide } from 'lucide-react'; 
+import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, ListOrdered, Image as ImageIconLucide } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
 
@@ -25,7 +24,7 @@ const navItems = [
   { label: 'انضمي كمبدعة', href: '/sell-with-us', icon: <Store size={16} /> },
   { label: 'باقات الاشتراك', href: '/subscriptions', icon: <Gift size={16} /> },
   { label: 'مدونة لمسة ضحى', href: '/blog', icon: <FileText size={16} /> },
-  { label: 'معرض الصور (تجريبي)', href: '/gallery', icon: <ImageIconLucide size={16} /> }, // Added Gallery Link
+  { label: 'معرض الصور (تجريبي)', href: '/gallery', icon: <ImageIconLucide size={16} /> },
   { label: 'عن لمسة ضحى', href: '/#about', icon: <Info size={16} /> },
   { label: 'تواصل معنا', href: '/#contact', icon: <MessageSquare size={16} /> },
 ];
@@ -37,8 +36,8 @@ const navItemVariants = {
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isLoggedIn = true; 
-  const isSeller = true; 
+  const isLoggedIn = true;
+  const isSeller = true;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,7 +51,7 @@ export function Navbar() {
              <motion.div key={item.label} whileHover="hover" whileTap="tap" variants={navItemVariants}>
                  <Button variant="ghost" asChild>
                     <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground flex items-center px-2 py-2">
-                        {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })} 
+                        {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })}
                         {item.label}
                     </Link>
                  </Button>
@@ -67,7 +66,7 @@ export function Navbar() {
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
                     <Link href="/dashboard" className="flex items-center text-sm">
-                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" /> 
+                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" />
                       لوحة تحكم متجري
                     </Link>
                   </Button>
@@ -76,14 +75,14 @@ export function Navbar() {
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
                     <Link href="/profile" className="flex items-center text-sm">
-                      <UserCircle size={18} className="ml-1.5" /> 
+                      <UserCircle size={18} className="ml-1.5" />
                       حسابي
                     </Link>
                   </Button>
                </motion.div>
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10 text-sm" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
-                    <LogOutIcon size={16} className="ml-1.5" /> 
+                    <LogOutIcon size={16} className="ml-1.5" />
                     تسجيل الخروج
                   </Button>
                </motion.div>
@@ -131,7 +130,7 @@ export function Navbar() {
                            className="justify-start text-base py-2.5"
                          >
                           <Link href={item.href} className="flex items-center">
-                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })} 
+                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })}
                             {item.label}
                           </Link>
                          </Button>
@@ -144,7 +143,7 @@ export function Navbar() {
                            <SheetClose asChild>
                             <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
                                 <Link href="/dashboard" className="flex items-center">
-                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" /> 
+                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" />
                                   لوحة تحكم متجري
                                 </Link>
                             </Button>
@@ -153,21 +152,21 @@ export function Navbar() {
                          <SheetClose asChild>
                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
                              <Link href="/profile" className="flex items-center">
-                                <UserCircle size={18} className="ml-2.5" /> 
+                                <UserCircle size={18} className="ml-2.5" />
                                 حسابي
                              </Link>
                            </Button>
                          </SheetClose>
                           <SheetClose asChild>
                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
-                             <Link href="/order" className="flex items-center"> 
-                                <ListOrdered size={18} className="ml-2.5" /> 
+                             <Link href="/order" className="flex items-center">
+                                <ListOrdered size={18} className="ml-2.5" />
                                 طلباتي
                              </Link>
                            </Button>
                          </SheetClose>
                          <Button variant="outline" className="w-full justify-start text-base py-2.5 mt-4 border-primary text-primary hover:bg-primary/5" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
-                            <LogOutIcon size={18} className="ml-2.5" /> 
+                            <LogOutIcon size={18} className="ml-2.5" />
                             تسجيل الخروج
                          </Button>
                        </>
