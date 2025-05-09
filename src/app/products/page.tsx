@@ -9,46 +9,42 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Eye, Filter, Search, ShoppingBag, CalendarClock, Handshake, PackageSearch } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { getAllPlatformProducts, getAllPlatformServices, type Product as StoreProduct, type Service as StoreService } from '@/lib/data/mock-store-data';
-import type { ProductType } from '@/lib/data/mock-store-data';
+import { getAllPlatformItems, type Product as StoreProduct, type Service as StoreService, type ItemType as PublicItemType } from '@/lib/data/mock-store-data';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { UNIQUE_PRODUCT_CATEGORIES, PRODUCT_TYPES_CONSTANTS, type ProductTypeConstant } from '@/lib/constants/categories';
 
 
 type DisplayItem = (StoreProduct | StoreService) & { itemType: 'product' | 'service' };
 
-const allDisplayItems: DisplayItem[] = [
-  ...getAllPlatformProducts().map(p => ({ ...p, itemType: 'product' as const })),
-  ...getAllPlatformServices().map(s => ({ ...s, itemType: 'service' as const })),
-];
-
-const categories = ['الكل', ...new Set(allDisplayItems.map(p => p.category))];
-const itemTypes: (ProductType | 'الكل')[] = ['الكل', 'بيع', 'إيجار', 'خدمة'];
+const categoriesForFilter = ['الكل', ...UNIQUE_PRODUCT_CATEGORIES];
 
 
 export default function ProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category');
-  const initialType = searchParams.get('type') as ProductType | null;
+  const initialType = searchParams.get('type') as ProductTypeConstant | null;
   const { toast } = useToast();
 
   const [isClient, setIsClient] = useState(false);
-  const [filteredItems, setFilteredItems] = useState<DisplayItem[]>(allDisplayItems);
+  const [filteredItems, setFilteredItems] = useState<DisplayItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'الكل');
-  const [selectedType, setSelectedType] = useState<ProductType | 'الكل'>(initialType || 'الكل');
+  const [selectedType, setSelectedType] = useState<typeof PRODUCT_TYPES_CONSTANTS[number]>(initialType || 'الكل');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<DisplayItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    // Fetch initial items when client-side
+    setFilteredItems(getAllPlatformItems());
   }, []);
 
   useEffect(() => {
-    let items = allDisplayItems;
+    let items = getAllPlatformItems();
     if (selectedCategory !== 'الكل') {
       items = items.filter(p => p.category === selectedCategory);
     }
@@ -75,7 +71,7 @@ export default function ProductsPage() {
   }, [initialCategory, initialType]);
 
   const handleViewDetails = (item: DisplayItem) => {
-    setSelectedProduct(item); // This state variable name should ideally be selectedItem
+    setSelectedItem(item);
     setIsModalOpen(true);
   };
 
@@ -85,15 +81,15 @@ export default function ProductsPage() {
       if (product.discountPercentage && parseInt(product.discountPercentage) > 0 && product.rawPrice) {
         return `${(product.rawPrice * (1 - parseInt(product.discountPercentage) / 100)).toLocaleString()} دج`;
       }
-      return product.price; // Already formatted
+      return product.price; 
     }
     if (item.itemType === 'service') {
-      return (item as StoreService).price; // Already formatted
+      return (item as StoreService).price; 
     }
     return 'السعر غير متوفر';
   };
 
-  const getModalActionText = (type?: ProductType) => {
+  const getModalActionText = (type?: PublicItemType) => {
     switch (type) {
       case 'بيع': return <><ShoppingBag size={18} className="mr-2" /> أضيفي للسلة (قريباً)</>;
       case 'إيجار': return <><CalendarClock size={18} className="mr-2" /> احجزي الآن (قريباً)</>;
@@ -179,7 +175,7 @@ export default function ProductsPage() {
               <SelectValue placeholder="تصفية حسب الفئة" />
             </SelectTrigger>
             <SelectContent>
-              {categories.map(category => (
+              {categoriesForFilter.map(category => (
                 <SelectItem key={category} value={category}>{category}</SelectItem>
               ))}
             </SelectContent>
@@ -187,12 +183,12 @@ export default function ProductsPage() {
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
           <Filter className="h-5 w-5 text-muted-foreground" />
-          <Select value={selectedType} onValueChange={(value: ProductType | 'الكل') => setSelectedType(value)}>
+          <Select value={selectedType} onValueChange={(value) => setSelectedType(value as typeof PRODUCT_TYPES_CONSTANTS[number])}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="تصفية حسب النوع" />
             </SelectTrigger>
             <SelectContent>
-              {itemTypes.map(type => (
+              {PRODUCT_TYPES_CONSTANTS.map(type => (
                 <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
               ))}
             </SelectContent>
@@ -221,8 +217,7 @@ export default function ProductsPage() {
               <CardContent className="p-4 flex flex-col flex-grow">
                 <CardTitle className="text-lg font-semibold text-primary mb-1 line-clamp-2">{item.name}</CardTitle>
                 <CardDescription className="text-xs text-muted-foreground mb-1">
-                  {/* Placeholder for seller name, requires joining data or adjusting DisplayItem */}
-                  مقدم من <Link href={`/store/${item.storeSlug}`} className="text-accent-purple hover:underline">{item.storeSlug}</Link> • {item.category}
+                  مقدم من <Link href={`/store/${item.storeSlug}`} className="text-accent-purple hover:underline">{item.sellerName}</Link> • {item.category}
                 </CardDescription>
                 <span className="text-xs capitalize bg-accent-purple/20 text-accent-purple-foreground px-2 py-0.5 rounded-full self-start mb-2">{item.type}</span>
                 <p className="text-sm text-foreground/80 flex-grow mb-2 line-clamp-3">{item.description}</p>
@@ -265,8 +260,7 @@ export default function ProductsPage() {
               </div>
               <DialogTitle className="text-2xl text-primary">{selectedItem.name}</DialogTitle>
               <p className="text-sm text-muted-foreground">
-                  {/* Placeholder for seller name */}
-                  مقدم من <Link href={`/store/${selectedItem.storeSlug}`} className="text-accent-purple hover:underline">{selectedItem.storeSlug}</Link> • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
+                  مقدم من <Link href={`/store/${selectedItem.storeSlug}`} className="text-accent-purple hover:underline">{selectedItem.sellerName}</Link> • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
               </p>
             </DialogHeader>
             <DialogDescription className="text-base text-foreground/80 text-left py-4 max-h-[200px] overflow-y-auto">

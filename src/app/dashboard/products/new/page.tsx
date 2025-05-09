@@ -1,3 +1,4 @@
+// src/app/dashboard/products/new/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -18,34 +19,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { PackagePlus, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock, Handshake, Layers, DollarSign, ShieldCheck, Percent, Info, Loader2, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow'; // Assuming path is correct
-
-const productCategories = [
-  "أزياء وإكسسوارات",
-  "مستلزمات منزلية وديكور",
-  "جمال وعناية شخصية",
-  "فن ومقتنيات",
-  "حلويات ومأكولات شهية",
-  "حرف يدوية إبداعية",
-  "منتجات للإيجار (فساتين، معدات)",
-  "خدمات (ورش عمل، استشارات، تصميم)",
-  "أخرى",
-];
-
-type ProductType = 'بيع' | 'إيجار' | 'خدمة';
+import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow';
+import { MOCK_CATEGORIES_FOR_FORMS, type ProductTypeConstant } from '@/lib/constants/categories';
 
 export default function AdminAddNewProductPage() {
   const { toast } = useToast();
-  const [productType, setProductType] = useState<ProductType>('بيع');
+  const [productType, setProductType] = useState<ProductTypeConstant>('بيع');
   const [productName, setProductName] = useState('');
+  const [productCategory, setProductCategory] = useState('');
   const [productDetailsForAI, setProductDetailsForAI] = useState('');
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDescriptionManuallyEdited, setIsDescriptionManuallyEdited] = useState(false);
   const [price, setPrice] = useState('');
   const [rentalPrice, setRentalPrice] = useState('');
-  const [rentalPeriod, setRentalPeriod] = useState('يوم');
-  const [servicePriceType, setServicePriceType] = useState('ثابت');
+  const [rentalPeriod, setRentalPeriod] = useState<'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'>('يوم');
+  const [servicePriceType, setServicePriceType] = useState<'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'>('ثابت');
 
 
   const handleGenerateDescription = async () => {
@@ -59,7 +48,7 @@ export default function AdminAddNewProductPage() {
         const input: GenerateProductDescriptionInput = { productDetails: productDetailsForAI };
         const result = await generateProductDescription(input);
         setGeneratedDescription(result.description);
-        setIsDescriptionManuallyEdited(false); // Reset manual edit flag
+        setIsDescriptionManuallyEdited(false);
         toast({ title: "تم توليد الوصف بنجاح!", description: "يمكنكِ تعديل الوصف المقترح أو استخدامه كما هو.", variant: "default"});
     } catch (error) {
         console.error("Error generating description:", error);
@@ -77,12 +66,24 @@ export default function AdminAddNewProductPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Basic validation (can be expanded with Zod or similar)
     if (!productName) {
       toast({ title: "اسم المنتج مطلوب", variant: "destructive" });
       return;
     }
-    // Submit logic here
+    // Submit logic here (e.g., call an API to save the product)
+    // For mock, we just log and show a toast
+    console.log("New product data:", {
+        productName,
+        productType,
+        productCategory,
+        productDetailsForAI,
+        description: generatedDescription,
+        price: productType === 'بيع' ? price : undefined,
+        rentalPrice: productType === 'إيجار' ? rentalPrice : undefined,
+        rentalPeriod: productType === 'إيجار' ? rentalPeriod : undefined,
+        servicePriceType: productType === 'خدمة' ? servicePriceType : undefined,
+        // ... other fields based on type
+    });
     toast({ title: "تم حفظ المنتج/الخدمة بنجاح!", description: `${productName} أصبح الآن جاهزًا للعرض (محاكاة).`, variant: "default" });
     // Reset form or redirect
   };
@@ -100,7 +101,6 @@ export default function AdminAddNewProductPage() {
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Core Product Information */}
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl text-primary flex items-center"><Tag className="ml-2 text-accent-purple" /> المعلومات الأساسية</CardTitle>
@@ -113,7 +113,7 @@ export default function AdminAddNewProductPage() {
             </div>
             <div>
               <Label htmlFor="productType">نوع العرض</Label>
-              <Select value={productType} onValueChange={(value: ProductType) => setProductType(value)}>
+              <Select value={productType} onValueChange={(value: ProductTypeConstant) => setProductType(value)}>
                 <SelectTrigger id="productType">
                   <SelectValue placeholder="اختاري نوع العرض" />
                 </SelectTrigger>
@@ -126,13 +126,13 @@ export default function AdminAddNewProductPage() {
             </div>
             <div className="md:col-span-2">
               <Label htmlFor="productCategory">الفئة الرئيسية للمنتج/الخدمة</Label>
-              <Select>
+              <Select value={productCategory} onValueChange={setProductCategory}>
                 <SelectTrigger id="productCategory">
                   <SelectValue placeholder="اختاري الفئة المناسبة" />
                 </SelectTrigger>
                 <SelectContent>
-                  {productCategories.map(category => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  {MOCK_CATEGORIES_FOR_FORMS.map(category => (
+                    <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -140,7 +140,6 @@ export default function AdminAddNewProductPage() {
           </CardContent>
         </Card>
         
-        {/* Product Description & Story */}
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-xl text-primary flex items-center"><FileText className="ml-2 text-accent-pink" /> الوصف وقصة المنتج</CardTitle>
@@ -189,7 +188,6 @@ export default function AdminAddNewProductPage() {
         </Card>
 
 
-        {/* Pricing Section - Conditional Rendering based on productType */}
         {productType === 'بيع' && (
             <Card className="shadow-lg">
                 <CardHeader>
@@ -228,7 +226,7 @@ export default function AdminAddNewProductPage() {
                     </div>
                     <div>
                         <Label htmlFor="rentalPeriod">لكل فترة</Label>
-                         <Select value={rentalPeriod} onValueChange={setRentalPeriod}>
+                         <Select value={rentalPeriod} onValueChange={(value: 'يوم' | 'أسبوع' | 'شهر' | 'مناسبة') => setRentalPeriod(value)}>
                             <SelectTrigger id="rentalPeriod">
                                 <SelectValue placeholder="اختاري فترة الإيجار" />
                             </SelectTrigger>
@@ -260,7 +258,7 @@ export default function AdminAddNewProductPage() {
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div>
                         <Label htmlFor="servicePriceType">نوع تسعير الخدمة</Label>
-                         <Select value={servicePriceType} onValueChange={setServicePriceType}>
+                         <Select value={servicePriceType} onValueChange={(value: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب')=> setServicePriceType(value)}>
                             <SelectTrigger id="servicePriceType">
                                 <SelectValue placeholder="اختاري نوع التسعير" />
                             </SelectTrigger>
@@ -291,7 +289,6 @@ export default function AdminAddNewProductPage() {
         )}
 
 
-        {/* Images & Variations */}
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-xl text-primary flex items-center"><ImageIcon className="ml-2 text-orange-500" /> الصور والتنوعات</CardTitle>

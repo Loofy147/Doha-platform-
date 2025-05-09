@@ -6,33 +6,22 @@ import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; // Keep Label for non-Form fields if any
+import { Label } from "@/components/ui/label"; 
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, PackagePlus } from "lucide-react"; // Added PackagePlus
-
-// Mock categories, replace with actual data fetching in a real app
-const mockCategories = [
-  { id: 'cat1', name: 'أزياء وإكسسوارات' },
-  { id: 'cat2', name: 'مستلزمات منزلية وديكور' },
-  { id: 'cat3', name: 'جمال وعناية شخصية' },
-  { id: 'cat4', name: 'حلويات ومأكولات شهية' },
-  { id: 'cat5', name: 'منتجات للإيجار' },
-  { id: 'cat6', name: 'خدمات احترافية' },
-  { id: 'cat7', name: 'أخرى' },
-];
+import { Loader2, PackagePlus } from "lucide-react";
+import { MOCK_CATEGORIES_FOR_FORMS } from '@/lib/constants/categories';
 
 const productFormSchema = z.object({
   productName: z.string().min(3, { message: "اسم المنتج يجب أن يتكون من 3 أحرف على الأقل." }).max(100, { message: "اسم المنتج طويل جدًا." }),
   productDescription: z.string().min(10, { message: "الوصف يجب أن يكون 10 أحرف على الأقل." }).max(1000, { message: "الوصف طويل جدًا." }).optional(),
   productPrice: z.coerce.number({ invalid_type_error: "السعر يجب أن يكون رقمًا." }).positive({ message: "السعر يجب أن يكون إيجابيًا." }).optional(),
   productCategory: z.string({ required_error: "يرجى تحديد فئة المنتج." }),
-  productImages: z.any().optional(), // Basic handling for now, can be refined with FileList validation
-  // Add more fields as needed: SKU, stock, rental terms, service duration etc.
+  productImages: z.any().optional(), 
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -53,7 +42,7 @@ export function NewProductForm() {
 
     const onSubmit: SubmitHandler<ProductFormValues> = async (data) => {
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500)); 
             console.log("Saving new product (simulated):", data);
             toast({
                 title: "تم إضافة المنتج بنجاح (محاكاة)",
@@ -134,7 +123,7 @@ export function NewProductForm() {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {mockCategories.map(cat => (
+                                                {MOCK_CATEGORIES_FOR_FORMS.map(cat => (
                                                     <SelectItem key={cat.id} value={cat.id}>
                                                         {cat.name}
                                                     </SelectItem>
@@ -149,7 +138,7 @@ export function NewProductForm() {
                         <FormField
                             control={control}
                             name="productImages"
-                            render={({ field }) => ( // `field` includes `onChange`, `onBlur`, `value`, `name`, `ref`
+                            render={({ field }) => ( 
                                 <FormItem>
                                     <FormLabel>صور المنتج/الخدمة</FormLabel>
                                     <FormControl>
@@ -157,7 +146,7 @@ export function NewProductForm() {
                                             type="file" 
                                             multiple 
                                             accept="image/*"
-                                            onChange={(e) => field.onChange(e.target.files)} // Pass FileList to RHF
+                                            onChange={(e) => field.onChange(e.target.files)} 
                                         />
                                     </FormControl>
                                     <FormDescription>
@@ -167,7 +156,6 @@ export function NewProductForm() {
                                 </FormItem>
                             )}
                         />
-                        {/* Add more fields as needed: SKU, stock, rental terms, service duration etc. */}
                     </CardContent>
                     <CardFooter className="border-t pt-6 flex justify-end gap-3">
                         <Button variant="outline" asChild type="button" disabled={isSubmitting}>

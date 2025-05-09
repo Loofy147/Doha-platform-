@@ -13,21 +13,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Phone, Store, Tag, FileText, Sparkles, Handshake } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-const productCategories = [
-  "أزياء وإكسسوارات",
-  "مستلزمات منزلية وديكور",
-  "جمال وعناية شخصية",
-  "فن ومقتنيات",
-  "حلويات ومأكولات شهية",
-  "حرف يدوية إبداعية",
-  "منتجات للإيجار",
-  "خدمات (ورش عمل، استشارات، إلخ)",
-  "أخرى",
-];
+import { UNIQUE_PRODUCT_CATEGORIES } from '@/lib/constants/categories';
 
 const sellerApplicationSchema = z.object({
-  fullName: z.string().min(2, { message: "يجب أن يتكون الاسم الكامل من حرفين على الأقل." }),
+  fullName: z.string().min(2, { message: "الاسم الكامل يجب أن يتكون من حرفين على الأقل." }),
   email: z.string().email({ message: "الرجاء إدخال عنوان بريد إلكتروني صالح." }),
   phoneNumber: z.string().regex(/^\+?[0-9\s-]{7,15}$/, { message: 'الرجاء إدخال رقم هاتف صحيح.' }),
   businessName: z.string().min(2, { message: "يجب أن يتكون اسم النشاط التجاري من حرفين على الأقل." }),
@@ -60,7 +49,6 @@ export default function SellWithUsPage() {
   });
 
   const onSubmit: SubmitHandler<SellerApplicationValues> = async (data) => {
-    // Simulate API call for application submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
     console.log('Seller Application Submitted:', data);
     toast({
@@ -107,7 +95,6 @@ export default function SellWithUsPage() {
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="p-8 space-y-8">
-            {/* Personal Information */}
             <section>
               <h3 className="text-xl font-semibold text-primary mb-4 flex items-center"><User size={22} className="mr-2 text-accent-pink" /> معلوماتكِ الشخصية</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -129,7 +116,6 @@ export default function SellWithUsPage() {
               </div>
             </section>
 
-            {/* Business Information */}
             <section>
               <h3 className="text-xl font-semibold text-primary mb-4 flex items-center"><Store size={22} className="mr-2 text-accent-purple" /> تفاصيل لمستكِ الإبداعية</h3>
               <div className="space-y-6">
@@ -149,7 +135,7 @@ export default function SellWithUsPage() {
                           <SelectValue placeholder="اختاري فئتك الرئيسية" />
                         </SelectTrigger>
                         <SelectContent>
-                          {productCategories.map(category => (
+                          {UNIQUE_PRODUCT_CATEGORIES.map(category => (
                             <SelectItem key={category} value={category}>{category}</SelectItem>
                           ))}
                         </SelectContent>
@@ -171,7 +157,6 @@ export default function SellWithUsPage() {
               </div>
             </section>
             
-            {/* Terms and Conditions */}
             <div className="items-top flex space-x-2 pt-4 border-t">
                <Controller
                 name="agreeToTerms"

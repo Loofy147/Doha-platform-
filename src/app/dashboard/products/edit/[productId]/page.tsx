@@ -22,24 +22,9 @@ import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock
 import { useToast } from '@/hooks/use-toast';
 import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList } from '@/lib/data/mock-seller-data'; 
+import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList, updateSellerProduct } from '@/lib/data/mock-seller-data'; 
 import Image from 'next/image';
-
-const productCategories = [
-  "أزياء وإكسسوارات",
-  "مستلزمات منزلية وديكور",
-  "جمال وعناية شخصية",
-  "فن ومقتنيات",
-  "حلويات ومأكولات شهية",
-  "حرف يدوية إبداعية",
-  "منتجات للإيجار (فساتين، معدات)",
-  "خدمات (ورش عمل، استشارات، تصميم)",
-  "تأجير إبداعات", 
-  "خدمات احترافية", 
-  "أخرى",
-];
-
-const uniqueProductCategories = [...new Set(productCategories)];
+import { MOCK_CATEGORIES_FOR_FORMS } from '@/lib/constants/categories';
 
 
 export default function EditProductPage() {
@@ -60,21 +45,18 @@ export default function EditProductPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDescriptionManuallyEdited, setIsDescriptionManuallyEdited] = useState(false);
   
-  // Sale specific states
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState('');
   const [isTaxable, setIsTaxable] = useState(false);
 
-  // Rental specific states
   const [rentalPrice, setRentalPrice] = useState('');
   const [rentalPeriod, setRentalPeriod] = useState<'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'>('يوم');
   const [rentalDeposit, setRentalDeposit] = useState('');
   const [rentalAvailability, setRentalAvailability] = useState('');
 
-  // Service specific states
   const [servicePriceType, setServicePriceType] = useState<'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'>('ثابت');
-  const [servicePriceValue, setServicePriceValue] = useState(''); // Renamed from servicePrice to avoid conflict
+  const [servicePriceValue, setServicePriceValue] = useState('');
   const [serviceDuration, setServiceDuration] = useState('');
   const [serviceLocation, setServiceLocation] = useState('');
   
@@ -94,7 +76,7 @@ export default function EditProductPage() {
           setProductCategory(fetchedProduct.category);
           setProductDetailsForAI(fetchedProduct.detailsForAI);
           setGeneratedDescription(fetchedProduct.description);
-          setProductStory(fetchedProduct.story);
+          setProductStory(fetchedProduct.story || '');
           
           setPrice(fetchedProduct.price || ''); 
           setStock(fetchedProduct.stock || '');
@@ -176,7 +158,7 @@ export default function EditProductPage() {
     
     const productIndex = allSellerProductsList.findIndex(p => p.id === productId);
     if (productIndex !== -1 && productData) {
-        const updatedProduct: DetailedSellerProduct = {
+        const updatedProductData: DetailedSellerProduct = {
             ...productData, 
             name: productName,
             productType: productType,
@@ -198,7 +180,7 @@ export default function EditProductPage() {
             serviceLocation: productType === 'خدمة' ? serviceLocation : undefined,
             images: currentImages, 
         };
-        allSellerProductsList[productIndex] = updatedProduct;
+        updateSellerProduct(updatedProductData);
     }
 
     toast({ title: "تم تحديث المنتج/الخدمة بنجاح!", description: `تم حفظ التغييرات على ${productName} (محاكاة).`, variant: "default" });
@@ -268,10 +250,10 @@ export default function EditProductPage() {
             <div className="md:col-span-2">
               <Label htmlFor="productCategory">الفئة الرئيسية</Label>
               <Select value={productCategory} onValueChange={(value) => setProductCategory(value)}>
-                <SelectTrigger id="productCategory"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="productCategory"><SelectValue placeholder="اختاري الفئة المناسبة" /></SelectTrigger>
                 <SelectContent>
-                  {uniqueProductCategories.map(category => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  {MOCK_CATEGORIES_FOR_FORMS.map(cat => (
+                    <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
