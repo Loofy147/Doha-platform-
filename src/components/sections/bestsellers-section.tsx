@@ -74,38 +74,37 @@ export function BestsellersSection() {
     <motion.section
       id="bestsellers"
       className="py-16 lg:py-24 bg-background"
-      variants={sectionVariants} // Apply container variants
-      initial="hidden" // Changed from 'initial'
-      whileInView="visible" // Changed from 'animate'
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.1 }} // Ensure stagger works with whileInView
+      transition={{ staggerChildren: 0.1 }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} // Use item variants for header
-          custom={0} // Start animation immediately
+          variants={itemVariants} 
+          custom={0} 
         >
           <Flame className="mx-auto h-12 w-12 text-primary animate-pulse" style={{animationDuration: '1.2s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            الأكثر مبيعاً وشهرة
+            إبداعات تتألق من لمسة ضحى
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-            اكتشفي القطع والخدمات التي خطفت قلوب عميلاتنا وأصبحت حديث مجتمع لمسة ضحى.
+            استكشفي أكثر المنتجات والخدمات التي أحبتها عميلاتنا وأصبحت مصدر إلهام في مجتمعنا.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {mockBestsellers.map((product, index) => (
             <motion.div
               key={product.id}
-              custom={index + 1} // Stagger animation for cards
-              variants={itemVariants} // Apply item variants to each card container
-              // Removed initial/whileInView from individual cards
+              custom={index + 1} 
+              variants={itemVariants}
             >
             <Card className={cn(
                 "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col",
                 "border border-transparent hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/50 h-full",
-                "transform hover:-translate-y-1.5" // Add lift effect
+                "transform hover:-translate-y-1.5"
              )}>
               <CardHeader className="p-0 relative">
                 <Link href={`/products/${product.id}`} passHref className="block aspect-[4/3] relative overflow-hidden rounded-t-xl">
@@ -152,7 +151,7 @@ export function BestsellersSection() {
         <motion.div
           className="mt-12 text-center"
           variants={itemVariants}
-          custom={mockBestsellers.length + 1} // Animate button after cards
+          custom={mockBestsellers.length + 1}
         >
           <Button size="lg" variant="default" asChild className="bg-accent-pink hover:bg-accent-pink/90 text-accent-pink-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
             <Link href="/products?sort=bestsellers">

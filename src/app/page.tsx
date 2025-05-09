@@ -4,37 +4,36 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
+  Sparkles,
+  Eye,
+  ChevronRight,
+  Users,
+  CalendarDays,
+  ShoppingBag,
+  Store,
+  Edit3,
+  HomeIcon,
+  PenLine,
+  Shirt,
+  Heart,
+  Star,
   DollarSign,
   Package,
-  Users,
-  LineChart,
+  CreditCard,
+  LayoutGrid,
+  BarChart3,
   Settings,
-  PlusCircle,
+  Zap,
+  Users2,
+  Activity,
+  LineChart,
   Bell,
-  ShoppingBag,
+  MessageSquare,
+  BarChartHorizontalBig,
   Palette,
   FileText,
-  Activity,
-  BarChartHorizontalBig,
-  MessageSquare,
-  Sparkles,
-  Store,
-  Star,
-  LayoutTemplate, // Added for Store Template
-  Download, // Import Download
-  HomeIcon, // Keep HomeIcon
-  Handshake, // Keep Handshake
-  Shirt, // Added Shirt for fashion category
-  Users2, // Added Users2 for customers card
-  CreditCard, // Added CreditCard for orders card
-  LayoutGrid, // Added LayoutGrid for categories card
-  BarChart3, // Added BarChart3 for reports card
-  Zap, // Added Zap for quick actions
-  LayoutDashboard, // Added LayoutDashboard icon import
-  CalendarDays, // Added CalendarDays
-  PenLine, // Added PenLine
-  ChevronRight, // Added ChevronRight
-  Eye, // Added Eye
+  PlusCircle,
+// Removed LayoutDashboard as it's not used on the public homepage
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,7 +46,6 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { HeroSection } from '@/components/sections/hero-section';
@@ -58,10 +56,9 @@ import { WeeklyDealsSection } from '@/components/sections/weekly-deals-section';
 import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
-import { ContactSection } from '@/components/sections/contact-section';
-import ClientContactSection from '@/components/sections/client-contact-section'; // Import the new client component
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Import the logo component
-import { motion } from 'framer-motion'; // Import motion
+import ClientContactSection from '@/components/sections/client-contact-section';
+import { WomenCommerceLogo } from '@/components/icons/logo';
+import { motion } from 'framer-motion';
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -75,25 +72,24 @@ const categoryVariants = {
 
 const categories = [
   { name: 'أناقة وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10' },
-  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10' }, // Changed icon
+  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10' },
   { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10' },
   { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/10' },
-  { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/10' }, // Changed icon
+  { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
 ];
 
 export default function HomePage() {
     const [isClient, setIsClient] = useState(false);
-    const { toast } = useToast(); // Use toast for notifications if needed
+    const { toast } = useToast();
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    // Handle skeleton loading state
     if (!isClient) {
         return (
             <div className="flex-1 space-y-12 p-4 md:p-8 pt-6 bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50">
-                <Skeleton className="w-full h-96 rounded-lg" /> {/* Hero Skeleton */}
+                <Skeleton className="w-full h-96 rounded-lg" />
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <Skeleton className="h-10 w-1/3 mb-8 mx-auto" />
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -105,18 +101,15 @@ export default function HomePage() {
                         ))}
                     </div>
                 </div>
-                <Skeleton className="w-full h-64 rounded-lg" /> {/* Other Section Skeleton */}
-                <Skeleton className="w-full h-64 rounded-lg" /> {/* Other Section Skeleton */}
+                <Skeleton className="w-full h-64 rounded-lg" />
+                <Skeleton className="w-full h-64 rounded-lg" />
             </div>
         );
     }
 
   return (
      <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
-
       <HeroSection />
-
-        {/* Categories Section */}
         <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
@@ -128,7 +121,7 @@ export default function HomePage() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     className="text-center mb-12"
-                     variants={sectionVariants} // Apply stagger to header elements
+                     variants={sectionVariants}
                 >
                     <motion.h2 variants={sectionVariants} className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
                        تصفحي عالمنا الإبداعي
@@ -139,7 +132,7 @@ export default function HomePage() {
                 </motion.div>
                 <motion.div
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
-                     variants={sectionVariants} // Container for staggering category cards
+                     variants={sectionVariants}
                 >
                     {categories.map((category, index) => (
                         <motion.div key={category.name} variants={categoryVariants}>
@@ -157,8 +150,6 @@ export default function HomePage() {
             </div>
         </motion.section>
 
-
-        {/* Sections with Framer Motion */}
         <motion.div
             initial="hidden"
             whileInView="visible"
@@ -204,7 +195,6 @@ export default function HomePage() {
         <AboutUsSection />
         </motion.div>
 
-        {/* Seller CTA */}
         <motion.div
             variants={sectionVariants}
             initial="hidden"
@@ -222,7 +212,6 @@ export default function HomePage() {
             />
         </motion.div>
 
-        {/* Shopper CTA */}
         <motion.div
             variants={sectionVariants}
             initial="hidden"
@@ -250,17 +239,8 @@ export default function HomePage() {
         <TestimonialsSection />
         </motion.div>
 
-        {/* Wrap ContactSection usage */}
         <ClientContactSection />
-
-          {/* Floating Admin Dashboard Link */}
-           <div className="fixed bottom-4 left-4 z-50">
-                 <Button asChild variant="secondary" className="shadow-lg rounded-full px-4 py-2 h-auto text-xs">
-                   <Link href="/admin">
-                       <LayoutDashboard className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
-                   </Link>
-                </Button>
-            </div>
+          {/* Removed Floating Admin Dashboard Link from public homepage */}
     </div>
   );
 }
