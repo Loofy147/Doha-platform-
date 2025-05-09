@@ -2,7 +2,7 @@
 'use client';
 
 import React, {useEffect, useState, useMemo, Suspense} from 'react';
-import {useParams, useRouter as useNavigationRouter } from 'next/navigation'; 
+import {useParams, useRouter } from 'next/navigation'; 
 import Image from 'next/image';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
@@ -40,9 +40,9 @@ import {
   Scissors,
   Shirt,
   AlertCircle,
-  Store as StoreIconLucide, // Correctly import StoreIcon as StoreIconLucide
+  Store as StoreIconLucide, 
   Clock,
-  Loader2,
+  Loader2, // Ensure Loader2 is imported
   PackageSearch,
   type LucideProps,
 } from 'lucide-react';
@@ -65,7 +65,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog'; // DialogClose was not used
+} from '@/components/ui/dialog'; 
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
@@ -123,22 +123,23 @@ const StoreLoadingSkeleton = () => (
     transition={{ duration: 0.3 }}
   >
     <div className="animate-pulse">
-      <Skeleton className="h-48 md:h-64 lg:h-80 w-full rounded-lg mb-8" />
+      <Skeleton className="h-48 md:h-64 lg:h-80 w-full rounded-lg mb-8" /> {/* Banner */}
       <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-16 md:-mt-20 relative z-10">
-        <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-muted" />
+        <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-muted" /> {/* Avatar */}
         <div className="flex-1 space-y-3 text-center md:text-right">
-          <Skeleton className="h-8 w-3/4 md:w-1/2" />
-          <Skeleton className="h-5 w-full md:w-3/4" />
+          <Skeleton className="h-8 w-3/4 md:w-1/2" /> {/* Store Name */}
+          <Skeleton className="h-5 w-full md:w-3/4" /> {/* Slogan */}
           <div className="flex justify-center md:justify-start gap-2">
-            <Skeleton className="h-7 w-20 rounded-full" />
-            <Skeleton className="h-7 w-28 rounded-full" />
+            <Skeleton className="h-7 w-20 rounded-full" /> {/* Badge 1 */}
+            <Skeleton className="h-7 w-28 rounded-full" /> {/* Badge 2 */}
           </div>
         </div>
         <div className="flex gap-2 self-center md:self-start mt-4 md:mt-0">
-            <Skeleton className="h-9 w-24 rounded-md" />
-            <Skeleton className="h-9 w-24 rounded-md" />
+            <Skeleton className="h-9 w-24 rounded-md" /> {/* Button 1 */}
+            <Skeleton className="h-9 w-24 rounded-md" /> {/* Button 2 */}
         </div>
       </div>
+      {/* Story/Announcements Skeleton */}
       <Card className="shadow-lg rounded-lg mb-10">
         <CardHeader><Skeleton className="h-7 w-1/3" /></CardHeader>
         <CardContent className="space-y-2">
@@ -147,16 +148,16 @@ const StoreLoadingSkeleton = () => (
             <Skeleton className="h-4 w-3/4" />
         </CardContent>
       </Card>
+      {/* Products/Services Section Skeleton */}
       <div className="mb-10">
-        <Skeleton className="h-9 w-1/3 mb-6" />
+        <Skeleton className="h-9 w-1/3 mb-6" /> {/* Section Title */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {Array(4).fill(0).map((_, i) => (
+          {Array(4).fill(0).map((_, i) => ( // Product Cards
             <Card key={`skel-prod-${i}`} className="shadow-lg rounded-lg overflow-hidden">
               <Skeleton className="aspect-square w-full" />
               <CardContent className="p-4 space-y-2">
                 <Skeleton className="h-5 w-3/4" />
                 <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-5/6" />
                 <Skeleton className="h-6 w-1/3 mt-2" />
               </CardContent>
               <CardFooter className="p-3 border-t">
@@ -166,13 +167,25 @@ const StoreLoadingSkeleton = () => (
           ))}
         </div>
       </div>
+       {/* Contact/Policies Skeleton */}
        <Skeleton className="h-52 w-full rounded-lg mb-10" />
     </div>
   </motion.div>
 );
 
+const SectionSuspenseFallback = ({ accentColor }: { accentColor?: string }) => (
+  <motion.div className="py-10 text-center" variants={itemVariants}>
+      <Loader2 
+        className="h-12 w-12 animate-spin mx-auto" 
+        style={{color: accentColor || 'hsl(var(--primary))'}}
+      />
+      <p className="mt-4 text-muted-foreground">جاري تحميل محتوى المتجر...</p>
+  </motion.div>
+);
+
+
 const StorePage = () => {
-  const router = useNavigationRouter(); 
+  const router = useRouter(); 
   const params = useParams();
   const storeId = params.storeId as string;
   const [storeData, setStoreData] = useState<StoreData | null>(null);
@@ -259,6 +272,7 @@ const StorePage = () => {
       title: 'جاري التوجيه...',
       description: `سيتم عرض كل "${collection.name}" من متجر ${storeData?.name}. (قيد التطوير)`,
     });
+    // Example: router.push(`/store/${storeData?.id}/collection/${collection.type}?filter=${collection.name}`);
   };
 
   const getStoreTypeSpecificIcon = (type?: StoreType): React.ElementType<LucideProps> => {
@@ -268,7 +282,7 @@ const StorePage = () => {
         case 'salon': return Scissors;
         case 'crafts': return Palette;
         case 'rental': return CalendarDays;
-        case 'service_provider': return Handshake; // Corrected case
+        case 'service_provider': return Handshake;
         default: return StoreIconLucide;
     }
   };
@@ -283,12 +297,6 @@ const StorePage = () => {
 
   const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData.storeType);
 
-  const SectionSuspenseFallback = () => (
-    <motion.div className="py-10 text-center" variants={itemVariants}>
-        <Loader2 className="h-12 w-12 animate-spin mx-auto" style={{color: storeAccentColor}}/>
-        <p className="mt-4 text-muted-foreground">جاري تحميل محتوى المتجر...</p>
-    </motion.div>
-  );
 
   return (
     <motion.div
@@ -425,7 +433,7 @@ const StorePage = () => {
           </motion.div>
         )}
 
-        <Suspense fallback={<SectionSuspenseFallback />}>
+        <Suspense fallback={<SectionSuspenseFallback accentColor={storeAccentColor} />}>
           <motion.div variants={itemVariants}>
             {storeData.storeType === 'bakery' && storeData.products && (
             <BakerySpecialsSection
@@ -640,7 +648,7 @@ const StorePage = () => {
              storeThemeStyle === 'elegant' && "bg-slate-700 text-slate-50 border-slate-600",
              storeThemeStyle === 'dark' && "bg-gray-800 text-gray-100 border-gray-700"
             )}>
-            <DialogHeader className="pr-10 border-b pb-4" style={{ borderBottomColor: storeAccentColor, backgroundColor: `${storeAccentColor}1A`}}>
+            <DialogHeader className="pr-10 border-b pb-4" style={{ borderBottomColor: `${storeAccentColor}4D`}}>
               <DialogTitle className="text-2xl md:text-3xl" style={{color: storeAccentColor}}>{selectedItem.name}</DialogTitle>
               <p className="text-sm text-muted-foreground">
                   مقدم من {storeData?.name} • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
