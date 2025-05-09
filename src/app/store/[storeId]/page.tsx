@@ -2,7 +2,7 @@
 'use client';
 
 import React, {useEffect, useState, useMemo, Suspense} from 'react';
-import {useParams, useRouter}_req from 'next/navigation';
+import {useParams, useRouter as useNavigationRouter } from 'next/navigation'; // Renamed useRouter to useNavigationRouter
 import Image from 'next/image';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
@@ -47,7 +47,7 @@ import {
   type LucideProps,
 } from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
-import {useToast}_req from '@/hooks/use-toast';
+import {useToast} from '@/hooks/use-toast';
 import {
   Carousel,
   CarouselContent,
@@ -69,6 +69,7 @@ import {
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
+import { SellerContactModal } from '@/components/store/seller-contact-modal'; // Import the new modal
 
 // Import specific section components using React.lazy for code splitting
 const BakerySpecialsSection = React.lazy(() => import('@/components/store/sections/bakery-specials-section'));
@@ -84,8 +85,9 @@ import {
   type StoreData,
   type Product,
   type Service,
-  type ItemType as PublicItemType, // Use PublicItemType alias
+  type ItemType as PublicItemType,
   type StoreType,
+  type Review
 } from '@/lib/data/mock-store-data';
 import { motion, type MotionProps } from 'framer-motion';
 
@@ -103,7 +105,7 @@ const pageEntryVariants: MotionProps = {
 
 const staggerContainerVariants: MotionProps = {
   initial: {},
-  animate: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } }, // Added delayChildren
+  animate: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } }, 
 };
 
 const itemVariants: MotionProps = {
@@ -164,13 +166,14 @@ const StoreLoadingSkeleton = () => (
 );
 
 const StorePage = () => {
-  const router = useRouter();
+  const router = useNavigationRouter(); // Use the aliased router
   const params = useParams();
   const storeId = params.storeId as string;
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false); // State for contact modal
   const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
   const {toast} = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -260,7 +263,7 @@ const StorePage = () => {
         case 'crafts': return Palette;
         case 'rental': return CalendarDays;
         case 'service_provider': return Handshake;
-        default: return StoreIconLucide;
+        default: return StoreIconLucide; // Use imported StoreIconLucide
     }
   };
 
@@ -378,7 +381,7 @@ const StorePage = () => {
       <motion.main
         className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12"
         variants={staggerContainerVariants}
-        initial="initial" // Use 'initial' for consistency with pageEntryVariants
+        initial="initial" 
         animate="animate"
       >
       {storeData.story && (
@@ -567,6 +570,16 @@ const StorePage = () => {
                     {storeData.contact.email && <p className="flex items-center gap-2 mb-1"><Mail size={16} className="text-muted-foreground" /> {storeData.contact.email}</p>}
                     {storeData.contact.phone && <p className="flex items-center gap-2 mb-1"><Phone size={16} className="text-muted-foreground" /> {storeData.contact.phone}</p>}
                     {storeData.contact.address && <p className="flex items-center gap-2"><MapPin size={16} className="text-muted-foreground" /> {storeData.contact.address}</p>}
+                    <Button 
+                        variant="outline" 
+                        className="mt-4 w-full md:w-auto" 
+                        style={{borderColor: storeAccentColor, color: storeAccentColor}}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${storeAccentColor}1A`}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        onClick={() => setIsContactModalOpen(true)}
+                        >
+                        <MessageSquare size={16} className="ml-2"/> أرسلي رسالة إلى {storeData.name}
+                    </Button>
                 </div>
                 {storeData.socialMedia && (
                     <div>
@@ -606,6 +619,13 @@ const StorePage = () => {
             </motion.div>
         )}
       </motion.main>
+
+       <SellerContactModal 
+        storeName={storeData.name} 
+        storeAccentColor={storeAccentColor}
+        isOpen={isContactModalOpen} 
+        onOpenChange={setIsContactModalOpen} 
+      />
 
       {selectedItem && (
         <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>

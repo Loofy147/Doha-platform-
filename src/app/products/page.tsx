@@ -1,140 +1,46 @@
+// src/app/products/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Eye, Filter, Search, ShoppingBag, CalendarClock, Handshake } from 'lucide-react';
+import { Eye, Filter, Search, ShoppingBag, CalendarClock, Handshake, PackageSearch } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { getAllPlatformProducts, getAllPlatformServices, type Product as StoreProduct, type Service as StoreService } from '@/lib/data/mock-store-data';
+import type { ProductType } from '@/lib/data/mock-store-data';
+import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
-type ProductType = 'بيع' | 'إيجار' | 'خدمة';
 
-interface Product {
-  id: string;
-  name: string;
-  type: ProductType;
-  category: string;
-  seller: string;
-  description: string;
-  longDescription: string;
-  price?: number; 
-  rentalPricePerDay?: number;
-  servicePrice?: string; 
-  imageSrc: string;
-  dataAiHint: string;
-}
+type DisplayItem = (StoreProduct | StoreService) & { itemType: 'product' | 'service' };
 
-const allProducts: Product[] = [
-  {
-    id: 'prod1',
-    name: 'طقم أكواب سيراميك يدوي الصنع',
-    type: 'بيع',
-    category: 'مستلزمات منزلية',
-    seller: 'إبداعات أمينة',
-    description: 'طقم من كوبين سيراميك مصنوعين بحرفية فائقة.',
-    longDescription: 'هذا الطقم المكون من كوبين من السيراميك مصنوع يدويًا بحب من قبل أمينة. يتميز كل كوب بطلاء فريد ومقبض مريح. آمن للغسل في غسالة الصحون والميكروويف. السعة: 350 مل.',
-    price: 2800,
-    imageSrc: 'https://picsum.photos/400/400?random=11',
-    dataAiHint: 'ceramic mugs',
-  },
-  {
-    id: 'prod2',
-    name: 'فستان سهرة للمناسبات (للايجار)',
-    type: 'إيجار',
-    category: 'أزياء',
-    seller: 'خزانة ليلى',
-    description: 'فستان سهرة أنيق، مثالي للمناسبات الخاصة.',
-    longDescription: 'استأجري فستان السهرة المذهل هذا لمناسبتك القادمة. متوفر بمقاسات متعددة. يشمل التنظيف الجاف. مدة الإيجار: 3 أيام.',
-    rentalPricePerDay: 5000,
-    imageSrc: 'https://picsum.photos/400/400?random=12',
-    dataAiHint: 'evening gown',
-  },
-  {
-    id: 'prod3',
-    name: 'خدمة تصميم كيك مخصص',
-    type: 'خدمة',
-    category: 'حلويات ومأكولات',
-    seller: 'حلويات فاطمة',
-    description: 'تصميم كيك حسب الطلب لحفلات الزفاف والمناسبات.',
-    longDescription: 'تقدم فاطمة خدمات تصميم كيك مخصصة لجميع المناسبات. اختاري النكهات، التصميم، والحجم. يتطلب استشارة. تختلف الأسعار حسب التعقيد.',
-    servicePrice: 'ابتداءً من 8000 دج',
-    imageSrc: 'https://picsum.photos/400/400?random=13',
-    dataAiHint: 'custom cake service',
-  },
-  {
-    id: 'prod4',
-    name: 'لوحة خط عربي فنية (بيع)',
-    type: 'بيع',
-    category: 'فن وديكور',
-    seller: 'إبداعات نورا الخطاطة',
-    description: 'قطعة خط عربي مخصصة للمنزل أو كهدية.',
-    longDescription: 'اطلبي قطعة خط عربي جميلة ومخصصة من نورا. اختاري اقتباسك المفضل، اسم، أو آية. تتوفر أحجام وخيارات تأطير متنوعة.',
-    price: 3200,
-    imageSrc: 'https://picsum.photos/400/400?random=14',
-    dataAiHint: 'calligraphy art',
-  },
-   {
-    id: 'prod5',
-    name: 'معدات تصوير للإيجار',
-    type: 'إيجار',
-    category: 'خدمات',
-    seller: 'شركة LensLease',
-    description: 'استأجري كاميرات وعدسات وإضاءة احترافية.',
-    longDescription: 'احصلي على معدات تصوير عالية الجودة دون التزام الشراء. خيارات إيجار يومية وأسبوعية لمجموعة متنوعة من المعدات.',
-    rentalPricePerDay: 3000,
-    imageSrc: 'https://picsum.photos/400/400?random=15',
-    dataAiHint: 'camera rental',
-  },
-  {
-    id: 'prod6',
-    name: 'غطاء وسادة حرير مرسوم يدويًا',
-    type: 'بيع',
-    category: 'مستلزمات منزلية',
-    seller: 'حرير سميرة',
-    description: 'غطاء وسادة حريري فاخر، تصاميم فريدة.',
-    longDescription: 'أضيفي لمسة فنية إلى منزلك مع أغطية وسائد الحرير المرسومة يدويًا من سميرة. كل قطعة فريدة من نوعها. تناسب الوسائد القياسية مقاس 45x45 سم. الغطاء فقط.',
-    price: 3800,
-    imageSrc: 'https://picsum.photos/400/400?random=16',
-    dataAiHint: 'silk cushion',
-  },
-   {
-    id: 'prod7',
-    name: 'خدمة دروس خصوصية عبر الإنترنت (رياضيات)',
-    type: 'خدمة',
-    category: 'تعليم',
-    seller: 'دروس زهرة',
-    description: 'دروس رياضيات خصوصية عبر الإنترنت لطلاب الابتدائي والمتوسط والثانوي.',
-    longDescription: 'تقدم زهرة دروس رياضيات خصوصية عبر الإنترنت مصممة خصيصًا لتلبية احتياجات كل طالب. حسني درجاتكِ وابني ثقتكِ بنفسك. تتوفر جلسات بالساعة.',
-    servicePrice: '2000 دج / ساعة',
-    imageSrc: 'https://picsum.photos/400/400?random=17',
-    dataAiHint: 'online tutoring',
-  },
-  {
-    id: 'prod8',
-    name: 'تونر ماء ورد طبيعي للوجه',
-    type: 'بيع',
-    category: 'جمال وعناية',
-    seller: 'حديقة ياسمين',
-    description: 'تونر ماء ورد نقي ومنعش. 100 مل.',
-    longDescription: 'جددي بشرتكِ مع تونر ماء الورد النقي من ياسمين. مصنوع من بتلات الورد المقطرة، يساعد على ترطيب وتوازن وتوحيد لون بشرتك. مناسب لجميع أنواع البشرة. عبوة بخاخ 100 مل.',
-    price: 1200,
-    imageSrc: 'https://picsum.photos/400/400?random=18',
-    dataAiHint: 'rosewater toner',
-  }
+const allDisplayItems: DisplayItem[] = [
+  ...getAllPlatformProducts().map(p => ({ ...p, itemType: 'product' as const })),
+  ...getAllPlatformServices().map(s => ({ ...s, itemType: 'service' as const })),
 ];
 
-const categories = ['الكل', ...new Set(allProducts.map(p => p.category))];
-const productTypes: ProductType[] = ['بيع', 'إيجار', 'خدمة'];
+const categories = ['الكل', ...new Set(allDisplayItems.map(p => p.category))];
+const itemTypes: (ProductType | 'الكل')[] = ['الكل', 'بيع', 'إيجار', 'خدمة'];
+
 
 export default function ProductsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category');
+  const initialType = searchParams.get('type') as ProductType | null;
+  const { toast } = useToast();
+
   const [isClient, setIsClient] = useState(false);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(allProducts);
-  const [selectedCategory, setSelectedCategory] = useState<string>('الكل');
-  const [selectedType, setSelectedType] = useState<string>('الكل');
+  const [filteredItems, setFilteredItems] = useState<DisplayItem[]>(allDisplayItems);
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'الكل');
+  const [selectedType, setSelectedType] = useState<ProductType | 'الكل'>(initialType || 'الكل');
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedItem, setSelectedItem] = useState<DisplayItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -142,39 +48,49 @@ export default function ProductsPage() {
   }, []);
 
   useEffect(() => {
-    let products = allProducts;
+    let items = allDisplayItems;
     if (selectedCategory !== 'الكل') {
-      products = products.filter(p => p.category === selectedCategory);
+      items = items.filter(p => p.category === selectedCategory);
     }
     if (selectedType !== 'الكل') {
-      products = products.filter(p => p.type === selectedType);
+      items = items.filter(p => p.type === selectedType);
     }
     if (searchTerm) {
-      products = products.filter(p => 
+      items = items.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.seller.toLowerCase().includes(searchTerm.toLowerCase())
+        (p.itemType === 'product' ? (p as StoreProduct).sellerId.toLowerCase().includes(searchTerm.toLowerCase()) : (p as StoreService).sellerId.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-    setFilteredProducts(products);
+    setFilteredItems(items);
   }, [selectedCategory, selectedType, searchTerm]);
 
-  const handleViewDetails = (product: Product) => {
-    setSelectedProduct(product);
+  useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategory(initialCategory);
+    }
+    if (initialType) {
+      setSelectedType(initialType);
+    }
+  }, [initialCategory, initialType]);
+
+  const handleViewDetails = (item: DisplayItem) => {
+    setSelectedProduct(item); // This state variable name should ideally be selectedItem
     setIsModalOpen(true);
   };
-  
-  const getProductPriceDisplay = (product: Product) => {
-    switch (product.type) {
-      case 'بيع':
-        return `${product.price?.toLocaleString()} دج`;
-      case 'إيجار':
-        return `${product.rentalPricePerDay?.toLocaleString()} دج / يوم`;
-      case 'خدمة':
-        return product.servicePrice || 'استفسري عن السعر';
-      default:
-        return 'غير متوفر';
+
+  const getItemPriceDisplay = (item: DisplayItem) => {
+    if (item.itemType === 'product') {
+      const product = item as StoreProduct;
+      if (product.discountPercentage && parseInt(product.discountPercentage) > 0 && product.rawPrice) {
+        return `${(product.rawPrice * (1 - parseInt(product.discountPercentage) / 100)).toLocaleString()} دج`;
+      }
+      return product.price; // Already formatted
     }
+    if (item.itemType === 'service') {
+      return (item as StoreService).price; // Already formatted
+    }
+    return 'السعر غير متوفر';
   };
 
   const getModalActionText = (type?: ProductType) => {
@@ -184,10 +100,20 @@ export default function ProductsPage() {
       case 'خدمة': return <><Handshake size={18} className="mr-2" /> استفسري/احجزي الخدمة (قريباً)</>;
       default: return 'عرض التفاصيل';
     }
-  }
+  };
+
+  const handlePrimaryActionInModal = (item: DisplayItem) => {
+     const actionText = item.type === 'بيع' ? 'أضيف للسلة' : item.type === 'إيجار' ? 'احجزي الآن' : 'استفسري/احجزي الخدمة';
+      toast({
+        title: `🛍️ ${item.name}`,
+        description: `تم ${actionText.toLowerCase()} بنجاح (محاكاة)!`,
+        action: <Button variant="outline" size="sm" onClick={() => router.push(item.type === 'بيع' ? '/cart' : '/dashboard/orders')}>متابعة</Button>,
+      });
+     setIsModalOpen(false);
+  };
+
 
   if (!isClient) {
-    // Skeleton loader
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
@@ -198,18 +124,23 @@ export default function ProductsPage() {
             جاري تحميل إبداعات وخدمات مذهلة...
           </p>
         </div>
+        <div className="mb-8 flex flex-col md:flex-row gap-4 items-center p-4 bg-card rounded-lg shadow">
+            <Skeleton className="h-10 flex-grow" />
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-10 w-48" />
+        </div>
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {Array.from({ length: 8 }).map((_, index) => (
               <Card key={`skeleton-${index}`} className="overflow-hidden shadow-lg rounded-lg flex flex-col">
-                <div className="aspect-square bg-muted animate-pulse rounded-t-lg"></div>
+                <Skeleton className="aspect-square w-full rounded-t-lg" />
                 <CardContent className="p-6 flex flex-col flex-grow">
-                  <div className="h-6 bg-muted animate-pulse mb-2 w-3/4"></div>
-                  <div className="h-4 bg-muted animate-pulse w-full mb-1"></div>
-                  <div className="h-4 bg-muted animate-pulse w-5/6 mb-2"></div>
-                   <div className="h-6 bg-muted animate-pulse w-1/3 mt-auto"></div>
+                  <Skeleton className="h-6 mb-2 w-3/4" />
+                  <Skeleton className="h-4 w-full mb-1" />
+                  <Skeleton className="h-4 w-5/6 mb-2" />
+                   <Skeleton className="h-6 w-1/3 mt-auto" />
                 </CardContent>
                 <CardFooter className="p-4">
-                  <div className="h-10 bg-muted animate-pulse w-full rounded-md"></div>
+                  <Skeleton className="h-10 w-full rounded-md" />
                 </CardFooter>
               </Card>
             ))}
@@ -221,6 +152,7 @@ export default function ProductsPage() {
   return (
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <header className="text-center mb-12">
+        <PackageSearch size={48} className="mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
           اكتشفي إبداعات وخدمات فريدة
         </h1>
@@ -229,11 +161,10 @@ export default function ProductsPage() {
         </p>
       </header>
 
-      {/* Filters */}
       <div className="mb-8 flex flex-col md:flex-row gap-4 items-center p-4 bg-card rounded-lg shadow">
         <div className="relative flex-grow w-full md:w-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input 
+          <Input
             type="text"
             placeholder="ابحثي عن منتجات، خدمات، بائعات..."
             value={searchTerm}
@@ -256,13 +187,12 @@ export default function ProductsPage() {
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
           <Filter className="h-5 w-5 text-muted-foreground" />
-          <Select value={selectedType} onValueChange={setSelectedType}>
+          <Select value={selectedType} onValueChange={(value: ProductType | 'الكل') => setSelectedType(value)}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="تصفية حسب النوع" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="الكل">كل الأنواع</SelectItem>
-              {productTypes.map(type => (
+              {itemTypes.map(type => (
                 <SelectItem key={type} value={type} className="capitalize">{type}</SelectItem>
               ))}
             </SelectContent>
@@ -270,35 +200,39 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Product Grid */}
-      {filteredProducts.length > 0 ? (
+      {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredProducts.map(product => (
-            <Card key={product.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col bg-card">
+          {filteredItems.map(item => (
+            <Card key={item.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col bg-card">
               <CardHeader className="p-0 relative">
-                <div className="aspect-square">
-                  <Image
-                    src={product.imageSrc}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover rounded-t-lg"
-                    data-ai-hint={product.dataAiHint}
-                  />
-                </div>
+                <Link href={`/products/${item.id}`} passHref>
+                    <div className="aspect-square">
+                    <Image
+                        src={item.imageSrc || 'https://picsum.photos/400/400?random=fallback'}
+                        alt={item.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover rounded-t-lg"
+                        data-ai-hint={item.dataAiHint || 'product image'}
+                    />
+                    </div>
+                </Link>
               </CardHeader>
               <CardContent className="p-4 flex flex-col flex-grow">
-                <CardTitle className="text-lg font-semibold text-primary mb-1">{product.name}</CardTitle>
-                <CardDescription className="text-xs text-muted-foreground mb-1">مقدم من {product.seller} • {product.category}</CardDescription>
-                <span className="text-xs capitalize bg-accent-purple/20 text-accent-purple-foreground px-2 py-0.5 rounded-full self-start mb-2">{product.type}</span>
-                <p className="text-sm text-foreground/80 flex-grow mb-2">{product.description}</p>
-                <p className="text-xl font-bold text-accent-pink mt-auto">{getProductPriceDisplay(product)}</p>
+                <CardTitle className="text-lg font-semibold text-primary mb-1 line-clamp-2">{item.name}</CardTitle>
+                <CardDescription className="text-xs text-muted-foreground mb-1">
+                  {/* Placeholder for seller name, requires joining data or adjusting DisplayItem */}
+                  مقدم من <Link href={`/store/${item.storeSlug}`} className="text-accent-purple hover:underline">{item.storeSlug}</Link> • {item.category}
+                </CardDescription>
+                <span className="text-xs capitalize bg-accent-purple/20 text-accent-purple-foreground px-2 py-0.5 rounded-full self-start mb-2">{item.type}</span>
+                <p className="text-sm text-foreground/80 flex-grow mb-2 line-clamp-3">{item.description}</p>
+                <p className="text-xl font-bold text-accent-pink mt-auto">{getItemPriceDisplay(item)}</p>
               </CardContent>
               <CardFooter className="p-4 border-t">
                 <Button
                   variant="outline"
                   className="w-full hover:bg-accent-yellow/20 hover:border-accent-yellow"
-                  onClick={() => handleViewDetails(product)}
+                  onClick={() => router.push(`/products/${item.id}`)}
                 >
                   <Eye size={18} className="mr-2" /> عرض التفاصيل
                 </Button>
@@ -309,40 +243,42 @@ export default function ProductsPage() {
       ) : (
         <div className="text-center py-12">
           <ShoppingBag size={48} className="mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-xl font-semibold text-primary mb-2">لم يتم العثور على منتجات</h3>
+          <h3 className="text-xl font-semibold text-primary mb-2">لا توجد إبداعات أو خدمات تطابق بحثكِ</h3>
           <p className="text-foreground/70">
-            حاولي تعديل بحثك أو فلاترك، أو عاودي التحقق لاحقًا لرؤية الإضافات الجديدة!
+            جرّبي تعديل فلاتر البحث، أو عاودي التحقق لاحقًا لرؤية إبداعات جديدة!
           </p>
         </div>
       )}
 
-      {/* Product Details Modal */}
-      {selectedProduct && (
+      {selectedItem && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogContent className="sm:max-w-[625px]">
             <DialogHeader>
               <div className="aspect-video my-4 rounded-md overflow-hidden relative">
                  <Image
-                  src={selectedProduct.imageSrc}
-                  alt={selectedProduct.name}
+                  src={selectedItem.imageSrc || 'https://picsum.photos/400/300?random=modal'}
+                  alt={selectedItem.name}
                   fill
                   className="object-cover"
-                  data-ai-hint={selectedProduct.dataAiHint}
+                  data-ai-hint={selectedItem.dataAiHint || 'item image'}
                 />
               </div>
-              <DialogTitle className="text-2xl text-primary">{selectedProduct.name}</DialogTitle>
-              <p className="text-sm text-muted-foreground">مقدم من {selectedProduct.seller} • الفئة: {selectedProduct.category} • النوع: <span className="capitalize">{selectedProduct.type}</span></p>
+              <DialogTitle className="text-2xl text-primary">{selectedItem.name}</DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                  {/* Placeholder for seller name */}
+                  مقدم من <Link href={`/store/${selectedItem.storeSlug}`} className="text-accent-purple hover:underline">{selectedItem.storeSlug}</Link> • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
+              </p>
             </DialogHeader>
             <DialogDescription className="text-base text-foreground/80 text-left py-4 max-h-[200px] overflow-y-auto">
-              {selectedProduct.longDescription}
+              {selectedItem.longDescription || selectedItem.description}
             </DialogDescription>
-            <p className="text-2xl font-bold text-accent-pink mt-2 text-left">{getProductPriceDisplay(selectedProduct)}</p>
+            <p className="text-2xl font-bold text-accent-pink mt-2 text-left">{getItemPriceDisplay(selectedItem)}</p>
             <DialogFooter className="mt-6 sm:justify-between items-center">
               <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
                 إغلاق
               </Button>
-              <Button type="button" className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
-                {getModalActionText(selectedProduct.type)}
+              <Button type="button" className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" onClick={() => handlePrimaryActionInModal(selectedItem)}>
+                {getModalActionText(selectedItem.type)}
               </Button>
             </DialogFooter>
           </DialogContent>
