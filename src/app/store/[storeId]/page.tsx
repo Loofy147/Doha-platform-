@@ -4,7 +4,7 @@
 import React, {useEffect, useState, useMemo, Suspense} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from 'next/link'; // Ensure Link is imported
 import {Button} from '@/components/ui/button';
 import {
   Card,
@@ -53,8 +53,9 @@ import {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  type CarouselApi,
 } from '@/components/ui/carousel';
-import Autoplay from 'embla-carousel-autoplay';
+import Autoplay from "embla-carousel-autoplay";
 import {cn} from '@/lib/utils';
 import {
   Dialog,
@@ -75,15 +76,15 @@ const FashionLookbookSection = React.lazy(() => import('@/components/store/secti
 const CraftsShowcaseSection = React.lazy(() => import('@/components/store/sections/crafts-showcase-section'));
 const RentalShowcaseSection = React.lazy(() => import('@/components/store/sections/rental-showcase-section'));
 const ServiceProviderShowcaseSection = React.lazy(() => import('@/components/store/sections/service-provider-showcase-section'));
+import { NotFound } from '@/components/layout/not-found';
 
 import {
   getStoreDataById,
   type StoreData,
   type Product,
   type Service,
-  type ProductType as ItemType, // Renamed to avoid conflict with React's ProductType
+  type ProductType as ItemType,
   type StoreType,
-  mockStoreDetails 
 } from '@/lib/data/mock-store-data';
 
 interface FeaturedCollection {
@@ -95,25 +96,39 @@ interface FeaturedCollection {
 const StoreLoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
     <div className="animate-pulse">
-      <Skeleton className="h-64 w-full rounded-lg mb-8" />
-      <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-20 relative z-10">
-        <Skeleton className="h-32 w-32 rounded-full border-4 border-muted" />
-        <div className="flex-1 space-y-4">
-          <Skeleton className="h-10 w-3/4" />
-          <Skeleton className="h-6 w-full" />
-          <div className="flex gap-2">
-            <Skeleton className="h-8 w-24 rounded-full" />
-            <Skeleton className="h-8 w-32 rounded-full" />
+      {/* Hero Banner Skeleton */}
+      <Skeleton className="h-48 md:h-64 lg:h-80 w-full rounded-lg mb-8" />
+      
+      {/* Store Info Card Skeleton */}
+      <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-16 md:-mt-20 relative z-10">
+        <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-muted" />
+        <div className="flex-1 space-y-3 text-center md:text-right">
+          <Skeleton className="h-8 w-3/4 md:w-1/2" />
+          <Skeleton className="h-5 w-full md:w-3/4" />
+          <div className="flex justify-center md:justify-start gap-2">
+            <Skeleton className="h-7 w-20 rounded-full" />
+            <Skeleton className="h-7 w-28 rounded-full" />
           </div>
         </div>
-        <div className="flex gap-2">
-            <Skeleton className="h-10 w-28 rounded-md" />
-            <Skeleton className="h-10 w-28 rounded-md" />
+        <div className="flex gap-2 self-center md:self-start mt-4 md:mt-0">
+            <Skeleton className="h-9 w-24 rounded-md" />
+            <Skeleton className="h-9 w-24 rounded-md" />
         </div>
       </div>
-      <Skeleton className="h-40 w-full rounded-lg mb-10" />
+      
+      {/* Story/Announcements Skeleton */}
+      <Card className="shadow-lg rounded-lg mb-10">
+        <CardHeader><Skeleton className="h-7 w-1/3" /></CardHeader>
+        <CardContent className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+        </CardContent>
+      </Card>
+
+      {/* Products/Services Section Skeleton */}
       <div className="mb-10">
-        <Skeleton className="h-10 w-1/3 mb-6" />
+        <Skeleton className="h-9 w-1/3 mb-6" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array(4).fill(0).map((_, i) => (
             <Card key={`skel-prod-${i}`} className="shadow-lg rounded-lg overflow-hidden">
@@ -131,7 +146,7 @@ const StoreLoadingSkeleton = () => (
           ))}
         </div>
       </div>
-       <Skeleton className="h-52 w-full rounded-lg mb-10" />
+       <Skeleton className="h-52 w-full rounded-lg mb-10" /> {/* Contact/Policies Skeleton */}
     </div>
   </div>
 );
@@ -146,26 +161,28 @@ const StorePage = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
   const {toast} = useToast();
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+
 
   useEffect(() => {
     setIsMounted(true);
     if (storeId) {
       setIsLoading(true);
-      setTimeout(() => { // Simulate API delay
+      setTimeout(() => { 
         const fetchedStoreData = getStoreDataById(storeId);
         if (fetchedStoreData) {
           setStoreData(fetchedStoreData);
         } else {
           console.warn(`Store with ID ${storeId} not found.`);
-          // Optionally, redirect to a 404 page or show an error message
-          // router.push('/not-found'); // Example
+          setStoreData(null); // Set to null if not found to trigger NotFound component
         }
         setIsLoading(false);
       }, 700); 
     } else {
       setIsLoading(false);
+      setStoreData(null); // No ID, so no store data
     }
-  }, [storeId, router]);
+  }, [storeId]);
 
   const storeThemeStyle = useMemo(() => storeData?.themeStyle || 'light', [storeData]);
   const storeAccentColor = useMemo(() => storeData?.accentColor || 'hsl(var(--primary))', [storeData]);
@@ -185,8 +202,9 @@ const StorePage = () => {
     toast({
       title: `🛍️ ${item.name}`,
       description: `تم ${actionText.toLowerCase()} بنجاح (محاكاة)!`,
-      action: <Button variant="outline" size="sm" onClick={() => { router.push('/cart'); /* navigate to cart/booking */ }}>متابعة</Button>,
+      action: <Button variant="outline" size="sm" onClick={() => { router.push(item.type === 'بيع' ? '/cart' : '/dashboard/orders'); }}>متابعة</Button>,
     });
+     handleCloseDetailsModal();
   };
 
  const featuredCollections: FeaturedCollection[] = useMemo(() => {
@@ -234,28 +252,17 @@ const StorePage = () => {
         default: return StoreIconLucide; 
     }
   };
-  const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData?.storeType);
-
 
   if (!isMounted || isLoading) { 
     return <StoreLoadingSkeleton />;
   }
 
   if (!storeData) {
-    return (
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center min-h-screen flex flex-col justify-center items-center bg-background">
-        <PackageSearch className="w-24 h-24 text-destructive mb-6" />
-        <h1 className="text-4xl font-bold text-destructive mb-3">خطأ: المتجر غير موجود</h1>
-        <p className="text-xl text-muted-foreground mb-8 max-w-md">
-          عذرًا، لم نتمكن من العثور على المتجر الذي تبحثين عنه. قد يكون الرابط غير صحيح أو تم حذف المتجر.
-        </p>
-        <Button variant="outline" onClick={() => router.push('/')} className="text-lg px-8 py-3 border-primary text-primary hover:bg-primary/10">
-          <ChevronLeft className="w-5 h-5 ml-2" /> العودة للرئيسية
-        </Button>
-      </div>
-    );
+    return <NotFound title="خطأ: المتجر غير موجود" message="عذرًا، لم نتمكن من العثور على المتجر الذي تبحثين عنه. قد يكون الرابط غير صحيح أو تم حذف المتجر." />;
   }
   
+  const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData.storeType);
+
   const SectionSuspenseFallback = () => (
     <div className="py-10 text-center">
         <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" style={{color: storeAccentColor}}/>
@@ -278,6 +285,7 @@ const StorePage = () => {
             plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]} 
             opts={{ loop: storeData.bannerImages.length > 1 }} 
             className="h-full w-full"
+            setApi={setCarouselApi}
           >
             <CarouselContent className="h-full">
               {storeData.bannerImages.map((src, index) => (
@@ -425,7 +433,6 @@ const StorePage = () => {
               />
             )}
             {storeData.storeType === 'general' && (storeData.products || storeData.services) && (
-              // A generic showcase for 'general' stores, perhaps combining products and services.
               <StoreSection id="general-showcase" title="منتجات وخدمات مميزة" icon={ShoppingBag} accentColor={storeAccentColor} className="my-10">
                  <div className="space-y-10">
                     {storeData.products.length > 0 && (
@@ -558,7 +565,7 @@ const StorePage = () => {
              storeThemeStyle === 'elegant' && "bg-slate-700 text-slate-50 border-slate-600",
              storeThemeStyle === 'dark' && "bg-gray-800 text-gray-100 border-gray-700"
             )}>
-            <DialogHeader className="pr-10 border-b pb-4">
+            <DialogHeader className="pr-10 border-b pb-4" style={{ borderBottomColor: storeAccentColor, backgroundColor: `${storeAccentColor}1A`}}>
               <DialogTitle className="text-2xl md:text-3xl" style={{color: storeAccentColor}}>{selectedItem.name}</DialogTitle>
               <p className="text-sm text-muted-foreground">
                 مقدم من {storeData?.name} • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
@@ -568,8 +575,9 @@ const StorePage = () => {
             <div className="grid md:grid-cols-2 gap-6 flex-1 overflow-y-auto py-4 px-1 scrollbar-thin scrollbar-thumb-muted-foreground/50 scrollbar-track-transparent">
                 <div className="aspect-square md:aspect-auto md:min-h-[300px] md:max-h-[500px] rounded-lg overflow-hidden relative shadow-lg group">
                     <Carousel 
-                        opts={{ loop: (selectedItem as Product).images ? (selectedItem as Product).images.length > 1 : false }} 
+                        opts={{ loop: (selectedItem as Product).images ? (selectedItem as Product).images!.length > 1 : false }} 
                         className="h-full w-full"
+                        setApi={setCarouselApi}
                     >
                         <CarouselContent className="h-full">
                         {((selectedItem as Product).images || [(selectedItem as Product).imageSrc || (selectedItem as Service).imageSrc || 'https://picsum.photos/800/600?grayscale']).map((imgSrc, index) => (
@@ -584,7 +592,7 @@ const StorePage = () => {
                             </CarouselItem>
                         ))}
                         </CarouselContent>
-                        {((selectedItem as Product).images ? (selectedItem as Product).images.length > 1 : false) && (
+                        {((selectedItem as Product).images ? (selectedItem as Product).images!.length > 1 : false) && (
                             <>
                             <CarouselPrevious className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
                             <CarouselNext className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
@@ -613,11 +621,11 @@ const StorePage = () => {
                     {selectedItem.type === 'خدمة' && (selectedItem as Service).location && (
                         <p className="text-sm text-muted-foreground mb-1"><MapPin size={14} className="inline ml-1" /> المكان: {(selectedItem as Service).location}</p>
                     )}
-                    {(selectedItem as Product).tags && (selectedItem as Product).tags!.length > 0 && (
+                    {(selectedItem as Product | Service).tags && (selectedItem as Product | Service).tags!.length > 0 && (
                       <div className="mb-4">
                         <p className="text-sm font-medium mb-1" style={{color: storeAccentColor}}>كلمات مفتاحية:</p>
                         <div className="flex flex-wrap gap-1.5">
-                          {(selectedItem as Product).tags!.map(tag => <Badge key={tag} variant="outline" style={{borderColor: storeAccentColor, color: storeAccentColor}}>{tag}</Badge>)}
+                          {(selectedItem as Product | Service).tags!.map(tag => <Badge key={tag} variant="outline" style={{borderColor: storeAccentColor, color: storeAccentColor}}>{tag}</Badge>)}
                         </div>
                       </div>
                     )}
@@ -626,24 +634,39 @@ const StorePage = () => {
                 </div>
             </div>
 
-            <DialogFooter className="mt-auto pt-4 border-t sm:justify-between items-center gap-2">
-              <Button type="button" variant="ghost" onClick={handleCloseDetailsModal} className={cn(storeThemeStyle === 'elegant' && "text-slate-300 hover:bg-slate-600", storeThemeStyle === 'dark' && "text-gray-300 hover:bg-gray-700")}>
-                إغلاق
-              </Button>
-              <Button 
-                type="button" 
-                className="text-white flex-1 sm:flex-none shadow-md hover:shadow-lg transition-all"
-                style={{backgroundColor: storeAccentColor}}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                onClick={() => handlePrimaryAction(selectedItem)}
-                size="lg"
+            <DialogFooter className="mt-auto pt-4 border-t sm:justify-between items-center gap-2" style={{ borderTopColor: storeAccentColor }}>
+             <Button
+                variant="outline"
+                size="sm"
+                asChild
+                style={{borderColor: storeAccentColor, color: storeAccentColor}}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${storeAccentColor}1A`}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                className="order-last sm:order-first"
               >
-                {selectedItem.type === 'بيع' && <ShoppingBasket size={20} className="ml-2" />}
-                {selectedItem.type === 'إيجار' && <CalendarDays size={20} className="ml-2" />}
-                {selectedItem.type === 'خدمة' && <Handshake size={20} className="ml-2" />}
-                {selectedItem.type === 'بيع' ? 'أضيفي إلى السلة' : selectedItem.type === 'إيجار' ? 'احجزي الآن' : 'احجزي/استفسري عن الخدمة'}
+                <Link href={`/products/${selectedItem.id}`}>
+                  <Eye size={16} className="ml-2" /> عرض التفاصيل الكاملة
+                </Link>
               </Button>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button type="button" variant="ghost" onClick={handleCloseDetailsModal} className={cn(storeThemeStyle === 'elegant' && "text-slate-300 hover:bg-slate-600", storeThemeStyle === 'dark' && "text-gray-300 hover:bg-gray-700", "w-full sm:w-auto")}>
+                    إغلاق
+                  </Button>
+                  <Button 
+                    type="button" 
+                    className="text-white flex-1 sm:flex-none shadow-md hover:shadow-lg transition-all w-full sm:w-auto"
+                    style={{backgroundColor: storeAccentColor}}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                    onClick={() => handlePrimaryAction(selectedItem)}
+                    size="lg"
+                  >
+                    {selectedItem.type === 'بيع' && <ShoppingBasket size={20} className="ml-2" />}
+                    {selectedItem.type === 'إيجار' && <CalendarDays size={20} className="ml-2" />}
+                    {selectedItem.type === 'خدمة' && <Handshake size={20} className="ml-2" />}
+                    {selectedItem.type === 'بيع' ? 'أضيفي إلى السلة' : selectedItem.type === 'إيجار' ? 'احجزي الآن' : 'احجزي/استفسري عن الخدمة'}
+                  </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -653,3 +676,5 @@ const StorePage = () => {
 };
 
 export default StorePage;
+
+    
