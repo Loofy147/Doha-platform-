@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Eye, ToggleRight, ToggleLeft, Package, DollarSign, CalendarClock, Handshake } from 'lucide-react';
+import { Edit, Trash2, Eye, ToggleRight, ToggleLeft, Package, DollarSign, CalendarClock, Handshake, BarChart2, TrendingUp, CheckSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { DetailedSellerProduct, SellerProductStatus } from '@/lib/data/mock-seller-data'; // Import the detailed type
+import { DetailedSellerProduct, SellerProductStatus } from '@/lib/data/mock-seller-data'; 
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,12 +21,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from '@/lib/utils';
 
 interface DashboardProductCardProps {
-  product: DetailedSellerProduct; // Use the detailed product type
+  product: DetailedSellerProduct; 
   onToggleStatus: (productId: string) => void;
   onDelete: (productId: string) => void;
+  onSelectedChange: (productId: string, checked: boolean) => void;
+  isSelected: boolean;
 }
 
 const statusColors: Record<SellerProductStatus, string> = {
@@ -42,15 +45,15 @@ const typeIcons: Record<DetailedSellerProduct['productType'], React.ElementType>
   'خدمة': Handshake,
 };
 
-export function DashboardProductCard({ product, onToggleStatus, onDelete }: DashboardProductCardProps) {
+export function DashboardProductCard({ product, onToggleStatus, onDelete, onSelectedChange, isSelected }: DashboardProductCardProps) {
   const { toast } = useToast();
   const TypeIcon = typeIcons[product.productType];
 
   const getPriceDisplay = (p: DetailedSellerProduct): string => {
       if (p.productType === 'بيع') {
-        let priceStr = `${parseInt(p.price).toLocaleString()} دج`;
+        let priceStr = `${parseInt(p.price || '0').toLocaleString()} دج`;
         if(p.discountPercentage && parseInt(p.discountPercentage) > 0) {
-            const discountedPrice = parseInt(p.price) * (1 - parseInt(p.discountPercentage)/100);
+            const discountedPrice = parseInt(p.price || '0') * (1 - parseInt(p.discountPercentage)/100);
             priceStr = `${discountedPrice.toLocaleString()} دج`;
         }
         return priceStr;
@@ -72,6 +75,14 @@ export function DashboardProductCard({ product, onToggleStatus, onDelete }: Dash
   return (
     <Card className="flex flex-col h-full shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden border border-border">
       <CardHeader className="p-0 relative aspect-video overflow-hidden group">
+         <div className="absolute top-2 left-2 z-20">
+             <Checkbox
+                aria-label={`اختيار المنتج ${product.name}`}
+                checked={isSelected}
+                onCheckedChange={(checked) => onSelectedChange(product.id, !!checked)}
+                className="bg-card/80 border-primary/50 data-[state=checked]:bg-primary"
+            />
+         </div>
          <Link href={`/products/${product.id}`} target="_blank" rel="noopener noreferrer" title="معاينة المنتج العام">
             <Image
                 src={product.imageSrc}
@@ -95,7 +106,7 @@ export function DashboardProductCard({ product, onToggleStatus, onDelete }: Dash
               <Link href={`/dashboard/products/edit/${product.id}`}>{product.name}</Link>
             </CardTitle>
              <Badge variant={product.productType === 'بيع' ? 'secondary' : product.productType === 'إيجار' ? 'outline' : 'default'} className="capitalize text-xs px-1.5 py-0.5 whitespace-nowrap flex items-center gap-1 flex-shrink-0">
-                 <TypeIcon size={14}/> {/* Increased size from 12 to 14 */}
+                 <TypeIcon size={14}/> 
                  {product.productType}
              </Badge>
         </div>
@@ -111,18 +122,22 @@ export function DashboardProductCard({ product, onToggleStatus, onDelete }: Dash
                 المخزون: {product.stock}
             </p>
         )}
+        <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
+            <span className="flex items-center gap-1"><Eye size={12} /> {product.views || 0} مشاهدة</span>
+            <span className="flex items-center gap-1"><TrendingUp size={12} /> {product.sales || 0} مبيعات</span>
+        </div>
         <p className="text-xs text-muted-foreground">أضيف في: {new Date(product.dateAdded).toLocaleDateString('ar-EG')}</p>
       </CardContent>
       <CardFooter className="p-3 border-t bg-muted/20 flex justify-between items-center gap-1">
-        <Button variant="ghost" size="sm" title="تعديل" asChild className="text-blue-600 hover:bg-blue-100 hover:text-blue-700">
+        <Button variant="ghost" size="icon" title="تعديل" asChild className="text-blue-600 hover:bg-blue-100 hover:text-blue-700 h-7 w-7">
             <Link href={`/dashboard/products/edit/${product.id}`}><Edit size={16}/></Link>
         </Button>
-        <Button variant="ghost" size="sm" title={product.status === 'نشط' ? 'إلغاء التنشيط' : 'تنشيط'} onClick={() => onToggleStatus(product.id)} className={cn(product.status === 'نشط' ? 'text-green-600 hover:bg-green-100 hover:text-green-700' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700')}>
+        <Button variant="ghost" size="icon" title={product.status === 'نشط' ? 'إلغاء التنشيط' : 'تنشيط'} onClick={() => onToggleStatus(product.id)} className={cn(product.status === 'نشط' ? 'text-green-600 hover:bg-green-100 hover:text-green-700' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700', "h-7 w-7")}>
             {product.status === 'نشط' ? <ToggleRight size={16}/> : <ToggleLeft size={16}/>}
         </Button>
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="sm" title="حذف" className="text-destructive hover:bg-destructive/10 hover:text-destructive">
+                <Button variant="ghost" size="icon" title="حذف" className="text-destructive hover:bg-destructive/10 hover:text-destructive h-7 w-7">
                     <Trash2 size={16}/>
                 </Button>
             </AlertDialogTrigger>
@@ -139,10 +154,11 @@ export function DashboardProductCard({ product, onToggleStatus, onDelete }: Dash
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-         <Button variant="ghost" size="sm" title="معاينة المنتج العام" asChild className="text-purple-600 hover:bg-purple-100 hover:text-purple-700">
+         <Button variant="ghost" size="icon" title="معاينة المنتج العام" asChild className="text-purple-600 hover:bg-purple-100 hover:text-purple-700 h-7 w-7">
              <Link href={`/products/${product.id}`} target="_blank" rel="noopener noreferrer"><Eye size={16}/></Link>
         </Button>
       </CardFooter>
     </Card>
   );
 }
+

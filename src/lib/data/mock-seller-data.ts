@@ -8,29 +8,36 @@ export interface DetailedSellerProduct {
   name: string;
   productType: ProductType;
   category: string;
-  detailsForAI: string;
-  description: string;
+  detailsForAI: string; // For AI description generation
+  description: string; // Seller's full description
   story?: string;
-  price: string; 
-  stock?: string; 
-  discountPercentage?: string;
-  isTaxable?: boolean;
-  rentalPrice?: string; 
-  rentalPeriod?: 'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'; 
-  rentalDeposit?: string;
-  rentalAvailability?: string;
-  servicePriceType?: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب';
-  servicePrice?: string; 
-  serviceDuration?: string;
-  serviceLocation?: string;
-  imageSrc: string;
-  images?: string[]; 
+  price: string; // Raw price string for seller input for 'بيع' type
+  stock?: string; // For 'بيع'
+  discountPercentage?: string; // For 'بيع'
+  isTaxable?: boolean; // For 'بيع'
+  rentalPrice?: string; // For 'إيجار'
+  rentalPeriod?: 'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'; // For 'إيجار'
+  rentalDeposit?: string; // For 'إيجار'
+  rentalAvailability?: string; // For 'إيجار'
+  servicePriceType?: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'; // For 'خدمة'
+  servicePrice?: string; // Service price value for seller input for 'خدمة' type
+  serviceDuration?: string; // For 'خدمة'
+  serviceLocation?: string; // For 'خدمة'
+  imageSrc: string; // Primary image
+  images?: string[]; // Additional images
   dataAiHint: string;
-  dateAdded: string; 
+  dateAdded: string; // ISO date string
   status: SellerProductStatus;
   sku?: string;
   tags?: string[];
-  preparationTime?: string;
+  preparationTime?: string; // e.g., "يحتاج يومين للتجهيز"
+  views?: number;
+  sales?: number;
+  shippingWeight?: string; // kg
+  shippingDimensions?: string; // L x W x H cm
+  metaTitle?: string;
+  metaDescription?: string;
+  variants?: Array<{ name: string; values: string }>; // e.g. [{ name: "Size", values: "S,M,L" }]
 }
 
 const lamsaIbdaaProducts: DetailedSellerProduct[] = [
@@ -49,7 +56,9 @@ const lamsaIbdaaProducts: DetailedSellerProduct[] = [
     description: 'تألقي بلمسة من الأصالة والجمال مع هذه الأقراط الفضية المصنوعة يدويًا، والمرصعة بحجر الفيروز الطبيعي الساحر. تصميمها العصري يجمع بين الأناقة والبساطة، مما يجعلها قطعة مثالية لإطلالاتكِ اليومية أو كهدية تعبر عن ذوقكِ الرفيع.\n\nتتميز هذه الأقراط بجودة الفضة العالية وحرفية الصنع الدقيقة، مع تركيز على إبراز جمال حجر الفيروز بألوانه الزاهية التي تضفي حيوية وجاذبية. خفيفة الوزن ومريحة للارتداء طوال اليوم.\n\nاقتني هذه القطعة الفريدة الآن وأضيفي لمسة من السحر الطبيعي إلى صندوق مجوهراتكِ، أو قدميها كهدية لا تُنسى لمن تحبين!',
     story: 'كل قطعة أصنعها تحمل شغفي بالأحجار الكريمة وسحر الفضة. هذه الأقراط مستوحاة من زرقة السماء الصافية.',
     discountPercentage: '5',
-    isTaxable: false
+    isTaxable: false,
+    views: Math.floor(Math.random() * 1000) + 50,
+    sales: Math.floor(Math.random() * 100) + 5,
   },
   {
     id: 'sprod4',
@@ -67,6 +76,8 @@ const lamsaIbdaaProducts: DetailedSellerProduct[] = [
     story: 'هذه اللوحة تمثل انطلاقة جديدة، تمامًا كالربيع بعد الشتاء.',
     discountPercentage: '10',
     isTaxable: true,
+    views: Math.floor(Math.random() * 1000) + 50,
+    sales: Math.floor(Math.random() * 100) + 5,
   },
    {
     id: 'sprod6',
@@ -83,6 +94,8 @@ const lamsaIbdaaProducts: DetailedSellerProduct[] = [
     description: 'حقيبة يد كروشيه عملية وأنيقة، مثالية للاستخدام اليومي. مبطنة من الداخل وبحزام كتف مريح وقابل للتعديل. لون أزرق داكن. **نفذ المخزون حاليًا، سيتم توفيره قريبًا!**',
     story: 'أردت تصميم حقيبة تجمع بين العملية وجمال الكروشيه.',
     isTaxable: false,
+    views: Math.floor(Math.random() * 1000) + 50,
+    sales: Math.floor(Math.random() * 100) + 5,
   },
 ];
 
@@ -104,6 +117,8 @@ const lamsaIbdaaServices: DetailedSellerProduct[] = [
     description: 'انضمي إلى ورشتنا لتعلم أساسيات فن الكروشيه، من اختيار الخيوط والإبر إلى تنفيذ الغرز الأساسية وصنع قطعة بسيطة (مثل كوستر أو مربع صغير). الورشة مناسبة للمبتدئات تمامًا، وتتضمن جميع المواد وكوب قهوة! السعر للشخص الواحد.',
     story: 'أحب مشاركة متعة الكروشيه مع الأخريات ومشاهدة إبداعاتهن الأولى.',
     price: '', 
+    views: Math.floor(Math.random() * 500) + 20, // Services might have fewer views/sales initially
+    sales: Math.floor(Math.random() * 20) + 1,
   },
   {
     id: 'sserv2',
@@ -122,6 +137,8 @@ const lamsaIbdaaServices: DetailedSellerProduct[] = [
     description: 'هل تبحثين عن شعار فريد يعبر عن علامتك التجارية؟ نقدم خدمة تصميم شعارات بلمسة فنية يدوية تمزج بين الأصالة والإبداع. سيتم تصميم الشعار بناءً على رؤيتك ومتطلباتك، مع تقديم 3 نماذج أولية ومراجعتين. النسخة النهائية رقمية. السعر يبدأ من 15,000 دج ويتحدد بناءً على التعقيد.',
     story: 'أساعد العلامات التجارية الناشئة في بناء هوية بصرية مميزة.',
     price: '',
+    views: Math.floor(Math.random() * 300) + 10,
+    sales: Math.floor(Math.random() * 5) + 0,
   },
 ];
 
@@ -162,6 +179,8 @@ export const getSellerProductsSummary = () => allSellerProductsList.map(p => {
     imageSrc: p.imageSrc,
     dataAiHint: p.dataAiHint,
     dateAdded: p.dateAdded,
+    views: p.views,
+    sales: p.sales,
   };
 });
 
@@ -170,9 +189,7 @@ export const getDetailedSellerProductById = (id: string): DetailedSellerProduct 
 };
 
 // --- Re-exports from mock-store-data.ts ---
-export type { StoreData, Product, Service, Review } from './mock-store-data';
-// Note: mockStoreDetails is defined in mock-store-data.ts and also used by update/delete functions here.
-// This tight coupling is acceptable for mock data but would be different with a real backend.
+export type { StoreData, Product, Service, Review } from './mock-store-data'; // Product and Service here are for public store view
 export {
     getStoreDataById,
     getProductById,
@@ -180,14 +197,7 @@ export {
     getAllPlatformProducts,
     getAllPlatformServices,
     mockStoreDetails,
-    // allSellerProductsList // Removed from re-export to avoid conflict with the local `allSellerProductsList`
 } from './mock-store-data';
-
-
-// lamsaIbdaaStoreForDashboard should be defined before its use in updateSellerProduct or deleteSellerProduct.
-// However, mockStoreDetails is imported from './mock-store-data' where it's already defined.
-// We use mockStoreDetails directly.
-// const lamsaIbdaaStoreForDashboard = mockStoreDetails.find(store => store.id === 'lamsa-ibdaa');
 
 
 export const deleteSellerProduct = (productId: string): boolean => {
@@ -211,8 +221,6 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
         allSellerProductsList[index] = updatedProduct;
         
         // Find the correct store to update.
-        // This assumes `updatedProduct.sku` or another identifier can link back to a specific store.
-        // For this mock setup, if we assume all products in `allSellerProductsList` belong to 'lamsa-ibdaa' for dashboard purposes:
         const storeToUpdate = mockStoreDetails.find(s => s.id === 'lamsa-ibdaa'); // Or derive storeId dynamically
         
         if (storeToUpdate) {
@@ -238,7 +246,7 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
                        type: 'خدمة',
                    };
                 }
-            } else {
+            } else { 
                 const productIndex = storeToUpdate.products.findIndex(p => p.id === updatedProduct.id);
                  if (productIndex !== -1) {
                      storeToUpdate.products[productIndex] = {
@@ -270,5 +278,4 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
     }
     return false;
 };
-
     

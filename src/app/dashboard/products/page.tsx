@@ -7,14 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Package, PlusCircle, Search, Filter, ArrowUpDown, LayoutGrid, List } from 'lucide-react';
+import { Package, PlusCircle, Search, Filter, ArrowUpDown, LayoutGrid, List, Trash2, CheckSquare, XSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
-import { allSellerProductsList, getDetailedSellerProductById, DetailedSellerProduct, SellerProductStatus, ProductType as SellerProductType, deleteSellerProduct, updateSellerProduct } from '@/lib/data/mock-seller-data';
+import { DetailedSellerProduct, SellerProductStatus, ProductType as SellerProductType, deleteSellerProduct, updateSellerProduct, allSellerProductsList } from '@/lib/data/mock-seller-data';
 import { DashboardProductCard } from '@/components/dashboard/dashboard-product-card';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { UNIQUE_PRODUCT_CATEGORIES, PRODUCT_STATUSES, PRODUCT_TYPES_CONSTANTS, SortOptionConstant } from '@/lib/constants/categories';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
 
 type ViewMode = 'grid' | 'list';
 
@@ -31,9 +33,12 @@ export default function SellerProductsPage() {
   const [selectedType, setSelectedType] = useState<typeof PRODUCT_TYPES_CONSTANTS[number]>('الكل');
   const [sortBy, setSortBy] = useState<SortOptionConstant>('dateAddedDesc');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
 
   useEffect(() => {
     setIsClient(true);
+    // Sync with global mutable list on mount and if it changes elsewhere (though not ideal for production)
+    setProducts([...allSellerProductsList]); 
   }, []);
 
   const filteredAndSortedProducts = useMemo(() => {
@@ -90,22 +95,24 @@ export default function SellerProductsPage() {
     return tempProducts;
   }, [products, searchTerm, selectedCategory, selectedStatus, selectedType, sortBy]);
 
+  const handleProductSelection = (productId: string, checked: boolean) => {
+    setSelectedProductIds(prev => 
+      checked ? [...prev, productId] : prev.filter(id => id !== productId)
+    );
+  };
+  
   const toggleProductStatus = (productId: string) => {
     const productToUpdate = products.find(p => p.id === productId);
     if (!productToUpdate) return;
 
     const newStatus = productToUpdate.status === 'نشط' ? 'غير نشط' : 'نشط';
-    const updatedProduct = { ...productToUpdate, status: newStatus as SellerProductStatus };
+    const updatedProductData = { ...productToUpdate, status: newStatus as SellerProductStatus };
 
-    const success = updateSellerProduct(updatedProduct);
+    const success = updateSellerProduct(updatedProductData); // This updates the global mock list
 
     if (success) {
-      setProducts(prevProducts =>
-        prevProducts.map(p =>
-          p.id === productId ? updatedProduct : p
-        )
-      );
-      toast({ title: `تم تحديث حالة "${updatedProduct.name}" إلى "${newStatus}"`, variant: "default" });
+      setProducts(prev => prev.map(p => p.id === productId ? updatedProductData : p));
+      toast({ title: `تم تحديث حالة "${updatedProductData.name}" إلى "${newStatus}"`, variant: "default" });
     } else {
       toast({ title: "خطأ", description: "لم يتم العثور على المنتج لتحديث حالته.", variant: "destructive" });
     }
@@ -114,15 +121,33 @@ export default function SellerProductsPage() {
   const deleteProductHandler = (productId: string) => {
     const productToDelete = products.find(p => p.id === productId);
     if (!productToDelete) return;
-
-    const success = deleteSellerProduct(productId);
-
+    const success = deleteSellerProduct(productId); // This updates the global mock list
     if (success) {
       setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
       toast({ title: "تم حذف المنتج!", description: `"${productToDelete.name}" تم حذفه من متجرك.`, variant: "destructive" });
+      setSelectedProductIds(prev => prev.filter(id => id !== productId)); // Deselect if deleted
     } else {
       toast({ title: "خطأ", description: "لم يتم العثور على المنتج لحذفه.", variant: "destructive" });
     }
+  };
+
+  const handleBulkDelete = () => {
+    selectedProductIds.forEach(id => deleteSellerProduct(id));
+    setProducts([...allSellerProductsList]); // Re-sync with the global list
+    toast({ title: "تم حذف المنتجات المحددة بنجاح!", variant: "default" });
+    setSelectedProductIds([]);
+  };
+
+  const handleBulkStatusChange = (newStatus: SellerProductStatus) => {
+    selectedProductIds.forEach(id => {
+        const product = allSellerProductsList.find(p => p.id === id);
+        if(product) {
+            updateSellerProduct({...product, status: newStatus });
+        }
+    });
+    setProducts([...allSellerProductsList]);
+    toast({ title: `تم تحديث حالة المنتجات المحددة إلى "${newStatus}"!`, variant: "default" });
+    setSelectedProductIds([]);
   };
 
 
@@ -191,6 +216,43 @@ export default function SellerProductsPage() {
           </Link>
         </Button>
       </header>
+
+       {selectedProductIds.length > 0 && (
+        <Card className="mb-6 p-4 shadow-md bg-primary/10 border-primary/30">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p className="text-sm font-medium text-primary">
+              {selectedProductIds.length} عنصر محدد
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              <Button onClick={() => handleBulkStatusChange('نشط')} size="sm" variant="outline" className="border-green-500 text-green-600 hover:bg-green-500/10">
+                <CheckSquare size={16} className="ml-2"/> تفعيل المحدد
+              </Button>
+              <Button onClick={() => handleBulkStatusChange('غير نشط')} size="sm" variant="outline" className="border-gray-500 text-gray-600 hover:bg-gray-500/10">
+                <XSquare size={16} className="ml-2"/> إلغاء تفعيل المحدد
+              </Button>
+              <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                      <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700">
+                        <Trash2 size={16} className="ml-2"/> حذف المحدد
+                      </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                      <AlertDialogHeader><AlertDialogTitle>تأكيد الحذف الجماعي</AlertDialogTitle>
+                      <AlertDialogDescription>
+                          هل أنتِ متأكدة من رغبتك في حذف {selectedProductIds.length} عناصر؟ لا يمكن التراجع عن هذا الإجراء.
+                      </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                          <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/80">نعم، حذف العناصر</AlertDialogAction>
+                      </AlertDialogFooter>
+                  </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        </Card>
+      )}
+
 
       <Card className="shadow-lg border border-border/50">
         <CardHeader>
@@ -302,6 +364,8 @@ export default function SellerProductsPage() {
                             product={product}
                             onToggleStatus={toggleProductStatus}
                             onDelete={deleteProductHandler}
+                            isSelected={selectedProductIds.includes(product.id)}
+                            onSelectedChange={handleProductSelection}
                         />
                      </motion.div>
                 ))}
@@ -326,3 +390,4 @@ export default function SellerProductsPage() {
     </div>
   );
 }
+

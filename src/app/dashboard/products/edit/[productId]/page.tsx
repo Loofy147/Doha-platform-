@@ -18,14 +18,26 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock, Handshake, Layers, DollarSign, ShieldCheck, Percent, Info, Loader2, CheckCircle, AlertCircle, Trash2, Eye, Upload } from 'lucide-react';
+import { PackageEdit, Sparkles, ImageIcon, Palette, Tag, FileText, CalendarClock, Handshake, Layers, DollarSign, ShieldCheck, Percent, Info, Loader2, CheckCircle, AlertCircle, Trash2, Eye, Upload, Weight, Ruler, Ship, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateProductDescription, GenerateProductDescriptionInput } from '@/ai/flows/generate-product-description-flow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DetailedSellerProduct, ProductType, getDetailedSellerProductById, allSellerProductsList, updateSellerProduct } from '@/lib/data/mock-seller-data'; 
 import Image from 'next/image';
 import { MOCK_CATEGORIES_FOR_FORMS } from '@/lib/constants/categories';
+import { Separator } from '@/components/ui/separator';
 
+interface ImagePreview {
+  file?: File;
+  url: string;
+  isNew?: boolean;
+  isPlaceholder?: boolean; 
+}
+interface ProductVariant {
+  id: string; // for unique key in map
+  name: string; // e.g., Size, Color
+  values: string; // comma-separated values e.g., S,M,L
+}
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -60,13 +72,18 @@ export default function EditProductPage() {
   const [serviceDuration, setServiceDuration] = useState('');
   const [serviceLocation, setServiceLocation] = useState('');
   
-  const [currentImages, setCurrentImages] = useState<string[]>([]); 
+  const [currentImages, setCurrentImages] = useState<ImagePreview[]>([]); 
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [shippingWeight, setShippingWeight] = useState('');
+  const [shippingDimensions, setShippingDimensions] = useState('');
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
 
 
   useEffect(() => {
     if (productId) {
       setIsLoadingProduct(true);
-      setTimeout(() => {
+      setTimeout(() => { // Simulate API delay
         const fetchedProduct = getDetailedSellerProductById(productId);
 
         if (fetchedProduct) {
@@ -93,12 +110,16 @@ export default function EditProductPage() {
           setServiceDuration(fetchedProduct.serviceDuration || '');
           setServiceLocation(fetchedProduct.serviceLocation || '');
           
-          if (fetchedProduct.images && fetchedProduct.images.length > 0) {
-            setCurrentImages(fetchedProduct.images);
-          } else if (fetchedProduct.imageSrc) {
-             setCurrentImages([fetchedProduct.imageSrc, 'https://picsum.photos/seed/extraimg1/100/100', 'https://picsum.photos/seed/extraimg2/100/100'].slice(0,5)); 
-          }
-
+          const initialImages: ImagePreview[] = (fetchedProduct.images && fetchedProduct.images.length > 0) 
+            ? fetchedProduct.images.map(url => ({ url, isPlaceholder: url.startsWith('https://picsum.photos') }))
+            : [{ url: fetchedProduct.imageSrc, isPlaceholder: fetchedProduct.imageSrc.startsWith('https://picsum.photos') }];
+          setCurrentImages(initialImages.slice(0, 5));
+          
+          setVariants(fetchedProduct.variants || []);
+          setShippingWeight(fetchedProduct.shippingWeight || '');
+          setShippingDimensions(fetchedProduct.shippingDimensions || '');
+          setMetaTitle(fetchedProduct.metaTitle || '');
+          setMetaDescription(fetchedProduct.metaDescription || '');
 
         } else {
           toast({ title: "خطأ", description: `لم يتم العثور على المنتج رقم ${productId} للتعديل.`, variant: "destructive"});
@@ -138,16 +159,41 @@ export default function EditProductPage() {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const newImageUrls = Array.from(files).map(file => URL.createObjectURL(file));
-      setCurrentImages(prev => [...prev, ...newImageUrls].slice(0,5)); 
-      toast({title: "تم إضافة صور جديدة مؤقتًا.", description: "سيتم معالجة الرفع عند الحفظ."})
+      const newImagePreviews = Array.from(files).map(file => ({
+        file,
+        url: URL.createObjectURL(file),
+        isNew: true,
+      }));
+      setCurrentImages(prev => [...prev, ...newImagePreviews].slice(0,5)); 
+      toast({title: "تمت إضافة صور جديدة مؤقتًا.", description: "سيتم معالجة الرفع عند الحفظ."})
     }
   };
 
   const removeImage = (indexToRemove: number) => {
+    const imageToRemove = currentImages[indexToRemove];
+    if (imageToRemove.url && !imageToRemove.isNew) {
+        // If it's an existing image, we just mark it for removal or handle it on submit
+        // For mock, we'll just filter it out from UI
+    }
+    if (imageToRemove.file && imageToRemove.url.startsWith('blob:')) {
+        URL.revokeObjectURL(imageToRemove.url); // Clean up blob URL
+    }
     setCurrentImages(prev => prev.filter((_,index) => index !== indexToRemove));
     toast({title: "تم تحديد الصورة للحذف.", description: "سيتم الحذف الفعلي عند الحفظ."})
   };
+  
+  const addVariant = () => {
+    setVariants(prev => [...prev, { id: Date.now().toString(), name: '', values: '' }]);
+  };
+
+  const updateVariant = (index: number, field: keyof ProductVariant, value: string) => {
+    setVariants(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v));
+  };
+
+  const removeVariant = (index: number) => {
+    setVariants(prev => prev.filter((_, i) => i !== index));
+  };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,7 +224,14 @@ export default function EditProductPage() {
             servicePrice: productType === 'خدمة' ? servicePriceValue : undefined, 
             serviceDuration: productType === 'خدمة' ? serviceDuration : undefined,
             serviceLocation: productType === 'خدمة' ? serviceLocation : undefined,
-            images: currentImages, 
+            images: currentImages.filter(img => !img.isPlaceholder).map(img => img.url), // Save non-placeholder URLs
+            imageSrc: currentImages.find(img => !img.isPlaceholder)?.url || productData.imageSrc, // Update primary image
+            variants: variants,
+            shippingWeight: shippingWeight,
+            shippingDimensions: shippingDimensions,
+            metaTitle: metaTitle,
+            metaDescription: metaDescription,
+            // views and sales are typically updated by backend based on actual data
         };
         updateSellerProduct(updatedProductData);
     }
@@ -227,11 +280,11 @@ export default function EditProductPage() {
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <Card className="shadow-lg">
-          <CardHeader>
+        <Card className="shadow-lg border-primary/10">
+          <CardHeader className="bg-primary/5">
             <CardTitle className="text-xl text-primary flex items-center"><Tag className="ml-2 text-accent-purple" /> المعلومات الأساسية</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
             <div>
               <Label htmlFor="productName">اسم المنتج/الخدمة</Label>
               <Input id="productName" value={productName} onChange={(e) => setProductName(e.target.value)} />
@@ -261,11 +314,11 @@ export default function EditProductPage() {
           </CardContent>
         </Card>
         
-        <Card className="shadow-lg">
-            <CardHeader>
+        <Card className="shadow-lg border-primary/10">
+            <CardHeader className="bg-primary/5">
                 <CardTitle className="text-xl text-primary flex items-center"><FileText className="ml-2 text-accent-pink" /> الوصف وقصة المنتج</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-6">
                  <div>
                     <Label htmlFor="productDetailsForAI">تحديث تفاصيل المنتج (للمساعدة بالذكاء الاصطناعي)</Label>
                     <Textarea 
@@ -307,11 +360,11 @@ export default function EditProductPage() {
         </Card>
 
         {productType === 'بيع' && (
-            <Card className="shadow-lg">
-                <CardHeader>
+            <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-primary/5">
                     <CardTitle className="text-xl text-primary flex items-center"><DollarSign className="ml-2 text-green-500" /> تسعير المنتج (بيع)</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
                     <div>
                         <Label htmlFor="price">سعر البيع (دج)</Label>
                         <Input id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
@@ -333,11 +386,11 @@ export default function EditProductPage() {
         )}
 
         {productType === 'إيجار' && (
-            <Card className="shadow-lg">
-                <CardHeader>
+            <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-primary/5">
                     <CardTitle className="text-xl text-primary flex items-center"><CalendarClock className="ml-2 text-blue-500" /> تسعير المنتج (إيجار)</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
                     <div>
                         <Label htmlFor="rentalPrice">سعر الإيجار (دج)</Label>
                         <Input id="rentalPrice" type="number" value={rentalPrice} onChange={(e) => setRentalPrice(e.target.value)} />
@@ -367,11 +420,11 @@ export default function EditProductPage() {
         )}
         
         {productType === 'خدمة' && (
-            <Card className="shadow-lg">
-                <CardHeader>
+            <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-primary/5">
                     <CardTitle className="text-xl text-primary flex items-center"><Handshake className="ml-2 text-purple-500" /> تسعير الخدمة</CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
                      <div>
                         <Label htmlFor="servicePriceType">نوع تسعير الخدمة</Label>
                          <Select value={servicePriceType} onValueChange={(value: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب') => setServicePriceType(value)}>
@@ -402,56 +455,118 @@ export default function EditProductPage() {
             </Card>
         )}
 
-
-        <Card className="shadow-lg">
-            <CardHeader>
-                <CardTitle className="text-xl text-primary flex items-center"><ImageIcon className="ml-2 text-orange-500" /> الصور والتنوعات</CardTitle>
+        {/* Image Management Section */}
+        <Card className="shadow-lg border-primary/10">
+            <CardHeader className="bg-primary/5">
+                <CardTitle className="text-xl text-primary flex items-center"><ImageIcon className="ml-2 text-orange-500" /> إدارة الصور</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-6">
                 <div>
-                    <Label htmlFor="productImages" className='flex items-center gap-2 mb-2'>
+                    <Label htmlFor="productImages" className='flex items-center gap-2 mb-2 text-sm font-medium'>
                       <Upload size={18} />
-                      صور المنتج/الخدمة (إدارة الصور الحالية أو تحميل جديد)
+                      تحميل صور جديدة (بحد أقصى 5 صور إجمالًا)
                     </Label>
                     <Input id="productImages" type="file" multiple accept="image/*" onChange={handleImageUpload} />
-                    <p className="text-xs text-muted-foreground mt-1">يمكنكِ تحميل حتى 5 صور. اسحبي وأفلتي لتغيير ترتيب الصورة الرئيسية.</p>
+                    <p className="text-xs text-muted-foreground mt-1">اسحبي الصور لتغيير ترتيبها. الصورة الأولى هي الصورة الرئيسية.</p>
                     
                     {currentImages.length > 0 && (
-                      <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                        {currentImages.map((imgSrc, index) => (
-                          <div key={index} className="relative group aspect-square border rounded-md overflow-hidden">
-                            <Image src={imgSrc} alt={`Product image ${index + 1}`} fill className="object-cover" data-ai-hint="product image current" />
+                      <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                        {currentImages.map((img, index) => (
+                          <div key={img.url || index} className="relative group aspect-square border-2 border-dashed rounded-lg overflow-hidden bg-muted/30">
+                            <Image src={img.url} alt={`صورة ${index + 1}`} fill className="object-contain p-1" data-ai-hint={img.isPlaceholder ? "placeholder image existing" : "product image existing"} />
                             <Button 
                               type="button"
                               variant="destructive" 
                               size="icon" 
-                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                               onClick={() => removeImage(index)}
+                              aria-label="إزالة الصورة"
                             >
                               <Trash2 size={14}/>
                             </Button>
-                            {index === 0 && <Badge className="absolute bottom-1 left-1 text-xs">صورة رئيسية</Badge>}
+                            {index === 0 && <Badge className="absolute bottom-1 left-1 text-xs z-10 bg-primary/80 text-primary-foreground">رئيسية</Badge>}
+                            {img.isPlaceholder && <div className="absolute inset-0 bg-black/30 flex items-center justify-center"><p className="text-white text-xs text-center p-1">صورة مؤقتة</p></div>}
                           </div>
                         ))}
                       </div>
                     )}
                 </div>
-                {productType === 'بيع' && (
-                  <div className="p-4 border border-dashed rounded-md">
-                      <Label className="flex items-center mb-2"><Layers className="ml-2 text-blue-500" /> إدارة تنوعات المنتج</Label>
-                      <p className="text-sm text-muted-foreground mb-3">تعديل أو إضافة خيارات مختلفة للمنتج (قيد التطوير).</p>
-                      <Button type="button" variant="outline" disabled>إدارة التنوعات (قريباً)</Button>
-                  </div>
-                )}
+            </CardContent>
+        </Card>
+
+        {/* Variants Section */}
+        {productType === 'بيع' && (
+            <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-primary/5">
+                    <CardTitle className="text-xl text-primary flex items-center"><Layers className="ml-2 text-blue-500" /> تنوعات المنتج (مثل اللون، الحجم)</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 pt-6">
+                    {variants.map((variant, index) => (
+                        <div key={variant.id} className="grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] gap-3 p-3 border rounded-md bg-muted/30">
+                            <Input 
+                                placeholder="اسم الخيار (مثال: الحجم)" 
+                                value={variant.name} 
+                                onChange={(e) => updateVariant(index, 'name', e.target.value)}
+                            />
+                            <Input 
+                                placeholder="القيم (مفصولة بفاصلة، مثال: S,M,L)" 
+                                value={variant.values} 
+                                onChange={(e) => updateVariant(index, 'values', e.target.value)}
+                            />
+                            <Button type="button" variant="ghost" size="icon" onClick={() => removeVariant(index)} className="text-destructive hover:bg-destructive/10">
+                                <Trash2 size={16} />
+                            </Button>
+                        </div>
+                    ))}
+                    <Button type="button" variant="outline" onClick={addVariant} className="border-dashed border-primary text-primary hover:bg-primary/10">
+                        <PlusCircle size={16} className="ml-2"/> إضافة خيار تنوع
+                    </Button>
+                </CardContent>
+            </Card>
+        )}
+        
+        {/* Shipping Section */}
+        {productType === 'بيع' && (
+            <Card className="shadow-lg border-primary/10">
+                <CardHeader className="bg-primary/5">
+                    <CardTitle className="text-xl text-primary flex items-center"><Ship className="ml-2 text-teal-500" /> تفاصيل الشحن</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                    <div>
+                        <Label htmlFor="shippingWeight" className="flex items-center gap-1"><Weight size={16}/> وزن المنتج (كجم)</Label>
+                        <Input id="shippingWeight" type="number" value={shippingWeight} onChange={(e) => setShippingWeight(e.target.value)} placeholder="مثال: 0.5" />
+                    </div>
+                    <div>
+                        <Label htmlFor="shippingDimensions" className="flex items-center gap-1"><Ruler size={16}/> الأبعاد (سم، طولxعرضxارتفاع)</Label>
+                        <Input id="shippingDimensions" value={shippingDimensions} onChange={(e) => setShippingDimensions(e.target.value)} placeholder="مثال: 20x15x10" />
+                    </div>
+                </CardContent>
+            </Card>
+        )}
+
+        {/* SEO Section */}
+        <Card className="shadow-lg border-primary/10">
+            <CardHeader className="bg-primary/5">
+                <CardTitle className="text-xl text-primary flex items-center"><Sparkles className="ml-2 text-accent-yellow" /> تحسين محركات البحث (SEO)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-6">
+                <div>
+                    <Label htmlFor="metaTitle">عنوان ميتا (Meta Title)</Label>
+                    <Input id="metaTitle" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} placeholder="عنوان جذاب يظهر في نتائج البحث" />
+                </div>
+                <div>
+                    <Label htmlFor="metaDescription">وصف ميتا (Meta Description)</Label>
+                    <Textarea id="metaDescription" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} placeholder="وصف موجز (حوالي 155 حرفًا) للمنتج يظهر في نتائج البحث" rows={2} />
+                </div>
             </CardContent>
         </Card>
         
 
-        <CardFooter className="border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <CardFooter className="border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-card">
           <p className="text-sm text-muted-foreground flex items-center"><Info size={16} className="ml-1" /> تأكدي من مراجعة كل التغييرات قبل الحفظ.</p>
           <div className="flex gap-2">
-            <Button variant="outline" type="button" onClick={() => router.push('/dashboard/products')}>إلغاء التعديلات</Button>
-            <Button type="submit" className="bg-primary hover:bg-primary/90">
+            <Button variant="outline" type="button" onClick={() => router.push('/dashboard/products')} size="lg">إلغاء التعديلات</Button>
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground" size="lg">
               <PackageEdit className="ml-2 h-4 w-4" /> حفظ التغييرات
             </Button>
           </div>
@@ -460,3 +575,4 @@ export default function EditProductPage() {
     </div>
   );
 }
+
