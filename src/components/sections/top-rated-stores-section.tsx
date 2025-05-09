@@ -70,7 +70,7 @@ const itemVariants = {
     y: 0,
     scale: 1,
     transition: {
-      delay: i * 0.08, // Adjust delay for smoother entry
+      delay: i * 0.08, 
       duration: 0.5,
       ease: "easeOut",
     },
@@ -83,7 +83,7 @@ export function TopRatedStoresSection() {
     <motion.section
       id="top-stores"
       className="py-16 lg:py-24 bg-secondary/10"
-      variants={sectionVariants} // Apply container variants
+      variants={sectionVariants} 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
@@ -91,8 +91,8 @@ export function TopRatedStoresSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} // Use item variants for header
-          custom={0} // Start animation immediately
+          variants={itemVariants} 
+          custom={0} 
         >
           <Award className="mx-auto h-12 w-12 text-accent-yellow animate-bounce" style={{animationDuration: '1.8s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
@@ -106,14 +106,13 @@ export function TopRatedStoresSection() {
           {mockTopRatedStores.map((store, index) => (
             <motion.div
               key={store.id}
-              custom={index + 1} // Stagger animation for cards
+              custom={index + 1} 
               variants={itemVariants}
-              // Removed initial/whileInView from individual cards
             >
             <Card className={cn(
                 "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col",
                 "border border-transparent hover:border-accent-yellow focus-within:border-accent-yellow focus-within:ring-2 focus-within:ring-accent-yellow/50 h-full",
-                 "transform hover:-translate-y-1.5" // Add lift effect
+                 "transform hover:-translate-y-1.5" 
             )}>
               <div className="relative h-32 sm:h-40 overflow-hidden rounded-t-xl">
                 <Link href={`/store/${store.id}`} passHref className="block h-full">
@@ -151,10 +150,10 @@ export function TopRatedStoresSection() {
          <motion.div
           className="mt-12 text-center"
           variants={itemVariants}
-          custom={mockTopRatedStores.length + 1} // Animate button after cards
+          custom={mockTopRatedStores.length + 1} 
          >
           <Button size="lg" variant="default" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
-            <Link href="/stores"> {/* Link to a potential future page listing all stores */}
+            <Link href="/stores"> {/* Updated link to /stores */}
               تصفحي كل المتاجر المبدعة <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>
