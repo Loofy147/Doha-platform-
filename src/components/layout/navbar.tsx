@@ -1,9 +1,8 @@
 // src/components/layout/navbar.tsx
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react'; // Added React import
 import Link from 'next/link';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -11,9 +10,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose // Import SheetClose
+  SheetClose 
 } from '@/components/ui/sheet';
-import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, ListOrdered } from 'lucide-react'; // Added ListOrdered
+import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, ListOrdered } from 'lucide-react'; 
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
@@ -35,8 +34,8 @@ const navItemVariants = {
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isLoggedIn = true; // Simulate user being logged in
-  const isSeller = true; // Simulate user being a seller
+  const isLoggedIn = true; 
+  const isSeller = true; 
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -50,7 +49,7 @@ export function Navbar() {
              <motion.div key={item.label} whileHover="hover" whileTap="tap" variants={navItemVariants}>
                  <Button variant="ghost" asChild>
                     <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground flex items-center px-2 py-2">
-                        {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })}
+                        {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })} {/* Use ml-1.5 for RTL icon spacing */}
                         {item.label}
                     </Link>
                  </Button>
@@ -65,7 +64,7 @@ export function Navbar() {
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
                     <Link href="/dashboard" className="flex items-center text-sm">
-                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" />
+                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" /> {/* Use ml-1.5 for RTL icon spacing */}
                       لوحة تحكم متجري
                     </Link>
                   </Button>
@@ -74,14 +73,14 @@ export function Navbar() {
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
                     <Link href="/profile" className="flex items-center text-sm">
-                      <UserCircle size={18} className="ml-1.5" />
+                      <UserCircle size={18} className="ml-1.5" /> {/* Use ml-1.5 for RTL icon spacing */}
                       حسابي
                     </Link>
                   </Button>
                </motion.div>
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10 text-sm" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
-                    <LogOutIcon size={16} className="ml-1.5" />
+                    <LogOutIcon size={16} className="ml-1.5" /> {/* Use ml-1.5 for RTL icon spacing */}
                     تسجيل الخروج
                   </Button>
                </motion.div>
@@ -109,12 +108,10 @@ export function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[320px] bg-background">
-                {/* Visually hidden title for accessibility */}
                 <VisuallyHidden.Root asChild>
                   <SheetTitle>القائمة الرئيسية</SheetTitle>
                 </VisuallyHidden.Root>
                 <SheetHeader className="p-4 border-b">
-                  {/* Use SheetClose around the link to close on navigation */}
                    <SheetClose asChild>
                      <Link href="/" className="flex items-center gap-2">
                        <WomenCommerceLogo className="h-12 w-auto" />
@@ -131,7 +128,7 @@ export function Navbar() {
                            className="justify-start text-base py-2.5"
                          >
                           <Link href={item.href} className="flex items-center">
-                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })}
+                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })} {/* Use ml-2.5 for RTL icon spacing */}
                             {item.label}
                           </Link>
                          </Button>
@@ -144,7 +141,7 @@ export function Navbar() {
                            <SheetClose asChild>
                             <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
                                 <Link href="/dashboard" className="flex items-center">
-                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" />
+                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" /> {/* Use ml-2.5 for RTL icon spacing */}
                                   لوحة تحكم متجري
                                 </Link>
                             </Button>
@@ -153,21 +150,21 @@ export function Navbar() {
                          <SheetClose asChild>
                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
                              <Link href="/profile" className="flex items-center">
-                                <UserCircle size={18} className="ml-2.5" />
+                                <UserCircle size={18} className="ml-2.5" /> {/* Use ml-2.5 for RTL icon spacing */}
                                 حسابي
                              </Link>
                            </Button>
                          </SheetClose>
                           <SheetClose asChild>
                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
-                             <Link href="/order" className="flex items-center"> {/* Added My Orders */}
-                                <ListOrdered size={18} className="ml-2.5" />
+                             <Link href="/order" className="flex items-center"> 
+                                <ListOrdered size={18} className="ml-2.5" /> {/* Use ml-2.5 for RTL icon spacing */}
                                 طلباتي
                              </Link>
                            </Button>
                          </SheetClose>
                          <Button variant="outline" className="w-full justify-start text-base py-2.5 mt-4 border-primary text-primary hover:bg-primary/5" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
-                            <LogOutIcon size={18} className="ml-2.5" />
+                            <LogOutIcon size={18} className="ml-2.5" /> {/* Use ml-2.5 for RTL icon spacing */}
                             تسجيل الخروج
                          </Button>
                        </>

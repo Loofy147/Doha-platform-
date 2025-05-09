@@ -69,7 +69,7 @@ import {
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
-import { SellerContactModal } from '@/components/store/seller-contact-modal'; // Import the new modal
+import { SellerContactModal } from '@/components/store/seller-contact-modal'; 
 
 // Import specific section components using React.lazy for code splitting
 const BakerySpecialsSection = React.lazy(() => import('@/components/store/sections/bakery-specials-section'));
@@ -166,14 +166,14 @@ const StoreLoadingSkeleton = () => (
 );
 
 const StorePage = () => {
-  const router = useNavigationRouter(); // Use the aliased router
+  const router = useNavigationRouter(); 
   const params = useParams();
   const storeId = params.storeId as string;
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false); // State for contact modal
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
   const {toast} = useToast();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -187,6 +187,7 @@ const StorePage = () => {
         const fetchedStoreData = getStoreDataById(storeId);
         if (fetchedStoreData) {
           setStoreData(fetchedStoreData);
+          console.log(`Store ID: ${storeId}, Type: ${fetchedStoreData.storeType}, Theme: ${fetchedStoreData.themeStyle}, Accent: ${fetchedStoreData.accentColor}`);
         } else {
           console.warn(`Store with ID ${storeId} not found.`);
           setStoreData(null);
@@ -249,10 +250,14 @@ const StorePage = () => {
 
 
   const handleShowAllFromCollection = (collection: FeaturedCollection) => {
+    // This would typically navigate to a filtered view of this store's products/services
+    // For now, it's a toast message.
     toast({
       title: 'جاري التوجيه...',
-      description: `سيتم عرض كل "${collection.name}". (قيد التطوير)`,
+      description: `سيتم عرض كل "${collection.name}" من متجر ${storeData?.name}. (قيد التطوير)`,
     });
+    // Example navigation (if a general products page supports store filtering)
+    // router.push(`/products?storeId=${storeData?.id}&type=${collection.type}`);
   };
 
   const getStoreTypeSpecificIcon = (type?: StoreType): React.ElementType<LucideProps> => {
@@ -263,7 +268,7 @@ const StorePage = () => {
         case 'crafts': return Palette;
         case 'rental': return CalendarDays;
         case 'service_provider': return Handshake;
-        default: return StoreIconLucide; // Use imported StoreIconLucide
+        default: return StoreIconLucide;
     }
   };
 
@@ -279,7 +284,7 @@ const StorePage = () => {
 
   const SectionSuspenseFallback = () => (
     <motion.div className="py-10 text-center" variants={itemVariants}>
-        <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" style={{color: storeAccentColor}}/>
+        <Loader2 className="h-12 w-12 animate-spin mx-auto" style={{color: storeAccentColor}}/>
         <p className="mt-4 text-muted-foreground">جاري تحميل محتوى المتجر...</p>
     </motion.div>
   );
@@ -347,6 +352,9 @@ const StorePage = () => {
                 {storeData.name}
               </h1>
               {storeData.slogan && <p className="mt-1 text-md md:text-lg" style={{ color: storeThemeStyle === 'elegant' || storeThemeStyle === 'dark' ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground))'}}>{storeData.slogan}</p>}
+               <p className="text-xs text-muted-foreground mt-1">
+                Type: {storeData.storeType} | Theme: {storeData.themeStyle}
+              </p>
               <div className="mt-2 flex items-center justify-center md:justify-start gap-2">
                 <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
                   <StoreTypeSpecificIcon className="w-4 h-4" />

@@ -13,7 +13,7 @@ import {
   Palette,
   FileText,
   PlusCircle,
-  Gift, // Keep for general marketing, but use Megaphone for main icon
+  Gift, 
   CreditCard,
   MessageSquare,
   LayoutTemplate,
@@ -25,8 +25,9 @@ import {
   Eye, 
   Star, 
   UserCircle,
-  Megaphone, // Added for Marketing
-  Ticket, // For coupons/discounts maybe later
+  Megaphone, 
+  Ticket, 
+  LayoutDashboard,
 } from 'lucide-react';
 import {
   Breadcrumb,
@@ -56,16 +57,13 @@ const sellerNavItems = [
     { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
     { href: '/dashboard/products', icon: Package, label: 'منتجاتي وخدماتي' },
     { href: '/dashboard/orders', icon: ShoppingBag, label: 'طلباتي الواردة' },
-    { href: '/dashboard/marketing', icon: Megaphone, label: 'التسويق والعروض' }, // Added
-    { href: '/dashboard/reviews', icon: Star, label: 'تقييمات العملاء' }, // Added
-    // { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل (قريباً)' }, 
-    // { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات متجري (قريباً)' }, 
-    // { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير (قريباً)' }, 
+    { href: '/dashboard/marketing', icon: Megaphone, label: 'التسويق والعروض' }, 
+    { href: '/dashboard/reviews', icon: Star, label: 'تقييمات العملاء' }, 
     { href: '/dashboard/store-template', icon: LayoutTemplate, label: 'قالب وتصميم المتجر'},
     { href: '/dashboard/settings', icon: Settings, label: 'إعدادات المتجر العامة' },
 ];
 
-const MOCK_SELLER_SLUG = "lamsa-ibdaa"; // Replace with dynamic slug later
+const MOCK_SELLER_SLUG = "lamsa-ibdaa"; 
 
 export function SellerDashboardHeader() {
   const pathname = usePathname();
@@ -82,8 +80,8 @@ export function SellerDashboardHeader() {
       else if (part === 'orders') label = 'طلباتي';
       else if (part === 'settings') label = 'الإعدادات العامة';
       else if (part === 'store-template') label = 'تصميم المتجر';
-      else if (part === 'marketing') label = 'التسويق والعروض'; // Added
-      else if (part === 'reviews') label = 'تقييمات العملاء'; // Added
+      else if (part === 'marketing') label = 'التسويق والعروض'; 
+      else if (part === 'reviews') label = 'تقييمات العملاء'; 
       else if (part === 'new') label = 'إضافة جديد';
       else if (part === 'edit') label = 'تعديل';
       

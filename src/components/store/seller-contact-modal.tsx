@@ -29,7 +29,7 @@ interface SellerContactModalProps {
 }
 
 const contactSchema = z.object({
-  name: z.string().min(2, { message: "الرجاء إدخال اسمك." }),
+  name: z.string().min(2, { message: "الرجاء إدخال اسمكِ." }),
   email: z.string().email({ message: "الرجاء إدخال بريد إلكتروني صالح." }),
   message: z.string().min(10, { message: "يجب أن تتكون الرسالة من 10 أحرف على الأقل." }),
 });

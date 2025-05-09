@@ -1,16 +1,14 @@
 // src/components/sections/contact-section.tsx
-// Removed 'use client' - this component can be a Server Component if the form logic is handled by a parent Client Component.
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, MessageSquare, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label'; // Import Label
+import { Label } from '@/components/ui/label'; 
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 
-// Schema remains useful for validation logic in the parent/wrapper component
 export const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'الاسم يجب أن يتكون من حرفين على الأقل.' }),
   email: z.string().email({ message: 'يرجى إدخال بريد إلكتروني صحيح.' }),
@@ -20,7 +18,6 @@ export const contactFormSchema = z.object({
 
 export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
-// Animation variants (can be kept or moved to the wrapper)
 const itemVariants = {
   hidden: { opacity: 0, x: -20 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
@@ -31,34 +28,27 @@ const imageVariants = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
 };
 
-interface ContactSectionProps {
-  // Define props for form handling if needed, e.g.,
-  // onSubmit: (data: ContactFormValues) => Promise<void>;
-  // register: any; // Type from react-hook-form
-  // errors: any; // Type from react-hook-form errors
-  // isSubmitting: boolean;
-}
+interface ContactSectionProps {}
 
-// Removed useForm and useToast hooks from this component.
-// Form handling logic should be passed down from a client component parent or wrapper.
-export function ContactSection({ /* Pass necessary form props here */ }: ContactSectionProps) {
+export function ContactSection({ }: ContactSectionProps) {
 
-    // Placeholder submit handler for structure, real one comes from props
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log("Form submit called (placeholder)");
-        // In real usage, call props.onSubmit(data) from the parent form handler
+        // In real usage, parent component would handle this with react-hook-form and toast.
+        // For now, directly using toast here for demonstration if it were a client component.
+        // toast({ title: "تم إرسال رسالتك بنجاح!", description: "سنتواصل معكِ قريبًا." });
     };
 
   return (
-    <section // Changed from motion.section as animation is handled by wrapper
+    <section 
       id="contact"
       className="py-16 lg:py-24 bg-background"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} // Animate header block
+          variants={itemVariants} 
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             تواصلي معنا
@@ -69,8 +59,7 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Form Section */}
-          <motion.div > {/* Removed variants={sectionVariants} */}
+          <motion.div variants={itemVariants}> 
             <Card className="shadow-lg">
               <CardHeader>
                 <motion.div variants={itemVariants}>
@@ -80,9 +69,8 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
                 </motion.div>
               </CardHeader>
               <CardContent>
-                 {/* Use a standard form, onSubmit handled by parent */}
                  <form
-                    onSubmit={handleSubmit} // Replace with prop if passed down
+                    onSubmit={handleSubmit} 
                     className="space-y-6"
                   >
                   <motion.div variants={itemVariants}>
@@ -90,14 +78,11 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
                     <Input
                       type="text"
                       id="name"
-                      name="name" // Add name attribute for FormData
+                      name="name" 
                       autoComplete="name"
-                      className="mt-1" // Simplified className, error handling via parent
+                      className="mt-1" 
                       placeholder="اسمكِ الكريم"
-                      // {...register('name')} // Register comes from parent props
                     />
-                    {/* {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>} */}
-                     {/* Error display handled by parent */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <Label htmlFor="email">البريد الإلكتروني</Label>
@@ -108,9 +93,7 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
                       autoComplete="email"
                       className="mt-1"
                       placeholder="your.email@example.com"
-                     // {...register('email')}
                     />
-                    {/* {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>} */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <Label htmlFor="subject">الموضوع</Label>
@@ -120,9 +103,7 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
                       name="subject"
                       className="mt-1"
                       placeholder="عن ماذا تتمحور رسالتكِ؟"
-                      // {...register('subject')}
                     />
-                    {/* {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject.message}</p>} */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <Label htmlFor="message">الرسالة</Label>
@@ -132,13 +113,10 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
                       rows={4}
                       className="mt-1"
                       placeholder="اكتبي رسالتكِ هنا..."
-                     // {...register('message')}
                     />
-                     {/* {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message.message}</p>} */}
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" /* disabled={isSubmitting} */>
-                      {/* {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'} */}
+                    <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
                       إرسال الرسالة (قيد التطوير)
                     </Button>
                   </motion.div>
@@ -147,8 +125,7 @@ export function ContactSection({ /* Pass necessary form props here */ }: Contact
             </Card>
           </motion.div>
 
-          {/* Info Section */}
-          <motion.div className="space-y-8" > {/* Removed variants={sectionVariants} */}
+          <motion.div className="space-y-8" variants={itemVariants}> 
             <Card className="shadow-lg">
               <CardHeader>
                 <motion.div variants={itemVariants}>

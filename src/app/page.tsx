@@ -6,15 +6,11 @@ import Link from 'next/link';
 import {
   Sparkles,
   Eye,
-  ChevronRight,
+  ChevronLeft, // Changed from ChevronRight for RTL consistency
   Users,
-  CalendarDays,
-  ShoppingBag,
-  Store,
-  Edit3,
   HomeIcon,
   PenLine,
-  Shirt,
+  Shirt, // Added Shirt icon
   Heart,
   Star,
   DollarSign,
@@ -33,7 +29,11 @@ import {
   Palette,
   FileText,
   PlusCircle,
-// Removed LayoutDashboard as it's not used on the public homepage
+  Store as StoreIcon, // Aliased Store to avoid conflict
+  ShoppingBag as ShoppingBagIcon, // Aliased ShoppingBag
+  CalendarDays, // Added CalendarDays icon
+  Download,
+  LayoutDashboard, // Added LayoutDashboard for admin link
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,9 +45,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/hooks/use-toast';
 import { HeroSection } from '@/components/sections/hero-section';
 import { AboutUsSection } from '@/components/sections/about-us-section';
 import { CallToActionBanner } from '@/components/sections/call-to-action-banner';
@@ -58,10 +56,10 @@ import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-se
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
 import ClientContactSection from '@/components/sections/client-contact-section';
 import { WomenCommerceLogo } from '@/components/icons/logo';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // Ensure motion is imported
 
 const sectionVariants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 } }
 };
 
@@ -71,7 +69,7 @@ const categoryVariants = {
 };
 
 const categories = [
-  { name: 'أناقة وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10' },
+  { name: 'أزياء وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10' },
   { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10' },
   { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10' },
   { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/10' },
@@ -80,7 +78,6 @@ const categories = [
 
 export default function HomePage() {
     const [isClient, setIsClient] = useState(false);
-    const { toast } = useToast();
 
     useEffect(() => {
         setIsClient(true);
@@ -113,16 +110,13 @@ export default function HomePage() {
         <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
-             variants={sectionVariants}
-             initial="hidden"
+            variants={sectionVariants}
+            initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
          >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    className="text-center mb-12"
-                     variants={sectionVariants}
-                >
+                <motion.div className="text-center mb-12" variants={sectionVariants}>
                     <motion.h2 variants={sectionVariants} className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
                        تصفحي عالمنا الإبداعي
                     </motion.h2>
@@ -130,77 +124,47 @@ export default function HomePage() {
                        اكتشفي فئات متنوعة تلبي كل شغف واهتمام، من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة.
                     </motion.p>
                 </motion.div>
-                <motion.div
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
-                     variants={sectionVariants}
-                >
-                    {categories.map((category, index) => (
+                <motion.div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" variants={sectionVariants}>
+                    {categories.map((category) => {
+                        const IconComponent = category.icon;
+                        return (
                         <motion.div key={category.name} variants={categoryVariants}>
                             <Link href={category.href} className="group block">
                                 <div className={`text-center p-6 ${category.bgColor} rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105`}>
                                     <div className={`mb-4 group-hover:scale-110 transition-transform duration-300 ${category.color}`}>
-                                        <category.icon size={28} className="mx-auto h-10 w-10" />
+                                        <IconComponent size={28} className="mx-auto h-10 w-10" />
                                     </div>
                                     <h3 className="text-md font-semibold text-foreground group-hover:text-primary transition-colors">{category.name}</h3>
                                 </div>
                             </Link>
                         </motion.div>
-                    ))}
+                        );
+                    })}
                 </motion.div>
             </div>
         </motion.section>
 
-        <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={sectionVariants}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <DailyDealsSection />
         </motion.div>
 
-        <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-             variants={sectionVariants}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <BestsellersSection />
         </motion.div>
 
-        <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-             variants={sectionVariants}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <WeeklyDealsSection />
         </motion.div>
 
-        <motion.div
-             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-             variants={sectionVariants}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
         <TopRatedStoresSection />
         </motion.div>
 
-        <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-             variants={sectionVariants}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
         <AboutUsSection />
         </motion.div>
 
-        <motion.div
-            variants={sectionVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
             <CallToActionBanner
                 title="انضمي إلى مبدعات لمسة ضحى!"
                 description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
@@ -208,16 +172,11 @@ export default function HomePage() {
                 buttonLink="/sell-with-us"
                 imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
                 dataAiHint="women entrepreneurs working"
-                icon={Store}
+                icon={StoreIcon}
             />
         </motion.div>
 
-        <motion.div
-            variants={sectionVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
             <CallToActionBanner
                 title="اكتشفي كنوز الإبداع المحلي!"
                 description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
@@ -225,22 +184,16 @@ export default function HomePage() {
                 buttonLink="/products"
                 imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
                 dataAiHint="happy woman shopping online"
-                icon={ShoppingBag}
+                icon={ShoppingBagIcon}
                 reverseLayout={true}
             />
         </motion.div>
 
-        <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-             variants={sectionVariants}
-        >
+        <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
         <TestimonialsSection />
         </motion.div>
 
         <ClientContactSection />
-          {/* Removed Floating Admin Dashboard Link from public homepage */}
     </div>
   );
 }

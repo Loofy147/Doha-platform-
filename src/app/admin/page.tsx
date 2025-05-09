@@ -19,7 +19,8 @@ import {
   BarChart3,
   LineChart,
   Zap,
-  ShoppingBag
+  ShoppingBag,
+  LayoutDashboard // Ensure LayoutDashboard is imported if used
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -101,10 +102,10 @@ export default function AdminDashboardPage() {
     ];
 
     const quickActions = [
-      { label: "إضافة منتج جديد", icon: <PlusCircle size={18} />, href: "/admin/products/new" },
-      { label: "إدارة الفئات", icon: <LayoutGrid size={18} />, href: "/admin/categories" },
-      { label: "عرض التقارير", icon: <BarChart3 size={18} />, href: "/admin/reports" },
-      { label: "إعدادات المنصة", icon: <Settings size={18} />, href: "/admin/settings" },
+      { label: "إضافة منتج جديد", icon: PlusCircle, href: "/admin/products/new" },
+      { label: "إدارة الفئات", icon: LayoutGrid, href: "/admin/categories" },
+      { label: "عرض التقارير", icon: BarChart3, href: "/admin/reports" },
+      { label: "إعدادات المنصة", icon: Settings, href: "/admin/settings" },
     ];
     
 
@@ -112,7 +113,7 @@ export default function AdminDashboardPage() {
         return (
             <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
                 <div className="flex items-center justify-between space-y-2">
-                    <h2 className="text-3xl font-bold tracking-tight text-primary">لوحة تحكم المسؤول</h2>
+                    <Skeleton className="h-10 w-2/5" />
                 </div>
                 <Skeleton className="w-full h-32 rounded-lg" />
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -130,7 +131,9 @@ export default function AdminDashboardPage() {
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6 bg-background">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-2 md:space-y-0">
         <div>
-            <h2 className="text-3xl font-bold tracking-tight text-primary">لوحة تحكم لمسة ضحى</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-primary flex items-center">
+              <LayoutDashboard className="mr-2 h-7 w-7" /> لوحة تحكم لمسة ضحى
+            </h2>
             <p className="text-muted-foreground">نظرة عامة على نشاط منصة لمسة ضحى.</p>
         </div>
         <div className="flex items-center space-x-2">
@@ -226,7 +229,7 @@ export default function AdminDashboardPage() {
                 {quickActions.map((action) => (
                     <Button key={action.label} variant="outline" asChild className="flex flex-col h-24 items-center justify-center p-4 text-center hover:bg-primary/5 border-dashed border-primary/30 hover:border-primary">
                         <Link href={action.href}>
-                            {action.icon}
+                            <action.icon size={18}/>
                             <span className="mt-1 text-xs sm:text-sm">{action.label}</span>
                         </Link>
                     </Button>
