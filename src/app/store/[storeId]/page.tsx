@@ -40,7 +40,7 @@ import {
   Scissors,
   Shirt,
   AlertCircle,
-  Store as StoreIconLucide,
+  Store as StoreIconLucide, // Correctly import StoreIcon as StoreIconLucide
   Clock,
   Loader2,
   PackageSearch,
@@ -65,7 +65,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'; // DialogClose was not used
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
@@ -88,7 +88,7 @@ import {
   type ItemType as PublicItemType,
   type StoreType,
   type Review
-} from '@/lib/data/mock-store-data'; // Corrected import path
+} from '@/lib/data/mock-store-data'; 
 import { motion, type MotionProps } from 'framer-motion';
 
 
@@ -268,7 +268,7 @@ const StorePage = () => {
         case 'salon': return Scissors;
         case 'crafts': return Palette;
         case 'rental': return CalendarDays;
-        case 'service_provider': return Handshake;
+        case 'service_provider': return Handshake; // Corrected case
         default: return StoreIconLucide;
     }
   };
@@ -295,7 +295,7 @@ const StorePage = () => {
       className={cn(
         "min-h-screen transition-colors duration-500",
         storeThemeStyle === 'light' && "bg-gradient-to-br from-pink-50 via-purple-50 to-yellow-50 text-foreground",
-        storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-100", // Updated from bg-slate-50
+        storeThemeStyle === 'elegant' && "bg-slate-800 text-slate-100", 
         storeThemeStyle === 'playful' && "bg-yellow-50 text-yellow-900",
         storeThemeStyle === 'modern-minimal' && "bg-gray-100 text-gray-800",
         storeThemeStyle === 'dark' && "bg-gray-900 text-gray-200"
@@ -643,7 +643,7 @@ const StorePage = () => {
             <DialogHeader className="pr-10 border-b pb-4" style={{ borderBottomColor: storeAccentColor, backgroundColor: `${storeAccentColor}1A`}}>
               <DialogTitle className="text-2xl md:text-3xl" style={{color: storeAccentColor}}>{selectedItem.name}</DialogTitle>
               <p className="text-sm text-muted-foreground">
-                مقدم من {storeData?.name} • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
+                  مقدم من {storeData?.name} • الفئة: {selectedItem.category} • النوع: <span className="capitalize">{selectedItem.type}</span>
               </p>
             </DialogHeader>
 
@@ -754,3 +754,4 @@ const StorePage = () => {
 };
 
 export default StorePage;
+

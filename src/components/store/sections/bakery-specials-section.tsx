@@ -71,6 +71,10 @@ const BakerySpecialsSection: React.FC<BakerySpecialsSectionProps> = ({ products,
           </motion.div>
         </CardContent>
       </Card>
+      {/* 
+        The following block was removed because `product` is not defined in this scope.
+        Ingredient details should be shown within the StoreProductCard or a product detail modal/page.
+      
       {product.ingredients && product.ingredients.length > 0 && (
         <Card className="mt-6" style={{borderColor: accent}}>
             <CardHeader>
@@ -83,8 +87,10 @@ const BakerySpecialsSection: React.FC<BakerySpecialsSectionProps> = ({ products,
             </CardContent>
         </Card>
       )}
+      */}
     </StoreSection>
   );
 };
 
 export default BakerySpecialsSection;
+
