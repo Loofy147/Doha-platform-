@@ -2,9 +2,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link from 'next/link'; // Added missing import for Link
 import {
-  DollarSign,
+  DollarSign, // Ensure DollarSign is imported
   Package,
   Users,
   LineChart,
@@ -21,7 +21,8 @@ import {
   Store,
   Star,
   Eye,
-  LayoutTemplate // Added for Store Template
+  LayoutTemplate,
+  LayoutDashboard // Ensure LayoutDashboard is imported if used
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -148,7 +149,7 @@ export default function SellerDashboardPage() {
     >
       <motion.header 
         className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center"
-        variants={sectionVariants} // Use sectionVariants for header to stagger its children
+        variants={sectionVariants} 
       >
         <motion.div variants={itemVariants}>
           <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
@@ -168,7 +169,7 @@ export default function SellerDashboardPage() {
       </motion.header>
 
       <motion.div 
-        variants={itemVariants} // Animate profile card as a single item
+        variants={itemVariants} 
       >
         <Card className="mb-8 shadow-lg border-l-4 border-accent-pink bg-card">
           <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-6">
@@ -229,7 +230,7 @@ export default function SellerDashboardPage() {
         <motion.h2 variants={itemVariants} className="text-2xl font-semibold text-primary mb-4 flex items-center"><Sparkles size={24} className="text-accent-yellow ml-2" /> إجراءات سريعة لمتجركِ</motion.h2>
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
-          variants={sectionVariants} // Stagger the action cards
+          variants={sectionVariants} 
         >
           {quickActions.map((action) => {
             const ActionIcon = action.icon;
@@ -299,13 +300,13 @@ export default function SellerDashboardPage() {
             <CardContent className="h-[300px] overflow-y-auto p-0">
               <motion.ul 
                 className="divide-y divide-border"
-                variants={sectionVariants} // Stagger list items
+                variants={sectionVariants} 
               >
                 {recentActivities.map((activity, index) => (
                   <motion.li 
                     key={activity.id} 
                     className="p-3 hover:bg-muted/30 transition-colors"
-                    variants={itemVariants} // Animate each list item
+                    variants={itemVariants} 
                   >
                     <Link href={activity.href} className="flex items-start gap-3">
                       <span className="mt-1">{activity.icon}</span>
@@ -345,4 +346,3 @@ export default function SellerDashboardPage() {
     </motion.div>
   );
 }
-

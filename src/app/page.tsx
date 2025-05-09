@@ -4,37 +4,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  Sparkles,
-  Eye,
-  ChevronLeft,
-  Users,
-  HomeIcon,
-  PenLine,
-  Shirt,
-  Heart,
-  Star,
-  DollarSign,
-  Package,
-  CreditCard,
-  LayoutGrid,
-  BarChart3,
-  Settings,
-  Zap,
-  Users2,
-  Activity,
-  LineChart,
-  Bell,
-  MessageSquare,
-  BarChartHorizontalBig,
-  Palette,
-  FileText,
-  PlusCircle,
-  Store as StoreIcon, 
-  ShoppingBag as ShoppingBagIcon,
-  CalendarDays,
-  Download,
-  LayoutDashboard,
-  Search,
+  Sparkles, // For categories array and HeroSection (HeroSection imports its own)
+  Shirt, // For categories array
+  HomeIcon, // For categories array
+  CalendarDays, // For categories array
+  PenLine, // For categories array
+  ShoppingBag as ShoppingBagIcon, // Passed as prop to CallToActionBanner
+  Store as StoreIcon, // Passed as prop to CallToActionBanner
+  LayoutDashboard, // For admin link section
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,7 +22,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { HeroSection } from '@/components/sections/hero-section';
 import { AboutUsSection } from '@/components/sections/about-us-section';
@@ -58,7 +34,7 @@ import { TestimonialsSection } from '@/components/sections/testimonials-section'
 import ClientContactSection from '@/components/sections/client-contact-section';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
-import { IconUsageExample } from '@/components/icons/icon-usage-example'; // Import the new component
+import { IconUsageExample } from '@/components/icons/icon-usage-example';
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -109,7 +85,7 @@ export default function HomePage() {
   return (
      <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
       <HeroSection />
-      
+
         <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
@@ -149,7 +125,6 @@ export default function HomePage() {
             </div>
         </motion.section>
 
-        {/* Seller CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -167,7 +142,6 @@ export default function HomePage() {
         />
       </motion.div>
 
-      {/* Shopper CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -212,8 +186,7 @@ export default function HomePage() {
         </motion.div>
 
         <ClientContactSection />
-        
-        {/* Icon Usage Example Section */}
+
         <motion.section
             className="py-16 lg:py-24 bg-background"
             variants={sectionVariants}
@@ -226,8 +199,6 @@ export default function HomePage() {
             </div>
         </motion.section>
 
-
-        {/* Admin Dashboard Link Section */}
         <div className="py-12 bg-muted/30 text-center">
             <motion.div
                 variants={sectionVariants}

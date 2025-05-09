@@ -1,3 +1,4 @@
+// src/components/sections/testimonials-section.tsx
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,8 +12,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, useAnimation } from 'framer-motion'; // Correct import
+import React, { useEffect, useRef, useState } from 'react'; // Added useState
+import { motion, useAnimation } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useInView } from 'react-intersection-observer';
 
@@ -94,12 +95,14 @@ export function TestimonialsSection() {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
+  const [hasAnimated, setHasAnimated] = useState(false); // Local state to track animation
 
   useEffect(() => {
-    if (inView) {
+    if (inView && !hasAnimated) { // Check hasAnimated flag
       controls.start("visible");
+      setHasAnimated(true); // Set flag to true after animation starts
     }
-  }, [controls, inView]);
+  }, [controls, inView, hasAnimated]);
 
 
   return (
@@ -115,6 +118,7 @@ export function TestimonialsSection() {
         <motion.div
             className="text-center mb-12"
             variants={cardVariants}
+            custom={0}
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             أصداء من مجتمع لمسة ضحى
@@ -138,10 +142,10 @@ export function TestimonialsSection() {
           <CarouselContent>
             {testimonials.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                {/* Apply motion to the div containing the Card */}
                 <motion.div
                   className="p-1 h-full"
                   variants={cardVariants}
+                  custom={index}
                 >
                   <Card className="h-full flex flex-col shadow-lg rounded-lg overflow-hidden bg-card hover:shadow-xl transition-shadow border border-border/30">
                     <CardContent className="p-6 flex flex-col flex-grow items-center text-center">
@@ -156,7 +160,7 @@ export function TestimonialsSection() {
                           <Star key={i} className="h-5 w-5 text-accent-yellow fill-accent-yellow" />
                         ))}
                         {Array(5 - testimonial.rating).fill(0).map((_, i) => (
-                           <Star key={`empty-${i}`} className="h-5 w-5 text-accent-yellow/50" /> // Dimmed empty stars, ensure unique key
+                           <Star key={`empty-${i}`} className="h-5 w-5 text-accent-yellow/50" />
                         ))}
                       </div>
                       <p className="text-sm text-foreground/80 leading-relaxed flex-grow">
@@ -175,4 +179,3 @@ export function TestimonialsSection() {
     </motion.section>
   );
 }
-
