@@ -7,11 +7,10 @@ import {
   Sparkles,
   Shirt,
   HomeIcon,
-  CalendarDays, // Added CalendarDays
+  CalendarDays,
   PenLine,
   ShoppingBag as ShoppingBagIcon,
   Store as StoreIcon,
-  LayoutDashboard,
   Flame, 
   Award, 
   Users as UsersIcon, 
@@ -20,8 +19,7 @@ import {
   MessageSquare, 
   ChevronLeft, 
   Eye, 
-  PackageSearch, 
-  Download,
+  PackageSearch,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,6 +43,11 @@ import ClientContactSection from '@/components/sections/client-contact-section';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
 
+const pageEntryVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 } }
@@ -58,6 +61,11 @@ const categoryCardVariants = {
         y: 0,
         transition: { delay: i * 0.08, duration: 0.4, ease: "easeOut" }
     })
+};
+
+const simpleFadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
 };
 
 const categories = [
@@ -97,11 +105,15 @@ export default function HomePage() {
     }
 
   return (
-     <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
+     <motion.div 
+        className="flex flex-col min-h-screen bg-background overflow-x-hidden"
+        variants={pageEntryVariants}
+        initial="hidden"
+        animate="visible"
+      >
       <HeroSection />
-
-      {/* Categories Section */}
-        <motion.section
+      
+      <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
             variants={sectionVariants}
@@ -110,17 +122,18 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.1 }}
          >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div className="text-center mb-12" variants={sectionVariants}>
-                    <motion.h2 variants={sectionVariants} className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center justify-center gap-3">
+                <motion.div className="text-center mb-12" variants={simpleFadeInUp}> {/* Changed variant */}
+                    <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center justify-center gap-3">
                        <PackageSearch size={36} className="text-accent-pink"/> تصفحي عالمنا الإبداعي
-                    </motion.h2>
-                    <motion.p variants={sectionVariants} className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
+                    </h2>
+                    <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
                        اكتشفي فئات متنوعة تلبي كل شغف واهتمام، من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة.
-                    </motion.p>
+                    </p>
                 </motion.div>
                 <motion.div 
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                     variants={{ visible: { transition: { staggerChildren: 0.05 }}}}
+                    // initial/animate controlled by parent section
                 >
                     {categories.map((category, index) => {
                         const IconComponent = category.icon;
@@ -148,7 +161,6 @@ export default function HomePage() {
             </div>
         </motion.section>
       
-      {/* Seller CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -166,7 +178,6 @@ export default function HomePage() {
         />
       </motion.div>
 
-      {/* Shopper CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -185,7 +196,6 @@ export default function HomePage() {
         />
       </motion.div>
 
-        {/* Sections with Framer Motion */}
         <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <DailyDealsSection />
         </motion.div>
@@ -225,11 +235,12 @@ export default function HomePage() {
                 </p>
                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                    <Link href="/admin">
-                       <LayoutDashboard className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
+                       <StoreIcon className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
                    </Link>
                 </Button>
             </motion.div>
         </div>
-    </div>
+    </motion.div>
   );
 }
+
