@@ -1,5 +1,7 @@
+
 import type { Metadata, Viewport } from 'next/server';
-import React from 'react';
+import React from 'react'; // Ensure React is imported for Suspense
+import Script from 'next/script'; // Import Script component for external scripts
 import { Poppins, Merriweather, Noto_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
@@ -36,10 +38,10 @@ export const metadata: Metadata = {
   description: 'منصة لمسة ضحى: سوقكِ الشامل لاكتشاف، بيع، أو تأجير المنتجات والخدمات من رائدات أعمال موهوبات. انضمي إلى مجتمعنا الداعم اليوم!',
   keywords: ['لمسة ضحى', 'رائدات أعمال', 'تجارة إلكترونية', 'بيع عبر الإنترنت', 'تأجير منتجات', 'سوق خدمات', 'منتجات يدوية', 'المرأة في الأعمال', 'تمكين المرأة', 'الجزائر'],
   authors: [{ name: 'فريق لمسة ضحى' }],
-  manifest: '/manifest.json',
+  // manifest: '/manifest.json', // Manifest file needs to be created and configured
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: '/favicon.ico', // Ensure favicon.ico exists in public folder
+    apple: '/apple-touch-icon.png', // Ensure apple-touch-icon.png exists in public folder
   },
   openGraph: {
     title: 'لمسة ضحى - إبداع يلامس حياتكِ',
@@ -82,17 +84,58 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" className={`${poppins.variable} ${merriweather.variable} ${notoSansArabic.variable}`}>
+      <head>
+        {/* الخطوة 4: إضافة CSS لتغيير لون الأيقونات عند التحويم */}
+        {/* هذا النمط سيجعل أيقونات Ionicons يتغير لونها إلى #DB2777 عند مرور المؤشر فوقها */}
+        <style>
+          {`
+            ion-icon:hover {
+              color: #DB2777 !important; /* استخدم important للتأكيد على الأولوية إذا لزم الأمر */
+            }
+          `}
+        </style>
+      </head>
       <body className="font-arabic antialiased bg-background text-foreground">
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          {/* Using React.Suspense for potentially lazy-loaded components */}
           <React.Suspense fallback={<div className="flex-grow flex items-center justify-center"><p>جاري التحميل...</p></div>}>
             <main className="flex-grow">{children}</main>
           </React.Suspense>
           <Footer />
         </div>
         <Toaster />
-        {/* Vercel Analytics and Speed Insights can be re-added here if installed */}
+        
+        {/* الخطوة 3: إضافة أيقونات Ionicons داخل <body> */}
+        {/* هذه هي طريقة عرض أيقونات Ionicons. `name` يحدد الأيقونة، و `style` لتخصيص الحجم واللون */}
+        {/* 
+          <ion-icon name="shopping-cart-outline" style={{fontSize: "24px", color: "#FF69B4"}}></ion-icon>
+          <ion-icon name="heart-sharp" style={{fontSize: "24px", color: "#FF69B4"}}></ion-icon>
+        */}
+        {/* Note: Directly embedding <ion-icon> here is for demonstration. 
+            In a real app, you'd typically use them within specific components. 
+            Also, React might warn about non-standard HTML tags unless configured for custom elements.
+            For this exercise, per request, they are shown as if added to body.
+        */}
+        <div style={{ position: 'fixed', bottom: '10px', left: '10px', display: 'flex', gap: '10px', zIndex: 1000, background: 'rgba(255,255,255,0.8)', padding: '5px', borderRadius: '5px' }}>
+          {/* أيقونة عربة التسوق (مخطط) */}
+          <ion-icon name="shopping-cart-outline" style={{ fontSize: '24px', color: '#FF69B4' }}></ion-icon>
+          {/* أيقونة القلب (حاد) */}
+          <ion-icon name="heart-sharp" style={{ fontSize: '24px', color: '#FF69B4' }}></ion-icon>
+        </div>
+
+        {/* الخطوة 2: إضافة سكربتات Ionicons CDN */}
+        {/* السكربت الأول للمتصفحات الحديثة التي تدعم ES Modules */}
+        <Script
+          type="module"
+          src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+          strategy="beforeInteractive" // تحميل السكربت قبل أن تصبح الصفحة تفاعلية
+        />
+        {/* السكربت الثاني للمتصفحات القديمة (fallback) */}
+        <Script
+          nomodule
+          src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+          strategy="beforeInteractive" // تحميل السكربت قبل أن تصبح الصفحة تفاعلية
+        />
       </body>
     </html>
   );
