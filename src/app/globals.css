@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Poppins', 'Merriweather', 'Noto Sans Arabic', sans-serif;
-}
-
 @layer base {
   :root {
     --background: 255 100% 100%; /* White */
@@ -115,14 +111,14 @@ body {
     --sidebar-border: 330 15% 20%; /* Slightly lighter border for sidebar elements */
     --sidebar-ring: 45 95% 78%; /* Yellow for focus rings, slightly brighter */
   }
-}
 
-@layer base {
+  /* Global base styles */
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Poppins', 'Merriweather', 'Noto Sans Arabic', sans-serif; /* Consolidated font-family here */
   }
 }
 
