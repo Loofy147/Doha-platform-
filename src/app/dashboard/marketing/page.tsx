@@ -14,6 +14,7 @@ import { Megaphone, Tag, Percent, CalendarPlus, Sparkles, PlusCircle, Edit, Tras
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge'; // Added import for Badge
 
 interface Coupon {
   id: string;
