@@ -34,7 +34,6 @@ const FashionLookbookSection: React.FC<FashionLookbookSectionProps> = ({ product
   if (!products || products.length === 0) return null;
   const accent = storeData?.accentColor || 'hsl(var(--primary))';
 
-  // Filter for new arrivals and bestsellers to create a "lookbook" feel
   const lookbookItems = products.filter(p => p.isNew || p.isBestseller).slice(0, 6);
 
   return (
@@ -59,7 +58,7 @@ const FashionLookbookSection: React.FC<FashionLookbookSectionProps> = ({ product
             initial="hidden"
             animate="visible"
           >
-            {(lookbookItems.length > 0 ? lookbookItems : products.slice(0,6)).map((product, index) => ( // Fallback to first 6 if no featured
+            {(lookbookItems.length > 0 ? lookbookItems : products.slice(0,6)).map((product, index) => ( 
               <motion.div key={product.id} variants={cardVariants} custom={index}>
                 <StoreProductCard 
                   product={product} 

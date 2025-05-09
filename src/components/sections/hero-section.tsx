@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Sparkles } from 'lucide-react'; // Changed ArrowLeft to Sparkles
+import { ShoppingBag, Sparkles, ChevronLeft } from 'lucide-react'; // Updated ArrowLeft to ChevronLeft, added Sparkles and ShoppingBag
 import { motion } from 'framer-motion';
 
 const fadeInUp = {
@@ -58,7 +58,7 @@ export function HeroSection() {
         </motion.p>
         <motion.div
           className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6"
-          variants={{ initial: {}, animate: {transition: { staggerChildren: 0.1, delayChildren: 0.4 }} }} // Stagger buttons
+          variants={{ initial: {}, animate: {transition: { staggerChildren: 0.1, delayChildren: 0.4 }} }} 
         >
           <motion.div variants={fadeInUp}>
             <Button size="lg" asChild className="bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out px-8 py-3 text-base rounded-full group">
@@ -70,13 +70,13 @@ export function HeroSection() {
           <motion.div variants={fadeInUp}>
             <Button size="lg" variant="outline" asChild className="shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 text-base rounded-full group">
               <Link href="/sell-with-us">
-                 <Sparkles className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:text-accent-yellow" /> انضمي لمبدعاتنا {/* Changed icon to Sparkles and adjusted margin */}
+                 <Sparkles className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:text-accent-yellow" /> انضمي لمبدعاتنا
               </Link>
             </Button>
           </motion.div>
         </motion.div>
       </div>
-      {/* Subtle decorative elements with varied animations */}
+      
       <motion.div
         className="absolute -bottom-10 -left-10 w-32 h-32 bg-accent-pink/20 rounded-full filter blur-2xl opacity-50"
         animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3], rotate: [0, 15, 0] }}

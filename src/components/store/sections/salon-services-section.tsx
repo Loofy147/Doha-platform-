@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 interface SalonServicesSectionProps {
   services: Service[]; 
   storeData: StoreData | null;
-  onViewServiceDetails: (service: Service) => void; // Changed prop name for consistency
+  onViewServiceDetails: (service: Service) => void; 
 }
 
 const cardVariants = {

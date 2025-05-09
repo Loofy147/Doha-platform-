@@ -44,14 +44,14 @@ const BakerySpecialsSection: React.FC<BakerySpecialsSectionProps> = ({ products,
       <Card 
         className="p-4 md:p-6 shadow-inner rounded-xl"
         style={{ 
-          borderColor: `${accent}4D`, // 30% opacity for border
-          backgroundColor: `${accent}1A` // 10% opacity for background
+          borderColor: `${accent}4D`, 
+          backgroundColor: `${accent}1A` 
         }}
       >
         <CardContent className="p-0">
           <motion.div 
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            variants={{ visible: { transition: { staggerChildren: 0.1 }}}} // Stagger children of this grid
+            variants={{ visible: { transition: { staggerChildren: 0.1 }}}} 
             initial="hidden"
             animate="visible"
           >
@@ -71,26 +71,9 @@ const BakerySpecialsSection: React.FC<BakerySpecialsSectionProps> = ({ products,
           </motion.div>
         </CardContent>
       </Card>
-      {/* 
-        The following block was removed because `product` is not defined in this scope.
-        Ingredient details should be shown within the StoreProductCard or a product detail modal/page.
       
-      {product.ingredients && product.ingredients.length > 0 && (
-        <Card className="mt-6" style={{borderColor: accent}}>
-            <CardHeader>
-                <CardTitle className="text-lg flex items-center" style={{color: accent}}><Sparkles size={20} className="ml-2"/> مكونات مميزة</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                    {product.ingredients.map((ingredient, i) => <li key={i}>{ingredient}</li>)}
-                </ul>
-            </CardContent>
-        </Card>
-      )}
-      */}
     </StoreSection>
   );
 };
 
 export default BakerySpecialsSection;
-

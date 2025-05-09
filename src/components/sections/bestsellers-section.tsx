@@ -6,26 +6,26 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Flame, Eye, ChevronLeft } from 'lucide-react';
+import { Flame, Eye, ChevronLeft } from 'lucide-react'; 
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils'; // Import cn utility
+import { cn } from '@/lib/utils'; 
 
 const mockBestsellers = [
   {
-    id: 'lamsa-prod2', // Product ID
+    id: 'lamsa-prod2', 
     name: 'مجموعة دُمى أميغورومي لطيفة',
-    seller: 'لمسة إبداع نادية', // Seller name for lamsa-ibdaa
-    sellerSlug: 'lamsa-ibdaa', // Store Slug/ID
+    seller: 'لمسة إبداع نادية', 
+    sellerSlug: 'lamsa-ibdaa', 
     imageSrc: 'https://picsum.photos/seed/amigurumi/400/300',
     dataAiHint: 'amigurumi dolls handmade',
     price: '2,500 دج للقطعة',
     category: 'ألعاب وهدايا يدوية',
   },
   {
-    id: 'mathaq-prod1', // Product ID
+    id: 'mathaq-prod1', 
     name: 'كيكة العسل الروسية الأصلية',
-    seller: 'مذاق البيت مع سارة', // Seller name for mathaq-albayt
-    sellerSlug: 'mathaq-albayt', // Store Slug/ID
+    seller: 'مذاق البيت مع سارة', 
+    sellerSlug: 'mathaq-albayt', 
     imageSrc: 'https://picsum.photos/seed/honeycake/400/300',
     dataAiHint: 'russian honey cake',
     price: '6,000 دج',
@@ -33,20 +33,20 @@ const mockBestsellers = [
     oldPrice: '6,500 دج',
   },
   {
-    id: 'anaqa-prod1', // Product ID
+    id: 'anaqa-prod1', 
     name: 'فستان سهرة ذهبي مطرز فاخر (للإيجار)',
-    seller: 'أناقة للإيجار مع ليلى', // Seller name for anaqa-lilijar
-    sellerSlug: 'anaqa-lilijar', // Store Slug/ID
+    seller: 'أناقة للإيجار مع ليلى', 
+    sellerSlug: 'anaqa-lilijar', 
     imageSrc: 'https://picsum.photos/seed/golddress/400/300',
     dataAiHint: 'gold sequin dress elegant',
     price: '12,000 دج / لـ 3 أيام',
     category: 'تأجير إبداعات',
   },
    {
-    id: 'farah-prod1', // Product ID
+    id: 'farah-prod1', 
     name: 'زيت الأرغان المغربي النقي للشعر',
-    seller: 'صالون فرح للتجميل', // Seller name for salon-farah
-    sellerSlug: 'salon-farah', // Store Slug/ID
+    seller: 'صالون فرح للتجميل', 
+    sellerSlug: 'salon-farah', 
     imageSrc: 'https://picsum.photos/seed/arganoilhair/400/300',
     dataAiHint: 'argan oil hair product',
     price: '2,800 دج',
@@ -78,7 +78,6 @@ export function BestsellersSection() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.1 }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -94,7 +93,10 @@ export function BestsellersSection() {
             استكشفي أكثر المنتجات والخدمات التي أحبتها عميلاتنا وأصبحت مصدر إلهام في مجتمعنا.
           </p>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+            variants={sectionVariants} // Use sectionVariants for staggering children
+        >
           {mockBestsellers.map((product, index) => (
             <motion.div
               key={product.id}
@@ -147,7 +149,7 @@ export function BestsellersSection() {
             </Card>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
         <motion.div
           className="mt-12 text-center"
           variants={itemVariants}

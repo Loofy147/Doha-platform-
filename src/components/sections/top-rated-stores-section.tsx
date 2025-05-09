@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 const mockTopRatedStores = [
   {
-    id: 'lamsa-ibdaa', // Store slug as ID
+    id: 'lamsa-ibdaa', 
     name: 'لمسة إبداع نادية',
     avatarSrc: 'https://picsum.photos/seed/nadia/100/100',
     dataAiHint: 'woman artist smiling',
@@ -24,7 +24,7 @@ const mockTopRatedStores = [
     dataAiHintBanner: 'handmade crafts display',
   },
   {
-    id: 'mathaq-albayt', // Store slug as ID
+    id: 'mathaq-albayt', 
     name: 'مذاق البيت مع سارة',
     avatarSrc: 'https://picsum.photos/seed/sara/100/100',
     dataAiHint: 'woman baker smiling',
@@ -35,7 +35,7 @@ const mockTopRatedStores = [
     dataAiHintBanner: 'assorted pastries display',
   },
   {
-    id: 'anaqa-lilijar', // Store slug as ID
+    id: 'anaqa-lilijar', 
     name: 'أناقة للإيجار مع ليلى',
     avatarSrc: 'https://picsum.photos/seed/laila/100/100',
     dataAiHint: 'woman fashion designer stylish',
@@ -46,7 +46,7 @@ const mockTopRatedStores = [
     dataAiHintBanner: 'evening gowns display',
   },
   {
-    id: 'salon-farah', // Store slug as ID
+    id: 'salon-farah', 
     name: 'صالون فرح للتجميل',
     avatarSrc: 'https://picsum.photos/seed/farah/100/100',
     dataAiHint: 'woman beautician smiling elegant',
@@ -102,7 +102,10 @@ export function TopRatedStoresSection() {
             تعرفي على المتاجر التي حازت على أعلى التقييمات بفضل جودة منتجاتها وخدماتها الاستثنائية.
           </p>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+            variants={sectionVariants} // Use sectionVariants for staggering children
+        >
           {mockTopRatedStores.map((store, index) => (
             <motion.div
               key={store.id}
@@ -146,14 +149,14 @@ export function TopRatedStoresSection() {
             </Card>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
          <motion.div
           className="mt-12 text-center"
           variants={itemVariants}
           custom={mockTopRatedStores.length + 1} 
          >
           <Button size="lg" variant="default" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 group transform hover:scale-105">
-            <Link href="/stores"> {/* Updated link to /stores */}
+            <Link href="/stores"> 
               تصفحي كل المتاجر المبدعة <ChevronLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
             </Link>
           </Button>

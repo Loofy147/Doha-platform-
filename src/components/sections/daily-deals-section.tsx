@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Flame, Percent, Eye, ChevronLeft } from 'lucide-react'; // Changed CalendarClock to Flame
+import { Flame, Percent, Eye, ChevronLeft } from 'lucide-react'; 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from 'framer-motion';
@@ -95,7 +95,7 @@ export function DailyDealsSection() {
           variants={itemVariants} 
           custom={0} 
         >
-          <Flame className="mx-auto h-12 w-12 text-accent-pink animate-ping-slow" style={{animationDuration: '1.5s'}}/> {/* Changed icon */}
+          <Flame className="mx-auto h-12 w-12 text-accent-pink animate-ping-slow" style={{animationDuration: '1.5s'}}/> 
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             عروض اليوم الذهبية ✨
           </h2>

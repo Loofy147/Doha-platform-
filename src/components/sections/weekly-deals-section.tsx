@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 const mockWeeklyDeals = [
   {
     id: 'deal-weekly-1',
-    productLink: '/products/farah-prod2', // Link to a specific product or a category/offer page
+    productLink: '/products/farah-prod2', 
     title: 'باقة العناية المتكاملة بخصم 20% هذا الأسبوع',
     description: 'احصلي على مجموعة منتجات العناية بالبشرة والشعر الفاخرة بسعر لا يُقاوم طوال هذا الأسبوع.',
     imageSrc: 'https://picsum.photos/seed/weeklyskincaredeal/400/250',
@@ -27,7 +27,7 @@ const mockWeeklyDeals = [
   },
   {
     id: 'deal-weekly-2',
-    productLink: '/store/lamsa-ibdaa?category=services', // Link to store services category
+    productLink: '/store/lamsa-ibdaa?category=services', 
     title: 'خصم 15% على جميع خدمات تصميم الديكور هذا الأسبوع',
     description: 'جددي منزلكِ مع استشارة تصميم داخلي أو خدمة تنفيذ ديكور بخصم مميز.',
     imageSrc: 'https://picsum.photos/seed/weeklydecor/400/250',
@@ -37,7 +37,7 @@ const mockWeeklyDeals = [
   },
   {
     id: 'deal-weekly-3',
-    productLink: '/store/mathaq-albayt?category=sweets', // Link to store sweets category
+    productLink: '/store/mathaq-albayt?category=sweets', 
     title: 'اشتري قطعتين من الحلويات الشرقية واحصل على الثالثة بنصف السعر!',
     description: 'عرض أسبوعي شهي على تشكيلة مختارة من الحلويات الشرقية الأصيلة.',
     imageSrc: 'https://picsum.photos/seed/weeklysweetsdeal/400/250',
@@ -47,13 +47,13 @@ const mockWeeklyDeals = [
   },
    {
     id: 'deal-weekly-4',
-    productLink: '/products?category=أزياء وإكسسوارات يدوية', // Link to category
+    productLink: '/products?category=أزياء وإكسسوارات يدوية', 
     title: 'شحن مجاني للطلبات فوق 5,000 دج من الإكسسوارات اليدوية!',
     description: 'تسوقي أجمل الإكسسوارات المصنوعة بحب واستمتعي بشحن مجاني هذا الأسبوع.',
     imageSrc: 'https://picsum.photos/seed/weeklyjewelryship/400/250',
     dataAiHint: 'handmade jewelry display',
-    storeName: 'متاجر متنوعة', // Representing multiple stores
-    storeSlug: '', // No specific store slug
+    storeName: 'متاجر متنوعة', 
+    storeSlug: '', 
   },
 ];
 
@@ -74,14 +74,14 @@ const itemVariants = {
 
 export function WeeklyDealsSection() {
   const plugin = React.useRef(
-    Autoplay({ delay: 5500, stopOnInteraction: true }) // Slightly longer delay
+    Autoplay({ delay: 5500, stopOnInteraction: true }) 
   );
 
   return (
     <motion.section
       id="weekly-deals"
       className="py-16 lg:py-24 bg-background"
-      variants={sectionVariants} // Apply container variants
+      variants={sectionVariants} 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
@@ -89,8 +89,8 @@ export function WeeklyDealsSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} // Use item variants for header
-          custom={0} // Start animation immediately
+          variants={itemVariants} 
+          custom={0} 
         >
           <CalendarRange className="mx-auto h-12 w-12 text-accent-purple animate-pulse" style={{animationDuration: '1.6s'}}/>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
@@ -117,14 +117,13 @@ export function WeeklyDealsSection() {
               <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <motion.div
                   className="p-1 h-full"
-                  custom={index + 1} // Stagger animation for cards
+                  custom={index + 1} 
                   variants={itemVariants}
-                  // Removed initial/whileInView from individual cards
                 >
                   <Card className={cn(
                     "overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full",
                     "border-2 border-accent-purple/30 hover:border-accent-purple focus-within:border-accent-purple focus-within:ring-2 focus-within:ring-accent-purple/50",
-                    "transform hover:-translate-y-1.5" // Add lift effect
+                    "transform hover:-translate-y-1.5" 
                     )}>
                     <CardHeader className="p-0 relative">
                       <Link href={deal.productLink} passHref className="block aspect-[16/10] relative overflow-hidden rounded-t-xl">
@@ -155,7 +154,7 @@ export function WeeklyDealsSection() {
                         {deal.originalPrice && (
                           <p className={cn("text-md text-muted-foreground", deal.dealPrice && "line-through")}>{deal.originalPrice}</p>
                         )}
-                         {!deal.dealPrice && !deal.originalPrice && ( // Case for free shipping etc.
+                         {!deal.dealPrice && !deal.originalPrice && ( 
                            <p className="text-xl font-bold text-accent-purple">عرض خاص!</p>
                         )}
                       </div>
@@ -179,7 +178,7 @@ export function WeeklyDealsSection() {
         <motion.div
           className="mt-12 text-center"
           variants={itemVariants}
-          custom={mockWeeklyDeals.length + 1} // Animate button after cards
+          custom={mockWeeklyDeals.length + 1} 
         >
           <Button size="lg" variant="outline" asChild className="border-primary text-primary hover:bg-primary/10 group transform hover:scale-105 transition-transform duration-200">
             <Link href="/products?filter=weekly-deals">

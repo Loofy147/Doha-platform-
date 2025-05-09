@@ -19,22 +19,20 @@ interface CallToActionBannerProps {
   icon?: React.ElementType<LucideProps>;
   reverseLayout?: boolean;
   animationConfig?: MotionProps;
-  themeStyle?: 'light' | 'elegant' | 'playful' | 'modern-minimal' | 'dark'; // Added for theme-awareness
-  accentColor?: string; // Added for theme-awareness
+  themeStyle?: 'light' | 'elegant' | 'playful' | 'modern-minimal' | 'dark'; 
+  accentColor?: string; 
 }
 
-// Animation for the main section container
 const sectionAnimationConfig: MotionProps = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.25 }, // Staggers direct motion children (text block and image block)
+  transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.25 }, 
   viewport: { once: true, amount: 0.2 }
 };
 
-// Animation for the text content block as a whole
 const textBlockContainerVariants: MotionProps = {
-  initial: "hidden", // Will be controlled by parent section's whileInView
-  animate: "visible", // Renamed from whileInView to animate for direct variant control
+  initial: "hidden", 
+  animate: "visible", 
   variants: {
     hidden: { opacity: 0, x: -30 },
     visible: {
@@ -43,31 +41,29 @@ const textBlockContainerVariants: MotionProps = {
       transition: {
         duration: 0.5,
         ease: "easeOut",
-        staggerChildren: 0.1, // Stagger children within this text block
-        delayChildren: 0.2, // Delay children slightly after this block starts animating
+        staggerChildren: 0.1, 
+        delayChildren: 0.2, 
       },
     },
   },
 };
 
-// Animation for individual elements (h2, p, button) within the text block
 const textChildVariants: MotionProps = {
-  variants: { // Ensure 'variants' key is present
+  variants: { 
     hidden: { opacity: 0, y: 15 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
   }
 };
 
-// Animation for the image block
 const imageBlockVariants: MotionProps = {
-   initial: "hidden", // Controlled by parent section
-   animate: "visible", // Renamed for direct variant control
+   initial: "hidden", 
+   animate: "visible", 
    variants: {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.5, ease: "easeOut", delay: 0.1 }, // Slight delay after text block starts
+      transition: { duration: 0.5, ease: "easeOut", delay: 0.1 }, 
     },
   }
 };
@@ -82,7 +78,7 @@ export function CallToActionBanner({
   dataAiHint,
   icon: IconComponent,
   reverseLayout = false,
-  animationConfig = sectionAnimationConfig, // Use the refined section animation
+  animationConfig = sectionAnimationConfig, 
   themeStyle = 'light',
   accentColor = 'hsl(var(--primary))'
 }: CallToActionBannerProps) {
@@ -100,10 +96,10 @@ export function CallToActionBanner({
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`grid lg:grid-cols-2 gap-10 md:gap-16 items-center`}>
-          {/* Text Content Block */}
+          
           <motion.div
             className={`text-center lg:text-right ${reverseLayout ? 'lg:order-2' : 'lg:order-1'}`}
-            {...textBlockContainerVariants} // Apply parent animation for text block
+            {...textBlockContainerVariants} 
           >
             {IconComponent && (
                 <motion.div {...textChildVariants}>
@@ -132,10 +128,10 @@ export function CallToActionBanner({
             </motion.div>
           </motion.div>
 
-          {/* Image Block */}
+          
           <motion.div
             className={`relative aspect-video rounded-xl overflow-hidden shadow-2xl ${reverseLayout ? 'lg:order-1' : 'lg:order-2'} group transform hover:scale-[1.03] transition-transform duration-500 ease-out`}
-            {...imageBlockVariants} // Apply animation for image block
+            {...imageBlockVariants} 
           >
             <Image
               src={imageSrc}

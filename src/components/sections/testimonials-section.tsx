@@ -12,7 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import React, { useEffect, useRef, useState } from 'react'; // Added useState
+import React, { useEffect, useRef, useState } from 'react'; 
 import { motion, useAnimation } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useInView } from 'react-intersection-observer';
@@ -95,12 +95,12 @@ export function TestimonialsSection() {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
-  const [hasAnimated, setHasAnimated] = useState(false); // Local state to track animation
+  const [hasAnimated, setHasAnimated] = useState(false); 
 
   useEffect(() => {
-    if (inView && !hasAnimated) { // Check hasAnimated flag
+    if (inView && !hasAnimated) { 
       controls.start("visible");
-      setHasAnimated(true); // Set flag to true after animation starts
+      setHasAnimated(true); 
     }
   }, [controls, inView, hasAnimated]);
 

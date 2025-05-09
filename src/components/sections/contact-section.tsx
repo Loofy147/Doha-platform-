@@ -25,20 +25,20 @@ export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const sectionEntryVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut", staggerChildren: 0.15 } } // Stagger direct motion children
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut", staggerChildren: 0.15 } } 
 };
 
-const itemVariants = { // For children of the main layout grid (form card, info card)
+const itemVariants = { 
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
 };
 
-const formItemVariants = { // For individual form fields, potentially staggered by their parent
+const formItemVariants = { 
     hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.4 } }
 };
 
-const imageVariants = { // For the image within the info card
+const imageVariants = { 
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
 };
@@ -70,7 +70,7 @@ export function ContactSection({ }: ContactSectionProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} // This will be staggered by the parent motion.section
+          variants={itemVariants} 
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             تواصلي معنا
@@ -82,7 +82,7 @@ export function ContactSection({ }: ContactSectionProps) {
 
         <motion.div 
             className="grid lg:grid-cols-2 gap-12"
-            variants={{ visible: { transition: { staggerChildren: 0.2 } } }} // Stagger form card and info card
+            variants={{ visible: { transition: { staggerChildren: 0.2 } } }} 
         >
           <motion.div variants={itemVariants}> 
             <Card className="shadow-lg h-full">
@@ -97,7 +97,7 @@ export function ContactSection({ }: ContactSectionProps) {
                  <motion.form
                     onSubmit={handleFormSubmit(onSubmit)} 
                     className="space-y-6"
-                    variants={{ visible: { transition: { staggerChildren: 0.1 }}}} // Stagger form fields
+                    variants={{ visible: { transition: { staggerChildren: 0.1 }}}} 
                   >
                   <motion.div variants={formItemVariants}>
                     <Label htmlFor="name">الاسم الكامل</Label>

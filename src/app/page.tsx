@@ -5,24 +5,24 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Sparkles,
-  Home as HomeIcon,
+  Home,
   PackageSearch,
-  ShoppingBag as ShoppingBagIcon,
+  ShoppingBag,
   Rocket,
   ShoppingBasket,
   LayoutDashboard,
-  Wand2, // For Fashion category
-  CakeSlice, // For Sweets category
-  CalendarClock, // For Rental category
-  Briefcase, // For Professional Services category
+  Wand2, 
+  CakeSlice, 
+  CalendarDays, 
+  Briefcase, 
   Flame,
   Award,
-  Users as UsersIcon,
-  Lightbulb, // Replaced SearchHeart
+  Users,
+  Lightbulb,
   MessageSquare,
   ChevronLeft,
   Eye,
-  Search, // Re-added Search
+  Search, 
   Store,
   Edit3,
 } from 'lucide-react';
@@ -76,9 +76,9 @@ const simpleFadeInUp = {
 const categories = [
   { name: 'أزياء وإكسسوارات', icon: Wand2, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
   { name: 'حلويات ومأكولات شهية', icon: CakeSlice, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
-  { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
-  { name: 'تأجير إبداعات', icon: CalendarClock, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-primary', bgColor: 'bg-primary/10 hover:bg-primary/15' }, // Color updated to primary theme
-  { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-secondary', bgColor: 'bg-secondary/10 hover:bg-secondary/15' }, // Color updated to secondary theme
+  { name: 'لمسات منزلية وديكور', icon: Home, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
+  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-primary', bgColor: 'bg-primary/10 hover:bg-primary/15' },
+  { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-secondary', bgColor: 'bg-secondary/10 hover:bg-secondary/15' },
 ];
 
 export default function HomePage() {
@@ -121,10 +121,10 @@ export default function HomePage() {
       <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
-            variants={sectionVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
+            variants={sectionVariants}
          >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div className="text-center mb-12" variants={simpleFadeInUp}>
@@ -138,16 +138,14 @@ export default function HomePage() {
                 <motion.div
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                     variants={{ visible: { transition: { staggerChildren: 0.05 }}}}
-                    initial="hidden"
-                    animate="visible"
-                >
+                 >
                     {categories.map((category, index) => {
                         const IconComponent = category.icon;
                         return (
                         <motion.div
                             key={category.name}
-                            variants={categoryCardVariants}
                             custom={index}
+                            variants={categoryCardVariants}
                             className="h-full"
                         >
                             <Link href={category.href} className="group block h-full">
@@ -166,44 +164,42 @@ export default function HomePage() {
                 </motion.div>
             </div>
         </motion.section>
+      
+        <motion.div
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+        >
+            <CallToActionBanner
+            title="انضمي إلى مبدعات لمسة ضحى!"
+            description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
+            buttonText="افتحي متجرك الآن"
+            buttonLink="/sell-with-us"
+            imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
+            dataAiHint="women entrepreneurs working"
+            icon={Rocket}
+            />
+        </motion.div>
 
-      {/* Seller CTA */}
-      <motion.div
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <CallToActionBanner
-          title="انضمي إلى مبدعات لمسة ضحى!"
-          description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
-          buttonText="افتحي متجرك الآن"
-          buttonLink="/sell-with-us"
-          imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
-          dataAiHint="women entrepreneurs working"
-          icon={Rocket}
-        />
-      </motion.div>
-
-      {/* Shopper CTA */}
-      <motion.div
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        <CallToActionBanner
-          title="اكتشفي كنوز الإبداع المحلي!"
-          description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
-          buttonText="تسوقي الآن"
-          buttonLink="/products"
-          imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
-          dataAiHint="happy woman shopping online"
-          icon={ShoppingBasket}
-          reverseLayout={true}
-        />
-      </motion.div>
-
+        <motion.div
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+        >
+            <CallToActionBanner
+            title="اكتشفي كنوز الإبداع المحلي!"
+            description="تصفحي آلاف المنتجات والخدمات المقدمة من مبدعات موهوبات. كل قطعة تحكي قصة، وكل خدمة تقدم بلمسة شخصية. ادعمي المواهب المحلية واحصلي على ما هو فريد ومميز."
+            buttonText="تسوقي الآن"
+            buttonLink="/products"
+            imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
+            dataAiHint="happy woman shopping online"
+            icon={ShoppingBasket}
+            reverseLayout={true}
+            />
+        </motion.div>
+        
         <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <DailyDealsSection />
         </motion.div>
@@ -235,10 +231,10 @@ export default function HomePage() {
 
         <div className="py-12 bg-muted/30 text-center">
             <motion.div
-                variants={sectionVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}
+                variants={sectionVariants}
             >
                 <h3 className="text-2xl font-semibold text-primary mb-4">إدارة المنصة</h3>
                 <p className="text-foreground/80 mb-6 max-w-md mx-auto">
