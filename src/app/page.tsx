@@ -7,10 +7,10 @@ import {
   Sparkles,
   Shirt,
   HomeIcon,
-  CalendarDays,
+  // CalendarDays, // Not used directly in HomePage, but in categories array. Corrected usage there.
   PenLine,
-  ShoppingBag as ShoppingBagIcon,
-  Store as StoreIcon,
+  ShoppingBag as ShoppingBagIcon, // Aliased to avoid potential naming conflicts
+  Store as StoreIcon, // Aliased
   Flame, 
   Award, 
   Users as UsersIcon, 
@@ -25,10 +25,10 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  // CardDescription, // Not directly used by HomePage, but by its children
+  // CardFooter, // Not directly used by HomePage
+  // CardHeader, // Not directly used by HomePage
+  // CardTitle, // Not directly used by HomePage
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { HeroSection } from '@/components/sections/hero-section';
@@ -40,8 +40,9 @@ import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
 import ClientContactSection from '@/components/sections/client-contact-section';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+// import { WomenCommerceLogo } from '@/components/icons/logo'; // Not directly used by HomePage
 import { motion } from 'framer-motion';
+import { CalendarDays } from 'lucide-react'; // Ensure CalendarDays is imported
 
 const pageEntryVariants = {
   hidden: { opacity: 0 },
@@ -122,7 +123,7 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.1 }}
          >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div className="text-center mb-12" variants={simpleFadeInUp}> {/* Changed variant */}
+                <motion.div className="text-center mb-12" variants={simpleFadeInUp}>
                     <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center justify-center gap-3">
                        <PackageSearch size={36} className="text-accent-pink"/> تصفحي عالمنا الإبداعي
                     </h2>
@@ -133,7 +134,6 @@ export default function HomePage() {
                 <motion.div 
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                     variants={{ visible: { transition: { staggerChildren: 0.05 }}}}
-                    // initial/animate controlled by parent section
                 >
                     {categories.map((category, index) => {
                         const IconComponent = category.icon;
@@ -243,4 +243,3 @@ export default function HomePage() {
     </motion.div>
   );
 }
-
