@@ -1,3 +1,4 @@
+
 // src/app/dashboard/page.tsx
 'use client';
 
@@ -21,7 +22,10 @@ import {
   Star,
   Eye,
   LayoutDashboard,
-  ChevronLeft // Added ChevronLeft
+  ChevronLeft,
+  ListChecks, // For Pending Orders
+  ClipboardList, // For Activity Feed
+  Inbox, // For Unread Messages
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -64,6 +68,7 @@ const recentActivities = [
   { id: 2, icon: <MessageSquare className="text-blue-500" />, description: "رسالة جديدة من الزبونة 'نورة السالم'", time: "منذ ساعة", href: "/dashboard/messages/noura-salem" },
   { id: 3, icon: <Star className="text-yellow-500" />, description: "تقييم جديد (5 نجوم) على منتج 'فستان سهرة للإيجار'", time: "منذ 3 ساعات", href: "/dashboard/reviews" },
   { id: 4, icon: <Package className="text-purple-500" />, description: "تم تحديث كمية منتج 'أقراط فضية يدوية الصنع'", time: "منذ 5 ساعات", href: "/dashboard/products" },
+  { id: 5, icon: <Bell className="text-red-500" />, description: "تنبيه: منتج 'شال كشميري' على وشك النفاد من المخزون.", time: "منذ يوم", href: "/dashboard/products?filter=low-stock"},
 ];
 
 const pageEntryVariants: MotionProps = {
@@ -89,7 +94,7 @@ const sectionVariants: MotionProps = {
 };
 
 const itemVariants: MotionProps = {
-  variants: { // Wrap variants in a "variants" object for Framer Motion
+  variants: { 
     hidden: { opacity: 0, y: 20, scale: 0.95 },
     visible: { 
       opacity: 1, 
@@ -116,9 +121,10 @@ export default function SellerDashboardPage() {
   
   const dashboardStats = [
     { title: "إجمالي الإيرادات", value: "125,800 دج", icon: <DollarSign className="text-green-500" />, trend: "+15% هذا الشهر", bgColor: "bg-green-500/10", borderColor: "border-green-500" },
-    { title: "الطلبات الجديدة", value: "12", icon: <ShoppingBag className="text-blue-500" />, trend: "+3 اليوم", bgColor: "bg-blue-500/10", borderColor: "border-blue-500"},
-    { title: "المنتجات المعروضة", value: "42", icon: <Package className="text-purple-500" />, trend: "5 غير نشطة", bgColor: "bg-purple-500/10", borderColor: "border-purple-500" },
+    { title: "الطلبات المعلقة", value: "5", icon: <ListChecks className="text-orange-500" />, trend: "+2 اليوم", bgColor: "bg-orange-500/10", borderColor: "border-orange-500"},
+    { title: "إجمالي المنتجات", value: "42", icon: <Package className="text-purple-500" />, trend: "5 غير نشطة", bgColor: "bg-purple-500/10", borderColor: "border-purple-500" },
     { title: "تقييمات العملاء", value: "4.8 نجوم", icon: <Star className="text-yellow-500" />, trend: " (85 تقييم)", bgColor: "bg-yellow-500/10", borderColor: "border-yellow-500" },
+    { title: "رسائل غير مقروءة", value: "3", icon: <Inbox className="text-blue-500" />, trend: "تحتاج إلى رد", bgColor: "bg-blue-500/10", borderColor: "border-blue-500" },
   ];
 
   const quickActions = [
@@ -135,8 +141,8 @@ export default function SellerDashboardPage() {
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <Skeleton className="h-10 w-1/3 mb-2" />
         <Skeleton className="h-6 w-1/2 mb-8" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          {Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <Skeleton className="lg:col-span-2 h-80 rounded-lg" />
@@ -149,7 +155,7 @@ export default function SellerDashboardPage() {
   return (
     <motion.div 
       className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 bg-background"
-      {...pageEntryVariants} // Spread variants correctly
+      {...pageEntryVariants}
     >
       <motion.header 
         className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center"
@@ -203,11 +209,11 @@ export default function SellerDashboardPage() {
       </motion.div>
 
       <motion.section 
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8"
         {...sectionVariants}
       >
-        {dashboardStats.map((stat, index) => ( // Added index
-          <motion.div key={stat.title} {...itemVariants} custom={index}> {/* Added custom={index} and spread itemVariants */}
+        {dashboardStats.map((stat, index) => ( 
+          <motion.div key={stat.title} {...itemVariants} custom={index}> 
             <Card className={`shadow-md hover:shadow-lg transition-shadow border-l-4 ${stat.borderColor} ${stat.bgColor}`}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
@@ -229,12 +235,12 @@ export default function SellerDashboardPage() {
         <motion.h2 {...itemVariants} className="text-2xl font-semibold text-primary mb-4 flex items-center"><Sparkles size={24} className="text-accent-yellow ml-2" /> إجراءات سريعة لمتجركِ</motion.h2>
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
-          variants={sectionVariants.variants} // Pass inner variants object for children
+          variants={sectionVariants.variants} 
         >
-          {quickActions.map((action, index) => { // Added index
+          {quickActions.map((action, index) => { 
             const ActionIcon = action.icon;
             return (
-              <motion.div key={action.label} {...itemVariants} custom={index}> {/* Added custom={index} */}
+              <motion.div key={action.label} {...itemVariants} custom={index}> 
                 <Link href={action.href} passHref>
                   <Card className="h-full hover:shadow-xl hover:border-primary/50 transition-all transform hover:-translate-y-1 cursor-pointer border-dashed border-primary/30">
                     <CardContent className="p-4 flex flex-col items-center justify-center text-center aspect-square">
@@ -272,8 +278,8 @@ export default function SellerDashboardPage() {
                                 <stop offset="95%" stopColor="hsl(var(--accent-yellow))" stopOpacity={0.1}/>
                             </linearGradient>
                         </defs>
-                        <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value/1000} ألف دج`} />
+                        <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} reversed />
+                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value/1000} ألف دج`} orientation="right" />
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
                         <Tooltip 
                             contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)"}} 
@@ -291,19 +297,19 @@ export default function SellerDashboardPage() {
         <motion.div {...itemVariants}>
           <Card className="shadow-lg">
             <CardHeader>
-                <CardTitle className="text-primary flex items-center"><Activity className="ml-2 text-accent-pink"/> أحدث النشاطات في متجركِ</CardTitle>
+                <CardTitle className="text-primary flex items-center"><ClipboardList className="ml-2 text-accent-pink"/> موجز النشاطات في متجركِ</CardTitle>
             </CardHeader>
             <CardContent className="h-[300px] overflow-y-auto p-0">
               <motion.ul 
                 className="divide-y divide-border"
-                variants={sectionVariants.variants} // Pass inner variants
+                variants={sectionVariants.variants} 
               >
-                {recentActivities.map((activity, index) => ( // Added index
+                {recentActivities.map((activity, index) => ( 
                   <motion.li 
                     key={activity.id} 
                     className="p-3 hover:bg-muted/30 transition-colors"
-                    {...itemVariants} // Spread itemVariants
-                    custom={index} // Added custom={index}
+                    {...itemVariants} 
+                    custom={index} 
                   >
                     <Link href={activity.href} className="flex items-start gap-3">
                       <span className="mt-1">{activity.icon}</span>
@@ -311,6 +317,7 @@ export default function SellerDashboardPage() {
                         <p className="text-sm text-foreground/90 leading-tight">{activity.description}</p>
                         <p className="text-xs text-muted-foreground">{activity.time}</p>
                       </div>
+                       <ChevronLeft size={16} className="text-muted-foreground self-center"/>
                     </Link>
                   </motion.li>
                 ))}
@@ -334,7 +341,7 @@ export default function SellerDashboardPage() {
         <motion.div 
           {...itemVariants} 
           className="flex flex-col sm:flex-row justify-center gap-3"
-          variants={sectionVariants.variants} // Pass inner variants for children
+          variants={sectionVariants.variants} 
         >
             <motion.div {...itemVariants} custom={0}><Button variant="outline" className="border-primary text-primary hover:bg-primary/5">أدلة المبدعات</Button></motion.div>
             <motion.div {...itemVariants} custom={1}><Button variant="outline" className="border-accent-purple text-accent-purple hover:bg-accent-purple/5">منتدى المجتمع</Button></motion.div>
@@ -344,3 +351,4 @@ export default function SellerDashboardPage() {
     </motion.div>
   );
 }
+

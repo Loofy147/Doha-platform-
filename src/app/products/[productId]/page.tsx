@@ -1,3 +1,4 @@
+
 // src/app/products/[productId]/page.tsx
 'use client';
 
@@ -37,13 +38,14 @@ import {
   Loader2,
   Percent,
   TagIcon,
+  MessageCircle as ReviewIcon,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from '@/lib/utils';
-import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ItemType as PublicItemType, type StoreType } from '@/lib/data/mock-store-data';
+import { getProductById, getServiceById, getStoreDataById, type Product, type Service, type StoreData, type ItemType as PublicItemType, type StoreType, type Review as StoreReview } from '@/lib/data/mock-store-data';
 import StoreSection from '@/components/store/store-section';
 import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
@@ -63,7 +65,7 @@ const staggerContainerVariants: MotionProps = {
   animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
 };
 
-const itemVariants: MotionProps = { // Renamed from fadeInUp for clarity
+const itemVariants: MotionProps = { 
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
 };
@@ -97,6 +99,14 @@ const ProductDetailLoadingSkeleton = () => (
       </div>
     </div>
      <StoreLoadingSkeleton />
+     {/* Skeleton for Reviews */}
+      <div className="mt-12">
+        <Skeleton className="h-10 w-1/4 mb-4"/>
+        <div className="space-y-4">
+            <Skeleton className="h-24 w-full rounded-lg"/>
+            <Skeleton className="h-20 w-full rounded-lg"/>
+        </div>
+      </div>
   </div>
 );
 
@@ -121,6 +131,21 @@ const StoreLoadingSkeleton = () => (
     </div>
 );
 
+const RatingStarsDisplay = ({ rating, size = 16 }: { rating: number, size?: number }) => (
+  <div className="flex">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <Star
+        key={i}
+        size={size}
+        className={cn(
+          "transition-colors",
+          i < Math.round(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+        )}
+      />
+    ))}
+  </div>
+);
+
 export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
@@ -136,6 +161,16 @@ export default function ProductDetailPage() {
   const { toast } = useToast();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
+  // Mock reviews for the current item
+  const mockItemReviews: StoreReview[] = useMemo(() => {
+    if (!item || !storeData) return [];
+    return storeData.reviews?.filter(review => review.itemId === item.id).slice(0,3) || [
+      { id: 'rev-mock1', authorName: 'عائشة م.', rating: 5, comment: 'منتج رائع وجودة عالية جداً! أنصح به بشدة.', date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), itemId: item.id, storeId: storeData.id, authorAvatar: 'https://picsum.photos/seed/aisha-m/40/40', dataAiHintAvatar: 'woman happy avatar' },
+      { id: 'rev-mock2', authorName: 'سارة خ.', rating: 4, comment: 'تجربة جيدة بشكل عام، المنتج وصل في الوقت المحدد وكان كما في الوصف.', date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), itemId: item.id, storeId: storeData.id, authorAvatar: 'https://picsum.photos/seed/sara-kh/40/40', dataAiHintAvatar: 'woman avatar thoughtful'  },
+    ];
+  }, [item, storeData]);
+
+
   useEffect(() => {
     let isMounted = true;
     if (productId) {
@@ -144,7 +179,12 @@ export default function ProductDetailPage() {
       const timer = setTimeout(async () => {
         try {
           const fetchedItemData = getProductById(productId) || getServiceById(productId);
-          const relatedStoreId = fetchedItemData?.sellerId || productId.split('-')[0];
+          
+          // Correctly derive relatedStoreId
+          // If item is from commonProducts, its sellerId might be a placeholder.
+          // The storeId from the URL should be preferred if the item is part of that store.
+          // For this mock setup, we assume the item's sellerId IS the storeId.
+          const relatedStoreId = fetchedItemData?.sellerId;
           const fetchedStoreData = relatedStoreId ? getStoreDataById(relatedStoreId) : null;
 
           if (!isMounted) return;
@@ -505,6 +545,44 @@ export default function ProductDetailPage() {
             </motion.div>
         </motion.div>
 
+        {/* Customer Reviews Section */}
+        {mockItemReviews.length > 0 && (
+             <motion.div variants={itemVariants} className="mt-12">
+                <StoreSection title="آراء عميلاتنا" icon={ReviewIcon} accentColor={effectiveAccentColor} className="mb-10">
+                <div className="space-y-6">
+                    {mockItemReviews.map(review => (
+                    <Card key={review.id} className="shadow-lg border-border/30">
+                        <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10 border">
+                                <AvatarImage src={review.authorAvatar} alt={review.authorName} data-ai-hint={review.dataAiHintAvatar || "avatar customer"}/>
+                                <AvatarFallback>{review.authorName.substring(0,1)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="font-semibold text-foreground">{review.authorName}</p>
+                                <p className="text-xs text-muted-foreground">{new Date(review.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            </div>
+                            </div>
+                            <RatingStarsDisplay rating={review.rating} />
+                        </div>
+                        </CardHeader>
+                        <CardContent>
+                        <p className="text-sm text-foreground/80 leading-relaxed">{review.comment}</p>
+                        </CardContent>
+                    </Card>
+                    ))}
+                    <div className="text-center">
+                    <Button variant="link" style={{color: effectiveAccentColor}} className="hover:underline">
+                        عرض كل التقييمات ({item.reviewCount || mockItemReviews.length})
+                    </Button>
+                    </div>
+                </div>
+                </StoreSection>
+            </motion.div>
+        )}
+
+
         <motion.div variants={itemVariants}>
             <StoreSection id="related-items" title="قد يعجبك أيضاً من نفس المتجر" icon={Sparkles} accentColor={effectiveAccentColor} className="mt-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -523,3 +601,4 @@ export default function ProductDetailPage() {
     </motion.div>
   );
 }
+

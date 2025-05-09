@@ -1,3 +1,4 @@
+
 // src/app/products/page.tsx
 'use client';
 
@@ -7,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Eye, Filter, Search, ShoppingBag, CalendarClock, Handshake, PackageSearch } from 'lucide-react';
+import { Eye, Filter, Search, ShoppingBag, CalendarClock, Handshake, PackageSearch, DollarSign } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { getAllPlatformItems, type Product as StoreProduct, type Service as StoreService, type ItemType as PublicItemType } from '@/lib/data/mock-store-data';
 import Link from 'next/link';
@@ -15,12 +16,19 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { UNIQUE_PRODUCT_CATEGORIES, PRODUCT_TYPES_CONSTANTS, type ProductTypeConstant } from '@/lib/constants/categories';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
 
 
-type DisplayItem = (StoreProduct | StoreService) & { itemType: 'product' | 'service' };
+type DisplayItem = (StoreProduct | StoreService) & { 
+  itemType: 'product' | 'service'; 
+  sellerName: string; 
+  storeSlug: string;
+  effectivePrice: number; // Added for price filtering
+};
 
 const categoriesForFilter = ['الكل', ...UNIQUE_PRODUCT_CATEGORIES];
-
+const MAX_PRICE = 20000; // Example max price for slider
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -30,21 +38,35 @@ export default function ProductsPage() {
   const { toast } = useToast();
 
   const [isClient, setIsClient] = useState(false);
+  const [allItems, setAllItems] = useState<DisplayItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<DisplayItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'الكل');
   const [selectedType, setSelectedType] = useState<typeof PRODUCT_TYPES_CONSTANTS[number]>(initialType || 'الكل');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, MAX_PRICE]);
   const [selectedItem, setSelectedItem] = useState<DisplayItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    // Fetch initial items when client-side
-    setFilteredItems(getAllPlatformItems());
+    const platformItems = getAllPlatformItems().map(item => {
+      let effectivePrice = 0;
+      if (item.itemType === 'product') {
+        const product = item as StoreProduct;
+        effectivePrice = product.rawPrice || 0;
+        if (product.discountPercentage && parseInt(product.discountPercentage) > 0 && product.rawPrice) {
+          effectivePrice = product.rawPrice * (1 - parseInt(product.discountPercentage) / 100);
+        }
+      } else if (item.itemType === 'service') {
+        effectivePrice = (item as StoreService).rawPrice || 0;
+      }
+      return { ...item, effectivePrice };
+    });
+    setAllItems(platformItems);
   }, []);
 
   useEffect(() => {
-    let items = getAllPlatformItems();
+    let items = [...allItems];
     if (selectedCategory !== 'الكل') {
       items = items.filter(p => p.category === selectedCategory);
     }
@@ -58,8 +80,11 @@ export default function ProductsPage() {
         (p.itemType === 'product' ? (p as StoreProduct).sellerId.toLowerCase().includes(searchTerm.toLowerCase()) : (p as StoreService).sellerId.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
+    // Price range filter
+    items = items.filter(p => p.effectivePrice >= priceRange[0] && p.effectivePrice <= priceRange[1]);
+
     setFilteredItems(items);
-  }, [selectedCategory, selectedType, searchTerm]);
+  }, [selectedCategory, selectedType, searchTerm, priceRange, allItems]);
 
   useEffect(() => {
     if (initialCategory) {
@@ -108,22 +133,18 @@ export default function ProductsPage() {
      setIsModalOpen(false);
   };
 
-
   if (!isClient) {
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-            استكشفي المنتجات والخدمات
-          </h1>
-          <p className="mt-4 text-lg text-foreground/80">
-            جاري تحميل إبداعات وخدمات مذهلة...
-          </p>
+          <Skeleton className="h-12 w-1/2 mx-auto mb-4" />
+          <Skeleton className="h-6 w-3/4 mx-auto" />
         </div>
-        <div className="mb-8 flex flex-col md:flex-row gap-4 items-center p-4 bg-card rounded-lg shadow">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center p-4 bg-card rounded-lg shadow">
             <Skeleton className="h-10 flex-grow" />
-            <Skeleton className="h-10 w-48" />
-            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
         </div>
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {Array.from({ length: 8 }).map((_, index) => (
@@ -157,21 +178,23 @@ export default function ProductsPage() {
         </p>
       </header>
 
-      <div className="mb-8 flex flex-col md:flex-row gap-4 items-center p-4 bg-card rounded-lg shadow">
-        <div className="relative flex-grow w-full md:w-auto">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end p-4 bg-card rounded-lg shadow">
+        <div className="relative flex-grow w-full md:col-span-2 lg:col-span-1">
+          <Label htmlFor="search-term">بحث</Label>
+          <Search className="absolute left-3 top-1/2 mt-2.5 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
+            id="search-term"
             type="text"
-            placeholder="ابحثي عن منتجات، خدمات، بائعات..."
+            placeholder="منتجات، خدمات، بائعات..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 w-full"
+            className="pl-10 w-full mt-1"
           />
         </div>
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <Filter className="h-5 w-5 text-muted-foreground" />
+        <div className="w-full">
+          <Label htmlFor="category-filter">الفئة</Label>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectTrigger id="category-filter" className="w-full mt-1">
               <SelectValue placeholder="تصفية حسب الفئة" />
             </SelectTrigger>
             <SelectContent>
@@ -181,10 +204,10 @@ export default function ProductsPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <Filter className="h-5 w-5 text-muted-foreground" />
+        <div className="w-full">
+          <Label htmlFor="type-filter">النوع</Label>
           <Select value={selectedType} onValueChange={(value) => setSelectedType(value as typeof PRODUCT_TYPES_CONSTANTS[number])}>
-            <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectTrigger id="type-filter" className="w-full mt-1">
               <SelectValue placeholder="تصفية حسب النوع" />
             </SelectTrigger>
             <SelectContent>
@@ -193,6 +216,22 @@ export default function ProductsPage() {
               ))}
             </SelectContent>
           </Select>
+        </div>
+        <div className="w-full md:col-span-2 lg:col-span-1">
+          <Label htmlFor="price-range-filter" className="flex justify-between items-center mb-1">
+            <span>نطاق السعر (دج)</span>
+            <span className="text-xs text-primary font-medium">{priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()}</span>
+          </Label>
+          <Slider
+            id="price-range-filter"
+            min={0}
+            max={MAX_PRICE}
+            step={100}
+            value={priceRange}
+            onValueChange={(value) => setPriceRange(value as [number, number])}
+            className="mt-2"
+            aria-label="نطاق السعر"
+          />
         </div>
       </div>
 
@@ -208,14 +247,14 @@ export default function ProductsPage() {
                         alt={item.name}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover rounded-t-lg"
+                        className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
                         data-ai-hint={item.dataAiHint || 'product image'}
                     />
                     </div>
                 </Link>
               </CardHeader>
               <CardContent className="p-4 flex flex-col flex-grow">
-                <CardTitle className="text-lg font-semibold text-primary mb-1 line-clamp-2">{item.name}</CardTitle>
+                <CardTitle className="text-lg font-semibold text-primary hover:text-accent-pink transition-colors mb-1 line-clamp-2 cursor-pointer" onClick={() => router.push(`/products/${item.id}`)}>{item.name}</CardTitle>
                 <CardDescription className="text-xs text-muted-foreground mb-1">
                   مقدم من <Link href={`/store/${item.storeSlug}`} className="text-accent-purple hover:underline">{item.sellerName}</Link> • {item.category}
                 </CardDescription>
@@ -226,10 +265,10 @@ export default function ProductsPage() {
               <CardFooter className="p-4 border-t">
                 <Button
                   variant="outline"
-                  className="w-full hover:bg-accent-yellow/20 hover:border-accent-yellow"
+                  className="w-full hover:bg-accent-yellow/20 hover:border-accent-yellow text-primary border-primary group"
                   onClick={() => router.push(`/products/${item.id}`)}
                 >
-                  <Eye size={18} className="mr-2" /> عرض التفاصيل
+                  <Eye size={18} className="ml-2 group-hover:text-accent-yellow transition-colors" /> عرض التفاصيل
                 </Button>
               </CardFooter>
             </Card>
@@ -281,3 +320,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+
