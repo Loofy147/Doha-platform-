@@ -38,6 +38,7 @@ import { Badge } from '@/components/ui/badge';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion'; // Import framer-motion
 
 const salesDataMonthly = [
   { month: "يناير", sales: Math.floor(Math.random() * 30000) + 5000, earnings: Math.floor(Math.random() * 20000) + 3000 },
@@ -54,7 +55,7 @@ const mockSellerProfile = {
   dataAiHint: "woman smiling store owner",
   sellerSince: "مارس 2023",
   profileCompletion: 85, // percentage
-  storeSlug: "lamsa-ibdaa" // Updated to a valid slug from mock-store-data
+  storeSlug: "lamsa-ibdaa"
 };
 
 const recentActivities = [
@@ -63,6 +64,38 @@ const recentActivities = [
   { id: 3, icon: <Star className="text-yellow-500" />, description: "تقييم جديد (5 نجوم) على منتج 'فستان سهرة للإيجار'", time: "منذ 3 ساعات", href: "/dashboard/reviews" },
   { id: 4, icon: <Package className="text-purple-500" />, description: "تم تحديث كمية منتج 'أقراط فضية يدوية الصنع'", time: "منذ 5 ساعات", href: "/dashboard/products" },
 ];
+
+// Animation Variants
+const pageEntryVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1, 
+    transition: { 
+      staggerChildren: 0.15, // Stagger children of this container
+      duration: 0.5,
+      ease: "easeOut"
+    } 
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { 
+      duration: 0.4, 
+      ease: "easeOut" 
+    } 
+  }
+};
+
 
 export default function SellerDashboardPage() {
   const [isClient, setIsClient] = useState(false);
@@ -107,89 +140,124 @@ export default function SellerDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 bg-background">
-      <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-        <div>
+    <motion.div 
+      className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 bg-background"
+      variants={pageEntryVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.header 
+        className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center"
+        variants={sectionVariants} // Use sectionVariants for header to stagger its children
+      >
+        <motion.div variants={itemVariants}>
           <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             لوحة تحكم متجركِ الإبداعي
           </h1>
           <p className="mt-1 text-lg text-foreground/80">
             أهلاً بكِ مجددًا، {sellerName}! هنا تديرين كل ما يخص متجركِ على لمسة ضحى.
           </p>
-        </div>
+        </motion.div>
+        <motion.div variants={itemVariants}>
          <Button asChild className="mt-4 sm:mt-0 bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground shadow-md">
             <Link href="/dashboard/products/new" className="flex items-center gap-2">
                 <PlusCircle size={20} /> أضيفي لمسة إبداعية جديدة
             </Link>
         </Button>
-      </header>
+        </motion.div>
+      </motion.header>
 
-      {/* Seller Profile Snippet */}
-      <Card className="mb-8 shadow-lg border-l-4 border-accent-pink bg-card">
-        <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-6">
-          <Avatar className="h-20 w-20 border-2 border-primary">
-            <AvatarImage src={mockSellerProfile.avatarSrc} alt={sellerName} data-ai-hint={mockSellerProfile.dataAiHint} />
-            <AvatarFallback>{sellerName.substring(0, 1)}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 text-center sm:text-right">
-            <h2 className="text-xl font-semibold text-primary">{mockSellerProfile.storeName}</h2>
-            <p className="text-sm text-muted-foreground">مبدعة في لمسة ضحى منذ: {mockSellerProfile.sellerSince}</p>
-            <div className="mt-2">
-              <div className="flex justify-between items-center mb-1">
-                 <span className="text-xs font-medium text-muted-foreground">إكتمال ملف المتجر</span>
-                 <span className="text-xs font-semibold text-accent-pink">{mockSellerProfile.profileCompletion}%</span>
+      <motion.div 
+        variants={itemVariants} // Animate profile card as a single item
+      >
+        <Card className="mb-8 shadow-lg border-l-4 border-accent-pink bg-card">
+          <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-6">
+            <Avatar className="h-20 w-20 border-2 border-primary">
+              <AvatarImage src={mockSellerProfile.avatarSrc} alt={sellerName} data-ai-hint={mockSellerProfile.dataAiHint} />
+              <AvatarFallback>{sellerName.substring(0, 1)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 text-center sm:text-right">
+              <h2 className="text-xl font-semibold text-primary">{mockSellerProfile.storeName}</h2>
+              <p className="text-sm text-muted-foreground">مبدعة في لمسة ضحى منذ: {mockSellerProfile.sellerSince}</p>
+              <div className="mt-2">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-medium text-muted-foreground">إكتمال ملف المتجر</span>
+                  <span className="text-xs font-semibold text-accent-pink">{mockSellerProfile.profileCompletion}%</span>
+                </div>
+                <Progress value={mockSellerProfile.profileCompletion} aria-label="إكتمال ملف المتجر" className="h-2" />
               </div>
-              <Progress value={mockSellerProfile.profileCompletion} aria-label="إكتمال ملف المتجر" className="h-2" />
             </div>
-          </div>
-          <Button variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10">
-            <Link href={`/store/${mockSellerProfile.storeSlug}`} target="_blank" rel="noopener noreferrer">
-                <Eye size={18} className="ml-2"/> عرض المتجر العام 
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+            <Button variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10">
+              <Link href={`/store/${mockSellerProfile.storeSlug}`} target="_blank" rel="noopener noreferrer">
+                  <Eye size={18} className="ml-2"/> عرض المتجر العام 
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-
-      {/* Stats Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <motion.section 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
         {dashboardStats.map((stat) => (
-          <Card key={stat.title} className={`shadow-md hover:shadow-lg transition-shadow border-l-4 ${stat.borderColor} ${stat.bgColor}`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
-              {stat.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.trend}</p>
-            </CardContent>
-          </Card>
+          <motion.div key={stat.title} variants={itemVariants}>
+            <Card className={`shadow-md hover:shadow-lg transition-shadow border-l-4 ${stat.borderColor} ${stat.bgColor}`}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
+                {stat.icon}
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.trend}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
-      </section>
+      </motion.section>
 
-      {/* Quick Actions Grid */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center"><Sparkles size={24} className="text-accent-yellow ml-2" /> إجراءات سريعة لمتجركِ</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <motion.section 
+        className="mb-8"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <motion.h2 variants={itemVariants} className="text-2xl font-semibold text-primary mb-4 flex items-center"><Sparkles size={24} className="text-accent-yellow ml-2" /> إجراءات سريعة لمتجركِ</motion.h2>
+        <motion.div 
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+          variants={sectionVariants} // Stagger the action cards
+        >
           {quickActions.map((action) => {
             const ActionIcon = action.icon;
             return (
-              <Link key={action.label} href={action.href} passHref>
-                <Card className="h-full hover:shadow-xl hover:border-primary/50 transition-all transform hover:-translate-y-1 cursor-pointer border-dashed border-primary/30">
-                  <CardContent className="p-4 flex flex-col items-center justify-center text-center aspect-square">
-                    <ActionIcon size={22} className={`mb-2 ${action.color}`} />
-                    <p className="text-xs sm:text-sm font-medium text-foreground">{action.label}</p>
-                  </CardContent>
-                </Card>
-              </Link>
+              <motion.div key={action.label} variants={itemVariants}>
+                <Link href={action.href} passHref>
+                  <Card className="h-full hover:shadow-xl hover:border-primary/50 transition-all transform hover:-translate-y-1 cursor-pointer border-dashed border-primary/30">
+                    <CardContent className="p-4 flex flex-col items-center justify-center text-center aspect-square">
+                      <ActionIcon size={22} className={`mb-2 ${action.color}`} />
+                      <p className="text-xs sm:text-sm font-medium text-foreground">{action.label}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
             );
           })}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
-      {/* Sales Chart & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <Card className="lg:col-span-2 shadow-lg">
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <motion.div className="lg:col-span-2" variants={itemVariants}>
+          <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-primary flex items-center"><BarChartHorizontalBig className="ml-2 text-accent-purple" /> نظرة على أداء المبيعات</CardTitle>
                 <CardDescription>مبيعاتك وأرباحك خلال الأشهر الستة الماضية.</CardDescription>
@@ -198,11 +266,11 @@ export default function SellerDashboardPage() {
                 <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={salesDataMonthly}>
                         <defs>
-                            <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="colorSalesDash" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.7}/>
                                 <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
                             </linearGradient>
-                            <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="colorEarningsDash" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="hsl(var(--accent-yellow))" stopOpacity={0.6}/>
                                 <stop offset="95%" stopColor="hsl(var(--accent-yellow))" stopOpacity={0.1}/>
                             </linearGradient>
@@ -215,21 +283,30 @@ export default function SellerDashboardPage() {
                             cursor={{fill: "hsla(var(--primary)/0.05)"}}
                         />
                         <Legend verticalAlign="top" height={36} />
-                        <Area type="monotone" dataKey="sales" name="المبيعات" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" />
-                        <Area type="monotone" dataKey="earnings" name="الأرباح" stroke="hsl(var(--accent-yellow))" fillOpacity={1} fill="url(#colorEarnings)" />
+                        <Area type="monotone" dataKey="sales" name="المبيعات" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSalesDash)" />
+                        <Area type="monotone" dataKey="earnings" name="الأرباح" stroke="hsl(var(--accent-yellow))" fillOpacity={1} fill="url(#colorEarningsDash)" />
                     </AreaChart>
                 </ResponsiveContainer>
             </CardContent>
-        </Card>
+          </Card>
+        </motion.div>
 
-        <Card className="shadow-lg">
+        <motion.div variants={itemVariants}>
+          <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-primary flex items-center"><Activity className="ml-2 text-accent-pink"/> أحدث النشاطات في متجركِ</CardTitle>
             </CardHeader>
             <CardContent className="h-[300px] overflow-y-auto p-0">
-              <ul className="divide-y divide-border">
-                {recentActivities.map((activity) => (
-                  <li key={activity.id} className="p-3 hover:bg-muted/30 transition-colors">
+              <motion.ul 
+                className="divide-y divide-border"
+                variants={sectionVariants} // Stagger list items
+              >
+                {recentActivities.map((activity, index) => (
+                  <motion.li 
+                    key={activity.id} 
+                    className="p-3 hover:bg-muted/30 transition-colors"
+                    variants={itemVariants} // Animate each list item
+                  >
                     <Link href={activity.href} className="flex items-start gap-3">
                       <span className="mt-1">{activity.icon}</span>
                       <div className="flex-1">
@@ -237,27 +314,35 @@ export default function SellerDashboardPage() {
                         <p className="text-xs text-muted-foreground">{activity.time}</p>
                       </div>
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
+              </motion.ul>
             </CardContent>
              <CardFooter className="border-t pt-3">
                 <Button variant="ghost" size="sm" className="w-full text-accent-purple">عرض كل النشاطات</Button>
             </CardFooter>
-        </Card>
-      </div>
+          </Card>
+        </motion.div>
+      </motion.div>
       
-      <div className="mt-12 p-8 bg-gradient-to-tr from-primary/10 via-accent-pink/5 to-accent-yellow/10 rounded-lg text-center shadow-inner">
-            <h3 className="text-2xl font-semibold text-primary mb-3">تحتاجين إلى إلهام أو مساعدة؟</h3>
-            <p className="text-foreground/70 mb-6 max-w-md mx-auto">
-                استكشفي موارد لمسة ضحى للمبدعات، انضمي إلى نقاشات مجتمعنا الملهم، أو تصفحي قسم الأسئلة الشائعة. نحن هنا لدعم رحلتكِ نحو النجاح!
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary/5">أدلة المبدعات</Button>
-                <Button variant="outline" className="border-accent-purple text-accent-purple hover:bg-accent-purple/5">منتدى المجتمع</Button>
-                <Button variant="outline" className="border-accent-yellow text-accent-yellow hover:bg-accent-yellow/5">الأسئلة الشائعة</Button>
-            </div>
-        </div>
-    </div>
+      <motion.div 
+        className="mt-12 p-8 bg-gradient-to-tr from-primary/10 via-accent-pink/5 to-accent-yellow/10 rounded-lg text-center shadow-inner"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <motion.h3 variants={itemVariants} className="text-2xl font-semibold text-primary mb-3">تحتاجين إلى إلهام أو مساعدة؟</motion.h3>
+        <motion.p variants={itemVariants} className="text-foreground/70 mb-6 max-w-md mx-auto">
+            استكشفي موارد لمسة ضحى للمبدعات، انضمي إلى نقاشات مجتمعنا الملهم، أو تصفحي قسم الأسئلة الشائعة. نحن هنا لدعم رحلتكِ نحو النجاح!
+        </motion.p>
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-center gap-3">
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary/5">أدلة المبدعات</Button>
+            <Button variant="outline" className="border-accent-purple text-accent-purple hover:bg-accent-purple/5">منتدى المجتمع</Button>
+            <Button variant="outline" className="border-accent-yellow text-accent-yellow hover:bg-accent-yellow/5">الأسئلة الشائعة</Button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
+
