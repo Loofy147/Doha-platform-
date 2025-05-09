@@ -7,10 +7,9 @@ import {
   Sparkles,
   Shirt,
   HomeIcon,
-  // CalendarDays, // Not used directly in HomePage, but in categories array. Corrected usage there.
   PenLine,
-  ShoppingBag as ShoppingBagIcon, // Aliased to avoid potential naming conflicts
-  Store as StoreIcon, // Aliased
+  ShoppingBag as ShoppingBagIcon, 
+  Store as StoreIcon, 
   Flame, 
   Award, 
   Users as UsersIcon, 
@@ -20,15 +19,18 @@ import {
   ChevronLeft, 
   Eye, 
   PackageSearch,
+  CalendarDays,
+  Download,
+  LayoutDashboard,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  // CardDescription, // Not directly used by HomePage, but by its children
-  // CardFooter, // Not directly used by HomePage
-  // CardHeader, // Not directly used by HomePage
-  // CardTitle, // Not directly used by HomePage
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { HeroSection } from '@/components/sections/hero-section';
@@ -39,10 +41,9 @@ import { WeeklyDealsSection } from '@/components/sections/weekly-deals-section';
 import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
-import ClientContactSection from '@/components/sections/client-contact-section';
-// import { WomenCommerceLogo } from '@/components/icons/logo'; // Not directly used by HomePage
+import { ContactSection } from '@/components/sections/contact-section'; // Direct import
 import { motion } from 'framer-motion';
-import { CalendarDays } from 'lucide-react'; // Ensure CalendarDays is imported
+import { cn } from '@/lib/utils';
 
 const pageEntryVariants = {
   hidden: { opacity: 0 },
@@ -70,9 +71,9 @@ const simpleFadeInUp = {
 };
 
 const categories = [
-  { name: 'أزياء وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/5 hover:bg-accent-pink/10' },
-  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/5 hover:bg-accent-yellow/10' },
-  { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/5 hover:bg-accent-purple/10' },
+  { name: 'أزياء وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
+  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
+  { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
   { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/5 hover:bg-green-500/10' },
   { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/5 hover:bg-blue-500/10' },
 ];
@@ -145,7 +146,7 @@ export default function HomePage() {
                             className="h-full" 
                         >
                             <Link href={category.href} className="group block h-full">
-                                <Card className={`text-center p-6 ${category.bgColor} rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105`}>
+                                <Card className={cn("text-center p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105", category.bgColor)}>
                                     <CardContent className="p-0 flex flex-col items-center justify-center">
                                         <div className={`mb-4 group-hover:scale-110 transition-transform duration-300 ${category.color}`}>
                                             <IconComponent size={28} className="mx-auto h-10 w-10" />
@@ -220,7 +221,7 @@ export default function HomePage() {
         <TestimonialsSection />
         </motion.div>
 
-        <ClientContactSection />
+        <ContactSection />
 
         <div className="py-12 bg-muted/30 text-center">
             <motion.div
@@ -235,7 +236,7 @@ export default function HomePage() {
                 </p>
                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                    <Link href="/admin">
-                       <StoreIcon className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
+                       <LayoutDashboard className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
                    </Link>
                 </Button>
             </motion.div>

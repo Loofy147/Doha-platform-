@@ -1,0 +1,13 @@
+# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+#
+# Allow all crawlers access to all content
+User-agent: *
+Allow: /
+
+# Disallow access to admin and auth paths for all crawlers
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /auth/
+
+# Sitemap location (uncomment and update if you have a sitemap)
+# Sitemap: https://www.lamsadoha.com/sitemap.xml
