@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Palette, LayoutTemplate, Save, Eye, Upload, Briefcase, Scissors, CookingPot, Shirt, Camera, BookOpen, CalendarCheck, Font, LayoutGrid as LayoutGridIcon, Sparkles } from 'lucide-react';
+import { Palette, LayoutTemplate, Save, Eye, Upload, Briefcase, Scissors, CookingPot, Shirt, Camera, BookOpen, CalendarCheck, Type as FontIcon, LayoutGrid as LayoutGridIcon, Sparkles } from 'lucide-react'; // Changed Font to Type as FontIcon
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -263,7 +263,7 @@ export default function StoreTemplateSettingsPage() {
             </div>
             <Separator className="md:col-span-2 my-2" />
             <div>
-                <Label htmlFor="selectedPrimaryFont" className="flex items-center gap-1"><Font size={16}/> الخط الأساسي (للعناوين)</Label>
+                <Label htmlFor="selectedPrimaryFont" className="flex items-center gap-1"><FontIcon size={16}/> الخط الأساسي (للعناوين)</Label>
                 <Select value={selectedPrimaryFont} onValueChange={setSelectedPrimaryFont}>
                     <SelectTrigger id="selectedPrimaryFont" className="mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -272,7 +272,7 @@ export default function StoreTemplateSettingsPage() {
                 </Select>
             </div>
              <div>
-                <Label htmlFor="selectedSecondaryFont" className="flex items-center gap-1"><Font size={16}/> الخط الثانوي (للنصوص)</Label>
+                <Label htmlFor="selectedSecondaryFont" className="flex items-center gap-1"><FontIcon size={16}/> الخط الثانوي (للنصوص)</Label>
                 <Select value={selectedSecondaryFont} onValueChange={setSelectedSecondaryFont}>
                     <SelectTrigger id="selectedSecondaryFont" className="mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
