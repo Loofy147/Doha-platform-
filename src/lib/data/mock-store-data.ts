@@ -876,8 +876,12 @@ export const mockStoreDetails: StoreData[] = [
   }
 ];
 
-// Type alias for public item
-export type ItemType = Product | Service;
+// Type alias for public item, adding sellerName and storeSlug
+export type DisplayItem = (Product | Service) & { 
+  itemType: 'product' | 'service'; 
+  sellerName: string; 
+  storeSlug: string;
+};
 
 
 export const getStoreDataById = (storeId: string): StoreData | undefined => {
@@ -900,6 +904,17 @@ export const getServiceById = (serviceId: string): Service | undefined => {
         }
     }
     return undefined;
+};
+
+export const getAllPlatformItems = (): DisplayItem[] => {
+    const items: DisplayItem[] = [];
+    mockStoreDetails.forEach(store => {
+        store.products.forEach(p => items.push({ ...p, itemType: 'product' as const, sellerName: store.name, storeSlug: store.id }));
+        if (store.services) {
+            store.services.forEach(s => items.push({ ...s, itemType: 'service' as const, sellerName: store.name, storeSlug: store.id }));
+        }
+    });
+    return items;
 };
 
 export const getAllPlatformProducts = (): Product[] => {
@@ -937,25 +952,55 @@ export const getServicesByStoreId = (storeId: string): Service[] => {
 
 export type SellerProductStatus = 'نشط' | 'غير نشط' | 'بانتظار الموافقة' | 'نفذ المخزون';
 
+export interface DetailedSellerProduct {
+  id: string;
+  name: string;
+  productType: ProductType;
+  category: string;
+  detailsForAI: string; // For AI description generation
+  description: string; // Seller's full description
+  story?: string;
+  price: string; // Raw price string for seller input for 'بيع' type
+  stock?: string; // For 'بيع'
+  discountPercentage?: string; // For 'بيع'
+  isTaxable?: boolean; // For 'بيع'
+  rentalPrice?: string; // For 'إيجار'
+  rentalPeriod?: 'يوم' | 'أسبوع' | 'شهر' | 'مناسبة'; // For 'إيجار'
+  rentalDeposit?: string; // For 'إيجار'
+  rentalAvailability?: string; // For 'إيجار'
+  servicePriceType?: 'ثابت' | 'بالساعة' | 'بالمشروع' | 'حسب_الطلب'; // For 'خدمة'
+  servicePrice?: string; // Service price value for seller input for 'خدمة' type
+  serviceDuration?: string; // For 'خدمة'
+  serviceLocation?: string; // For 'خدمة'
+  imageSrc: string; // Primary image
+  images?: string[]; // Additional images
+  dataAiHint: string;
+  dateAdded: string; // ISO date string
+  status: SellerProductStatus;
+  sku?: string;
+  tags?: string[];
+  preparationTime?: string; // e.g., "يحتاج يومين للتجهيز"
+}
+
 
 const lamsaIbdaaStoreForDashboard = mockStoreDetails.find(store => store.id === 'lamsa-ibdaa');
 
 const lamsaIbdaaProductsForDashboard: DetailedSellerProduct[] = lamsaIbdaaStoreForDashboard ? lamsaIbdaaStoreForDashboard.products.map(p => ({
   id: p.id,
   name: p.name,
-  productType: p.type,
+  productType: p.type, // This should be 'بيع' or 'إيجار' from the Product interface
   category: p.category,
   detailsForAI: `${p.name}, ${p.category}, ${p.tags?.join(', ')}, ${p.description.substring(0, 50)}...`, 
   description: p.longDescription || p.description,
   story: lamsaIbdaaStoreForDashboard.story || '', 
   price: p.rawPrice?.toString() || '', 
-  stock: p.type === 'بيع' ? (Math.floor(Math.random() * 50) + 1).toString() : undefined, 
+  stock: p.type === 'بيع' ? (p.availability === 'نفذ المخزون' ? '0' : (Math.floor(Math.random() * 20) + 5).toString()) : undefined, // Simplified stock
   discountPercentage: p.discountPercentage,
   isTaxable: Math.random() < 0.2, 
   rentalPrice: p.type === 'إيجار' ? p.rawPrice?.toString() : undefined,
   rentalPeriod: p.rentalTerms?.period,
   rentalDeposit: p.rentalTerms?.deposit,
-  rentalAvailability: p.availability, 
+  rentalAvailability: p.availability === 'متوفر' || p.availability === 'الحجز المسبق مطلوب' ? p.availability : p.rentalTerms?.minDuration, 
   servicePriceType: undefined, 
   servicePrice: undefined,
   serviceDuration: undefined,
@@ -973,12 +1018,12 @@ const lamsaIbdaaProductsForDashboard: DetailedSellerProduct[] = lamsaIbdaaStoreF
 const lamsaIbdaaServicesForDashboard: DetailedSellerProduct[] = lamsaIbdaaStoreForDashboard && lamsaIbdaaStoreForDashboard.services ? lamsaIbdaaStoreForDashboard.services.map(s => ({
   id: s.id,
   name: s.name,
-  productType: s.type,
+  productType: s.type, // This is 'خدمة'
   category: s.category,
   detailsForAI: `${s.name}, ${s.category}, ${s.tags?.join(', ')}, ${s.description.substring(0, 50)}...`,
   description: s.longDescription || s.description,
   story: lamsaIbdaaStoreForDashboard.story || '',
-  price: '', 
+  price: '', // Not directly applicable as service has its own pricing structure
   stock: undefined,
   discountPercentage: undefined,
   isTaxable: undefined,
@@ -995,13 +1040,13 @@ const lamsaIbdaaServicesForDashboard: DetailedSellerProduct[] = lamsaIbdaaStoreF
   dataAiHint: s.dataAiHint || 'service image',
   dateAdded: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(), 
   status: Math.random() < 0.1 ? 'بانتظار الموافقة' : (Math.random() < 0.1 ? 'غير نشط' : 'نشط'),
-  sku: `SERV-${s.id.substring(0, 4).toUpperCase()}`,
+  sku: `SERV-${s.id.substring(0, 4).toUpperCase()}`, // Example SKU for service
   tags: s.tags,
-  preparationTime: s.availability,
+  preparationTime: s.availability, // Map service availability to preparationTime if needed
 })) : [];
 
-// @ts-ignore
-let allSellerProductsList: DetailedSellerProduct[] = [
+
+export let allSellerProductsList: DetailedSellerProduct[] = [
     ...lamsaIbdaaProductsForDashboard,
     ...lamsaIbdaaServicesForDashboard,
 ];
@@ -1049,31 +1094,36 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
     if (index !== -1) {
         allSellerProductsList[index] = updatedProduct;
         
-        const storeToUpdate = mockStoreDetails.find(s => s.id === (lamsaIbdaaStoreForDashboard?.id || 'lamsa-ibdaa'));
+        const storeToUpdate = mockStoreDetails.find(s => s.id === (lamsaIbdaaStoreForDashboard?.id || 'lamsa-ibdaa')); // Assuming default store or logic to find correct store
         if (storeToUpdate) {
             if (updatedProduct.productType === 'خدمة') {
                 const serviceIndex = storeToUpdate.services?.findIndex(s => s.id === updatedProduct.id);
                 if (serviceIndex !== undefined && serviceIndex !== -1 && storeToUpdate.services) {
                    storeToUpdate.services[serviceIndex] = {
-                       ...storeToUpdate.services[serviceIndex],
+                       ...storeToUpdate.services[serviceIndex], // Spread existing service data
                        name: updatedProduct.name,
-                       description: updatedProduct.description.substring(0, 150), 
-                       longDescription: updatedProduct.description,
-                       price: updatedProduct.servicePrice || 'عند الطلب', 
+                       description: updatedProduct.description.substring(0, 150), // For cards
+                       longDescription: updatedProduct.description, // For detail page
+                       price: updatedProduct.servicePrice || 'عند الطلب', // Formatted for display
+                       rawPrice: parseInt(updatedProduct.servicePrice?.replace(/\D/g,'') || '0'), // Extract number
                        priceType: updatedProduct.servicePriceType,
                        category: updatedProduct.category,
                        imageSrc: updatedProduct.imageSrc,
                        tags: updatedProduct.tags,
                        duration: updatedProduct.serviceDuration,
-                       location: updatedProduct.serviceLocation as any, 
-                       availability: updatedProduct.preparationTime, 
+                       location: updatedProduct.serviceLocation as any, // Cast if necessary or ensure type match
+                       availability: updatedProduct.preparationTime, // Map status/prep time back if needed
+                       // Ensure other necessary fields from Service interface are mapped
+                       sellerId: storeToUpdate.id,
+                       storeSlug: storeToUpdate.id,
+                       type: 'خدمة',
                    };
                 }
-            } else { 
+            } else { // 'بيع' or 'إيجار'
                 const productIndex = storeToUpdate.products.findIndex(p => p.id === updatedProduct.id);
                  if (productIndex !== -1) {
                      storeToUpdate.products[productIndex] = {
-                        ...storeToUpdate.products[productIndex],
+                        ...storeToUpdate.products[productIndex], // Spread existing product data
                         name: updatedProduct.name,
                         description: updatedProduct.description.substring(0, 150),
                         longDescription: updatedProduct.description,
@@ -1087,9 +1137,13 @@ export const updateSellerProduct = (updatedProduct: DetailedSellerProduct): bool
                         tags: updatedProduct.tags,
                         availability: updatedProduct.status === 'نفذ المخزون' ? 'نفذ المخزون' : (updatedProduct.status === 'نشط' ? 'متوفر' : 'قريباً'),
                         sku: updatedProduct.sku,
-                        rentalTerms: updatedProduct.productType === 'إيجار' ? { period: updatedProduct.rentalPeriod, deposit: updatedProduct.rentalDeposit, minDuration: 'غير محدد'} : undefined,
+                        rentalTerms: updatedProduct.productType === 'إيجار' ? { period: updatedProduct.rentalPeriod, deposit: updatedProduct.rentalDeposit, minDuration: 'غير محدد'} : undefined, // Simplified mapping
                         discountPercentage: updatedProduct.discountPercentage,
                         preparationTime: updatedProduct.preparationTime,
+                        // Ensure other necessary fields from Product interface are mapped
+                        sellerId: storeToUpdate.id,
+                        storeSlug: storeToUpdate.id,
+                        type: updatedProduct.productType,
                      };
                  }
             }
