@@ -1,7 +1,7 @@
 
 import type { Metadata, Viewport } from 'next/server';
 import React from 'react'; // Ensure React is imported for Suspense
-import Script from 'next/script';
+// import Script from 'next/script'; // Removed as Ionicons scripts are removed
 import { Poppins, Merriweather, Noto_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
@@ -45,11 +45,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'لمسة ضحى - إبداع يلامس حياتكِ',
     description: 'اكتشفي إبداعات نسائية فريدة وادعمي رائدات الأعمال.',
-    url: 'https://lamsadoha.vercel.app', 
+    url: 'https://lamsadoha.vercel.app', // Replace with your actual production URL
     siteName: 'لمسة ضحى',
     images: [
       {
-        url: 'https://lamsadoha.vercel.app/og-image.png', 
+        url: 'https://lamsadoha.vercel.app/og-image.png', // Replace with your actual OG image URL
         width: 1200,
         height: 630,
         alt: 'شعار منصة لمسة ضحى',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'لمسة ضحى - إبداع يلامس حياتكِ',
     description: 'اكتشفي إبداعات نسائية فريدة وادعمي رائدات الأعمال.',
-    images: ['https://lamsadoha.vercel.app/twitter-image.png'], 
+    images: ['https://lamsadoha.vercel.app/twitter-image.png'], // Replace with your actual Twitter image URL
   },
 };
 
@@ -73,7 +73,7 @@ export const viewport: Viewport = {
   ],
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 1, // Consider if maximum-scale=1 is truly necessary, it can affect accessibility.
 };
 
 export default function RootLayout({
@@ -84,44 +84,18 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${poppins.variable} ${merriweather.variable} ${notoSansArabic.variable}`}>
       <head>
-        {/* الخطوة 4: إضافة CSS لتغيير لون الأيقونات عند التحويم */}
-        {/* هذا النمط سيجعل أيقونات Ionicons يتغير لونها إلى #DB2777 عند مرور المؤشر فوقها */}
-        <style>
-          {`
-            ion-icon:hover {
-              color: #DB2777 !important; /* استخدم important للتأكيد على الأولوية إذا لزم الأمر */
-            }
-          `}
-        </style>
+        {/* Removed direct Ionicons style tag */}
       </head>
       <body className="font-arabic antialiased bg-background text-foreground">
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          {/* Using React.Suspense for potentially lazy-loaded components */}
           <React.Suspense fallback={<div className="flex-grow flex items-center justify-center"><p>جاري التحميل...</p></div>}>
             <main className="flex-grow">{children}</main>
           </React.Suspense>
           <Footer />
         </div>
         <Toaster />
-        
-        {/* الخطوة 3: إضافة أيقونات Ionicons داخل <body> */}
-        <div style={{ position: 'fixed', bottom: '10px', left: '10px', display: 'flex', gap: '10px', zIndex: 1000, background: 'rgba(255,255,255,0.8)', padding: '5px', borderRadius: '5px' }}>
-          <ion-icon name="shopping-cart-outline" style={{ fontSize: '24px', color: '#FF69B4' }}></ion-icon>
-          <ion-icon name="heart-sharp" style={{ fontSize: '24px', color: '#FF69B4' }}></ion-icon>
-        </div>
-
-        {/* الخطوة 2: إضافة سكربتات Ionicons CDN */}
-        <Script
-          type="module"
-          src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-          strategy="beforeInteractive" 
-        />
-        <Script
-          nomodule
-          src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-          strategy="beforeInteractive" 
-        />
+        {/* Removed direct Ionicons div and script tags */}
       </body>
     </html>
   );
