@@ -1,4 +1,6 @@
 // src/components/sections/contact-section.tsx
+'use client'; // Added 'use client' directive
+
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, MessageSquare, Info } from 'lucide-react';
@@ -8,6 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label'; 
 import { z } from 'zod';
 import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast'; // Import useToast
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'الاسم يجب أن يتكون من حرفين على الأقل.' }),
@@ -31,13 +36,17 @@ const imageVariants = {
 interface ContactSectionProps {}
 
 export function ContactSection({ }: ContactSectionProps) {
+    const { toast } = useToast();
+    const { register, handleSubmit: handleFormSubmit, reset, formState: { errors, isSubmitting } } = useForm<ContactFormValues>({
+        resolver: zodResolver(contactFormSchema),
+    });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Form submit called (placeholder)");
-        // In real usage, parent component would handle this with react-hook-form and toast.
-        // For now, directly using toast here for demonstration if it were a client component.
-        // toast({ title: "تم إرسال رسالتك بنجاح!", description: "سنتواصل معكِ قريبًا." });
+    const onSubmit: SubmitHandler<ContactFormValues> = async (data) => {
+        console.log("Contact Form Submitted:", data);
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        toast({ title: "تم إرسال رسالتك بنجاح!", description: "سنتواصل معكِ قريبًا." });
+        reset();
     };
 
   return (
@@ -70,7 +79,7 @@ export function ContactSection({ }: ContactSectionProps) {
               </CardHeader>
               <CardContent>
                  <form
-                    onSubmit={handleSubmit} 
+                    onSubmit={handleFormSubmit(onSubmit)} 
                     className="space-y-6"
                   >
                   <motion.div variants={itemVariants}>
@@ -78,46 +87,50 @@ export function ContactSection({ }: ContactSectionProps) {
                     <Input
                       type="text"
                       id="name"
-                      name="name" 
                       autoComplete="name"
                       className="mt-1" 
                       placeholder="اسمكِ الكريم"
+                      {...register('name')}
                     />
+                     {errors.name && <p className="text-destructive text-sm mt-1">{errors.name.message}</p>}
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <Label htmlFor="email">البريد الإلكتروني</Label>
                     <Input
                       type="email"
                       id="email"
-                      name="email"
                       autoComplete="email"
                       className="mt-1"
                       placeholder="your.email@example.com"
+                      {...register('email')}
                     />
+                    {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <Label htmlFor="subject">الموضوع</Label>
                     <Input
                       type="text"
                       id="subject"
-                      name="subject"
                       className="mt-1"
                       placeholder="عن ماذا تتمحور رسالتكِ؟"
+                      {...register('subject')}
                     />
+                    {errors.subject && <p className="text-destructive text-sm mt-1">{errors.subject.message}</p>}
                   </motion.div>
                   <motion.div variants={itemVariants}>
                     <Label htmlFor="message">الرسالة</Label>
                     <Textarea
                       id="message"
-                      name="message"
                       rows={4}
                       className="mt-1"
                       placeholder="اكتبي رسالتكِ هنا..."
+                      {...register('message')}
                     />
+                    {errors.message && <p className="text-destructive text-sm mt-1">{errors.message.message}</p>}
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground">
-                      إرسال الرسالة (قيد التطوير)
+                    <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
+                      {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'}
                     </Button>
                   </motion.div>
                 </form>

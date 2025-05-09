@@ -7,20 +7,21 @@ import {
   Sparkles,
   Shirt,
   HomeIcon,
-  CalendarDays,
+  CalendarDays, // Added CalendarDays
   PenLine,
   ShoppingBag as ShoppingBagIcon,
   Store as StoreIcon,
   LayoutDashboard,
-  Flame, // For Bestsellers
-  Award, // For TopRatedStores
-  Users as UsersIcon, // For AboutUsSection & Testimonials
-  Lightbulb, // For AboutUsSection
-  Briefcase, // For AboutUsSection
-  MessageSquare, // For ContactSection
-  ChevronLeft, // For buttons
-  Eye, // For buttons
-  PackageSearch, // For category section title
+  Flame, 
+  Award, 
+  Users as UsersIcon, 
+  Lightbulb, 
+  Briefcase, 
+  MessageSquare, 
+  ChevronLeft, 
+  Eye, 
+  PackageSearch, 
+  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,7 +44,6 @@ import { TestimonialsSection } from '@/components/sections/testimonials-section'
 import ClientContactSection from '@/components/sections/client-contact-section';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
-// Removed IconUsageExample as it's not a user-facing feature for the homepage
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -100,6 +100,7 @@ export default function HomePage() {
      <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
       <HeroSection />
 
+      {/* Categories Section */}
         <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
@@ -119,7 +120,7 @@ export default function HomePage() {
                 </motion.div>
                 <motion.div 
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
-                    variants={{ visible: { transition: { staggerChildren: 0.05 }}}} // Ensure parent staggers its children
+                    variants={{ visible: { transition: { staggerChildren: 0.05 }}}}
                 >
                     {categories.map((category, index) => {
                         const IconComponent = category.icon;
@@ -127,8 +128,8 @@ export default function HomePage() {
                         <motion.div
                             key={category.name}
                             variants={categoryCardVariants}
-                            custom={index} // Pass index for staggered delay
-                            className="h-full" // Ensure motion.div takes full height for card
+                            custom={index} 
+                            className="h-full" 
                         >
                             <Link href={category.href} className="group block h-full">
                                 <Card className={`text-center p-6 ${category.bgColor} rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col justify-center items-center border-2 border-transparent hover:border-primary group-hover:scale-105`}>
@@ -146,7 +147,8 @@ export default function HomePage() {
                 </motion.div>
             </div>
         </motion.section>
-
+      
+      {/* Seller CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -164,6 +166,7 @@ export default function HomePage() {
         />
       </motion.div>
 
+      {/* Shopper CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -182,6 +185,7 @@ export default function HomePage() {
         />
       </motion.div>
 
+        {/* Sections with Framer Motion */}
         <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
          <DailyDealsSection />
         </motion.div>
@@ -202,14 +206,11 @@ export default function HomePage() {
         <AboutUsSection />
         </motion.div>
 
-
         <motion.div variants={sectionVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
         <TestimonialsSection />
         </motion.div>
 
         <ClientContactSection />
-
-        {/* IconUsageExample section removed from here */}
 
         <div className="py-12 bg-muted/30 text-center">
             <motion.div
@@ -222,9 +223,9 @@ export default function HomePage() {
                 <p className="text-foreground/80 mb-6 max-w-md mx-auto">
                     وصول سريع إلى لوحة التحكم الإدارية لإدارة كافة جوانب منصة لمسة ضحى. (للمسؤولين فقط)
                 </p>
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                 <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                    <Link href="/admin">
-                       <LayoutDashboard className="mr-2 h-5 w-5" /> الذهاب للوحة التحكم الكاملة
+                       <LayoutDashboard className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
                    </Link>
                 </Button>
             </motion.div>
