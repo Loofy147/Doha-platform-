@@ -5,8 +5,9 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, type LucideProps, Rocket, ShoppingBag } from 'lucide-react';
+import { ChevronLeft, type LucideProps } from 'lucide-react';
 import { motion, type MotionProps } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface CallToActionBannerProps {
   title: string;
@@ -15,27 +16,62 @@ interface CallToActionBannerProps {
   buttonLink: string;
   imageSrc: string;
   dataAiHint: string;
-  icon?: React.ElementType<LucideProps>; // Accept icon component directly
+  icon?: React.ElementType<LucideProps>;
   reverseLayout?: boolean;
-  animationConfig?: MotionProps; // Allow custom animation config
+  animationConfig?: MotionProps;
+  themeStyle?: 'light' | 'elegant' | 'playful' | 'modern-minimal' | 'dark'; // Added for theme-awareness
+  accentColor?: string; // Added for theme-awareness
 }
 
-const defaultAnimation: MotionProps = {
+// Animation for the main section container
+const sectionAnimationConfig: MotionProps = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.2 },
-  viewport: { once: true, amount: 0.3 }
+  transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.25 }, // Staggers direct motion children (text block and image block)
+  viewport: { once: true, amount: 0.2 }
 };
 
-const textVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+// Animation for the text content block as a whole
+const textBlockContainerVariants: MotionProps = {
+  initial: "hidden", // Will be controlled by parent section's whileInView
+  animate: "visible", // Renamed from whileInView to animate for direct variant control
+  variants: {
+    hidden: { opacity: 0, x: -30 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+        staggerChildren: 0.1, // Stagger children within this text block
+        delayChildren: 0.2, // Delay children slightly after this block starts animating
+      },
+    },
+  },
 };
 
-const imageVariants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
+// Animation for individual elements (h2, p, button) within the text block
+const textChildVariants: MotionProps = {
+  variants: { // Ensure 'variants' key is present
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+  }
 };
+
+// Animation for the image block
+const imageBlockVariants: MotionProps = {
+   initial: "hidden", // Controlled by parent section
+   animate: "visible", // Renamed for direct variant control
+   variants: {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.5, ease: "easeOut", delay: 0.1 }, // Slight delay after text block starts
+    },
+  }
+};
+
 
 export function CallToActionBanner({
   title,
@@ -44,40 +80,50 @@ export function CallToActionBanner({
   buttonLink,
   imageSrc,
   dataAiHint,
-  icon: IconComponent, // Use the passed component directly
+  icon: IconComponent,
   reverseLayout = false,
-  animationConfig = defaultAnimation,
+  animationConfig = sectionAnimationConfig, // Use the refined section animation
+  themeStyle = 'light',
+  accentColor = 'hsl(var(--primary))'
 }: CallToActionBannerProps) {
+
+  const titleColor = themeStyle === 'dark' || themeStyle === 'elegant' ? 'hsl(var(--card-foreground))' : accentColor;
+  const buttonBgColor = reverseLayout ? (themeStyle === 'dark' || themeStyle === 'elegant' ? 'hsl(var(--primary))' : accentColor) : 'hsl(var(--accent-yellow))';
+  const buttonTextColor = reverseLayout ? 'hsl(var(--primary-foreground))' : 'hsl(var(--accent-yellow-foreground))';
+  const buttonHoverBgColor = reverseLayout ? (themeStyle === 'dark' || themeStyle === 'elegant' ? 'hsl(var(--primary))' : `${accentColor}E6`) : 'hsl(var(--accent-yellow) / 0.9)';
+
 
   return (
     <motion.section
-      className={`py-16 lg:py-20 ${reverseLayout ? 'bg-secondary/5' : 'bg-primary/5'}`}
-      {...animationConfig} // Apply the main animation to the section
+      className={`py-16 lg:py-20 overflow-hidden ${reverseLayout ? (themeStyle === 'dark' || themeStyle === 'elegant' ? 'bg-slate-800/30' : 'bg-secondary/5') : (themeStyle === 'dark' || themeStyle === 'elegant' ? 'bg-gray-800/30' : 'bg-primary/5')}`}
+      {...animationConfig}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`grid lg:grid-cols-2 gap-10 md:gap-16 items-center`}>
+          {/* Text Content Block */}
           <motion.div
             className={`text-center lg:text-right ${reverseLayout ? 'lg:order-2' : 'lg:order-1'}`}
-            variants={textVariants} // Apply staggered animation to text elements container
+            {...textBlockContainerVariants} // Apply parent animation for text block
           >
             {IconComponent && (
-                <motion.div variants={textVariants}>
-                    <IconComponent className={`mx-auto lg:mx-0 h-12 w-12 mb-4 ${reverseLayout ? 'text-primary' : 'text-accent-pink'}`} />
+                <motion.div {...textChildVariants}>
+                    <IconComponent className={`mx-auto lg:mx-0 h-12 w-12 mb-4`} style={{color: titleColor}} />
                 </motion.div>
              )}
-            <motion.h2 variants={textVariants} className={`text-3xl font-bold tracking-tight sm:text-4xl mb-5 ${reverseLayout ? 'text-primary' : 'text-accent-pink'}`}>
+            <motion.h2 {...textChildVariants} className={`text-3xl font-bold tracking-tight sm:text-4xl mb-5`} style={{color: titleColor}}>
               {title}
             </motion.h2>
-            <motion.p variants={textVariants} className="text-lg text-foreground/80 mb-8 leading-relaxed">
+            <motion.p {...textChildVariants} className={cn("text-lg mb-8 leading-relaxed", themeStyle === 'dark' || themeStyle === 'elegant' ? 'text-slate-300' : 'text-foreground/80')}>
               {description}
             </motion.p>
-            <motion.div variants={textVariants}>
+            <motion.div {...textChildVariants}>
                 <Button
                 size="lg"
                 asChild
-                className={`shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out px-8 py-3 text-base rounded-full group ${
-                    reverseLayout ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground'
-                }`}
+                style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = buttonHoverBgColor}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = buttonBgColor}
+                className={`shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out px-8 py-3 text-base rounded-full group`}
                 >
                 <Link href={buttonLink}>
                     {buttonText} <ChevronLeft className="mr-2 h-5 w-5 transition-transform duration-300 group-hover:-translate-x-1" />
@@ -85,15 +131,18 @@ export function CallToActionBanner({
                 </Button>
             </motion.div>
           </motion.div>
+
+          {/* Image Block */}
           <motion.div
             className={`relative aspect-video rounded-xl overflow-hidden shadow-2xl ${reverseLayout ? 'lg:order-1' : 'lg:order-2'} group transform hover:scale-[1.03] transition-transform duration-500 ease-out`}
-            variants={imageVariants} // Apply animation to the image container
+            {...imageBlockVariants} // Apply animation for image block
           >
             <Image
               src={imageSrc}
               alt={title}
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
               data-ai-hint={dataAiHint}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
