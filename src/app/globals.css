@@ -22,6 +22,8 @@
     --accent-purple-foreground: 270 30% 20%;
     --accent-yellow: 45 100% 70%; /* #FFD966 */
     --accent-yellow-foreground: 30 80% 20%;
+    --accent-teal: 160 50% 60%; /* #66CCAA - New accent color */
+    --accent-teal-foreground: 160 50% 20%; /* #193D33 - Foreground for teal */
 
     --card: 330 60% 98%; /* Even lighter pink for cards - #FDF5FA */
     --card-foreground: 330 40% 25%; /* Dark Purple-Pink */
@@ -77,6 +79,8 @@
     --accent-purple-foreground: 270 50% 90%; /* Light purple for text on purple accent */
     --accent-yellow: 45 90% 70%; /* #FFD15C */
     --accent-yellow-foreground: 30 80% 15%;
+    --accent-teal: 160 50% 50%; /* Darker Teal for dark mode */
+    --accent-teal-foreground: 160 40% 90%; /* Light Teal for text on dark teal */
     
     --card: 330 20% 12%; /* #2E1727 */
     --card-foreground: 330 60% 92%; /* #F5E0EC */

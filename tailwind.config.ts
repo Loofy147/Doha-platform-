@@ -53,6 +53,10 @@ export default {
           DEFAULT: 'hsl(var(--accent-yellow))', // Warm Yellow #FFD966
           foreground: 'hsl(var(--accent-yellow-foreground))'
         },
+        'accent-teal': { // New accent teal
+          DEFAULT: 'hsl(var(--accent-teal))',
+          foreground: 'hsl(var(--accent-teal-foreground))'
+        },
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
@@ -118,13 +122,12 @@ export default {
         '9/16': '9 / 16',
         '21/9': '21 / 9',
         '1/1': '1 / 1',
-        'video': '16 / 9', // Common aspect ratio for video
+        'video': '16 / 9', 
         'square': '1 / 1',
       },
   	}
   },
   plugins: [
     require("tailwindcss-animate"),
-    // require('@tailwindcss/aspect-ratio'), // This line was causing the error
   ],
 } satisfies Config;

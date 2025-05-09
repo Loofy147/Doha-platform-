@@ -25,6 +25,7 @@ import {
   Search, 
   Store,
   Edit3,
+  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -77,7 +78,7 @@ const categories = [
   { name: 'أزياء وإكسسوارات', icon: Wand2, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
   { name: 'حلويات ومأكولات شهية', icon: CakeSlice, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
   { name: 'لمسات منزلية وديكور', icon: Home, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
-  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-primary', bgColor: 'bg-primary/10 hover:bg-primary/15' },
+  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-accent-teal', bgColor: 'bg-accent-teal/10 hover:bg-accent-teal/15' },
   { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-secondary', bgColor: 'bg-secondary/10 hover:bg-secondary/15' },
 ];
 
@@ -117,7 +118,27 @@ export default function HomePage() {
         animate="visible"
       >
       <HeroSection />
+      
+      {/* Seller CTA */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <CallToActionBanner
+          title="انضمي إلى مبدعات لمسة ضحى!"
+          description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
+          buttonText="افتحي متجرك الآن"
+          buttonLink="/sell-with-us"
+          imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
+          dataAiHint="women entrepreneurs working"
+          icon={Rocket}
+          accentColor="hsl(var(--accent-pink))" // Example of passing accent color
+        />
+      </motion.div>
 
+      {/* Categories Section */}
       <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
@@ -165,23 +186,7 @@ export default function HomePage() {
             </div>
         </motion.section>
       
-        <motion.div
-            variants={sectionVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-        >
-            <CallToActionBanner
-            title="انضمي إلى مبدعات لمسة ضحى!"
-            description="هل لديكِ موهبة فريدة أو منتجات مميزة؟ حان الوقت لعرض إبداعاتكِ أمام العالم. افتحي متجركِ الخاص على منصتنا اليوم وابدئي رحلتكِ نحو النجاح والتمكين."
-            buttonText="افتحي متجرك الآن"
-            buttonLink="/sell-with-us"
-            imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
-            dataAiHint="women entrepreneurs working"
-            icon={Rocket}
-            />
-        </motion.div>
-
+        {/* Shopper CTA */}
         <motion.div
             variants={sectionVariants}
             initial="hidden"
@@ -197,6 +202,7 @@ export default function HomePage() {
             dataAiHint="happy woman shopping online"
             icon={ShoppingBasket}
             reverseLayout={true}
+            accentColor="hsl(var(--accent-yellow))" // Example for shopper CTA
             />
         </motion.div>
         
