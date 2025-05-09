@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { Award, MessageCircle, Users, Heart, Sun, Zap, UserCircle2, Settings2, ShoppingCart, ListOrdered, Lock, MapPin, CreditCard, Bell, Edit3, LogOut, ShieldCheck, Gift, LayoutDashboard } from 'lucide-react'; // Added LayoutDashboard
+import { Award, MessageCircle, Users, Heart, Sun, Zap, UserRound, Settings2, ListOrdered, Lock, MapPin, CreditCard, Bell, Edit3, LogOut, ShieldCheck, Gift, LayoutDashboard, Sparkles, UserCog, KeyRound } from 'lucide-react'; // Added UserRound, ListOrdered, Sparkles, UserCog, KeyRound
 import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton'; // Import Skeleton
+import { Skeleton } from '@/components/ui/skeleton'; 
 
 interface BadgeInfo {
   id: string;
@@ -36,7 +36,7 @@ const userProfileData = {
   avatarSrc: 'https://picsum.photos/128/128?random=userProfile',
   dataAiHint: 'woman smiling portrait',
   points: 1250,
-  isSeller: true, // Added flag to indicate if the user is also a seller
+  isSeller: true, 
 };
 
 const earnedBadges = mockBadges.filter(badge => badge.earned);
@@ -49,7 +49,6 @@ export default function ProfilePage() {
   }, []);
 
   if (!isClient) {
-    // Basic skeleton or loading state
     return (
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="animate-pulse">
@@ -80,7 +79,7 @@ export default function ProfilePage() {
     <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center">
-          <UserCircle2 size={36} className="ml-3 text-accent-pink" /> ملفي الشخصي
+          <UserRound size={36} className="ml-3 text-accent-pink" /> ملفي الشخصي
         </h1>
         <p className="mt-2 text-lg text-foreground/80">
           أهلاً بكِ في مساحتكِ الخاصة على منصة لمسة ضحى.
@@ -98,10 +97,9 @@ export default function ProfilePage() {
               <h2 className="text-2xl md:text-3xl font-semibold text-primary">{userProfileData.name}</h2>
               <p className="text-md text-muted-foreground">{userProfileData.email}</p>
               <p className="text-sm text-muted-foreground mt-1">تاريخ الانضمام: {userProfileData.joinDate}</p>
-              <div className="mt-3 text-lg font-semibold text-accent-yellow">
-                ✨ نقاط الولاء: {userProfileData.points.toLocaleString()} نقطة
+              <div className="mt-3 text-lg font-semibold text-accent-yellow flex items-center justify-center md:justify-start">
+                <Sparkles size={20} className="ml-2" /> نقاط الولاء: {userProfileData.points.toLocaleString()} نقطة
               </div>
-              {/* Seller Dashboard Link */}
               {userProfileData.isSeller && (
                 <Button variant="outline" size="sm" asChild className="mt-3 border-accent-purple text-accent-purple hover:bg-accent-purple/10">
                   <Link href="/dashboard">
@@ -183,11 +181,10 @@ export default function ProfilePage() {
         <TabsContent value="orders">
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl text-primary flex items-center"><ShoppingCart size={22} className="ml-2 text-accent-purple"/> سجل طلباتكِ</CardTitle>
+              <CardTitle className="text-xl text-primary flex items-center"><ListOrdered size={22} className="ml-2 text-accent-purple"/> سجل طلباتكِ</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">هنا ستجدين جميع طلباتكِ السابقة والحالية من منصة لمسة ضحى.</p>
-              {/* Placeholder for orders list */}
               <div className="h-40 flex items-center justify-center border-2 border-dashed border-muted-foreground/30 rounded-lg">
                 <p className="text-muted-foreground">لا توجد طلبات حاليًا (عرض تجريبي).</p>
               </div>
@@ -205,7 +202,6 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">احفظي المنتجات والخدمات التي تثير إعجابكِ للعودة إليها لاحقًا.</p>
-              {/* Placeholder for wishlist items */}
               <div className="h-40 flex items-center justify-center border-2 border-dashed border-muted-foreground/30 rounded-lg">
                 <p className="text-muted-foreground">قائمة أمنياتك فارغة (عرض تجريبي).</p>
               </div>
@@ -225,7 +221,7 @@ export default function ProfilePage() {
               <Link href="/profile/edit" className="block">
                 <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                   <div className="flex items-center gap-3">
-                    <UserCircle2 size={24} className="text-accent-pink" />
+                    <UserCog size={24} className="text-accent-pink" />
                     <div>
                       <h3 className="font-semibold text-foreground">معلومات الحساب</h3>
                       <p className="text-sm text-muted-foreground">تعديل اسمك، بريدك الإلكتروني، وصورتك الشخصية.</p>
@@ -236,7 +232,7 @@ export default function ProfilePage() {
               <Link href="/profile/security" className="block">
                 <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                   <div className="flex items-center gap-3">
-                    <ShieldCheck size={24} className="text-accent-purple" />
+                    <KeyRound size={24} className="text-accent-purple" />
                     <div>
                       <h3 className="font-semibold text-foreground">الأمان وكلمة المرور</h3>
                       <p className="text-sm text-muted-foreground">تغيير كلمة المرور وإدارة إعدادات الأمان.</p>

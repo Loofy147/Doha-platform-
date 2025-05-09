@@ -4,24 +4,26 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  Sparkles,
-  Shirt,
-  HomeIcon,
-  PenLine,
+  Sparkles, // Kept for title
+  Wand2, // New for Fashion
+  Home as HomeIcon, // Standard Home
+  PenLine, // To be replaced
   ShoppingBag as ShoppingBagIcon, 
-  Store as StoreIcon, 
+  Store as StoreIcon, // To be replaced by Rocket for Seller CTA
   Flame, 
   Award, 
   Users as UsersIcon, 
   Lightbulb, 
-  Briefcase, 
+  Briefcase, // New for Professional Services
   MessageSquare, 
   ChevronLeft, 
   Eye, 
-  PackageSearch,
-  CalendarDays,
-  Download,
-  LayoutDashboard,
+  PackageSearch, // New for Discover products in categories section title
+  CalendarClock, // New for Rental
+  CakeSlice, // New for Sweets
+  Rocket, // New for CTAs (Sell with us)
+  ShoppingBasket, // New for CTAs (Shop now)
+  LayoutDashboard, // For admin link
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,7 +43,7 @@ import { WeeklyDealsSection } from '@/components/sections/weekly-deals-section';
 import { BestsellersSection } from '@/components/sections/bestsellers-section';
 import { TopRatedStoresSection } from '@/components/sections/top-rated-stores-section';
 import { TestimonialsSection } from '@/components/sections/testimonials-section';
-import { ContactSection } from '@/components/sections/contact-section'; // Direct import
+import { ContactSection } from '@/components/sections/contact-section';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -71,11 +73,11 @@ const simpleFadeInUp = {
 };
 
 const categories = [
-  { name: 'أزياء وإكسسوارات', icon: Shirt, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
-  { name: 'حلويات ومأكولات شهية', icon: Sparkles, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
+  { name: 'أزياء وإكسسوارات', icon: Wand2, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
+  { name: 'حلويات ومأكولات شهية', icon: CakeSlice, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
   { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
-  { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/5 hover:bg-green-500/10' },
-  { name: 'خدمات احترافية', icon: PenLine, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/5 hover:bg-blue-500/10' },
+  { name: 'تأجير إبداعات', icon: CalendarClock, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-green-500', bgColor: 'bg-green-500/5 hover:bg-green-500/10' },
+  { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-blue-500', bgColor: 'bg-blue-500/5 hover:bg-blue-500/10' },
 ];
 
 export default function HomePage() {
@@ -162,6 +164,7 @@ export default function HomePage() {
             </div>
         </motion.section>
       
+      {/* Seller CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -175,10 +178,11 @@ export default function HomePage() {
           buttonLink="/sell-with-us"
           imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
           dataAiHint="women entrepreneurs working"
-          icon={StoreIcon}
+          icon={Rocket}
         />
       </motion.div>
 
+      {/* Shopper CTA */}
       <motion.div
         variants={sectionVariants}
         initial="hidden"
@@ -192,7 +196,7 @@ export default function HomePage() {
           buttonLink="/products"
           imageSrc="https://picsum.photos/seed/cta-shopper/1200/400"
           dataAiHint="happy woman shopping online"
-          icon={ShoppingBagIcon}
+          icon={ShoppingBasket}
           reverseLayout={true}
         />
       </motion.div>

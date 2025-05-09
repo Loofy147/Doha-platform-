@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Mail, Info, Users, Briefcase, MessageSquare, Send, FileText, Gift, ShoppingCart, BookOpen } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { Mail, Info, Users, Rocket, MessageSquare, Send, BookOpen, Gift, PackageSearch, ShoppingCart } from 'lucide-react'; // Changed Briefcase to Rocket, FileText to BookOpen, ShoppingCart to PackageSearch
+import { WomenCommerceLogo } from '@/components/icons/logo'; 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -23,17 +23,17 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-primary">اكتشفي</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/products" className="hover:text-primary transition-colors flex items-center gap-1"><ShoppingCart size={16} /> المنتجات والخدمات</Link></li>
+              <li><Link href="/products" className="hover:text-primary transition-colors flex items-center gap-1"><PackageSearch size={16} /> المنتجات والخدمات</Link></li>
               <li><Link href="/#categories" className="hover:text-primary transition-colors">تسوقي حسب الفئة</Link></li>
               <li><Link href="/#featured-sellers" className="hover:text-primary transition-colors">بائعات مميزات</Link></li>
-              <li><Link href="/blog" className="hover:text-primary transition-colors flex items-center gap-1"><FileText size={16} /> مدونتنا</Link></li>
+              <li><Link href="/blog" className="hover:text-primary transition-colors flex items-center gap-1"><BookOpen size={16} /> مدونتنا</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold mb-4 text-primary">انضمي إلينا</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/sell-with-us" className="hover:text-primary transition-colors flex items-center gap-1"><Briefcase size={16} /> بيعي على لمسة ضحى</Link></li>
+              <li><Link href="/sell-with-us" className="hover:text-primary transition-colors flex items-center gap-1"><Rocket size={16} /> بيعي على لمسة ضحى</Link></li>
               <li><Link href="/subscriptions" className="hover:text-primary transition-colors flex items-center gap-1"><Gift size={16}/> باقات الاشتراك</Link></li>
               <li><Link href="/#community" className="hover:text-primary transition-colors flex items-center gap-1"><Users size={16} /> انضمي لمجتمعنا</Link></li>
               <li><Link href="/#about" className="hover:text-primary transition-colors flex items-center gap-1"><Info size={16} /> عنا</Link></li>

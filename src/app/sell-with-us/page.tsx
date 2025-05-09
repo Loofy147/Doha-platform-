@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription }
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Phone, Store, Tag, FileText, Sparkles, Handshake } from 'lucide-react';
+import { User, Mail, Phone, Store, Tag, FileText, Rocket, Handshake } from 'lucide-react'; // Changed Sparkles to Rocket
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UNIQUE_PRODUCT_CATEGORIES } from '@/lib/constants/categories';
 
@@ -84,7 +84,7 @@ export default function SellWithUsPage() {
       <Card className="max-w-2xl mx-auto shadow-xl border border-primary/20">
         <CardHeader className="bg-gradient-to-br from-pink-100 via-purple-50 to-yellow-50 p-8 rounded-t-lg">
           <div className="flex justify-center mb-4">
-            <Sparkles size={48} className="text-accent-pink" />
+            <Rocket size={48} className="text-accent-pink" />
           </div>
           <CardTitle className="text-3xl font-bold text-primary text-center">
             انضمي إلى مبدعات لمسة ضحى!

@@ -2,17 +2,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link'; // Added missing import for Link
+import Link from 'next/link'; 
 import {
-  DollarSign, // Ensure DollarSign is imported
+  DollarSign, 
   Package,
   Users,
-  LineChart,
   Settings,
   PlusCircle,
   Bell,
   ShoppingBag,
-  Palette,
+  Palette, // Changed from LayoutTemplate
   FileText,
   Activity,
   BarChartHorizontalBig,
@@ -21,8 +20,7 @@ import {
   Store,
   Star,
   Eye,
-  LayoutTemplate,
-  LayoutDashboard // Ensure LayoutDashboard is imported if used
+  LayoutDashboard // Changed from Home
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,7 +37,7 @@ import { Badge } from '@/components/ui/badge';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { motion } from 'framer-motion'; // Import framer-motion
+import { motion } from 'framer-motion'; 
 
 const salesDataMonthly = [
   { month: "يناير", sales: Math.floor(Math.random() * 30000) + 5000, earnings: Math.floor(Math.random() * 20000) + 3000 },
@@ -55,7 +53,7 @@ const mockSellerProfile = {
   avatarSrc: "https://picsum.photos/id/1027/100/100",
   dataAiHint: "woman smiling store owner",
   sellerSince: "مارس 2023",
-  profileCompletion: 85, // percentage
+  profileCompletion: 85, 
   storeSlug: "lamsa-ibdaa"
 };
 
@@ -66,7 +64,6 @@ const recentActivities = [
   { id: 4, icon: <Package className="text-purple-500" />, description: "تم تحديث كمية منتج 'أقراط فضية يدوية الصنع'", time: "منذ 5 ساعات", href: "/dashboard/products" },
 ];
 
-// Animation Variants
 const pageEntryVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
@@ -77,7 +74,7 @@ const sectionVariants = {
   visible: { 
     opacity: 1, 
     transition: { 
-      staggerChildren: 0.15, // Stagger children of this container
+      staggerChildren: 0.15, 
       duration: 0.5,
       ease: "easeOut"
     } 
@@ -119,7 +116,7 @@ export default function SellerDashboardPage() {
     { label: "إضافة منتج/خدمة", icon: PlusCircle, href: "/dashboard/products/new", color: "text-accent-pink" },
     { label: "إدارة المنتجات", icon: Package, href: "/dashboard/products", color: "text-accent-purple" },
     { label: "عرض الطلبات", icon: ShoppingBag, href: "/dashboard/orders", color: "text-green-500" },
-    { label: "تصميم المتجر", icon: LayoutTemplate, href: "/dashboard/store-template", color: "text-orange-500" },
+    { label: "تصميم المتجر", icon: Palette, href: "/dashboard/store-template", color: "text-orange-500" }, // Changed icon to Palette
     { label: "إعدادات المتجر", icon: Settings, href: "/dashboard/settings", color: "text-blue-500" },
     { label: "سياسات المتجر", icon: FileText, href: "/dashboard/settings#policies", color: "text-teal-500" },
   ];
@@ -152,7 +149,8 @@ export default function SellerDashboardPage() {
         variants={sectionVariants} 
       >
         <motion.div variants={itemVariants}>
-          <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center">
+            <LayoutDashboard size={32} className="ml-3 text-accent-purple" /> {/* Changed Icon */}
             لوحة تحكم متجركِ الإبداعي
           </h1>
           <p className="mt-1 text-lg text-foreground/80">

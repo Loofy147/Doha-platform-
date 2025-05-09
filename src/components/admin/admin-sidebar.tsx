@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  Home,
+  LayoutDashboard, // Changed from Home
   ShoppingCart,
   Package,
   Users2,
@@ -18,10 +18,10 @@ import {
   BarChart3,
   Settings,
 } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { WomenCommerceLogo } from '@/components/icons/logo'; 
 
 const adminNavItems = [
-    { href: '/admin', icon: Home, label: 'لوحة التحكم' },
+    { href: '/admin', icon: LayoutDashboard, label: 'لوحة التحكم' },
     { href: '/admin/orders', icon: ShoppingCart, label: 'الطلبات' },
     { href: '/admin/products', icon: Package, label: 'المنتجات' },
     { href: '/admin/customers', icon: Users2, label: 'العملاء' },

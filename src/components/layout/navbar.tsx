@@ -13,18 +13,32 @@ import {
   SheetClose
 } from '@/components/ui/sheet';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import { Menu, ShoppingBag, Users, Info, MessageSquare, Store, Sparkles, HomeIcon, FileText, Gift, UserCircle, LogOutIcon, LayoutDashboard, ListOrdered, Image as ImageIconLucide } from 'lucide-react';
+import { 
+  Menu, 
+  Home, // Changed from HomeIcon
+  PackageSearch, // New for Products
+  Rocket, // New for Sell with us
+  Gift, 
+  BookOpen, // New for Blog
+  Images, // New for Gallery
+  Info, 
+  MessageSquare, 
+  UserCircle, 
+  LogOutIcon, 
+  LayoutDashboard, 
+  ListOrdered 
+} from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
 
 
 const navItems = [
-  { label: 'الرئيسية', href: '/', icon: <HomeIcon size={16} /> },
-  { label: 'المنتجات والخدمات', href: '/products', icon: <ShoppingBag size={16} /> },
-  { label: 'انضمي كمبدعة', href: '/sell-with-us', icon: <Store size={16} /> },
+  { label: 'الرئيسية', href: '/', icon: <Home size={16} /> },
+  { label: 'المنتجات والخدمات', href: '/products', icon: <PackageSearch size={16} /> },
+  { label: 'انضمي كمبدعة', href: '/sell-with-us', icon: <Rocket size={16} /> },
   { label: 'باقات الاشتراك', href: '/subscriptions', icon: <Gift size={16} /> },
-  { label: 'مدونة لمسة ضحى', href: '/blog', icon: <FileText size={16} /> },
-  { label: 'معرض الصور (تجريبي)', href: '/gallery', icon: <ImageIconLucide size={16} /> },
+  { label: 'مدونة لمسة ضحى', href: '/blog', icon: <BookOpen size={16} /> },
+  { label: 'معرض الصور (تجريبي)', href: '/gallery', icon: <Images size={16} /> },
   { label: 'عن لمسة ضحى', href: '/#about', icon: <Info size={16} /> },
   { label: 'تواصل معنا', href: '/#contact', icon: <MessageSquare size={16} /> },
 ];
@@ -36,8 +50,8 @@ const navItemVariants = {
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isLoggedIn = true;
-  const isSeller = true;
+  const isLoggedIn = true; 
+  const isSeller = true; 
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Home,
+  LayoutDashboard, // Ensured LayoutDashboard is here
   Package,
   ShoppingBag,
   Users,
@@ -16,19 +16,18 @@ import {
   Gift, 
   CreditCard,
   MessageSquare,
-  LayoutTemplate,
+  LayoutTemplate, // This was an alternative, Palette is used in sidebar for design now. Keeping for potential use.
   Bell,
   LogOut,
   PanelLeft,
   Search,
-  LayoutGrid,
+  LayoutGrid, // Could be used for store layout options
   Eye, 
   Star, 
   UserCircle,
   Megaphone, 
   Ticket, 
-  LayoutDashboard,
-  Store as StoreIcon, // Added StoreIcon
+  Store as StoreIcon, 
 } from 'lucide-react';
 import {
   Breadcrumb,
@@ -55,16 +54,16 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
 const sellerNavItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم الرئيسية' }, // Changed Home to LayoutDashboard
+    { href: '/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم الرئيسية' }, 
     { href: '/dashboard/products', icon: Package, label: 'منتجاتي وخدماتي' },
     { href: '/dashboard/orders', icon: ShoppingBag, label: 'طلباتي الواردة' },
     { href: '/dashboard/marketing', icon: Megaphone, label: 'التسويق والعروض' }, 
     { href: '/dashboard/reviews', icon: Star, label: 'تقييمات العملاء' }, 
-    { href: '/dashboard/store-template', icon: LayoutTemplate, label: 'قالب وتصميم المتجر'},
+    { href: '/dashboard/store-template', icon: Palette, label: 'قالب وتصميم المتجر'}, // Using Palette consistently with sidebar
     { href: '/dashboard/settings', icon: Settings, label: 'إعدادات المتجر العامة' },
 ];
 
-const MOCK_SELLER_SLUG = "lamsa-ibdaa"; // Ensure this is a valid ID from mock-store-data.ts
+const MOCK_SELLER_SLUG = "lamsa-ibdaa"; 
 
 export function SellerDashboardHeader() {
   const pathname = usePathname();
@@ -77,7 +76,6 @@ export function SellerDashboardHeader() {
       const isLast = index === pathParts.length - 1;
 
       let label = part.charAt(0).toUpperCase() + part.slice(1);
-      // Improved breadcrumb label mapping
       const labelMap: Record<string, string> = {
         'products': 'منتجاتي',
         'orders': 'طلباتي',
@@ -91,7 +89,8 @@ export function SellerDashboardHeader() {
         'payments': 'المدفوعات',
         'customers': 'العملاء',
         'notifications': 'الإشعارات',
-        'profile': 'الملف الشخصي'
+        'profile': 'الملف الشخصي',
+        'icons': 'إدارة الأيقونات' // New entry for icon page
       };
       label = labelMap[part.toLowerCase()] || label;
       
@@ -164,7 +163,7 @@ export function SellerDashboardHeader() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="relative ml-auto flex items-center gap-2 md:gap-4 md:grow-0"> {/* Added gap-2 for mobile and md:gap-4 for medium screens */}
+      <div className="relative ml-auto flex items-center gap-2 md:gap-4 md:grow-0"> 
         <Button variant="outline" size="sm" asChild className="hidden sm:flex border-accent-purple text-accent-purple hover:bg-accent-purple/10">
             <Link href={`/store/${MOCK_SELLER_SLUG}`} target="_blank" rel="noopener noreferrer">
                 <Eye size={16} className="ml-2" /> عرض متجري العام
@@ -266,4 +265,3 @@ export function SellerDashboardHeader() {
     </header>
   );
 }
-

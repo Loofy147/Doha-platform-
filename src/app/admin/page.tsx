@@ -8,7 +8,7 @@ import {
   Activity,
   DollarSign,
   Users,
-  CreditCard,
+  CreditCard, // Kept for consistency, though ShoppingCart is used for "Total Orders"
   Package,
   Store,
   Settings,
@@ -19,11 +19,11 @@ import {
   BarChart3,
   LineChart,
   Zap,
-  ShoppingBag,
-  LayoutDashboard,
-  UserCheck, // For approve sellers
-  ShieldCheck, // For content moderation
-  Users2 // For manage users
+  ShoppingBag, // This is for orders, as used in the overview card.
+  LayoutDashboard, // Main dashboard icon
+  UserCheck, 
+  ShieldCheck, 
+  Users2 
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
       { 
         title: "إجمالي الطلبات على المنصة", 
         value: "22,580", 
-        icon: <ShoppingCart className="text-blue-500" />, // Changed from CreditCard for orders
+        icon: <ShoppingBag className="text-blue-500" />, // Changed from CreditCard to ShoppingBag
         href: "/admin/orders",
         trend: "+512 هذا الأسبوع",
         color: "blue"
@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
         title: "طلبات معلقة", 
         value: "12 بائعة / 25 منتج", 
         icon: <Bell className="text-yellow-500 animate-pulse" style={{animationDuration: '1.5s'}} />, 
-        href: "/admin/sellers/approvals", // Or a general pending page
+        href: "/admin/sellers/approvals", 
         color: "yellow"
       },
     ];
@@ -109,8 +109,8 @@ export default function AdminDashboardPage() {
     const quickActions = [
       { label: "إدارة المستخدمين", icon: Users2, href: "/admin/users" },
       { label: "إعدادات المنصة", icon: Settings, href: "/admin/settings" },
-      { label: "مراجعة المحتوى", icon: ShieldCheck, href: "/admin/moderation" }, // Placeholder
-      { label: "الموافقة على المبدعات", icon: UserCheck, href: "/admin/sellers/approvals" }, // Placeholder
+      { label: "مراجعة المحتوى", icon: ShieldCheck, href: "/admin/moderation" }, 
+      { label: "الموافقة على المبدعات", icon: UserCheck, href: "/admin/sellers/approvals" }, 
       { label: "إدارة الفئات", icon: LayoutGrid, href: "/admin/categories" },
       { label: "إنشاء تقارير", icon: BarChart3, href: "/admin/reports" },
     ];
@@ -146,7 +146,7 @@ export default function AdminDashboardPage() {
         </div>
         <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <Button variant="outline" asChild>
-                <Link href="/admin/reports/new"> {/* Or general reports page */}
+                <Link href="/admin/reports"> {/* Or general reports page /admin/reports/new */}
                     <Download className="ml-2 h-4 w-4" /> {/* ml-2 for RTL */}
                     تصدير ملخص المنصة
                 </Link>

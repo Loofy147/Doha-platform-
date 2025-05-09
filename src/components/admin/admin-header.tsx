@@ -3,11 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Home,
+  LayoutDashboard, // Changed from Home
   ShoppingCart,
   Package,
   Users2,
-  Store, // Changed from Package2 to Store for sellers for clarity
+  Store, 
   LayoutGrid,
   BarChart3,
   Settings,
@@ -35,11 +35,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { WomenCommerceLogo } from '@/components/icons/logo'; 
 import { usePathname } from 'next/navigation';
 
 const adminNavItems = [
-    { href: '/admin', icon: Home, label: 'لوحة التحكم' },
+    { href: '/admin', icon: LayoutDashboard, label: 'لوحة التحكم' },
     { href: '/admin/orders', icon: ShoppingCart, label: 'الطلبات' },
     { href: '/admin/products', icon: Package, label: 'المنتجات' },
     { href: '/admin/customers', icon: Users2, label: 'العملاء' },
@@ -54,12 +54,11 @@ export function AdminHeader() {
   const pathname = usePathname();
 
   const getBreadcrumbItems = () => {
-    const pathParts = pathname.split('/').filter(part => part && part !== 'admin'); // filter out 'admin' base path
+    const pathParts = pathname.split('/').filter(part => part && part !== 'admin'); 
     let currentPath = '/admin';
     const breadcrumbItems = pathParts.map((part, index) => {
       currentPath += `/${part}`;
       const isLast = index === pathParts.length - 1;
-      // Basic localization - could be improved with a proper i18n solution
       let label = part.charAt(0).toUpperCase() + part.slice(1);
       if (part === 'orders') label = 'الطلبات';
       if (part === 'products') label = 'المنتجات';
@@ -69,6 +68,9 @@ export function AdminHeader() {
       if (part === 'reports') label = 'التقارير';
       if (part === 'settings') label = 'الإعدادات';
       if (part === 'new') label = 'إضافة جديد';
+      if (part === 'approvals') label = 'الموافقات';
+      if (part === 'moderation') label = 'الإشراف';
+      if (part === 'users') label = 'المستخدمون';
 
 
       return (

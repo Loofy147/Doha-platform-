@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarClock, Percent, Eye, ChevronLeft } from 'lucide-react';
+import { Flame, Percent, Eye, ChevronLeft } from 'lucide-react'; // Changed CalendarClock to Flame
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from 'framer-motion';
@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 const mockDailyDeals = [
   {
     id: 'deal-daily-1',
-    productId: 'mathaq-prod1', // Link to the specific product ID
+    productId: 'mathaq-prod1', 
     title: 'خصم 25% على كيكة الفراولة اليوم فقط!',
     description: 'دللي نفسك بكيكة الفراولة الطازجة بخصم خاص. العرض ينتهي منتصف الليل.',
     imageSrc: 'https://picsum.photos/seed/dailystrawberry/350/220',
@@ -27,7 +27,7 @@ const mockDailyDeals = [
   },
   {
     id: 'deal-daily-2',
-    productId: 'lamsa-prod1', // Link to a relevant product or category page in store
+    productId: 'lamsa-prod1', 
     title: 'توصيل مجاني لطلبات الإكسسوارات اليوم!',
     description: 'اطلبي أي قطعة إكسسوار من متجر "لمسة إبداع نادية" واحصلي على توصيل مجاني داخل المدينة.',
     imageSrc: 'https://picsum.photos/seed/dailyjewelrydeal/350/220',
@@ -37,17 +37,17 @@ const mockDailyDeals = [
   },
   {
     id: 'deal-daily-3',
-    productId: 'common-prod1', // Link to a relevant product
+    productId: 'common-prod1', 
     title: 'اشترِ قطعتين شمع معطر واحصل على الثالثة مجاناً!',
     description: 'عرض اليوم: دللي حواسك مع شموع الصويا الطبيعية المصنوعة يدوياً.',
     imageSrc: 'https://picsum.photos/seed/dailycandlesdeal/350/220',
     dataAiHint: 'handmade scented candles',
-    storeName: 'لمسة إبداع نادية', // Assuming candle is from this store
+    storeName: 'لمسة إبداع نادية', 
     storeSlug: 'lamsa-ibdaa',
   },
    {
     id: 'deal-daily-4',
-    productId: 'anaqa-prod2', // Link to abaya product
+    productId: 'anaqa-prod2', 
     title: 'خصم 10% إضافي على إيجار العباءات اليوم',
     description: 'استأجري عباءة سوداء بتطريز فضي أو أي عباءة أخرى بخصم إضافي ليوم واحد فقط.',
     imageSrc: 'https://picsum.photos/seed/dailyabayadeal/350/220',
@@ -84,7 +84,7 @@ export function DailyDealsSection() {
     <motion.section
       id="daily-deals"
       className="py-16 lg:py-24 bg-gradient-to-br from-accent-pink/10 via-background to-accent-yellow/10"
-      variants={sectionVariants} // Apply container variants
+      variants={sectionVariants} 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
@@ -92,10 +92,10 @@ export function DailyDealsSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} // Use item variants for header
-          custom={0} // Start animation immediately
+          variants={itemVariants} 
+          custom={0} 
         >
-          <CalendarClock className="mx-auto h-12 w-12 text-accent-pink animate-ping-slow" style={{animationDuration: '1.5s'}}/>
+          <Flame className="mx-auto h-12 w-12 text-accent-pink animate-ping-slow" style={{animationDuration: '1.5s'}}/> {/* Changed icon */}
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             عروض اليوم الذهبية ✨
           </h2>
@@ -120,14 +120,13 @@ export function DailyDealsSection() {
               <CarouselItem key={deal.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <motion.div
                   className="p-1 h-full"
-                  custom={index + 1} // Stagger animation for cards
+                  custom={index + 1} 
                   variants={itemVariants}
-                  // Removed initial/whileInView from individual cards
                 >
                   <Card className={cn(
                       "overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl group flex flex-col h-full",
                       "border-2 border-accent-pink/30 hover:border-accent-pink focus-within:border-accent-pink focus-within:ring-2 focus-within:ring-accent-pink/50",
-                      "transform hover:-translate-y-1.5" // Add lift effect
+                      "transform hover:-translate-y-1.5" 
                    )}>
                     <CardHeader className="p-0 relative">
                      <Link href={`/products/${deal.productId}`} passHref className="block aspect-[16/10] relative overflow-hidden rounded-t-xl">
@@ -158,7 +157,7 @@ export function DailyDealsSection() {
                         {deal.originalPrice && (
                           <p className={cn("text-md text-muted-foreground", deal.dealPrice && "line-through")}>{deal.originalPrice}</p>
                         )}
-                         {!deal.dealPrice && !deal.originalPrice && ( // Case for free shipping etc.
+                         {!deal.dealPrice && !deal.originalPrice && ( 
                            <p className="text-xl font-bold text-accent-pink">عرض خاص!</p>
                         )}
                       </div>
@@ -182,7 +181,7 @@ export function DailyDealsSection() {
         <motion.div
           className="mt-12 text-center"
           variants={itemVariants}
-          custom={mockDailyDeals.length + 1} // Animate button after cards
+          custom={mockDailyDeals.length + 1} 
         >
           <Button size="lg" variant="outline" asChild className="border-accent-purple text-accent-purple hover:bg-accent-purple/10 group transform hover:scale-105 transition-transform duration-200">
             <Link href="/products?filter=daily-deals">
