@@ -1,5 +1,5 @@
 // src/components/sections/contact-section.tsx
-'use client'; // Added 'use client' directive
+'use client'; 
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label'; 
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { useToast } from '@/hooks/use-toast'; // Import useToast
+import { useToast } from '@/hooks/use-toast';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -23,12 +23,22 @@ export const contactFormSchema = z.object({
 
 export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
-const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+const sectionEntryVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut", staggerChildren: 0.15 } } // Stagger direct motion children
 };
 
-const imageVariants = {
+const itemVariants = { // For children of the main layout grid (form card, info card)
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
+const formItemVariants = { // For individual form fields, potentially staggered by their parent
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.4 } }
+};
+
+const imageVariants = { // For the image within the info card
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.1 } }
 };
@@ -43,21 +53,24 @@ export function ContactSection({ }: ContactSectionProps) {
 
     const onSubmit: SubmitHandler<ContactFormValues> = async (data) => {
         console.log("Contact Form Submitted:", data);
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
-        toast({ title: "تم إرسال رسالتك بنجاح!", description: "سنتواصل معكِ قريبًا." });
+        toast({ title: "تم إرسال رسالتكِ بنجاح!", description: "سنتواصل معكِ قريبًا.", variant: "default" });
         reset();
     };
 
   return (
-    <section 
+    <motion.section 
       id="contact"
       className="py-16 lg:py-24 bg-background"
+      variants={sectionEntryVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
-          variants={itemVariants} 
+          variants={itemVariants} // This will be staggered by the parent motion.section
         >
           <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
             تواصلي معنا
@@ -67,22 +80,26 @@ export function ContactSection({ }: ContactSectionProps) {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <motion.div 
+            className="grid lg:grid-cols-2 gap-12"
+            variants={{ visible: { transition: { staggerChildren: 0.2 } } }} // Stagger form card and info card
+        >
           <motion.div variants={itemVariants}> 
-            <Card className="shadow-lg">
+            <Card className="shadow-lg h-full">
               <CardHeader>
-                <motion.div variants={itemVariants}>
+                <motion.div variants={formItemVariants}>
                   <CardTitle className="text-2xl text-primary flex items-center gap-2">
                     <MessageSquare size={24} className="text-accent-pink" /> أرسلي لنا رسالة
                   </CardTitle>
                 </motion.div>
               </CardHeader>
               <CardContent>
-                 <form
+                 <motion.form
                     onSubmit={handleFormSubmit(onSubmit)} 
                     className="space-y-6"
+                    variants={{ visible: { transition: { staggerChildren: 0.1 }}}} // Stagger form fields
                   >
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={formItemVariants}>
                     <Label htmlFor="name">الاسم الكامل</Label>
                     <Input
                       type="text"
@@ -94,7 +111,7 @@ export function ContactSection({ }: ContactSectionProps) {
                     />
                      {errors.name && <p className="text-destructive text-sm mt-1">{errors.name.message}</p>}
                   </motion.div>
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={formItemVariants}>
                     <Label htmlFor="email">البريد الإلكتروني</Label>
                     <Input
                       type="email"
@@ -106,7 +123,7 @@ export function ContactSection({ }: ContactSectionProps) {
                     />
                     {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                   </motion.div>
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={formItemVariants}>
                     <Label htmlFor="subject">الموضوع</Label>
                     <Input
                       type="text"
@@ -117,7 +134,7 @@ export function ContactSection({ }: ContactSectionProps) {
                     />
                     {errors.subject && <p className="text-destructive text-sm mt-1">{errors.subject.message}</p>}
                   </motion.div>
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={formItemVariants}>
                     <Label htmlFor="message">الرسالة</Label>
                     <Textarea
                       id="message"
@@ -128,27 +145,27 @@ export function ContactSection({ }: ContactSectionProps) {
                     />
                     {errors.message && <p className="text-destructive text-sm mt-1">{errors.message.message}</p>}
                   </motion.div>
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={formItemVariants}>
                     <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
                       {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'}
                     </Button>
                   </motion.div>
-                </form>
+                </motion.form>
               </CardContent>
             </Card>
           </motion.div>
 
           <motion.div className="space-y-8" variants={itemVariants}> 
-            <Card className="shadow-lg">
+            <Card className="shadow-lg h-full">
               <CardHeader>
-                <motion.div variants={itemVariants}>
+                <motion.div variants={formItemVariants}>
                     <CardTitle className="text-2xl text-primary flex items-center gap-2">
                     <Info size={24} className="text-accent-purple" /> معلومات المنصة
                     </CardTitle>
                 </motion.div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <motion.p className="text-foreground/80" variants={itemVariants}>
+                <motion.p className="text-foreground/80" variants={formItemVariants}>
                   لمسة ضحى هي منصة إلكترونية تجمع رائدات الأعمال الموهوبات بالباحثات عن الإبداع. نعمل بشغف لتمكين المرأة اقتصاديًا.
                 </motion.p>
                  <motion.div className="aspect-video rounded-md overflow-hidden border" variants={imageVariants}>
@@ -161,18 +178,18 @@ export function ContactSection({ }: ContactSectionProps) {
                     data-ai-hint="women online business"
                   />
                 </motion.div>
-                <motion.p className="flex items-center gap-3 text-foreground/80" variants={itemVariants}>
+                <motion.p className="flex items-center gap-3 text-foreground/80" variants={formItemVariants}>
                   <Mail size={20} className="text-accent-pink" />
                   <span>support@lamsadoha.com</span>
                 </motion.p>
-                 <motion.p className="text-sm text-muted-foreground" variants={itemVariants}>
+                 <motion.p className="text-sm text-muted-foreground" variants={formItemVariants}>
                   للتواصل مع مبدعات محددات، يرجى الرجوع إلى صفحات متاجرهن بعد تسجيل الدخول.
                 </motion.p>
               </CardContent>
             </Card>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
