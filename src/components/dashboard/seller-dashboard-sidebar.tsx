@@ -1,3 +1,4 @@
+// src/components/dashboard/seller-dashboard-sidebar.tsx
 'use client';
 
 import Link from 'next/link';
@@ -18,24 +19,29 @@ import {
   Palette,
   FileText,
   PlusCircle,
-  Gift,
+  Gift, // Added for Marketing
+  Star, // Added for Reviews
   CreditCard,
   MessageSquare,
-  LayoutTemplate // Added for templates
+  LayoutTemplate,
+  Ticket, // New icon for coupons/discounts
+  Megaphone // New icon for promotions
 } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo';
+import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { Separator } from '@/components/ui/separator';
 
 const mainNavItems = [
     { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
     { href: '/dashboard/products', icon: Package, label: 'منتجاتي وخدماتي' },
     { href: '/dashboard/orders', icon: ShoppingBag, label: 'طلباتي الواردة' },
-    { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل' }, 
-    { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات متجري' }, 
+    { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل (قريباً)' }, 
+    { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات متجري (قريباً)' }, 
 ];
 
-const managementNavItems = [
-    { href: '/dashboard/marketing', icon: Gift, label: 'التسويق والعروض' }, 
-    { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير' }, 
+const storeManagementNavItems = [
+    { href: '/dashboard/marketing', icon: Megaphone, label: 'التسويق والعروض' }, 
+    { href: '/dashboard/reviews', icon: Star, label: 'تقييمات العملاء' },
+    { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير (قريباً)' }, 
     { href: '/dashboard/store-template', icon: LayoutTemplate, label: 'قالب وتصميم المتجر'},
 ];
 
@@ -44,7 +50,7 @@ export function SellerDashboardSidebar() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    if (href === '/dashboard') return pathname === href;
+    if (href === '/dashboard' && pathname === '/dashboard') return true;
     // For nested routes like /dashboard/products/new, we want /dashboard/products to be active.
     if (pathname.startsWith(href) && href !== '/dashboard') {
         // Special case for /dashboard/products/new or /dashboard/products/edit/[id]
@@ -58,7 +64,7 @@ export function SellerDashboardSidebar() {
   };
 
   return (
-    <aside className="fixed inset-y-0 right-0 z-10 hidden w-14 flex-col border-l bg-sidebar sm:flex"> {/* Changed left to right, border-r to border-l */}
+    <aside className="fixed inset-y-0 right-0 z-40 hidden w-14 flex-col border-l bg-sidebar sm:flex"> {/* Changed left to right, border-r to border-l */}
       <TooltipProvider>
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
@@ -87,9 +93,11 @@ export function SellerDashboardSidebar() {
             </Tooltip>
           ))}
         </nav>
-        {/* Separator or secondary nav items can go here */}
-         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-          {managementNavItems.map((item) => (
+        
+        <Separator className="my-2 bg-sidebar-border" />
+
+         <nav className="flex flex-col items-center gap-4 px-2 sm:py-3">
+          {storeManagementNavItems.map((item) => (
              <Tooltip key={item.href}>
               <TooltipTrigger asChild>
                 <Link
@@ -107,6 +115,9 @@ export function SellerDashboardSidebar() {
               <TooltipContent side="left">{item.label}</TooltipContent>
             </Tooltip>
           ))}
+        </nav>
+
+        <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
           <Tooltip>
             <TooltipTrigger asChild>
               <Link

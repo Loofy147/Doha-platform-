@@ -13,18 +13,20 @@ import {
   Palette,
   FileText,
   PlusCircle,
-  Gift,
+  Gift, // Keep for general marketing, but use Megaphone for main icon
   CreditCard,
   MessageSquare,
-  LayoutTemplate, // Added for templates
+  LayoutTemplate,
   Bell,
   LogOut,
   PanelLeft,
   Search,
   LayoutGrid,
-  Eye, // Added Eye icon for View Store
-  Star, // For reviews/ratings
-  UserCircle // For profile link
+  Eye, 
+  Star, 
+  UserCircle,
+  Megaphone, // Added for Marketing
+  Ticket, // For coupons/discounts maybe later
 } from 'lucide-react';
 import {
   Breadcrumb,
@@ -33,7 +35,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'; // Fixed import path
+} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -45,19 +47,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { WomenCommerceLogo } from '@/components/icons/logo';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge'; // Import Badge
+import { Badge } from '@/components/ui/badge';
 
 const sellerNavItems = [
     { href: '/dashboard', icon: Home, label: 'لوحة التحكم الرئيسية' },
     { href: '/dashboard/products', icon: Package, label: 'منتجاتي وخدماتي' },
     { href: '/dashboard/orders', icon: ShoppingBag, label: 'طلباتي الواردة' },
-    // { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل' }, // Placeholder/Future
-    // { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات متجري' }, // Placeholder/Future
-    // { href: '/dashboard/marketing', icon: Gift, label: 'التسويق والعروض' }, // Placeholder/Future
-    // { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير' }, // Placeholder/Future
+    { href: '/dashboard/marketing', icon: Megaphone, label: 'التسويق والعروض' }, // Added
+    { href: '/dashboard/reviews', icon: Star, label: 'تقييمات العملاء' }, // Added
+    // { href: '/dashboard/customers', icon: Users, label: 'عملائي والتواصل (قريباً)' }, 
+    // { href: '/dashboard/analytics', icon: BarChart3, label: 'تحليلات متجري (قريباً)' }, 
+    // { href: '/dashboard/payments', icon: CreditCard, label: 'المدفوعات والفواتير (قريباً)' }, 
     { href: '/dashboard/store-template', icon: LayoutTemplate, label: 'قالب وتصميم المتجر'},
     { href: '/dashboard/settings', icon: Settings, label: 'إعدادات المتجر العامة' },
 ];
@@ -67,25 +70,26 @@ const MOCK_SELLER_SLUG = "lamsa-ibdaa"; // Replace with dynamic slug later
 export function SellerDashboardHeader() {
   const pathname = usePathname();
 
-  // Function to generate breadcrumbs based on the current pathname
   const getBreadcrumbItems = () => {
-    const pathParts = pathname.split('/').filter(part => part && part !== 'dashboard'); // filter out 'dashboard' base path
+    const pathParts = pathname.split('/').filter(part => part && part !== 'dashboard'); 
     let currentPath = '/dashboard';
     const breadcrumbItems = pathParts.map((part, index) => {
       currentPath += `/${part}`;
       const isLast = index === pathParts.length - 1;
 
-      // Basic localization - improve later
       let label = part.charAt(0).toUpperCase() + part.slice(1);
       if (part === 'products') label = 'منتجاتي';
-      if (part === 'orders') label = 'طلباتي';
-      if (part === 'settings') label = 'الإعدادات';
-      if (part === 'store-template') label = 'تصميم المتجر';
-      if (part === 'new') label = 'إضافة جديد';
-      if (part === 'edit') label = 'تعديل';
-      // Handle dynamic [id] segments - might need more logic to fetch the name
-      if (pathname.includes('/edit/') && part !== 'edit' && index > 0) label = `تعديل #${pathParts[index -1] === 'products' ? 'منتج' : 'طلب'} ${label}`; // Basic label for ID
-       if (pathname.includes('/orders/') && part !== 'orders' && index > 0) label = `طلب #${label}`;
+      else if (part === 'orders') label = 'طلباتي';
+      else if (part === 'settings') label = 'الإعدادات العامة';
+      else if (part === 'store-template') label = 'تصميم المتجر';
+      else if (part === 'marketing') label = 'التسويق والعروض'; // Added
+      else if (part === 'reviews') label = 'تقييمات العملاء'; // Added
+      else if (part === 'new') label = 'إضافة جديد';
+      else if (part === 'edit') label = 'تعديل';
+      
+      if (pathname.includes('/edit/') && part !== 'edit' && index > 0 && pathParts[index -1] === 'products') label = `تعديل #${label}`;
+      else if (pathname.includes('/orders/') && part !== 'orders' && index > 0) label = `طلب #${label}`;
+
 
       return (
         <React.Fragment key={currentPath}>
@@ -114,7 +118,7 @@ export function SellerDashboardHeader() {
             <span className="sr-only">فتح/إغلاق القائمة</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="sm:max-w-xs bg-sidebar text-sidebar-foreground"> {/* Changed side to right */}
+        <SheetContent side="right" className="sm:max-w-xs bg-sidebar text-sidebar-foreground">
           <nav className="grid gap-6 text-lg font-medium p-4">
             <Link
               href="/dashboard"
@@ -153,18 +157,11 @@ export function SellerDashboardHeader() {
       </Breadcrumb>
 
       <div className="relative ml-auto flex items-center gap-4 md:grow-0">
-        <Button variant="outline" size="sm" asChild className="hidden sm:flex">
+        <Button variant="outline" size="sm" asChild className="hidden sm:flex border-accent-purple text-accent-purple hover:bg-accent-purple/10">
             <Link href={`/store/${MOCK_SELLER_SLUG}`} target="_blank" rel="noopener noreferrer">
-                <Eye size={16} className="ml-2" /> عرض متجري
+                <Eye size={16} className="ml-2" /> عرض متجري العام
             </Link>
         </Button>
-        {/* Search can be added back if needed */}
-        {/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="بحث في لوحة التحكم..."
-          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-        /> */}
       </div>
 
       <DropdownMenu>
@@ -172,12 +169,11 @@ export function SellerDashboardHeader() {
           <Button
             variant="outline"
             size="icon"
-            className="overflow-hidden rounded-full relative ml-4" /* Added ml-4 for spacing */
+            className="overflow-hidden rounded-full relative ml-4"
           >
              <Bell className="h-5 w-5 text-muted-foreground" />
-             {/* Example Notification Badge - replace 3 with actual count */}
              <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 text-white text-[8px] items-center justify-center">3</span>
              </span>
              <span className="sr-only">الإشعارات</span>
@@ -225,8 +221,8 @@ export function SellerDashboardHeader() {
             className="overflow-hidden rounded-full"
           >
             <Avatar className="h-9 w-9">
-              <AvatarImage src="https://picsum.photos/seed/seller_avatar/40/40" alt="صورة حساب البائعة" data-ai-hint="woman smiling seller" />
-              <AvatarFallback>ضح</AvatarFallback> {/* Example Fallback */}
+              <AvatarImage src="https://picsum.photos/seed/seller_doha/40/40" alt="صورة حساب المبدعة ضحى" data-ai-hint="woman smiling seller" />
+              <AvatarFallback>ضح</AvatarFallback> 
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -240,7 +236,7 @@ export function SellerDashboardHeader() {
             </Link>
           </DropdownMenuItem>
            <DropdownMenuItem asChild>
-            <Link href="/profile"> {/* Link to the main user profile */}
+            <Link href="/profile"> 
               <UserCircle className="mr-2 h-4 w-4" />
               ملفي الشخصي (عام)
             </Link>
