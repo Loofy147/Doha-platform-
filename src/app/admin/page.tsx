@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import {
   Activity,
   DollarSign,
@@ -20,7 +20,10 @@ import {
   LineChart,
   Zap,
   ShoppingBag,
-  LayoutDashboard // Ensure LayoutDashboard is imported if used
+  LayoutDashboard,
+  UserCheck, // For approve sellers
+  ShieldCheck, // For content moderation
+  Users2 // For manage users
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -36,21 +39,21 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 
 
-const salesData = [
-  { month: "يناير", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "فبراير", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "مارس", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "أبريل", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "مايو", sales: Math.floor(Math.random() * 5000) + 1000 },
-  { month: "يونيو", sales: Math.floor(Math.random() * 5000) + 1000 },
+const platformSalesData = [
+  { month: "يناير", revenue: Math.floor(Math.random() * 150000) + 20000, orders: Math.floor(Math.random() * 1000) + 200 },
+  { month: "فبراير", revenue: Math.floor(Math.random() * 150000) + 20000, orders: Math.floor(Math.random() * 1000) + 200 },
+  { month: "مارس", revenue: Math.floor(Math.random() * 150000) + 20000, orders: Math.floor(Math.random() * 1000) + 200 },
+  { month: "أبريل", revenue: Math.floor(Math.random() * 150000) + 20000, orders: Math.floor(Math.random() * 1000) + 200 },
+  { month: "مايو", revenue: Math.floor(Math.random() * 150000) + 20000, orders: Math.floor(Math.random() * 1000) + 200 },
+  { month: "يونيو", revenue: Math.floor(Math.random() * 150000) + 30000, orders: Math.floor(Math.random() * 1200) + 300 },
 ];
 
-const recentActivities = [
-  { id: 1, user: 'عائشة ب.', description: 'تم استلام طلب بائعة جديدة.', time: 'منذ 5 دقائق', avatarSrc: 'https://picsum.photos/40/40?random=1', dataAiHint: "woman portrait" },
-  { id: 2, user: 'النظام', description: 'تم نشر تحديث المنصة v1.2.', time: 'منذ ساعة', avatarSrc: 'https://picsum.photos/40/40?random=2', dataAiHint: "system logo" },
-  { id: 3, user: 'فاطمة ك.', description: 'أبلغت عن مشكلة في قائمة المنتجات.', time: 'منذ 3 ساعات', avatarSrc: 'https://picsum.photos/40/40?random=3', dataAiHint: "woman thinking" },
-  { id: 4, user: 'المسؤول', description: 'تم إرسال النشرة الإخبارية الأسبوعية.', time: 'منذ يوم واحد', avatarSrc: 'https://picsum.photos/40/40?random=admin', dataAiHint: "admin icon" },
-  { id: 5, user: 'ليلى ر.', description: 'تم تقديم طلب جديد بقيمة عالية.', time: 'منذ يومين', avatarSrc: 'https://picsum.photos/40/40?random=4', dataAiHint: "woman shopping" },
+const adminRecentActivities = [
+  { id: 1, user: 'نظام المنصة', description: 'طلب تسجيل بائعة جديدة: متجر الأمل.', time: 'منذ 15 دقيقة', avatarSrc: 'https://picsum.photos/seed/sellerapp/40/40', dataAiHint: "application form", href: "/admin/sellers/approvals" },
+  { id: 2, user: 'تنبيه النظام', description: 'تحديث المنصة مجدول الليلة الساعة 2 صباحًا.', time: 'منذ ساعة', avatarSrc: 'https://picsum.photos/seed/systemalert/40/40', dataAiHint: "alert icon", href: "#"  },
+  { id: 3, user: 'إدارة المحتوى', description: 'بلاغ جديد: محتوى غير مناسب في منتج "فستان الزفاف الملكي".', time: 'منذ ساعتين', avatarSrc: 'https://picsum.photos/seed/reportcontent/40/40', dataAiHint: "warning sign", href: "/admin/moderation" },
+  { id: 4, user: 'مراقبة الطلبات', description: 'طلب ذو قيمة عالية جديد: #ORD789 بقيمة 75,000 دج.', time: 'منذ 4 ساعات', avatarSrc: 'https://picsum.photos/seed/highvalueorder/40/40', dataAiHint: "money bag", href: "/admin/orders" },
+  { id: 5, user: 'دعم فني', description: 'تذكرة دعم جديدة من المستخدمة "هناء.م" بخصوص عملية الدفع.', time: 'منذ 6 ساعات', avatarSrc: 'https://picsum.photos/seed/supportticket/40/40', dataAiHint: "headset help", href: "#"  },
 ];
 
 
@@ -63,66 +66,71 @@ export default function AdminDashboardPage() {
 
     const overviewCards = [
       { 
-        title: "إجمالي الإيرادات", 
-        value: "45,231.89 دج", 
+        title: "إجمالي إيرادات المنصة", 
+        value: "1,245,231.89 دج", 
         icon: <DollarSign className="text-green-500" />, 
-        href: "/admin/reports/revenue",
-        trend: "+20.1% عن الشهر الماضي",
+        href: "/admin/reports",
+        trend: "+18.5% عن الشهر الماضي",
         color: "green"
       },
       { 
-        title: "إجمالي الطلبات", 
-        value: "+12,234", 
-        icon: <CreditCard className="text-purple-500" />, 
-        href: "/admin/orders", 
-        color: "purple"
+        title: "إجمالي الطلبات على المنصة", 
+        value: "22,580", 
+        icon: <ShoppingCart className="text-blue-500" />, // Changed from CreditCard for orders
+        href: "/admin/orders",
+        trend: "+512 هذا الأسبوع",
+        color: "blue"
       },
       { 
-        title: "العملاء", 
-        value: "1.2 ألف", 
+        title: "إجمالي العملاء المسجلين", 
+        value: "8,750", 
         icon: <Users className="text-pink-500" />, 
         href: "/admin/customers",
-        trend: "+30 هذا الأسبوع",
+        trend: "+120 عميل جديد",
         color: "pink" 
       },
       { 
-        title: "المنتجات/الخدمات", 
-        value: "250", 
-        icon: <ShoppingBag className="text-yellow-500" />, 
-        href: "/admin/products",
-        color: "yellow"
-      },
-      { 
-        title: "البائعات", 
-        value: "85", 
+        title: "إجمالي المبدعات النشطات", 
+        value: "485", 
         icon: <Store className="text-indigo-500" />, 
         href: "/admin/sellers",
+        trend: "+15 مبدعة هذا الشهر",
         color: "indigo"
+      },
+       { 
+        title: "طلبات معلقة", 
+        value: "12 بائعة / 25 منتج", 
+        icon: <Bell className="text-yellow-500 animate-pulse" style={{animationDuration: '1.5s'}} />, 
+        href: "/admin/sellers/approvals", // Or a general pending page
+        color: "yellow"
       },
     ];
 
     const quickActions = [
-      { label: "إضافة منتج جديد", icon: PlusCircle, href: "/admin/products/new" },
-      { label: "إدارة الفئات", icon: LayoutGrid, href: "/admin/categories" },
-      { label: "عرض التقارير", icon: BarChart3, href: "/admin/reports" },
+      { label: "إدارة المستخدمين", icon: Users2, href: "/admin/users" },
       { label: "إعدادات المنصة", icon: Settings, href: "/admin/settings" },
+      { label: "مراجعة المحتوى", icon: ShieldCheck, href: "/admin/moderation" }, // Placeholder
+      { label: "الموافقة على المبدعات", icon: UserCheck, href: "/admin/sellers/approvals" }, // Placeholder
+      { label: "إدارة الفئات", icon: LayoutGrid, href: "/admin/categories" },
+      { label: "إنشاء تقارير", icon: BarChart3, href: "/admin/reports" },
     ];
     
 
     if (!isClient) {
         return (
-            <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+            <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
                 <div className="flex items-center justify-between space-y-2">
-                    <Skeleton className="h-10 w-2/5" />
+                    <Skeleton className="h-10 w-3/5 md:w-2/5" />
+                     <Skeleton className="h-10 w-28" />
                 </div>
-                <Skeleton className="w-full h-32 rounded-lg" />
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                    {Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-lg" />)}
                 </div>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Skeleton className="h-64 rounded-lg" />
-                    <Skeleton className="h-64 rounded-lg" />
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <Skeleton className="lg:col-span-2 h-80 rounded-lg" />
+                    <Skeleton className="h-80 rounded-lg" />
                 </div>
+                <Skeleton className="h-40 rounded-lg" />
             </div>
         );
     }
@@ -132,15 +140,15 @@ export default function AdminDashboardPage() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-2 md:space-y-0">
         <div>
             <h2 className="text-3xl font-bold tracking-tight text-primary flex items-center">
-              <LayoutDashboard className="mr-2 h-7 w-7" /> لوحة تحكم لمسة ضحى
+              <LayoutDashboard className="mr-2 h-7 w-7 text-accent-pink" /> لوحة التحكم الإدارية
             </h2>
-            <p className="text-muted-foreground">نظرة عامة على نشاط منصة لمسة ضحى.</p>
+            <p className="text-muted-foreground">نظرة عامة شاملة على أداء ونشاط منصة لمسة ضحى.</p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <Button variant="outline" asChild>
-                <Link href="/admin/reports">
-                    <Download className="mr-2 h-4 w-4" />
-                    تحميل التقرير
+                <Link href="/admin/reports/new"> {/* Or general reports page */}
+                    <Download className="ml-2 h-4 w-4" /> {/* ml-2 for RTL */}
+                    تصدير ملخص المنصة
                 </Link>
             </Button>
         </div>
@@ -148,7 +156,7 @@ export default function AdminDashboardPage() {
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {overviewCards.map((card) => (
-            <Card key={card.title} className={`shadow-lg border-l-4 border-${card.color}-500`}>
+            <Card key={card.title} className={`shadow-lg border-r-4 border-${card.color}-500 hover:shadow-xl transition-shadow`}> {/* border-r for RTL */}
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                     {card.title}
@@ -159,7 +167,7 @@ export default function AdminDashboardPage() {
                 <div className="text-2xl font-bold text-primary">{card.value}</div>
                 {card.trend && <p className="text-xs text-muted-foreground">{card.trend}</p>}
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="pt-3">
                     <Button variant="ghost" size="sm" asChild className="text-xs text-primary hover:underline p-0 h-auto">
                         <Link href={card.href}>عرض التفاصيل</Link>
                     </Button>
@@ -168,26 +176,33 @@ export default function AdminDashboardPage() {
             ))}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2 shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-primary flex items-center"><LineChart className="mr-2 text-accent-purple" /> اتجاهات المبيعات</CardTitle>
-                    <CardDescription>أداء المبيعات لآخر 6 أشهر.</CardDescription>
+                    <CardTitle className="text-primary flex items-center"><LineChart className="ml-2 text-accent-purple" /> اتجاهات أداء المنصة</CardTitle>
+                    <CardDescription>إيرادات وطلبات المنصة خلال آخر 6 أشهر.</CardDescription>
                 </CardHeader>
-                <CardContent className="pl-2">
+                <CardContent className="pr-2"> {/* pr-2 for RTL y-axis */}
                     <ResponsiveContainer width="100%" height={300}>
-                        <AreaChart data={salesData}>
+                        <AreaChart data={platformSalesData}>
                             <defs>
-                                <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.7}/>
+                                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                                </linearGradient>
+                                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="hsl(var(--accent-blue))" stopOpacity={0.6}/> {/* Assuming accent-blue is defined or use another color */}
+                                <stop offset="95%" stopColor="hsl(var(--accent-blue))" stopOpacity={0.1}/>
                                 </linearGradient>
                             </defs>
-                            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value/1000} ألف دج`} />
-                            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                            <Tooltip contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)"}} cursor={{fill: "hsla(var(--primary)/0.1)"}}/>
-                            <Area type="monotone" dataKey="sales" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorSales)" />
+                            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} reversed={true} /> {/* reversed for RTL */}
+                            <YAxis yAxisId="left" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value/1000} ألف دج`} orientation="right" /> {/* orientation right for RTL */}
+                            <YAxis yAxisId="right" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} orientation="left" /> {/* orientation left for RTL */}
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                            <Tooltip contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: "var(--radius)"}} cursor={{fill: "hsla(var(--primary)/0.05)"}}/>
+                            <Legend verticalAlign="top" height={36} />
+                            <Area yAxisId="left" type="monotone" dataKey="revenue" name="الإيرادات (دج)" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorRevenue)" />
+                            <Area yAxisId="right" type="monotone" dataKey="orders" name="عدد الطلبات" stroke="hsl(var(--accent-blue))" fillOpacity={1} fill="url(#colorOrders)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </CardContent>
@@ -195,48 +210,49 @@ export default function AdminDashboardPage() {
 
             <Card className="shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-primary flex items-center"><Activity className="mr-2 text-accent-pink"/> النشاطات الأخيرة</CardTitle>
+                    <CardTitle className="text-primary flex items-center"><Activity className="ml-2 text-accent-pink"/> النشاطات الإدارية الأخيرة</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <ScrollArea className="h-[300px]">
                     <div className="space-y-4">
-                        {recentActivities.map((activity) => (
-                        <div key={activity.id} className="flex items-start space-x-3 p-2 hover:bg-muted/50 rounded-md">
-                            <Avatar className="h-8 w-8 border">
-                                <AvatarImage src={activity.avatarSrc} alt={activity.user} data-ai-hint={activity.dataAiHint} />
-                                <AvatarFallback>{activity.user.substring(0,1)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                            <p className="text-sm font-medium text-foreground leading-none">{activity.description}</p>
-                            <p className="text-xs text-muted-foreground">{activity.time}</p>
+                        {adminRecentActivities.map((activity) => (
+                        <Link key={activity.id} href={activity.href} className="block hover:bg-muted/50 rounded-md transition-colors">
+                            <div className="flex items-start space-x-3 p-2 rtl:space-x-reverse">
+                                <Avatar className="h-8 w-8 border">
+                                    <AvatarImage src={activity.avatarSrc} alt={activity.user} data-ai-hint={activity.dataAiHint} />
+                                    <AvatarFallback>{activity.user.substring(0,1)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                <p className="text-sm font-medium text-foreground leading-none">{activity.description}</p>
+                                <p className="text-xs text-muted-foreground">{activity.user} • {activity.time}</p>
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                         ))}
                     </div>
                     </ScrollArea>
                 </CardContent>
                  <CardFooter className="border-t pt-4">
-                    <Button variant="outline" size="sm" className="w-full">عرض كل النشاطات</Button>
+                    <Button variant="outline" size="sm" className="w-full">عرض كل سجلات النظام</Button>
                 </CardFooter>
             </Card>
         </div>
 
         <Card className="shadow-lg">
             <CardHeader>
-                <CardTitle className="text-primary flex items-center"><Zap className="mr-2 text-accent-yellow"/> إجراءات سريعة</CardTitle>
+                <CardTitle className="text-primary flex items-center"><Zap className="ml-2 text-accent-yellow"/> إجراءات إدارية سريعة</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {quickActions.map((action) => (
                     <Button key={action.label} variant="outline" asChild className="flex flex-col h-24 items-center justify-center p-4 text-center hover:bg-primary/5 border-dashed border-primary/30 hover:border-primary">
                         <Link href={action.href}>
-                            <action.icon size={18}/>
+                            <action.icon size={20} className="mb-1"/>
                             <span className="mt-1 text-xs sm:text-sm">{action.label}</span>
                         </Link>
                     </Button>
                 ))}
             </CardContent>
         </Card>
-
     </div>
   );
 }
