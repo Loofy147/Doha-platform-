@@ -16,17 +16,19 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import {
   Menu,
   Home,
-  PackageSearch,
-  Store, // Changed from Rocket
+  ShoppingBag, // Changed from PackageSearch to ShoppingBag for product discovery
+  Store,
   Gift,
   BookOpen,
-  Images,
-  Info,
+  ImageIcon as GalleryIcon, // Renamed for clarity if Image is also used
+  Users as CommunityIcon, // Renamed for clarity if Users is also used for customers/sellers
   MessageSquare,
   UserCircle,
   LogOutIcon,
   LayoutDashboard,
-  ListOrdered
+  ListOrdered,
+  Info, // Added Info icon for "About Us"
+  Sparkles, // Added Sparkles for consistency with Hero section
 } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
@@ -34,24 +36,24 @@ import { motion } from 'framer-motion';
 
 const navItems = [
   { label: 'الرئيسية', href: '/', icon: <Home size={16} /> },
-  { label: 'المنتجات والخدمات', href: '/products', icon: <PackageSearch size={16} /> },
-  { label: 'انضمي كمبدعة', href: '/sell-with-us', icon: <Store size={16} /> }, // Icon updated to Store
+  { label: 'تسوقي الآن', href: '/products', icon: <ShoppingBag size={16} /> },
+  { label: 'انضمي كمبدعة', href: '/sell-with-us', icon: <Store size={16} /> },
   { label: 'باقات الاشتراك', href: '/subscriptions', icon: <Gift size={16} /> },
   { label: 'مدونة لمسة ضحى', href: '/blog', icon: <BookOpen size={16} /> },
-  { label: 'معرض الصور', href: '/gallery', icon: <Images size={16} /> },
+  { label: 'معرض الإلهام', href: '/gallery', icon: <GalleryIcon size={16} /> },
   { label: 'عن لمسة ضحى', href: '/#about', icon: <Info size={16} /> },
   { label: 'تواصلي معنا', href: '/#contact', icon: <MessageSquare size={16} /> },
 ];
 
 const navItemVariants = {
-  hover: { scale: 1.05, color: "hsl(var(--primary))" },
+  hover: { scale: 1.05 }, // Removed color change from here, will be handled by link's hover
   tap: { scale: 0.95 }
 };
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isLoggedIn = true;
-  const isSeller = true;
+  const isLoggedIn = true; // Mock state, replace with actual auth state
+  const isSeller = true; // Mock state, replace with actual seller state
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -64,8 +66,11 @@ export function Navbar() {
           {navItems.map((item) => (
              <motion.div key={item.label} whileHover="hover" whileTap="tap" variants={navItemVariants}>
                  <Button variant="ghost" asChild>
-                    <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground flex items-center px-2 py-2">
-                        {item.icon && React.cloneElement(item.icon, { size: 14, className: "ml-1.5" })}
+                    <Link href={item.href} className="text-xs xl:text-sm font-medium text-foreground hover:text-primary flex items-center px-2 py-2 group">
+                        {item.icon && React.cloneElement(item.icon, {
+                             size: 14,
+                             className: "ml-1.5 transition-colors duration-200 group-hover:text-primary"
+                        })}
                         {item.label}
                     </Link>
                  </Button>
@@ -79,8 +84,8 @@ export function Navbar() {
               {isSeller && (
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
-                    <Link href="/dashboard" className="flex items-center text-sm">
-                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple" />
+                    <Link href="/dashboard" className="flex items-center text-sm group">
+                      <LayoutDashboard size={18} className="ml-1.5 text-accent-purple transition-colors duration-200 group-hover:text-primary" />
                       لوحة تحكم متجري
                     </Link>
                   </Button>
@@ -88,15 +93,15 @@ export function Navbar() {
               )}
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
-                    <Link href="/profile" className="flex items-center text-sm">
-                      <UserCircle size={18} className="ml-1.5" />
+                    <Link href="/profile" className="flex items-center text-sm group">
+                      <UserCircle size={18} className="ml-1.5 transition-colors duration-200 group-hover:text-primary" />
                       حسابي
                     </Link>
                   </Button>
                </motion.div>
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10 text-sm" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
-                    <LogOutIcon size={16} className="ml-1.5" />
+                  <Button variant="outline" size="sm" className="hidden sm:inline-flex border-primary text-primary hover:bg-primary/10 text-sm group" onClick={() => alert('تسجيل الخروج (محاكاة)')}>
+                    <LogOutIcon size={16} className="ml-1.5 transition-colors duration-200 group-hover:text-primary" />
                     تسجيل الخروج
                   </Button>
                </motion.div>
@@ -141,10 +146,10 @@ export function Navbar() {
                          <Button
                            variant="ghost"
                            asChild
-                           className="justify-start text-base py-2.5"
+                           className="justify-start text-base py-2.5 group"
                          >
-                          <Link href={item.href} className="flex items-center">
-                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5" })}
+                          <Link href={item.href} className="flex items-center hover:text-primary">
+                            {item.icon && React.cloneElement(item.icon, { size: 18, className: "ml-2.5 transition-colors duration-200 group-hover:text-primary" })}
                             {item.label}
                           </Link>
                          </Button>
@@ -155,32 +160,32 @@ export function Navbar() {
                        <>
                           {isSeller && (
                            <SheetClose asChild>
-                            <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
-                                <Link href="/dashboard" className="flex items-center">
-                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple" />
+                            <Button variant="ghost" className="w-full justify-start text-base py-2.5 group" asChild>
+                                <Link href="/dashboard" className="flex items-center hover:text-primary">
+                                  <LayoutDashboard size={18} className="ml-2.5 text-accent-purple transition-colors duration-200 group-hover:text-primary" />
                                   لوحة تحكم متجري
                                 </Link>
                             </Button>
                            </SheetClose>
                           )}
                          <SheetClose asChild>
-                           <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
-                             <Link href="/profile" className="flex items-center">
-                                <UserCircle size={18} className="ml-2.5" />
+                           <Button variant="ghost" className="w-full justify-start text-base py-2.5 group" asChild>
+                             <Link href="/profile" className="flex items-center hover:text-primary">
+                                <UserCircle size={18} className="ml-2.5 transition-colors duration-200 group-hover:text-primary" />
                                 حسابي
                              </Link>
                            </Button>
                          </SheetClose>
                           <SheetClose asChild>
-                           <Button variant="ghost" className="w-full justify-start text-base py-2.5" asChild>
-                             <Link href="/order" className="flex items-center">
-                                <ListOrdered size={18} className="ml-2.5" />
+                           <Button variant="ghost" className="w-full justify-start text-base py-2.5 group" asChild>
+                             <Link href="/order" className="flex items-center hover:text-primary">
+                                <ListOrdered size={18} className="ml-2.5 transition-colors duration-200 group-hover:text-primary" />
                                 طلباتي
                              </Link>
                            </Button>
                          </SheetClose>
-                         <Button variant="outline" className="w-full justify-start text-base py-2.5 mt-4 border-primary text-primary hover:bg-primary/5" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
-                            <LogOutIcon size={18} className="ml-2.5" />
+                         <Button variant="outline" className="w-full justify-start text-base py-2.5 mt-4 border-primary text-primary hover:bg-primary/5 group" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
+                            <LogOutIcon size={18} className="ml-2.5 transition-colors duration-200 group-hover:text-primary" />
                             تسجيل الخروج
                          </Button>
                        </>

@@ -5,11 +5,12 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Sparkles,
-  Home,
+  Home as HomeIcon, // Renamed to avoid conflict if Home is used elsewhere
   PackageSearch,
   ShoppingBag,
-  Rocket,
-  ShoppingBasket,
+  Store, // Used for "انضمي كمبدعة"
+  Rocket, // Used for seller CTA
+  ShoppingBasket, // Used for shopper CTA
   LayoutDashboard,
   Wand2, 
   CakeSlice, 
@@ -23,9 +24,9 @@ import {
   ChevronLeft,
   Eye,
   Search, 
-  Store,
   Edit3,
   Download,
+  Shirt, // Added Shirt icon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -77,7 +78,7 @@ const simpleFadeInUp = {
 const categories = [
   { name: 'أزياء وإكسسوارات', icon: Wand2, href: '/products?category=أزياء وإكسسوارات', dataAiHint: 'fashion accessories', color: 'text-accent-pink', bgColor: 'bg-accent-pink/10 hover:bg-accent-pink/15' },
   { name: 'حلويات ومأكولات شهية', icon: CakeSlice, href: '/products?category=حلويات ومأكولات شهية', dataAiHint: 'sweets treats', color: 'text-accent-yellow', bgColor: 'bg-accent-yellow/10 hover:bg-accent-yellow/15' },
-  { name: 'لمسات منزلية وديكور', icon: Home, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
+  { name: 'لمسات منزلية وديكور', icon: HomeIcon, href: '/products?category=مستلزمات منزلية وديكور', dataAiHint: 'home decor', color: 'text-accent-purple', bgColor: 'bg-accent-purple/10 hover:bg-accent-purple/15' },
   { name: 'تأجير إبداعات', icon: CalendarDays, href: '/products?category=منتجات للإيجار', dataAiHint: 'rental items', color: 'text-accent-teal', bgColor: 'bg-accent-teal/10 hover:bg-accent-teal/15' },
   { name: 'خدمات احترافية', icon: Briefcase, href: '/products?category=خدمات', dataAiHint: 'professional services', color: 'text-secondary', bgColor: 'bg-secondary/10 hover:bg-secondary/15' },
 ];
@@ -119,12 +120,11 @@ export default function HomePage() {
       >
       <HeroSection />
       
-      {/* Seller CTA */}
       <motion.div
+        variants={sectionVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
-        variants={sectionVariants}
       >
         <CallToActionBanner
           title="انضمي إلى مبدعات لمسة ضحى!"
@@ -134,26 +134,25 @@ export default function HomePage() {
           imageSrc="https://picsum.photos/seed/cta-seller/1200/400"
           dataAiHint="women entrepreneurs working"
           icon={Rocket}
-          accentColor="hsl(var(--accent-pink))" // Example of passing accent color
+          accentColor="hsl(var(--accent-pink))" 
         />
       </motion.div>
 
-      {/* Categories Section */}
       <motion.section
             id="categories"
             className="py-16 lg:py-24 bg-secondary/10"
+            variants={sectionVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
-            variants={sectionVariants}
          >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div className="text-center mb-12" variants={simpleFadeInUp}>
                     <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl flex items-center justify-center gap-3">
-                       <PackageSearch size={36} className="text-accent-pink"/> تصفحي عالمنا الإبداعي
+                       <PackageSearch size={36} className="text-accent-pink"/> استكشفي عالم الإبداع النسائي
                     </h2>
                     <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-                       اكتشفي فئات متنوعة تلبي كل شغف واهتمام، من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة.
+                       من لمسات الأناقة إلى إبداعات المنزل والخدمات المميزة، كل ما تحتاجينه وأكثر في مكان واحد.
                     </p>
                 </motion.div>
                 <motion.div
@@ -186,7 +185,6 @@ export default function HomePage() {
             </div>
         </motion.section>
       
-        {/* Shopper CTA */}
         <motion.div
             variants={sectionVariants}
             initial="hidden"
@@ -202,7 +200,7 @@ export default function HomePage() {
             dataAiHint="happy woman shopping online"
             icon={ShoppingBasket}
             reverseLayout={true}
-            accentColor="hsl(var(--accent-yellow))" // Example for shopper CTA
+            accentColor="hsl(var(--accent-yellow))" 
             />
         </motion.div>
         
@@ -237,18 +235,18 @@ export default function HomePage() {
 
         <div className="py-12 bg-muted/30 text-center">
             <motion.div
+                variants={sectionVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}
-                variants={sectionVariants}
             >
                 <h3 className="text-2xl font-semibold text-primary mb-4">إدارة المنصة</h3>
                 <p className="text-foreground/80 mb-6 max-w-md mx-auto">
                     وصول سريع إلى لوحة التحكم الإدارية لإدارة كافة جوانب منصة لمسة ضحى. (للمسؤولين فقط)
                 </p>
-                 <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                 <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground group">
                    <Link href="/admin">
-                       <LayoutDashboard className="mr-2 h-4 w-4" /> الذهاب للوحة التحكم الكاملة
+                       <LayoutDashboard className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-[10deg]" /> الذهاب للوحة التحكم الكاملة
                    </Link>
                 </Button>
             </motion.div>
