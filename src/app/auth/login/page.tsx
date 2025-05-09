@@ -8,10 +8,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/label'; // Label for direct use
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'; // For RHF
 import { useToast } from '@/hooks/use-toast';
-import { LogIn, Mail, KeyRound, UserPlus } from 'lucide-react';
-import { WomenCommerceLogo } from '@/components/icons/logo'; // Will be LamsaDohaLogo
+import { LogIn, Mail, KeyRound, UserPlus, Loader2 } from 'lucide-react';
+import { WomenCommerceLogo } from '@/components/icons/logo'; 
+import { useRouter } from 'next/navigation';
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "الرجاء إدخال عنوان بريد إلكتروني صالح." }),
@@ -22,31 +24,67 @@ type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
+  const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    }
   });
 
+  const { handleSubmit, control, formState: { errors, isSubmitting } } = form;
+
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
-    // Simulate API call for login
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Login Attempt:', data);
-    toast({
-      title: 'تم تسجيل الدخول بنجاح (محاكاة)',
-      description: "أهلاً بكِ مجددًا في لمسة ضحى!",
-      variant: 'default',
-    });
-    reset();
+    try {
+      // Simulate API call for login
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      // Simulate login success/failure
+      if (data.email === "user@example.com" && data.password === "password123") {
+        toast({
+          title: 'تم تسجيل الدخول بنجاح!',
+          description: "أهلاً بكِ مجددًا في لمسة ضحى! جاري توجيهك...",
+          variant: 'default',
+        });
+        // Redirect to dashboard or home page on success
+        router.push('/'); 
+      } else if (data.email === "admin@example.com" && data.password === "password123") {
+        toast({
+          title: 'تم تسجيل دخول المسؤول بنجاح!',
+          description: "أهلاً بكِ في لوحة تحكم لمسة ضحى! جاري توجيهك...",
+          variant: 'default',
+        });
+        router.push('/admin');
+      } else if (data.email === "seller@example.com" && data.password === "password123") {
+        toast({
+          title: 'تم تسجيل دخول المبدعة بنجاح!',
+          description: "أهلاً بكِ في لوحة تحكم متجرك! جاري توجيهك...",
+          variant: 'default',
+        });
+        router.push('/dashboard');
+      } else {
+        toast({
+          title: 'فشل تسجيل الدخول',
+          description: "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
+          variant: 'destructive',
+        });
+      }
+      // form.reset(); // Reset only on success or if you want to clear fields on error too
+    } catch (error) {
+        console.error("Login error:", error);
+        toast({
+            title: 'خطأ في النظام',
+            description: "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا.",
+            variant: 'destructive',
+        });
+    }
   };
 
   if (!isClient) {
@@ -79,46 +117,61 @@ export default function LoginPage() {
             سجلي دخولك للمتابعة إلى حسابك في لمسة ضحى.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="p-6 sm:p-8 space-y-6">
-            <div>
-              <Label htmlFor="email" className="flex items-center mb-1">
-                <Mail size={16} className="mr-2 text-accent-pink" /> عنوان البريد الإلكتروني
-              </Label>
-              <Input 
-                id="email" 
-                type="email" 
-                {...register('email')} 
-                placeholder="you@example.com" 
-                className={errors.email ? 'border-destructive' : ''}
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <CardContent className="p-6 sm:p-8 space-y-6">
+              <FormField
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center mb-1">
+                      <Mail size={16} className="mr-2 text-accent-pink" /> عنوان البريد الإلكتروني
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="you@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>}
-            </div>
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <Label htmlFor="password" className="flex items-center">
-                  <KeyRound size={16} className="mr-2 text-accent-pink" /> كلمة المرور
-                </Label>
-                <Link href="/auth/forgot-password" passHref>
-                  <Button variant="link" size="sm" className="p-0 h-auto text-xs text-accent-purple hover:underline">
-                    هل نسيت كلمة المرور؟
-                  </Button>
-                </Link>
-              </div>
-              <Input 
-                id="password" 
-                type="password" 
-                {...register('password')} 
-                placeholder="••••••••" 
-                className={errors.password ? 'border-destructive' : ''}
+              <FormField
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex justify-between items-center mb-1">
+                      <FormLabel className="flex items-center">
+                        <KeyRound size={16} className="mr-2 text-accent-pink" /> كلمة المرور
+                      </FormLabel>
+                      <Link href="/auth/forgot-password" passHref>
+                        <Button variant="link" size="sm" className="p-0 h-auto text-xs text-accent-purple hover:underline">
+                          هل نسيت كلمة المرور؟
+                        </Button>
+                      </Link>
+                    </div>
+                    <FormControl>
+                      <Input type="password" placeholder="••••••••" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              {errors.password && <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>}
-            </div>
-            <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
-              <LogIn size={18} className="mr-2" /> {isSubmitting ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
-            </Button>
-          </CardContent>
-        </form>
+              <Button type="submit" className="w-full bg-accent-yellow hover:bg-accent-yellow/90 text-accent-yellow-foreground" disabled={isSubmitting}>
+                {isSubmitting ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        جاري تسجيل الدخول...
+                    </>
+                ) : (
+                    <>
+                        <LogIn size={18} className="mr-2" /> تسجيل الدخول
+                    </>
+                )}
+              </Button>
+            </CardContent>
+          </form>
+        </Form>
         <CardFooter className="p-6 sm:p-8 border-t bg-secondary/10 rounded-b-lg">
           <p className="text-sm text-center w-full text-foreground/80">
             ليس لديك حساب؟{' '}

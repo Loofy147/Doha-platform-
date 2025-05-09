@@ -1,99 +1,199 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/label"; // Keep for non-RHF labels if any
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Save } from "lucide-react";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+const settingsFormSchema = z.object({
+  platformName: z.string().min(3, { message: "اسم المنصة يجب ألا يقل عن 3 أحرف." }).max(50, { message: "اسم المنصة طويل جدًا." }),
+  platformDescription: z.string().max(250, { message: "الوصف طويل جدًا." }).optional(),
+  adminEmail: z.string().email({ message: "الرجاء إدخال بريد إلكتروني صالح." }),
+  defaultCommission: z.coerce.number().min(0, { message: "العمولة لا يمكن أن تكون سالبة."}).max(100, { message: "العمولة لا يمكن أن تتجاوز 100%."}),
+  enableSubscriptionDiscounts: z.boolean().optional(),
+  enableLiveShopping: z.boolean().optional(),
+  enableAISuggestions: z.boolean().optional(),
+  maintenanceMode: z.boolean().optional(),
+});
+
+type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
 export function SettingsForm() {
     const { toast } = useToast();
-    // Add state management for form fields if needed for controlled components
-    // e.g., const [platformName, setPlatformName] = useState("لمسة ضحى");
+    const form = useForm<SettingsFormValues>({
+        resolver: zodResolver(settingsFormSchema),
+        defaultValues: { // Fetch these from backend in a real app
+            platformName: "لمسة ضحى",
+            platformDescription: "إبداع يلامس حياتك",
+            adminEmail: "admin@lamsadoha.com",
+            defaultCommission: 10,
+            enableSubscriptionDiscounts: false,
+            enableLiveShopping: true,
+            enableAISuggestions: true,
+            maintenanceMode: false,
+        },
+    });
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Add form submission logic here
-        const formData = new FormData(e.currentTarget);
-        const platformName = formData.get('platformName');
-        console.log("Saving settings (simulated):", { platformName });
-        toast({
-            title: "تم حفظ الإعدادات (محاكاة)",
-            description: "تم تحديث إعدادات المنصة بنجاح.",
-            variant: "default",
-        });
+    const { handleSubmit, control, formState: { isSubmitting, errors } } = form;
+
+    const onSubmit: SubmitHandler<SettingsFormValues> = async (data) => {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+          console.log("Saving settings (simulated):", data);
+          toast({
+              title: "تم حفظ الإعدادات بنجاح (محاكاة)",
+              description: "تم تحديث إعدادات المنصة بنجاح.",
+              variant: "default",
+          });
+        } catch (error) {
+            console.error("Failed to save settings:", error);
+            toast({
+              title: "فشل حفظ الإعدادات",
+              description: "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+              variant: "destructive",
+            });
+        }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>الإعدادات العامة</CardTitle>
+                <Card className="shadow-lg border border-primary/10">
+                    <CardHeader className="bg-primary/5">
+                        <CardTitle className="text-primary">الإعدادات العامة</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <Label htmlFor="platformName">اسم المنصة</Label>
-                            <Input id="platformName" name="platformName" defaultValue="لمسة ضحى" />
-                        </div>
-                        <div>
-                            <Label htmlFor="platformDescription">شعار/وصف المنصة</Label>
-                            <Textarea id="platformDescription" name="platformDescription" defaultValue="إبداع يلامس حياتك" rows={2}/>
-                        </div>
-                        <div>
-                            <Label htmlFor="adminEmail">البريد الإلكتروني لجهة الاتصال الإدارية</Label>
-                            <Input id="adminEmail" name="adminEmail" type="email" defaultValue="admin@lamsadoha.com" />
-                        </div>
+                    <CardContent className="space-y-6 pt-6">
+                        <FormField
+                            control={control}
+                            name="platformName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>اسم المنصة</FormLabel>
+                                    <FormControl><Input {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="platformDescription"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>شعار/وصف المنصة</FormLabel>
+                                    <FormControl><Textarea {...field} rows={2} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="adminEmail"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>البريد الإلكتروني لجهة الاتصال الإدارية</FormLabel>
+                                    <FormControl><Input type="email" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>العمولة والرسوم</CardTitle>
+                <Card className="shadow-lg border border-primary/10">
+                    <CardHeader className="bg-primary/5">
+                        <CardTitle className="text-primary">العمولة والرسوم</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <Label htmlFor="defaultCommission">نسبة العمولة الافتراضية (%)</Label>
-                            <Input id="defaultCommission" name="defaultCommission" type="number" defaultValue="10" />
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            {/* Use name attribute if Switch is part of the form data */}
-                            <Switch id="enableSubscriptionDiscounts" name="enableSubscriptionDiscounts" />
-                            <Label htmlFor="enableSubscriptionDiscounts" className="text-sm">تفعيل خصومات العمولة للمبدعات المشتركات</Label>
-                        </div>
+                    <CardContent className="space-y-6 pt-6">
+                         <FormField
+                            control={control}
+                            name="defaultCommission"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>نسبة العمولة الافتراضية (%)</FormLabel>
+                                    <FormControl><Input type="number" {...field} onChange={e => field.onChange(parseFloat(e.target.value))}/></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="enableSubscriptionDiscounts"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-muted/30">
+                                    <div className="space-y-0.5">
+                                        <FormLabel>تفعيل خصومات العمولة للمبدعات المشتركات</FormLabel>
+                                    </div>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>إدارة الميزات</CardTitle>
+                <Card className="shadow-lg border border-primary/10">
+                    <CardHeader className="bg-primary/5">
+                        <CardTitle className="text-primary">إدارة الميزات</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="enableLiveShopping" className="text-sm">تفعيل ميزة التسوق المباشر</Label>
-                            <Switch id="enableLiveShopping" name="enableLiveShopping" defaultChecked />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="enableAISuggestions" className="text-sm">تفعيل اقتراحات وصف المنتج بالذكاء الاصطناعي</Label>
-                            <Switch id="enableAISuggestions" name="enableAISuggestions" defaultChecked />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="maintenanceMode" className="text-sm">تفعيل وضع الصيانة</Label>
-                            <Switch id="maintenanceMode" name="maintenanceMode" />
-                        </div>
+                    <CardContent className="space-y-4 pt-6">
+                       <FormField
+                            control={control}
+                            name="enableLiveShopping"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-muted/30">
+                                    <FormLabel>تفعيل ميزة التسوق المباشر</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="enableAISuggestions"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-muted/30">
+                                    <FormLabel>تفعيل اقتراحات وصف المنتج بالذكاء الاصطناعي</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="maintenanceMode"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-muted/30">
+                                    <FormLabel>تفعيل وضع الصيانة</FormLabel>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
 
                 <CardFooter className="border-t pt-6 flex justify-end">
-                    <Button type="submit">
-                        <Save className="mr-2 h-4 w-4" /> حفظ الإعدادات
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                جاري الحفظ...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="mr-2 h-4 w-4" /> حفظ الإعدادات
+                            </>
+                        )}
                     </Button>
                 </CardFooter>
             </div>
         </form>
+      </Form>
     );
 }

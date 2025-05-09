@@ -1,73 +1,191 @@
 'use client';
 
+import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/label"; // Keep Label for non-Form fields if any
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
+import { Loader2, PackagePlus } from "lucide-react"; // Added PackagePlus
+
+// Mock categories, replace with actual data fetching in a real app
+const mockCategories = [
+  { id: 'cat1', name: 'أزياء وإكسسوارات' },
+  { id: 'cat2', name: 'مستلزمات منزلية وديكور' },
+  { id: 'cat3', name: 'جمال وعناية شخصية' },
+  { id: 'cat4', name: 'حلويات ومأكولات شهية' },
+  { id: 'cat5', name: 'منتجات للإيجار' },
+  { id: 'cat6', name: 'خدمات احترافية' },
+  { id: 'cat7', name: 'أخرى' },
+];
+
+const productFormSchema = z.object({
+  productName: z.string().min(3, { message: "اسم المنتج يجب أن يتكون من 3 أحرف على الأقل." }).max(100, { message: "اسم المنتج طويل جدًا." }),
+  productDescription: z.string().min(10, { message: "الوصف يجب أن يكون 10 أحرف على الأقل." }).max(1000, { message: "الوصف طويل جدًا." }).optional(),
+  productPrice: z.coerce.number({ invalid_type_error: "السعر يجب أن يكون رقمًا." }).positive({ message: "السعر يجب أن يكون إيجابيًا." }).optional(),
+  productCategory: z.string({ required_error: "يرجى تحديد فئة المنتج." }),
+  productImages: z.any().optional(), // Basic handling for now, can be refined with FileList validation
+  // Add more fields as needed: SKU, stock, rental terms, service duration etc.
+});
+
+type ProductFormValues = z.infer<typeof productFormSchema>;
 
 export function NewProductForm() {
     const { toast } = useToast();
-    const router = useRouter(); // Get router instance
+    const router = useRouter();
+    const form = useForm<ProductFormValues>({
+        resolver: zodResolver(productFormSchema),
+        defaultValues: {
+            productName: "",
+            productDescription: "",
+            productCategory: undefined,
+        },
+    });
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const productName = formData.get('productName');
-        // Add more form data extraction and submission logic here
-        console.log("Saving new product (simulated):", productName);
-        toast({
-            title: "تم حفظ المنتج (محاكاة)",
-            description: `تمت إضافة المنتج "${productName}" بنجاح.`,
-            variant: "default",
-        });
-        // Redirect back to products list after successful submission
-        router.push('/admin/products');
+    const { handleSubmit, control, formState: { isSubmitting, errors } } = form;
+
+    const onSubmit: SubmitHandler<ProductFormValues> = async (data) => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+            console.log("Saving new product (simulated):", data);
+            toast({
+                title: "تم إضافة المنتج بنجاح (محاكاة)",
+                description: `تمت إضافة المنتج "${data.productName}" وجاري توجيهك لقائمة المنتجات.`,
+                variant: "default",
+            });
+            router.push('/admin/products');
+        } catch (error) {
+            console.error("Failed to save product:", error);
+            toast({
+                title: "فشل حفظ المنتج",
+                description: "حدث خطأ أثناء محاولة حفظ المنتج. يرجى المحاولة مرة أخرى.",
+                variant: "destructive",
+            });
+        }
     };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>تفاصيل المنتج/الخدمة الجديدة</CardTitle>
+        <Card className="shadow-xl border border-primary/10">
+            <CardHeader className="bg-primary/5">
+                <CardTitle className="text-primary flex items-center">
+                  <PackagePlus className="mr-2 h-6 w-6 text-accent-pink" /> تفاصيل المنتج/الخدمة الجديدة
+                </CardTitle>
             </CardHeader>
-            <form onSubmit={handleSubmit}>
-                <CardContent className="space-y-6">
-                    <div>
-                        <Label htmlFor="productName">اسم المنتج/الخدمة</Label>
-                        <Input id="productName" name="productName" placeholder="مثال: مزهرية سيراميك مصنوعة يدوياً" required />
-                    </div>
-                    <div>
-                        <Label htmlFor="productDescription">الوصف</Label>
-                        <Textarea id="productDescription" name="productDescription" placeholder="وصف تفصيلي للمنتج/الخدمة..." rows={4} />
-                    </div>
-                    <div>
-                        <Label htmlFor="productPrice">السعر (دج)</Label>
-                        <Input id="productPrice" name="productPrice" type="number" placeholder="مثال: 2500" />
-                    </div>
-                    <div>
-                        <Label htmlFor="productCategory">الفئة</Label>
-                        {/* Replace with Select component when available */}
-                        <Input id="productCategory" name="productCategory" placeholder="مثال: ديكور منزلي" />
-                    </div>
-                    <div>
-                        <Label htmlFor="productImages">صور المنتج/الخدمة</Label>
-                        <Input id="productImages" name="productImages" type="file" multiple />
-                        <p className="text-xs text-muted-foreground mt-1">قم بتحميل صورة واحدة أو أكثر للمنتج.</p>
-                    </div>
-
-                    {/* Add more fields as needed: SKU, stock, rental terms, service duration etc. */}
-
-                </CardContent>
-                <CardFooter className="border-t pt-6 flex justify-end gap-2">
-                    <Button variant="outline" asChild type="button"> {/* Add type="button" to prevent form submission */}
-                        <Link href="/admin/products">إلغاء</Link>
-                    </Button>
-                    <Button type="submit">حفظ المنتج</Button>
-                </CardFooter>
-            </form>
+            <Form {...form}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <CardContent className="space-y-8 pt-6">
+                        <FormField
+                            control={control}
+                            name="productName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>اسم المنتج/الخدمة</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="مثال: مزهرية سيراميك مصنوعة يدوياً" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="productDescription"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>الوصف</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="وصف تفصيلي للمنتج/الخدمة، يسلط الضوء على مميزاته..." {...field} rows={4} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                           <FormField
+                                control={control}
+                                name="productPrice"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>السعر (دج)</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" placeholder="مثال: 2500" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={control}
+                                name="productCategory"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>الفئة</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="اختر الفئة المناسبة" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {mockCategories.map(cat => (
+                                                    <SelectItem key={cat.id} value={cat.id}>
+                                                        {cat.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <FormField
+                            control={control}
+                            name="productImages"
+                            render={({ field }) => ( // `field` includes `onChange`, `onBlur`, `value`, `name`, `ref`
+                                <FormItem>
+                                    <FormLabel>صور المنتج/الخدمة</FormLabel>
+                                    <FormControl>
+                                        <Input 
+                                            type="file" 
+                                            multiple 
+                                            accept="image/*"
+                                            onChange={(e) => field.onChange(e.target.files)} // Pass FileList to RHF
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        قم بتحميل صورة واحدة أو أكثر للمنتج (بحد أقصى 5 صور).
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {/* Add more fields as needed: SKU, stock, rental terms, service duration etc. */}
+                    </CardContent>
+                    <CardFooter className="border-t pt-6 flex justify-end gap-3">
+                        <Button variant="outline" asChild type="button" disabled={isSubmitting}>
+                            <Link href="/admin/products">إلغاء</Link>
+                        </Button>
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    جاري الحفظ...
+                                </>
+                            ) : (
+                                'حفظ المنتج'
+                            )}
+                        </Button>
+                    </CardFooter>
+                </form>
+            </Form>
         </Card>
     );
 }
