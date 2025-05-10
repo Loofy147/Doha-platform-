@@ -26,8 +26,33 @@ export const MOCK_CATEGORIES_FOR_FORMS = [
   { id: 'cat_other', name: 'أخرى' },
 ];
 
-export const PRODUCT_STATUSES = ['الكل', 'نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'];
+export const PRODUCT_STATUSES = ['الكل', 'نشط', 'غير نشط', 'بانتظار الموافقة', 'نفذ المخزون'] as const;
 export type ProductTypeConstant = 'بيع' | 'إيجار' | 'خدمة';
 export const PRODUCT_TYPES_CONSTANTS: (ProductTypeConstant | 'الكل')[] = ['الكل', 'بيع', 'إيجار', 'خدمة'];
 
-export type SortOptionConstant = 'dateAddedDesc' | 'dateAddedAsc' | 'nameAsc' | 'nameDesc' | 'priceAsc' | 'priceDesc' | 'stockAsc' | 'stockDesc';
+export type SortOptionConstant = 
+  | 'dateAddedDesc' 
+  | 'dateAddedAsc' 
+  | 'nameAsc' 
+  | 'nameDesc' 
+  | 'priceAsc' 
+  | 'priceDesc' 
+  | 'stockAsc' 
+  | 'stockDesc'
+  | 'salesDesc'      // New: Bestsellers
+  | 'ratingDesc';    // New: Top Rated
+
+export const SORT_OPTIONS: { value: SortOptionConstant; label: string }[] = [
+    { value: 'dateAddedDesc', label: 'الأحدث أولاً' },
+    { value: 'dateAddedAsc', label: 'الأقدم أولاً' },
+    { value: 'nameAsc', label: 'الاسم (أ-ي)' },
+    { value: 'nameDesc', label: 'الاسم (ي-أ)' },
+    { value: 'priceAsc', label: 'السعر (من الأقل)' },
+    { value: 'priceDesc', label: 'السعر (من الأعلى)' },
+    { value: 'stockAsc', label: 'المخزون (من الأقل)' },
+    { value: 'stockDesc', label: 'المخزون (من الأعلى)' },
+    { value: 'salesDesc', label: 'الأكثر مبيعًا' },
+    { value: 'ratingDesc', label: 'الأعلى تقييمًا' },
+];
+
+```

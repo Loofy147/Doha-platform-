@@ -10,25 +10,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Eye, Filter, Search, ShoppingBag, CalendarClock, Handshake, PackageSearch, DollarSign } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { getAllPlatformItems, type Product as StoreProduct, type Service as StoreService, type ItemType as PublicItemType } from '@/lib/data/mock-store-data';
+import { getAllPlatformItems, type Product as PublicProduct, type Service as PublicService, type ItemType as PublicItemType } from '@/lib/data/mock-store-data';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { UNIQUE_PRODUCT_CATEGORIES, PRODUCT_TYPES_CONSTANTS, type ProductTypeConstant } from '@/lib/constants/categories';
+import { UNIQUE_PRODUCT_CATEGORIES, PRODUCT_TYPES_CONSTANTS, type ProductTypeConstant, SORT_OPTIONS, type SortOptionConstant } from '@/lib/constants/categories';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 
 
-type DisplayItem = (StoreProduct | StoreService) & { 
+type DisplayItem = (PublicProduct | PublicService) & { 
   itemType: 'product' | 'service'; 
   sellerName: string; 
   storeSlug: string;
-  effectivePrice: number; // Added for price filtering
+  effectivePrice: number;
+  dateAdded: string; // Made mandatory for reliable date sorting
+  salesCount?: number; // Added for "Bestsellers" sorting
+  averageRating?: number; // Added for "Top Rated" sorting
+  stockCount?: number; // Added for stock sorting for products
 };
 
 const categoriesForFilter = ['الكل', ...UNIQUE_PRODUCT_CATEGORIES];
-const MAX_PRICE = 20000; // Example max price for slider
+const MAX_PRICE = 20000; 
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -39,11 +43,12 @@ export default function ProductsPage() {
 
   const [isClient, setIsClient] = useState(false);
   const [allItems, setAllItems] = useState<DisplayItem[]>([]);
-  const [filteredItems, setFilteredItems] = useState<DisplayItem[]>([]);
+  const [displayedItems, setDisplayedItems] = useState<DisplayItem[]>([]); // Items after all filters and sort
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'الكل');
   const [selectedType, setSelectedType] = useState<typeof PRODUCT_TYPES_CONSTANTS[number]>(initialType || 'الكل');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, MAX_PRICE]);
+  const [sortBy, setSortBy] = useState<SortOptionConstant>('dateAddedDesc');
   const [selectedItem, setSelectedItem] = useState<DisplayItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -52,15 +57,23 @@ export default function ProductsPage() {
     const platformItems = getAllPlatformItems().map(item => {
       let effectivePrice = 0;
       if (item.itemType === 'product') {
-        const product = item as StoreProduct;
+        const product = item as PublicProduct;
         effectivePrice = product.rawPrice || 0;
         if (product.discountPercentage && parseInt(product.discountPercentage) > 0 && product.rawPrice) {
           effectivePrice = product.rawPrice * (1 - parseInt(product.discountPercentage) / 100);
         }
       } else if (item.itemType === 'service') {
-        effectivePrice = (item as StoreService).rawPrice || 0;
+        effectivePrice = (item as PublicService).rawPrice || 0;
       }
-      return { ...item, effectivePrice };
+      return { 
+        ...item, 
+        effectivePrice,
+        // Ensure dateAdded, salesCount, averageRating, stockCount are available on DisplayItem
+        dateAdded: item.dateAdded, 
+        salesCount: item.salesCount,
+        averageRating: item.averageRating,
+        stockCount: item.itemType === 'product' ? (item as PublicProduct).stockCount : undefined,
+      };
     });
     setAllItems(platformItems);
   }, []);
@@ -77,14 +90,49 @@ export default function ProductsPage() {
       items = items.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (p.itemType === 'product' ? (p as StoreProduct).sellerId.toLowerCase().includes(searchTerm.toLowerCase()) : (p as StoreService).sellerId.toLowerCase().includes(searchTerm.toLowerCase()))
+        (p.itemType === 'product' ? (p as PublicProduct).sellerId.toLowerCase().includes(searchTerm.toLowerCase()) : (p as PublicService).sellerId.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-    // Price range filter
     items = items.filter(p => p.effectivePrice >= priceRange[0] && p.effectivePrice <= priceRange[1]);
+    
+    // Sorting
+    switch (sortBy) {
+        case 'dateAddedDesc':
+            items.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime());
+            break;
+        case 'dateAddedAsc':
+            items.sort((a, b) => new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime());
+            break;
+        case 'nameAsc':
+            items.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+            break;
+        case 'nameDesc':
+            items.sort((a, b) => b.name.localeCompare(a.name, 'ar'));
+            break;
+        case 'priceAsc':
+            items.sort((a, b) => a.effectivePrice - b.effectivePrice);
+            break;
+        case 'priceDesc':
+            items.sort((a, b) => b.effectivePrice - a.effectivePrice);
+            break;
+        case 'stockAsc': // Assumes 'product' type and stockCount exists
+            items.sort((a, b) => (a.stockCount ?? Infinity) - (b.stockCount ?? Infinity));
+            break;
+        case 'stockDesc': // Assumes 'product' type and stockCount exists
+            items.sort((a, b) => (b.stockCount ?? -Infinity) - (a.stockCount ?? -Infinity));
+            break;
+        case 'salesDesc':
+            items.sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0));
+            break;
+        case 'ratingDesc':
+            items.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+            break;
+        default:
+            break;
+    }
 
-    setFilteredItems(items);
-  }, [selectedCategory, selectedType, searchTerm, priceRange, allItems]);
+    setDisplayedItems(items);
+  }, [selectedCategory, selectedType, searchTerm, priceRange, allItems, sortBy]);
 
   useEffect(() => {
     if (initialCategory) {
@@ -102,14 +150,14 @@ export default function ProductsPage() {
 
   const getItemPriceDisplay = (item: DisplayItem) => {
     if (item.itemType === 'product') {
-      const product = item as StoreProduct;
+      const product = item as PublicProduct;
       if (product.discountPercentage && parseInt(product.discountPercentage) > 0 && product.rawPrice) {
         return `${(product.rawPrice * (1 - parseInt(product.discountPercentage) / 100)).toLocaleString()} دج`;
       }
       return product.price; 
     }
     if (item.itemType === 'service') {
-      return (item as StoreService).price; 
+      return (item as PublicService).price; 
     }
     return 'السعر غير متوفر';
   };
@@ -140,8 +188,9 @@ export default function ProductsPage() {
           <Skeleton className="h-12 w-1/2 mx-auto mb-4" />
           <Skeleton className="h-6 w-3/4 mx-auto" />
         </div>
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center p-4 bg-card rounded-lg shadow">
-            <Skeleton className="h-10 flex-grow" />
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end p-4 bg-card rounded-lg shadow">
+            <Skeleton className="h-10 flex-grow md:col-span-2 lg:col-span-1" />
+            <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -178,7 +227,7 @@ export default function ProductsPage() {
         </p>
       </header>
 
-      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end p-4 bg-card rounded-lg shadow">
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end p-4 bg-card rounded-lg shadow">
         <div className="relative flex-grow w-full md:col-span-2 lg:col-span-1">
           <Label htmlFor="search-term">بحث</Label>
           <Search className="absolute left-3 top-1/2 mt-2.5 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -217,6 +266,19 @@ export default function ProductsPage() {
             </SelectContent>
           </Select>
         </div>
+        <div className="w-full">
+          <Label htmlFor="sort-by-filter">ترتيب حسب</Label>
+          <Select value={sortBy} onValueChange={(value: SortOptionConstant) => setSortBy(value)}>
+            <SelectTrigger id="sort-by-filter" className="w-full mt-1">
+              <SelectValue placeholder="ترتيب حسب" />
+            </SelectTrigger>
+            <SelectContent>
+                {SORT_OPTIONS.map(opt => (
+                     <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="w-full md:col-span-2 lg:col-span-1">
           <Label htmlFor="price-range-filter" className="flex justify-between items-center mb-1">
             <span>نطاق السعر (دج)</span>
@@ -235,9 +297,9 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {filteredItems.length > 0 ? (
+      {displayedItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredItems.map(item => (
+          {displayedItems.map(item => (
             <Card key={item.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col bg-card">
               <CardHeader className="p-0 relative">
                 <Link href={`/products/${item.id}`} passHref>
@@ -303,7 +365,7 @@ export default function ProductsPage() {
               </p>
             </DialogHeader>
             <DialogDescription className="text-base text-foreground/80 text-left py-4 max-h-[200px] overflow-y-auto">
-              {selectedItem.longDescription || selectedItem.description}
+              {(selectedItem as PublicProduct).longDescription || (selectedItem as PublicService).longDescription || selectedItem.description}
             </DialogDescription>
             <p className="text-2xl font-bold text-accent-pink mt-2 text-left">{getItemPriceDisplay(selectedItem)}</p>
             <DialogFooter className="mt-6 sm:justify-between items-center">
@@ -321,3 +383,5 @@ export default function ProductsPage() {
   );
 }
 
+
+```
