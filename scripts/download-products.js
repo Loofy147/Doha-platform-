@@ -1,102 +1,172 @@
-
-// الخطوة 1: تثبيت مكتبة Pexels (يتم عبر npm/yarn كما هو مذكور في package.json)
+// Step 1: Install Pexels library (via npm/yarn as mentioned in package.json)
 // npm install pexels --save
-// أو
+// or
 // yarn add pexels
 
-// تحميل مكتبة Pexels للتعامل مع API
+// Load Pexels library to interact with the API
 const { createClient } = require('pexels');
-// تحميل مكتبة fs للتعامل مع نظام الملفات
+// Load fs library to work with the file system
 const fs = require('fs');
-// تحميل مكتبة path للتعامل مع مسارات الملفات
+// Load path library to work with file paths
 const path = require('path');
-// تحميل متغيرات البيئة من ملف .env (مهم جداً لأمان مفتاح API)
+// Load environment variables from .env file (very important for API key security)
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 
-// التحقق من وجود مفتاح PEXELS_API_KEY
+// Check if PEXELS_API_KEY exists
 if (!process.env.PEXELS_API_KEY || process.env.PEXELS_API_KEY === "YOUR_PEXELS_API_KEY_HERE") {
-  console.error(" خطأ: متغير البيئة PEXELS_API_KEY غير معرف أو لم يتم تعيينه. يرجى إنشاء ملف .env في جذر المشروع وإضافة PEXELS_API_KEY=\"مفتاحك_هنا\" ");
-  process.exit(1); // إنهاء السكربت إذا لم يتم العثور على المفتاح
+  console.error(" Error: PEXELS_API_KEY environment variable is not defined or set. Please create a .env file in the project root and add PEXELS_API_KEY=\"YOUR_KEY_HERE\" ");
+  process.exit(1); // Exit the script if the key is not found
 }
 
-// إنشاء عميل Pexels باستخدام مفتاح API من متغيرات البيئة
+// Create a Pexels client using the API key from environment variables
 const client = createClient(process.env.PEXELS_API_KEY);
 
-// مصفوفة فئات المنتجات المراد تحميل صور لها
-const categories = ['shoes', 'bags', 'cosmetics'];
-// عدد الصور المطلوبة لكل فئة
-const imagesPerCategory = 5;
+// Load image requirements from image_requirements.json file
+const imageRequirements = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../image_requirements.json'), 'utf8'));
 
-// دالة رئيسية غير متزامنة لتنفيذ عمليات التحميل
+// Helper function to sanitize names for file paths
+function sanitizeCategoryName(name) {
+  // Replace slashes with hyphens and remove any characters that are not letters, numbers, spaces, or hyphens
+  // Then replace spaces with hyphens and convert to lowercase for consistency
+  return name
+    .replace(/\//g, '-') // Replace slashes with hyphens
+    .replace(/[^a-zA-Z0-9\s-]/g, '') // Remove invalid file name characters except space and hyphen
+    .replace(/\s+/g, '-') // Replace one or more spaces with a single hyphen
+    .toLowerCase(); // Convert to lowercase
+}
+
+// Main asynchronous function to perform download operations
 (async () => {
-  console.log(' بدء عملية تحميل صور المنتجات... ');
+  console.log(' Starting image download process... ');
   try {
-    // المرور على كل فئة في مصفوفة الفئات
-    for (const cat of categories) {
-      console.log(` جاري معالجة الفئة: ${cat} `);
-      // تحديد مسار المجلد الخاص بالفئة داخل public/assets/products
-      // Next.js يخدم الملفات الثابتة من مجلد 'public'
-      const dir = path.join(__dirname, '../public/assets/products/', cat);
-      
-      // إنشاء المجلد إذا لم يكن موجودًا بالفعل (recursive: true لإنشاء المجلدات الأصلية إذا لزم الأمر)
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-        console.log(` تم إنشاء المجلد: ${dir} `);
-      } else {
-        console.log(` المجلد ${dir} موجود بالفعل. `);
-      }
+    // Iterate through each business type requirement
+    for (const businessTypeReq of imageRequirements) {
+      const sanitizedBusinessType = sanitizeCategoryName(businessTypeReq.businessType);
+      console.log(` Processing business type: ${businessTypeReq.businessType} `);
 
-      // البحث عن صور في Pexels للفئة الحالية
-      console.log(` جاري البحث عن صور لـ "${cat}" في Pexels... `);
-      const response = await client.photos.search({ query: cat, per_page: imagesPerCategory });
+      // Process general images for the business type
+      if (businessTypeReq.generalImages) {
+        for (const generalImageReq of businessTypeReq.generalImages) {
+          const sanitizedPlacement = sanitizeCategoryName(generalImageReq.placement);
+          const query = generalImageReq.keywords.join(',');
+          const count = generalImageReq.count;
 
-      // التحقق من وجود صور في الاستجابة
-      if (response.photos && response.photos.length > 0) {
-        console.log(` تم العثور على ${response.photos.length} صور للفئة ${cat}. جاري تحميلها... `);
-        // المرور على الصور التي تم العثور عليها
-        for (let i = 0; i < response.photos.length; i++) {
-          const photo = response.photos[i];
-          // استخدام الرابط الخاص بالصورة الكبيرة (يمكن اختيار أحجام أخرى مثل medium, original)
-          const imageUrl = photo.src.large;
-          // تحديد اسم ومسار الملف للصورة المحملة
-          const filename = path.join(dir, `${cat}-${i + 1}.jpg`);
+          const dir = path.join(__dirname, '../public/assets/products/', sanitizedBusinessType, 'general', sanitizedPlacement);
 
+          // Create the directory if it doesn't exist
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+            console.log(` Created directory: ${dir} `);
+          } else {
+            console.log(` Directory ${dir} already exists. `);
+          }
+
+          console.log(` Searching Pexels for "${query}" (${count} images)... `);
           try {
-            // جلب بيانات الصورة من الرابط
-            console.log(` جاري تحميل الصورة: ${imageUrl} `);
-            const imageResponse = await fetch(imageUrl);
-            // التأكد من أن الاستجابة ناجحة
-            if (!imageResponse.ok) {
-              console.error(` خطأ في تحميل الصورة ${imageUrl}: ${imageResponse.statusText} `);
-              continue; // الانتقال إلى الصورة التالية في حال حدوث خطأ
+            const response = await client.photos.search({ query: query, per_page: count });
+
+            if (response.photos && response.photos.length > 0) {
+              console.log(` Found ${response.photos.length} images. Downloading... `);
+              for (let i = 0; i < response.photos.length; i++) {
+                const photo = response.photos[i];
+                const imageUrl = photo.src.large; // Using large size
+                const filename = path.join(dir, `${sanitizedBusinessType}-general-${sanitizedPlacement}-${i + 1}.jpg`);
+
+                try {
+                  console.log(` Downloading image: ${imageUrl} `);
+                  const imageResponse = await fetch(imageUrl);
+                  if (!imageResponse.ok) {
+                    console.error(` Error downloading image ${imageUrl}: ${imageResponse.statusText} `);
+                    continue; // Skip to the next image on error
+                  }
+                  const arrayBuffer = await imageResponse.arrayBuffer();
+                  fs.writeFileSync(filename, Buffer.from(arrayBuffer));
+                  console.log(` ✅ Downloaded and saved image: ${filename} `);
+                } catch (fetchError) {
+                  console.error(` Error fetching or saving image ${filename}: `, fetchError);
+                }
+              }
+            } else {
+              console.warn(` ⚠️ No images found for: "${query}" `);
             }
-            // تحويل بيانات الصورة إلى ArrayBuffer
-            const arrayBuffer = await imageResponse.arrayBuffer();
-            // كتابة بيانات الصورة في الملف المحدد
-            fs.writeFileSync(filename, Buffer.from(arrayBuffer));
-            console.log(` ✅ تم تحميل وحفظ الصورة: ${filename} `);
-          } catch (fetchError) {
-            console.error(` خطأ أثناء جلب أو حفظ الصورة ${filename}: `, fetchError);
+          } catch (searchError) {
+             console.error(` ❌ Error searching Pexels for "${query}": `, searchError);
           }
         }
-      } else {
-        console.warn(` ⚠️ لم يتم العثور على صور للفئة: ${cat} `);
       }
-      console.log(`----- انتهت معالجة الفئة: ${cat} -----`);
+
+      // Process images for specific categories within the business type
+      if (businessTypeReq.categories) {
+        for (const categoryReq of businessTypeReq.categories) {
+          const sanitizedCategory = sanitizeCategoryName(categoryReq.name);
+          console.log(`   Processing category: ${categoryReq.name} `);
+
+          if (categoryReq.imageUsage) {
+            for (const imageUsageReq of categoryReq.imageUsage) {
+              const sanitizedPlacement = sanitizeCategoryName(imageUsageReq.placement);
+              const query = imageUsageReq.keywords.join(',');
+              const count = imageUsageReq.count;
+
+              const dir = path.join(__dirname, '../public/assets/products/', sanitizedBusinessType, sanitizedCategory, sanitizedPlacement);
+
+              // Create the directory if it doesn't exist
+              if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+                console.log(` Created directory: ${dir} `);
+              } else {
+                console.log(` Directory ${dir} already exists. `);
+              }
+
+              console.log(`   Searching Pexels for "${query}" (${count} images)... `);
+              try {
+                const response = await client.photos.search({ query: query, per_page: count });
+
+                if (response.photos && response.photos.length > 0) {
+                  console.log(`   Found ${response.photos.length} images. Downloading... `);
+                  for (let i = 0; i < response.photos.length; i++) {
+                    const photo = response.photos[i];
+                    const imageUrl = photo.src.large; // Using large size
+                    const filename = path.join(dir, `${sanitizedBusinessType}-${sanitizedCategory}-${sanitizedPlacement}-${i + 1}.jpg`);
+
+                    try {
+                      console.log(`   Downloading image: ${imageUrl} `);
+                      const imageResponse = await fetch(imageUrl);
+                      if (!imageResponse.ok) {
+                        console.error(`   Error downloading image ${imageUrl}: ${imageResponse.statusText} `);
+                        continue; // Skip to the next image on error
+                      }
+                      const arrayBuffer = await imageResponse.arrayBuffer();
+                      fs.writeFileSync(filename, Buffer.from(arrayBuffer));
+                      console.log(`   ✅ Downloaded and saved image: ${filename} `);
+                    } catch (fetchError) {
+                      console.error(`   ❌ Error fetching or saving image ${filename}: `, fetchError);
+                    }
+                  }
+                } else {
+                  console.warn(`   ⚠️ No images found for: "${query}" `);
+                }
+              } catch (searchError) {
+                 console.error(`   ❌ Error searching Pexels for "${query}": `, searchError);
+              }
+            }
+          }
+        }
+      }
+      console.log(`----- Finished processing business type: ${businessTypeReq.businessType} -----`);
     }
-    console.log(' 🎉 انتهت عملية تحميل جميع صور المنتجات بنجاح! ');
+    console.log(' 🎉 Finished downloading all specified images successfully! ');
   } catch (error) {
-    // معالجة الأخطاء العامة التي قد تحدث أثناء تنفيذ السكربت
-    console.error(" ❌ حدث خطأ عام أثناء عملية تحميل الصور: ", error);
+    // Handle general errors that may occur during script execution
+    console.error(" ❌ A general error occurred during the image download process: ", error);
     if (error.message && error.message.includes('401')) {
-      console.error(" قد يكون مفتاح PEXELS API غير صالح أو انتهت صلاحيته. يرجى التحقق منه في ملف .env. ");
+      console.error(" Your PEXELS API key might be invalid or expired. Please check it in the .env file. ");
     }
   }
 })();
 
-// لتشغيل هذا السكربت:
-// 1. تأكد من تثبيت pexels و dotenv: npm install pexels dotenv أو yarn add pexels dotenv
-// 2. أنشئ ملف .env في جذر المشروع وأضف PEXELS_API_KEY="YOUR_ACTUAL_API_KEY"
-// 3. قم بتشغيل السكربت باستخدام: node scripts/download-products.js
-// أو عبر السكربت المضاف في package.json: npm run download:products
+// To run this script:
+// 1. Make sure you have pexels and dotenv installed: npm install pexels dotenv or yarn add pexels dotenv
+// 2. Create a .env file in the project root and add PEXELS_API_KEY="YOUR_ACTUAL_API_KEY"
+// 3. Run the script using: node scripts/download-products.js
+// or via the script added in package.json: npm run download:products

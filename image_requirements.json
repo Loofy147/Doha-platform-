@@ -1,0 +1,476 @@
+[
+  {
+    "businessType": "Fashion and Clothing Store",
+    "categories": [
+      {
+        "name": "Abayas",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["elegant modest fashion", "trendy abaya design", "chic modest dress detail"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["collection of modern abayas", "modest fashion lookbook"], "count": 1},
+          {"placement": "Style Inspiration", "keywords": ["how to style abaya", "modest fashion outfit ideas"], "count": 5}
+        ]
+      },
+      {
+        "name": "Dresses",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["beautiful evening gown", "casual day dress", "elegant party dress"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["women dresses collection", "stylish gown selection"], "count": 1},
+           {"placement": "Style Inspiration", "keywords": ["dress and accessories pairing", "outfit for special occasion"], "count": 5}
+        ]
+      },
+      {
+        "name": "Accessories",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["stylish handbag", "elegant jewelry piece", "fashionable shoes detail"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["collection of women accessories", "fashionable bags and shoes"], "count": 1}
+        ]
+      },
+      {
+        "name": "Kids' Clothing",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["cute kids dress", "children fashion outfit", "comfortable kids wear"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["kids clothing collection", "childrenswear styles"], "count": 1}
+        ]
+      },
+       {
+        "name": "Modest Wear",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["conservative fashion", "hijab style outfit", "full coverage dress"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["modern modest clothing", "elegant coverage fashion"], "count": 1}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["fashion store interior design", "clothing boutique display", "woman shopping for clothes", "stylish woman in front of store"], "count": 1},
+      {"placement": "About Us Section (Brand Story)", "keywords": ["fashion designer sketching", "seamstress working on garment", "clothing production process", "team working in fashion studio"], "count": 2},
+      {"placement": "Size Guide Section", "keywords": ["measuring tape on body", "clothing measurement guide"], "count": 1},
+      {"placement": "Customer Testimonials", "keywords": ["happy woman wearing new dress", "customer review fashion"], "count": 3},
+      {"placement": "Fashion Tips Section", "keywords": ["wardrobe organization", "mixing and matching clothes", "fashion advice"], "count": 3},
+      {"placement": "Care Instructions Section", "keywords": ["hand washing clothes", "ironing delicate fabric", "clothing care symbols"], "count": 2},
+      {"placement": "Call to Action Banner", "keywords": ["shop new arrivals fashion", "exclusive fashion deals"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Sweets, Bakeries, and Homemade Food Store",
+    "categories": [
+      {
+        "name": "Cakes",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["beautifully decorated birthday cake", "wedding cake tiers", "chocolate cake slice", "custom cake design"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["assortment of delicious cakes", "cake shop display"], "count": 1}
+        ]
+      },
+      {
+        "name": "Pastries",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["flaky croissant", "colorful macaron", "sweet danish pastry", "selection of baked goods"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["freshly baked pastries", "bakery counter"], "count": 1}
+        ]
+      },
+      {
+        "name": "Homemade Food",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["delicious homemade meal", "traditional arabic food", "comfort food dish", "appetizers platter"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["variety of homemade dishes", "kitchen cooked meals"], "count": 1}
+        ]
+      },
+       {
+        "name": "Cookies and Desserts",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["gourmet cookies", "individual dessert cups", "sweet treats platter"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["selection of desserts and cookies", "sweet treats display"], "count": 1}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["cozy bakery interior", "kitchen with baking ingredients", "delicious food spread", "sweet treats table"], "count": 1},
+      {"placement": "About Us Section (Our Kitchen/Ingredients)", "keywords": ["hands baking bread", "fresh fruits and ingredients", "chef preparing dessert", "homemade cooking process"], "count": 2},
+      {"placement": "Custom Order Section", "keywords": ["cake decorating process", "special order food preparation"], "count": 2},
+      {"placement": "Previous Orders Gallery", "keywords": ["catering event food display", "celebration cake photo"], "count": 5},
+      {"placement": "Care and Storage Tips", "keywords": ["storing baked goods", "reheating food properly"], "count": 2},
+      {"placement": "Call to Action Banner", "keywords": ["order custom cake", "try our daily specials"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Handicrafts, Arts, and Designs Store",
+    "categories": [
+      {
+        "name": "Ceramics",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["handmade ceramic mug", "pottery art piece", "ceramic bowl design", "glazed ceramics"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["collection of ceramic art", "pottery studio"], "count": 1}
+        ]
+      },
+      {
+        "name": "Textiles",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["handwoven textile art", "embroidered fabric", "unique handmade cushion"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["handmade textile collection", "weaving process"], "count": 1}
+        ]
+      },
+       {
+        "name": "Paintings and Drawings",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["abstract art painting", "watercolor illustration", "portrait drawing", "canvas art"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["art gallery display", "collection of original art"], "count": 1}
+        ]
+      },
+      {
+        "name": "Handmade Jewelry",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["unique handmade necklace", "silver earrings design", "beaded bracelet", "artisan jewelry"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["collection of handmade jewelry", "jewelry making process"], "count": 1}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["art studio interior", "craftsman workshop", "creative space"], "count": 1},
+      {"placement": "About Us Section (Artist Story)", "keywords": ["artist painting on canvas", "craftswoman working with hands", "creative process art", "inspiration for art"], "count": 2},
+      {"placement": "Custom Work Section", "keywords": ["personalized art creation", "custom made handicraft"], "count": 2},
+      {"placement": "Care Instructions Section", "keywords": ["caring for handmade items", "cleaning art pieces"], "count": 2},
+      {"placement": "Workshops Section", "keywords": ["art class in session", "learning a craft", "creative workshop"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["shop unique handmade art", "commission custom artwork"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Beauty Salon and Personal Services",
+    "categories": [
+      {
+        "name": "Hair Care",
+        "imageUsage": [
+          {"placement": "Service Gallery", "keywords": ["hair styling transformation", "haircut before and after", "professional hair treatment results", "hair color change"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["hair dryer icon", "scissors icon", "hair brush icon"], "count": 3}
+        ]
+      },
+      {
+        "name": "Nail Care",
+        "imageUsage": [
+          {"placement": "Service Gallery", "keywords": ["nail art designs close up", "manicure results", "pedicure spa treatment", "gel nails"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["nail polish icon", "nail file icon", "manicure set icon"], "count": 3}
+        ]
+      },
+      {
+        "name": "Makeup",
+        "imageUsage": [
+          {"placement": "Service Gallery", "keywords": ["evening makeup look", "bridal makeup transformation", "natural makeup look", "makeup application process"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["makeup brush icon", "lipstick icon", "eyeshadow palette icon"], "count": 3}
+        ]
+      },
+      {
+        "name": "Skin Care",
+        "imageUsage": [
+           {"placement": "Service Gallery", "keywords": ["facial treatment close up", "spa skin care", "glowing skin results"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["lotion bottle icon", "face mask icon", "spa icon"], "count": 3}
+        ]
+      },
+      {
+        "name": "Massage and Spa",
+        "imageUsage": [
+           {"placement": "Service Gallery", "keywords": ["relaxing massage", "spa treatment room", "woman enjoying spa"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["massage icon", "spa stone icon", "aromatherapy icon"], "count": 3}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["luxurious salon interior design", "beauty studio entrance", "relaxing spa atmosphere", "modern salon"], "count": 1},
+      {"placement": "About Us Section (Team)", "keywords": ["professional beautician portrait", "salon team smiling", "experts in beauty services"], "count": 3},
+      {"placement": "Before and After Section", "keywords": ["beauty transformation comparison hair", "stunning results beauty service makeup"], "count": 5},
+      {"placement": "Testimonials Section", "keywords": ["happy customer beauty salon", "woman feeling confident after treatment"], "count": 3},
+      {"placement": "Products Section", "keywords": ["beauty products display", "skincare product range", "hair product selection"], "count": 3},
+      {"placement": "Beauty Tips Section", "keywords": ["skincare routine steps", "makeup tutorial guide", "hair care tips"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["book beauty appointment now", "special offer beauty services", "visit our salon"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Product Rental Store",
+    "categories": [
+      {
+        "name": "Event Decor",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["event centerpiece rental", "party decoration rental", "wedding arch rental", "event furniture rental"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["collection of event decorations for rent", "event rental options"], "count": 1}
+        ]
+      },
+      {
+        "name": "Fashion Rental",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["rented evening dress", "fashion rental outfit", "designer dress rental"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["stylish dresses for rent", "fashion rental collection"], "count": 1}
+        ]
+      },
+       {
+        "name": "Equipment Rental",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["photography equipment rental", "sound system rental", "projector rental"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["equipment for rent", "rental gear"], "count": 1}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["rental store interior", "items available for rent display", "warehouse with rental products"], "count": 1},
+      {"placement": "How It Works Section", "keywords": ["person picking up rental item", "delivering rental equipment", "returning rented product"], "count": 3},
+      {"placement": "Terms and Conditions Section", "keywords": ["rental agreement document", "signing contract"], "count": 1},
+      {"placement": "Maintenance Section", "keywords": ["cleaning rental items", "repairing equipment"], "count": 2},
+      {"placement": "Call to Action Banner", "keywords": ["rent items for your event", "browse our rental catalog"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Training and Consulting Services / Freelancers",
+    "categories": [
+      {
+        "name": "Business Consulting",
+        "imageUsage": [
+          {"placement": "Service Gallery", "keywords": ["business meeting consultation", "woman leading workshop", "consultant explaining data", "team brainstorming session"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["consulting icon", "strategy icon", "presentation icon"], "count": 3}
+        ]
+      },
+      {
+        "name": "Training and Workshops",
+        "imageUsage": [
+          {"placement": "Service Gallery", "keywords": ["training session group", "online course learning", "workshop activity", "speaker giving presentation"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["training icon", "learning icon", "certificate icon"], "count": 3}
+        ]
+      },
+       {
+        "name": "Freelance Services",
+        "imageUsage": [
+           {"placement": "Service Gallery", "keywords": ["freelancer working on laptop", "graphic designer at desk", "writer typing", "remote work setup"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["freelance icon", "computer icon", "portfolio icon"], "count": 3}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["professional woman in office", "consulting office interior", "online meeting setup"], "count": 1},
+      {"placement": "About Us Section (Consultant/Freelancer Bio)", "keywords": ["confident woman portrait professional", "expert speaking engagement", "qualifications document"], "count": 2},
+      {"placement": "Success Stories Section", "keywords": ["client achieving goals", "successful business outcome"], "count": 3},
+      {"placement": "Blog/Articles Section", "keywords": ["person reading article on tablet", "writing in a notebook"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["book consulting session", "sign up for workshop", "hire a freelancer"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Domestic Worker / Housekeeper Services / Specialized Home Services",
+    "categories": [
+      {
+        "name": "Cleaning Services",
+        "imageUsage": [
+          {"placement": "Service Gallery", "keywords": ["professional home cleaning", "kitchen cleaning", "bathroom cleaning service", "organized living room"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["cleaning supplies icon", "broom icon", "spray bottle icon"], "count": 3}
+        ]
+      },
+       {
+        "name": "Housekeeping",
+        "imageUsage": [
+           {"placement": "Service Gallery", "keywords": ["housekeeper organizing closet", "making a bed neatly", "tidying up living space"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["house icon", "organize icon", "dusting icon"], "count": 3}
+        ]
+      },
+      {
+        "name": "Specialized Home Services",
+        "imageUsage": [
+           {"placement": "Service Gallery", "keywords": ["elderly care at home", "child care at home", "home meal preparation service"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["caregiver icon", "baby icon", "chef hat icon"], "count": 3}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["clean and tidy home", "domestic service provider smiling", "comfortable home environment"], "count": 1},
+      {"placement": "About Us Section (Service Provider Bio)", "keywords": ["trustworthy service provider", "experienced housekeeper", "caring home assistant"], "count": 2},
+      {"placement": "Service Packages Section", "keywords": ["different cleaning packages", "hourly service options"], "count": 2},
+      {"placement": "Coverage Area Section", "keywords": ["map with service area", "location pin icon"], "count": 1},
+      {"placement": "Customer Testimonials", "keywords": ["satisfied client home service", "positive feedback cleaning"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["book home cleaning service", "get a quote for home services"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Lawyer / Legal Consultant",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["professional woman lawyer", "law office interior", "legal consultation setting"], "count": 1},
+      {"placement": "About Us Section (Lawyer Bio)", "keywords": ["experienced legal consultant portrait", "law degree certificate", "lawyer speaking"], "count": 2},
+      {"placement": "Areas of Expertise Section", "keywords": ["justice scales icon", "legal documents", "law books"], "count": 4},
+      {"placement": "Services Section", "keywords": ["legal advice meeting", "contract signing", "courtroom setting"], "count": 4},
+      {"placement": "Book Consultation Section", "keywords": ["calendar icon", "hand shaking on a deal"], "count": 2},
+      {"placement": "Legal Articles Section", "keywords": ["person reading legal text", "typing on laptop in office"], "count": 3},
+      {"placement": "Contact Section", "keywords": ["law office exterior", "phone icon", "email icon"], "count": 1},
+      {"placement": "Call to Action Banner", "keywords": ["schedule legal consultation", "get expert legal advice"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Doctor / Health Specialist / Small Treatment Center",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["woman doctor smiling", "medical clinic interior modern", "healthcare professional"], "count": 1},
+      {"placement": "About Us Section (Doctor/Center Bio)", "keywords": ["qualified medical doctor portrait", "medical research", "healthcare team"], "count": 2},
+      {"placement": "Services Section", "keywords": ["medical checkup", "therapy session", "consultation with doctor", "medical equipment"], "count": 5},
+      {"placement": "Clinic/Center Photos", "keywords": ["clean medical room", "waiting area clinic", "reception desk medical"], "count": 3},
+      {"placement": "Book Appointment Section", "keywords": ["medical appointment calendar", "patient filling form"], "count": 2},
+      {"placement": "Health Tips Section", "keywords": ["healthy food options", "exercising woman", "medical advice"], "count": 3},
+      {"placement": "Contact Section", "keywords": ["clinic exterior", "hospital icon"], "count": 1},
+      {"placement": "Call to Action Banner", "keywords": ["book a medical appointment", "consult a health specialist"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Personal Shopping and Fashion Coordination Consultant",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["personal stylist with client shopping", "fashion consultant helping choose outfit", "wardrobe styling session"], "count": 1},
+      {"placement": "About Us Section (Stylist Bio)", "keywords": ["fashion expert portrait", "stylist working with clothes", "fashion inspiration board"], "count": 2},
+      {"placement": "Services Section", "keywords": ["wardrobe analysis", "personal shopping trip", "outfit coordination"], "count": 4},
+      {"placement": "Before and After Section", "keywords": ["fashion transformation client", "style makeover comparison"], "count": 4},
+      {"placement": "Style Tips Section", "keywords": ["how to build a capsule wardrobe", "accessorizing an outfit"], "count": 3},
+      {"placement": "Client Testimonials", "keywords": ["happy client after styling session", "woman feeling confident with new look"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["book a styling session", "find your personal style"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Event and Party Planner",
+    "categories": [
+      {
+        "name": "Weddings",
+        "imageUsage": [
+          {"placement": "Event Gallery", "keywords": ["beautiful wedding decor", "bride and groom wedding", "wedding ceremony setup", "wedding reception details"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["wedding ring icon", "champagne glasses icon"], "count": 2}
+        ]
+      },
+      {
+        "name": "Birthday Parties",
+        "imageUsage": [
+          {"placement": "Event Gallery", "keywords": ["colorful birthday party decor", "birthday cake celebration", "kids party activities"], "count": 8},
+          {"placement": "Service Icon", "keywords": ["birthday cake icon", "party balloon icon"], "count": 2}
+        ]
+      },
+       {
+        "name": "Corporate Events",
+        "imageUsage": [
+           {"placement": "Event Gallery", "keywords": ["corporate event setup", "business conference decoration", "gala dinner event"], "count": 8},
+           {"placement": "Service Icon", "keywords": ["building icon", "presentation icon"], "count": 2}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["elegant event setup", "party planning process", "celebration decorations"], "count": 1},
+      {"placement": "About Us Section (Planner Bio)", "keywords": ["event planner organizing details", "creative event design", "team setting up event"], "count": 2},
+      {"placement": "Services Section", "keywords": ["event coordination", "decoration planning", "vendor management event"], "count": 4},
+      {"placement": "Previous Events Gallery", "keywords": ["portfolio of organized events", "event highlights photos"], "count": 5},
+      {"placement": "Planning Tips Section", "keywords": ["event checklist", "budgeting for an event"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["plan your perfect event", "get a quote for event planning"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Consultant - Family and Parenting",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["family consulting session", "parent and child discussion", "supportive family environment"], "count": 1},
+      {"placement": "About Us Section (Consultant Bio)", "keywords": ["family therapist portrait", "expert in parenting advice", "caring consultant"], "count": 2},
+      {"placement": "Services Section", "keywords": ["parenting workshop", "family therapy", "relationship counseling"], "count": 4},
+      {"placement": "Testimonials Section", "keywords": ["happy family smiling", "improved family communication"], "count": 3},
+      {"placement": "Articles/Tips Section", "keywords": ["parenting tips blog", "family advice"], "count": 3},
+      {"placement": "Book Consultation Section", "keywords": ["calendar icon family", "online therapy session"], "count": 2},
+      {"placement": "Call to Action Banner", "keywords": ["book family consultation", "get parenting support"], "count": 1}
+    ]
+  },
+   {
+    "businessType": "Makeup Artist and Hair Stylist for Events",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["makeup artist working on client", "hair stylist creating updo", "beauty preparation for event"], "count": 1},
+      {"placement": "About Us Section (Artist Bio)", "keywords": ["professional makeup artist portrait", "hair stylist at work", "beauty expert"], "count": 2},
+      {"placement": "Services Section", "keywords": ["bridal makeup and hair", "evening look makeup", "special occasion hair styling"], "count": 4},
+      {"placement": "Portfolio Section", "keywords": ["makeup and hair portfolio", "before and after event beauty"], "count": 8},
+      {"placement": "Beauty Tips Section", "keywords": ["makeup tutorial event", "hair styling tips"], "count": 3},
+      {"placement": "Book Appointment Section", "keywords": ["makeup appointment calendar", "beauty booking"], "count": 2},
+      {"placement": "Call to Action Banner", "keywords": ["book your event makeup and hair", "get ready for your special day"], "count": 1}
+    ]
+  },
+   {
+    "businessType": "Eco-Friendly or Sustainable Products Store",
+    "categories": [
+      {
+        "name": "Eco-Friendly Home Goods",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["sustainable kitchen products", "eco-friendly cleaning supplies", "reusable home items"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["collection of eco-friendly home products", "sustainable living"], "count": 1}
+        ]
+      },
+      {
+        "name": "Sustainable Fashion",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["eco-friendly clothing", "sustainable apparel", "ethical fashion"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["sustainable fashion collection", "eco-conscious clothing"], "count": 1}
+        ]
+      },
+      {
+        "name": "Natural Beauty Products",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["organic skincare product", "natural makeup", "eco-friendly beauty"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["collection of natural beauty products", "clean beauty"], "count": 1}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["sustainable store interior", "eco-friendly products display", "nature background sustainable"], "count": 1},
+      {"placement": "About Us Section (Mission)", "keywords": ["woman holding plant", "recycled materials", "eco-friendly process"], "count": 2},
+      {"placement": "Why Sustainable Section", "keywords": ["environmental protection", "reducing waste", "conscious living"], "count": 3},
+      {"placement": "Product Origin Section", "keywords": ["handmade sustainable product", "locally sourced materials"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["shop sustainable products", "live an eco-friendly lifestyle"], "count": 1}
+    ]
+  },
+   {
+    "businessType": "Female Photography Services",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["female photographer with camera", "photography studio setup", "woman being photographed"], "count": 1},
+      {"placement": "About Us Section (Photographer Bio)", "keywords": ["professional female photographer portrait", "photography equipment", "artist vision photography"], "count": 2},
+      {"placement": "Services Section", "keywords": ["portrait photography session", "family photoshoot", "product photography", "event photography female"], "count": 5},
+      {"placement": "Portfolio Section", "keywords": ["photography examples portraits", "family photo album", "product photography display"], "count": 8},
+      {"placement": "Booking Information Section", "keywords": ["calendar icon photography booking", "camera icon"], "count": 2},
+      {"placement": "Photography Tips Section", "keywords": ["how to pose for photos", "getting ready for photoshoot"], "count": 3},
+      {"placement": "Call to Action Banner", "keywords": ["book a photoshoot", "capture your special moments"], "count": 1}
+    ]
+  },
+   {
+    "businessType": "Personal Trainer / Fitness Specialist",
+    "categories": [],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["female personal trainer with client", "woman exercising in gym", "fitness studio"], "count": 1},
+      {"placement": "About Us Section (Trainer Bio)", "keywords": ["certified personal trainer portrait", "woman stretching", "fitness motivation"], "count": 2},
+      {"placement": "Services Section", "keywords": ["one on one personal training", "group fitness class", "online fitness coaching", "custom workout plan"], "count": 4},
+      {"placement": "Client Transformations Section", "keywords": ["before and after fitness results", "woman feeling strong and healthy"], "count": 4},
+      {"placement": "Workout Tips Section", "keywords": ["exercise demonstration", "healthy eating tips", "fitness routine"], "count": 3},
+      {"placement": "Book Training Session Section", "keywords": ["calendar icon fitness", " dumbbells icon"], "count": 2},
+      {"placement": "Call to Action Banner", "keywords": ["start your fitness journey", "book a personal trainer"], "count": 1}
+    ]
+  },
+  {
+    "businessType": "Craft Supplies and Materials Store",
+    "categories": [
+      {
+        "name": "Sewing Supplies",
+        "imageUsage": [
+          {"placement": "Product Image", "keywords": ["sewing machine close up", "fabric patterns", "threads and needles"], "count": 8},
+          {"placement": "Category Banner", "keywords": ["collection of sewing materials", "textile supplies"], "count": 1}
+        ]
+      },
+      {
+        "name": "Art Supplies",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["paint brushes and paints", "sketchbook and pencils", "art canvas"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["collection of art materials", "painting supplies"], "count": 1}
+        ]
+      },
+      {
+        "name": "Jewelry Making Supplies",
+        "imageUsage": [
+           {"placement": "Product Image", "keywords": ["jewelry beads and findings", "wire for jewelry making", "jewelry pliers"], "count": 8},
+           {"placement": "Category Banner", "keywords": ["collection of jewelry making materials", "beading supplies"], "count": 1}
+        ]
+      }
+    ],
+    "generalImages": [
+      {"placement": "Profile Header", "keywords": ["craft store interior", "shelves with craft supplies", "creative materials display"], "count": 1},
+      {"placement": "About Us Section (Our Passion for Crafts)", "keywords": ["hands working on a craft project", "person selecting art supplies", "organized craft space"], "count": 2},
+      {"placement": "Project Ideas Section", "keywords": ["DIY craft project", "finished handmade project", "crafting inspiration"], "count": 5},
+      {"placement": "Call to Action Banner", "keywords": ["shop craft supplies online", "find materials for your next project"], "count": 1}
+    ]
+  }
+]
