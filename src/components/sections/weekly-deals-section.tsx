@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 const mockWeeklyDeals = [
   {
     id: 'deal-weekly-1',
-    productLink: '/products/farah-prod2', 
+    productId: 'farah-prod2', 
     title: 'باقة العناية المتكاملة بخصم 20% هذا الأسبوع',
     description: 'احصلي على مجموعة منتجات العناية بالبشرة والشعر الفاخرة بسعر لا يُقاوم طوال هذا الأسبوع.',
     imageSrc: 'https://picsum.photos/seed/weeklyskincaredeal/400/250',
@@ -27,7 +27,7 @@ const mockWeeklyDeals = [
   },
   {
     id: 'deal-weekly-2',
-    productLink: '/store/lamsa-ibdaa?category=services', 
+    productId: 'lamsa-serv2', 
     title: 'خصم 15% على جميع خدمات تصميم الديكور هذا الأسبوع',
     description: 'جددي منزلكِ مع استشارة تصميم داخلي أو خدمة تنفيذ ديكور بخصم مميز.',
     imageSrc: 'https://picsum.photos/seed/weeklydecor/400/250',
@@ -37,7 +37,7 @@ const mockWeeklyDeals = [
   },
   {
     id: 'deal-weekly-3',
-    productLink: '/store/mathaq-albayt?category=sweets', 
+    productId: 'mathaq-prod3', 
     title: 'اشتري قطعتين من الحلويات الشرقية واحصل على الثالثة بنصف السعر!',
     description: 'عرض أسبوعي شهي على تشكيلة مختارة من الحلويات الشرقية الأصيلة.',
     imageSrc: 'https://picsum.photos/seed/weeklysweetsdeal/400/250',
@@ -47,13 +47,13 @@ const mockWeeklyDeals = [
   },
    {
     id: 'deal-weekly-4',
-    productLink: '/products?category=أزياء وإكسسوارات يدوية', 
+    productId: 'lamsa-prod1', 
     title: 'شحن مجاني للطلبات فوق 5,000 دج من الإكسسوارات اليدوية!',
     description: 'تسوقي أجمل الإكسسوارات المصنوعة بحب واستمتعي بشحن مجاني هذا الأسبوع.',
     imageSrc: 'https://picsum.photos/seed/weeklyjewelryship/400/250',
     dataAiHint: 'handmade jewelry display',
-    storeName: 'متاجر متنوعة', 
-    storeSlug: '', 
+    storeName: 'لمسة إبداع نادية', 
+    storeSlug: 'lamsa-ibdaa', 
   },
 ];
 
@@ -126,7 +126,7 @@ export function WeeklyDealsSection() {
                     "transform hover:-translate-y-1.5" 
                     )}>
                     <CardHeader className="p-0 relative">
-                      <Link href={deal.productLink} passHref className="block aspect-[16/10] relative overflow-hidden rounded-t-xl">
+                      <Link href={`/products/${deal.productId}`} passHref className="block aspect-[16/10] relative overflow-hidden rounded-t-xl">
                         <Image
                           src={deal.imageSrc}
                           alt={deal.title}
@@ -141,7 +141,7 @@ export function WeeklyDealsSection() {
                     </CardHeader>
                     <CardContent className="p-4 flex-grow flex flex-col">
                       <CardTitle className="text-lg font-semibold text-primary mb-2 group-hover:text-accent-purple transition-colors">
-                         <Link href={deal.productLink}>{deal.title}</Link>
+                         <Link href={`/products/${deal.productId}`}>{deal.title}</Link>
                       </CardTitle>
                       <CardDescription className="text-xs text-foreground/70 mb-2 flex-grow line-clamp-2">
                         {deal.description}
@@ -161,7 +161,7 @@ export function WeeklyDealsSection() {
                     </CardContent>
                     <CardFooter className="p-3 border-t">
                       <Button asChild variant="default" className="w-full bg-accent-purple hover:bg-accent-purple/90 text-accent-purple-foreground group/button transform hover:scale-105 transition-transform duration-200">
-                        <Link href={deal.productLink}>
+                        <Link href={`/products/${deal.productId}`}>
                           <Eye className="ml-2 h-4 w-4 group-hover/button:animate-ping-slow" style={{animationDuration: '1.6s'}} /> استفيدي من العرض
                         </Link>
                       </Button>
