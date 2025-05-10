@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {Badge} from '@/components/ui/badge';
 import {
   ShoppingBag,
@@ -23,28 +22,20 @@ import {
   Info,
   MapPin,
   Phone,
-  Heart,
-  Share2,
-  Mail,
   Sparkles,
-  TagIcon as LucideTagIcon,
-  ThumbsUp,
+  TagIcon as LucideTagIcon, // Renamed to avoid conflict with potential Tag component
   Eye,
   ChevronLeft,
   ShoppingBasket,
   Rocket,
-  Palette,
-  CalendarDays,
-  Handshake,
-  CookingPot,
-  Scissors,
-  Shirt,
+  Clock,
   AlertCircle,
   Store as StoreIconLucide, 
-  Clock,
-  Loader2, // Ensure Loader2 is imported
+  Loader2,
   PackageSearch,
   type LucideProps,
+  CalendarDays,
+  Handshake,
 } from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {useToast} from '@/hooks/use-toast';
@@ -52,11 +43,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
   type CarouselApi,
 } from '@/components/ui/carousel';
-import Autoplay from "embla-carousel-autoplay";
 import {cn} from '@/lib/utils';
 import {
   Dialog,
@@ -70,6 +58,7 @@ import StoreProductCard from '@/components/store/store-product-card';
 import StoreServiceCard from '@/components/store/store-service-card';
 import StoreSection from '@/components/store/store-section';
 import { SellerContactModal } from '@/components/store/seller-contact-modal'; 
+import { StoreHeader } from '@/components/store/store-header'; // Import the new StoreHeader component
 
 // Import specific section components using React.lazy for code splitting
 const BakerySpecialsSection = React.lazy(() => import('@/components/store/sections/bakery-specials-section'));
@@ -108,7 +97,7 @@ const staggerContainerVariants: MotionProps = {
   animate: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } }, 
 };
 
-const itemVariants: MotionProps = {
+const itemVariants: MotionProps['variants'] = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
@@ -123,6 +112,7 @@ const StoreLoadingSkeleton = () => (
     transition={{ duration: 0.3 }}
   >
     <div className="animate-pulse">
+      {/* StoreHeader Skeleton */}
       <Skeleton className="h-48 md:h-64 lg:h-80 w-full rounded-lg mb-8" /> {/* Banner */}
       <div className="flex flex-col md:flex-row items-center gap-6 mb-12 p-6 bg-card rounded-xl shadow-lg -mt-16 md:-mt-20 relative z-10">
         <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-muted" /> {/* Avatar */}
@@ -195,7 +185,7 @@ const StorePage = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Product | Service | null>(null);
   const {toast} = useToast();
-  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [itemDetailsCarouselApi, setItemDetailsCarouselApi] = useState<CarouselApi>();
 
 
   useEffect(() => {
@@ -207,7 +197,6 @@ const StorePage = () => {
         if (fetchedStoreData) {
           setStoreData(fetchedStoreData);
         } else {
-          console.warn(`Store with ID ${storeId} not found.`);
           setStoreData(null); 
         }
         setIsLoading(false);
@@ -272,19 +261,6 @@ const StorePage = () => {
       title: 'جاري التوجيه...',
       description: `سيتم عرض كل "${collection.name}" من متجر ${storeData?.name}. (قيد التطوير)`,
     });
-    // Example: router.push(`/store/${storeData?.id}/collection/${collection.type}?filter=${collection.name}`);
-  };
-
-  const getStoreTypeSpecificIcon = (type?: StoreType): React.ElementType<LucideProps> => {
-    switch (type) {
-        case 'bakery': return CookingPot;
-        case 'fashion': return Shirt;
-        case 'salon': return Scissors;
-        case 'crafts': return Palette;
-        case 'rental': return CalendarDays;
-        case 'service_provider': return Handshake;
-        default: return StoreIconLucide;
-    }
   };
 
   if (!isMounted || isLoading) {
@@ -294,9 +270,6 @@ const StorePage = () => {
   if (!storeData) {
     return <NotFound title="خطأ: المتجر غير موجود" message="عذرًا، لم نتمكن من العثور على المتجر الذي تبحثين عنه. قد يكون الرابط غير صحيح أو تم حذف المتجر." />;
   }
-
-  const StoreTypeSpecificIcon = getStoreTypeSpecificIcon(storeData.storeType);
-
 
   return (
     <motion.div
@@ -312,91 +285,16 @@ const StorePage = () => {
       initial="initial"
       animate="animate"
     >
-      <motion.header className="relative group" variants={itemVariants}>
-        <div className="h-48 md:h-64 lg:h-80 w-full overflow-hidden">
-          <Carousel
-            plugins={storeData.bannerImages.length > 1 ? [Autoplay({ delay: 5000, stopOnInteraction: false })] : []}
-            opts={{ loop: storeData.bannerImages.length > 1 }}
-            className="h-full w-full"
-            setApi={setCarouselApi}
-          >
-            <CarouselContent className="h-full">
-              {storeData.bannerImages.map((src, index) => (
-                <CarouselItem key={index} className="h-full">
-                  <Image
-                    src={src}
-                    alt={`${storeData.name} بانر ${index + 1}`}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                    data-ai-hint={storeData.dataAiHintBanner[index % storeData.dataAiHintBanner.length]}
-                    priority={index === 0}
-                    sizes="(max-width: 768px) 100vw, 100vw"
-                  />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-             {storeData.bannerImages.length > 1 && (
-              <>
-                <CarouselPrevious aria-label="الصورة السابقة للبانر" className="absolute right-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
-                <CarouselNext aria-label="الصورة التالية للبانر" className="absolute left-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-card/70 hover:bg-card" style={{color: storeAccentColor}}/>
-              </>
-            )}
-          </Carousel>
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-16 md:-mt-20 relative z-10">
-          <div className={cn(
-            "p-6 rounded-xl shadow-2xl flex flex-col md:flex-row items-center gap-6",
-            storeThemeStyle === 'elegant' && "bg-slate-700/90 backdrop-blur-md border border-slate-600 text-slate-50",
-            storeThemeStyle === 'dark' && "bg-gray-800/90 backdrop-blur-md border border-gray-700 text-gray-100",
-            (storeThemeStyle === 'light' || storeThemeStyle === 'playful' || storeThemeStyle === 'modern-minimal') && "bg-card/90 backdrop-blur-md border border-border text-card-foreground"
-           )}>
-            <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 shadow-lg" style={{ borderColor: storeAccentColor }}>
-              <AvatarImage src={storeData.logo} alt={`${storeData.name} شعار`} data-ai-hint={storeData.dataAiHintLogo} />
-              <AvatarFallback className="text-3xl" style={{ backgroundColor: `${storeAccentColor}33`, color: storeAccentColor}}>
-                {storeData.name.substring(0, 2)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 text-center md:text-right">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: storeThemeStyle === 'elegant' || storeThemeStyle === 'dark' ? 'hsl(var(--card-foreground))' : storeAccentColor }}>
-                {storeData.name}
-              </h1>
-              {storeData.slogan && <p className="mt-1 text-md md:text-lg" style={{ color: storeThemeStyle === 'elegant' || storeThemeStyle === 'dark' ? 'hsl(var(--muted-foreground))' : 'hsl(var(--muted-foreground))'}}>{storeData.slogan}</p>}
-              <div className="mt-2 flex items-center justify-center md:justify-start gap-2">
-                <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
-                  <StoreTypeSpecificIcon className="w-4 h-4" />
-                  {storeData.productTypes.find(pt => pt.id === storeData.storeType)?.name || storeData.storeType}
-                </Badge>
-                <Badge variant="outline" className="gap-1.5 text-sm py-1 px-2.5 border-current" style={{ color: storeAccentColor, borderColor: storeAccentColor }}>
-                  <Star className="w-4 h-4 fill-current" />
-                  {storeData.rating.toFixed(1)} ({storeData.reviewsCount} تقييم)
-                </Badge>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row md:flex-col items-center gap-2 mt-4 md:mt-0 self-center md:self-start">
-              <Button variant="outline" size="sm" className="w-full md:w-auto" style={{borderColor: storeAccentColor, color: storeAccentColor}}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${storeAccentColor}1A`}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                aria-label="إضافة المتجر إلى المفضلة"
-              >
-                <Heart className="w-4 h-4 ml-2" /> أضيفي للمفضلة
-              </Button>
-              <Button variant="outline" size="sm" className="w-full md:w-auto" style={{borderColor: storeAccentColor, color: storeAccentColor}}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${storeAccentColor}1A`}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                aria-label="مشاركة المتجر"
-              >
-                <Share2 className="w-4 h-4 ml-2" /> شاركي المتجر
-              </Button>
-            </div>
-          </div>
-        </div>
-      </motion.header>
+      <StoreHeader 
+        storeData={storeData} 
+        storeAccentColor={storeAccentColor} 
+        setIsContactModalOpen={setIsContactModalOpen}
+        itemVariants={itemVariants}
+      />
 
       <motion.main
         className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12"
         variants={staggerContainerVariants}
-        initial="initial" 
-        animate="animate"
       >
       {storeData.story && (
         <motion.div variants={itemVariants}>
@@ -448,7 +346,7 @@ const StorePage = () => {
             <SalonServicesSection
                 services={storeData.services.filter(s => storeData.featuredServiceIds?.includes(s.id))}
                 storeData={storeData}
-                onViewServiceDetails={handleViewItemDetails}
+                onBookService={handleViewItemDetails} // Assuming same modal for services
             />
             )}
           </motion.div>
@@ -600,7 +498,7 @@ const StorePage = () => {
                     <h4 className="font-semibold text-lg mb-2" style={{color: storeAccentColor}}>تابعينا على:</h4>
                     <div className="flex flex-wrap gap-x-4 gap-y-2">
                         {storeData.socialMedia.instagram && <Link href={`https://instagram.com/${storeData.socialMedia.instagram}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> انستغرام</Link>}
-                        {storeData.socialMedia.facebook && <Link href={`https://facebook.com/${storeData.socialMedia.facebook}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><ThumbsUp size={14}/> فيسبوك</Link>}
+                        {storeData.socialMedia.facebook && <Link href={`https://facebook.com/${storeData.socialMedia.facebook}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> فيسبوك</Link>}
                         {storeData.socialMedia.tiktok && <Link href={`https://tiktok.com/@${storeData.socialMedia.tiktok}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> تيك توك</Link>}
                         {storeData.socialMedia.snapchat && <Link href={`https://snapchat.com/add/${storeData.socialMedia.snapchat}`} target="_blank" className="hover:underline flex items-center gap-1 text-sm"><LucideTagIcon size={14}/> سناب شات</Link>}
                     </div>
@@ -642,7 +540,7 @@ const StorePage = () => {
       />
 
       {selectedItem && (
-        <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
+        <Dialog open={isDetailsModalOpen} onOpenChange={handleCloseDetailsModal}>
           <DialogContent className={cn(
             "sm:max-w-3xl max-h-[90vh] flex flex-col",
              storeThemeStyle === 'elegant' && "bg-slate-700 text-slate-50 border-slate-600",
@@ -660,7 +558,7 @@ const StorePage = () => {
                     <Carousel
                         opts={{ loop: (selectedItem as Product).images ? (selectedItem as Product).images!.length > 1 : false }}
                         className="h-full w-full"
-                        setApi={setCarouselApi}
+                        setApi={setItemDetailsCarouselApi}
                     >
                         <CarouselContent className="h-full">
                         {((selectedItem as Product).images || [(selectedItem as Product).imageSrc || (selectedItem as Service).imageSrc || 'https://picsum.photos/800/600?grayscale']).map((imgSrc, index) => (
@@ -692,9 +590,7 @@ const StorePage = () => {
 
                     {(selectedItem as Product).averageRating && (
                         <div className="flex items-center gap-2 mb-4">
-                            {Array.from({length: 5}).map((_, i) => (
-                                <Star key={i} size={20} className={cn("transition-colors", i < Math.round((selectedItem as Product).averageRating || 0) ? 'fill-current' : '')} style={{color: storeAccentColor}}/>
-                            ))}
+                           <RatingStarsDisplay rating={(selectedItem as Product).averageRating || 0} size={20} />
                             <span className="text-sm text-muted-foreground">({(selectedItem as Product).reviewCount} تقييمات)</span>
                         </div>
                     )}
@@ -763,3 +659,7 @@ const StorePage = () => {
 
 export default StorePage;
 
+// Shadcn Card components are typically not re-exported this way unless building a custom library.
+// Assuming Card, CardContent, etc. are already available globally via components/ui.
+// If not, this export might be needed or adjusted depending on project structure.
+// export { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'; 
