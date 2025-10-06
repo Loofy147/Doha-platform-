@@ -4,16 +4,15 @@ import '@testing-library/jest-dom';
 import { ProductReviewsSection } from '../product-reviews-section';
 import { type Review } from '@/lib/data/mock-store-data';
 
-// Re-import motion and mock it to avoid animation-related issues in tests.
+// Mock the entire framer-motion module
 jest.mock('framer-motion', () => ({
-  ...jest.requireActual('framer-motion'),
   motion: {
-    ...jest.requireActual('framer-motion').motion,
-    div: jest.fn(({ children, ...props }) => <div {...props}>{children}</div>),
-    section: jest.fn(({ children, ...props }) => <section {...props}>{children}</section>),
-    h2: jest.fn(({ children, ...props }) => <h2 {...props}>{children}</h2>),
-    span: jest.fn(({ children, ...props }) => <span {...props}>{children}</span>),
+    div: ({ children, ...props }) => <div {...props}>{children}</div>,
+    section: ({ children, ...props }) => <section {...props}>{children}</section>,
+    h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
+    span: ({ children, ...props }) => <span {...props}>{children}</span>,
   },
+  useInView: () => ({}),
 }));
 
 
@@ -43,13 +42,16 @@ const mockReviews: Review[] = [
 ];
 
 describe('ProductReviewsSection', () => {
+  // Provide a default empty variant for the tests
+  const itemVariants = {};
+
   it('renders the section title', () => {
     render(
       <ProductReviewsSection
         reviews={mockReviews}
         effectiveAccentColor="blue"
         totalReviewCount={5}
-        itemVariants={{}}
+        itemVariants={itemVariants}
       />
     );
     expect(screen.getByText('آراء العميلات')).toBeInTheDocument();
@@ -61,7 +63,7 @@ describe('ProductReviewsSection', () => {
         reviews={mockReviews}
         effectiveAccentColor="blue"
         totalReviewCount={5}
-        itemVariants={{}}
+        itemVariants={itemVariants}
       />
     );
     expect(screen.getByText('Amazing product!')).toBeInTheDocument();
@@ -74,7 +76,7 @@ describe('ProductReviewsSection', () => {
         reviews={mockReviews}
         effectiveAccentColor="blue"
         totalReviewCount={5}
-        itemVariants={{}}
+        itemVariants={itemVariants}
       />
     );
     expect(screen.getByRole('button', { name: /عرض كل التقييمات \(5\)/i })).toBeInTheDocument();
@@ -86,7 +88,7 @@ describe('ProductReviewsSection', () => {
         reviews={[]}
         effectiveAccentColor="blue"
         totalReviewCount={0}
-        itemVariants={{}}
+        itemVariants={itemVariants}
       />
     );
     expect(
