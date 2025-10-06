@@ -18,6 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 import { UNIQUE_PRODUCT_CATEGORIES, PRODUCT_TYPES_CONSTANTS, type ProductTypeConstant, SORT_OPTIONS, type SortOptionConstant } from '@/lib/constants/categories';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
+import StoreProductCard from '@/components/store/store-product-card';
+import StoreServiceCard from '@/components/store/store-service-card';
 
 
 type DisplayItem = (PublicProduct | PublicService) & { 
@@ -299,42 +301,13 @@ export default function ProductsPage() {
 
       {displayedItems.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {displayedItems.map(item => (
-            <Card key={item.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col bg-card">
-              <CardHeader className="p-0 relative">
-                <Link href={`/products/${item.id}`} passHref>
-                    <div className="aspect-square">
-                    <Image
-                        src={item.imageSrc || 'https://picsum.photos/400/400?random=fallback'}
-                        alt={item.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
-                        data-ai-hint={item.dataAiHint || 'product image'}
-                    />
-                    </div>
-                </Link>
-              </CardHeader>
-              <CardContent className="p-4 flex flex-col flex-grow">
-                <CardTitle className="text-lg font-semibold text-primary hover:text-accent-pink transition-colors mb-1 line-clamp-2 cursor-pointer" onClick={() => router.push(`/products/${item.id}`)}>{item.name}</CardTitle>
-                <CardDescription className="text-xs text-muted-foreground mb-1">
-                  مقدم من <Link href={`/store/${item.storeSlug}`} className="text-accent-purple hover:underline">{item.sellerName}</Link> • {item.category}
-                </CardDescription>
-                <span className="text-xs capitalize bg-accent-purple/20 text-accent-purple-foreground px-2 py-0.5 rounded-full self-start mb-2">{item.type}</span>
-                <p className="text-sm text-foreground/80 flex-grow mb-2 line-clamp-3">{item.description}</p>
-                <p className="text-xl font-bold text-accent-pink mt-auto">{getItemPriceDisplay(item)}</p>
-              </CardContent>
-              <CardFooter className="p-4 border-t">
-                <Button
-                  variant="outline"
-                  className="w-full hover:bg-accent-yellow/20 hover:border-accent-yellow text-primary border-primary group"
-                  onClick={() => router.push(`/products/${item.id}`)}
-                >
-                  <Eye size={18} className="ml-2 group-hover:text-accent-yellow transition-colors" /> عرض التفاصيل
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+          {displayedItems.map(item => {
+            if (item.itemType === 'product') {
+              return <StoreProductCard key={item.id} product={item as PublicProduct} onViewDetails={() => router.push(`/products/${item.id}`)} />;
+            } else {
+              return <StoreServiceCard key={item.id} service={item as PublicService} onViewDetails={() => router.push(`/products/${item.id}`)} />;
+            }
+          })}
         </div>
       ) : (
         <div className="text-center py-12">
@@ -382,6 +355,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-
-
-```

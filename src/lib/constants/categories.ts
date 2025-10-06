@@ -54,5 +54,3 @@ export const SORT_OPTIONS: { value: SortOptionConstant; label: string }[] = [
     { value: 'salesDesc', label: 'الأكثر مبيعًا' },
     { value: 'ratingDesc', label: 'الأعلى تقييمًا' },
 ];
-
-```

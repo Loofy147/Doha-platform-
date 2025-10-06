@@ -1321,5 +1321,3 @@ export const deleteSellerProduct = (productId: string): boolean => {
     });
     return allSellerProductsListMutable.length < initialLength;
 };
-
-```

@@ -7,6 +7,7 @@ import './globals.css';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
+import { WishlistProvider } from '@/context/wishlist-context';
 // Removed Vercel Analytics and SpeedInsights imports as they were causing errors and not installed/configured.
 
 const poppins = Poppins({
@@ -87,14 +88,16 @@ export default function RootLayout({
         {/* Removed direct Ionicons style tag */}
       </head>
       <body className="font-arabic antialiased bg-background text-foreground">
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <React.Suspense fallback={<div className="flex-grow flex items-center justify-center"><p>جاري التحميل...</p></div>}>
-            <main className="flex-grow">{children}</main>
-          </React.Suspense>
-          <Footer />
-        </div>
-        <Toaster />
+        <WishlistProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <React.Suspense fallback={<div className="flex-grow flex items-center justify-center"><p>جاري التحميل...</p></div>}>
+              <main className="flex-grow">{children}</main>
+            </React.Suspense>
+            <Footer />
+          </div>
+          <Toaster />
+        </WishlistProvider>
         {/* Removed direct Ionicons div and script tags */}
       </body>
     </html>
