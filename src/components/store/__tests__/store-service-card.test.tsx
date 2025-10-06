@@ -14,11 +14,6 @@ jest.mock('@/hooks/use-toast', () => ({
   }),
 }));
 
-// Mock next/link
-jest.mock('next/link', () => {
-    return ({children, href, ...props}) => <a href={href} {...props}>{children}</a>;
-});
-
 const mockService: Service = {
   id: 'serv1',
   name: 'جلسة تصوير احترافية',

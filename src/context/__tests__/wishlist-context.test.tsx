@@ -126,4 +126,19 @@ describe('WishlistContext', () => {
     // Clean up localStorage
     localStorage.removeItem('wishlist');
   });
+
+  it('should save items to localStorage when the wishlist changes', () => {
+    render(
+      <WishlistProvider>
+        <TestComponent />
+      </WishlistProvider>
+    );
+
+    act(() => {
+      screen.getByText('Add Product 1').click();
+    });
+
+    const savedWishlist = localStorage.getItem('wishlist');
+    expect(savedWishlist).toBe(JSON.stringify([mockProduct1]));
+  });
 });

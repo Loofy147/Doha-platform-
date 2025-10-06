@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import StoreProductCard from '../store-product-card';
 import { useToast } from '@/hooks/use-toast';
@@ -13,11 +13,6 @@ jest.mock('@/hooks/use-toast', () => ({
     toast: mockedToast,
   }),
 }));
-
-// Mock next/link
-jest.mock('next/link', () => {
-    return ({children, href, ...props}) => <a href={href} {...props}>{children}</a>;
-});
 
 const mockProduct: Product = {
   id: 'prod1',

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { type Product, type Service } from '@/lib/data/mock-store-data';
 
 export default function WishlistPage() {
@@ -37,16 +38,18 @@ export default function WishlistPage() {
       </header>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={`skeleton-${i}`} className="overflow-hidden shadow-lg rounded-lg flex flex-col">
-              <Skeleton className="aspect-square w-full rounded-t-lg" />
-              <Skeleton className="p-6 flex flex-col flex-grow space-y-3">
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-6 w-1/3 mt-2" />
-              </Skeleton>
-              <Skeleton className="p-4 border-t h-16" />
-            </Card>
+          <Card key={`skeleton-${i}`} className="overflow-hidden shadow-lg rounded-lg flex flex-col">
+            <Skeleton className="aspect-square w-full rounded-t-lg" />
+            <CardContent className="p-6 flex flex-col flex-grow space-y-3">
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-6 w-1/3 mt-2" />
+            </CardContent>
+            <CardFooter className="p-4 border-t">
+                <Skeleton className="h-10 w-full" />
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
@@ -95,8 +98,3 @@ export default function WishlistPage() {
     </div>
   );
 }
-
-// Dummy Card for Skeleton, as we can't import the real one here without circular dependency issues with tests
-const Card = ({ className, children }: { className?: string, children: React.ReactNode }) => (
-  <div className={className}>{children}</div>
-);

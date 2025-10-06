@@ -4,18 +4,6 @@ import '@testing-library/jest-dom';
 import { ProductReviewsSection } from '../product-reviews-section';
 import { type Review } from '@/lib/data/mock-store-data';
 
-// Mock the entire framer-motion module
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }) => <div {...props}>{children}</div>,
-    section: ({ children, ...props }) => <section {...props}>{children}</section>,
-    h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
-    span: ({ children, ...props }) => <span {...props}>{children}</span>,
-  },
-  useInView: () => ({}),
-}));
-
-
 const mockReviews: Review[] = [
   {
     id: 'rev1',

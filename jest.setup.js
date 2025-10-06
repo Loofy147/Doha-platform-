@@ -1,9 +1,5 @@
-// Optional: configure or set up a testing framework before each test
-// if you delete this file, remove `setupFilesAfterEnv` from `jest.config.js`
-
-// Used for __tests__/testing-library.js
-// Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import React from 'react';
 
 // Mock IntersectionObserver
 const mockIntersectionObserver = jest.fn();
@@ -19,19 +15,40 @@ if (typeof Element.prototype.animate === 'undefined') {
   Element.prototype.animate = jest.fn().mockImplementation(() => ({
     finished: Promise.resolve(),
     cancel: jest.fn(),
-    play: jest.fn(),
-    pause: jest.fn(),
-    reverse: jest.fn(),
-    finish: jest.fn(),
-    updatePlaybackRate: jest.fn(),
-    persist: jest.fn(),
-    startTime: 0,
-    currentTime: 0,
-    timeline: null,
-    playbackRate: 1,
-    playState: 'idle',
-    onfinish: null,
-    oncancel: null,
-    onremove: null,
   }));
 }
+
+// Global mock for next/link to handle passHref
+jest.mock('next/link', () => {
+  return ({ children, href, passHref, ...props }) => {
+    return <a href={href} {...props}>{children}</a>;
+  };
+});
+
+// Global mock for framer-motion to filter out invalid DOM props
+jest.mock('framer-motion', () => {
+  const motion = {
+    div: React.forwardRef(({ children, ...props }, ref) => {
+      const { initial, animate, variants, transition, whileInView, viewport, ...rest } = props;
+      return <div ref={ref} {...rest}>{children}</div>;
+    }),
+    section: React.forwardRef(({ children, ...props }, ref) => {
+        const { initial, animate, variants, transition, whileInView, viewport, ...rest } = props;
+        return <section ref={ref} {...rest}>{children}</section>;
+    }),
+    h2: React.forwardRef(({ children, ...props }, ref) => {
+        const { initial, animate, variants, transition, ...rest } = props;
+        return <h2 ref={ref} {...rest}>{children}</h2>;
+    }),
+    span: React.forwardRef(({ children, ...props }, ref) => {
+        const { initial, animate, variants, transition, ...rest } = props;
+        return <span ref={ref} {...rest}>{children}</span>;
+    }),
+  };
+
+  return {
+    ...jest.requireActual('framer-motion'),
+    motion,
+    useInView: () => ({}),
+  };
+});
