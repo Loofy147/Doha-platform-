@@ -10,6 +10,7 @@ import { ShoppingBasket, Star, Eye, Heart, CalendarClock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Product } from '@/lib/data/mock-store-data';
 import { cn } from '@/lib/utils';
+import { useWishlist } from '@/context/wishlist-context';
 
 interface StoreProductCardProps {
   product: Product;
@@ -20,24 +21,43 @@ interface StoreProductCardProps {
 
 const StoreProductCard: React.FC<StoreProductCardProps> = ({ product, accentColor, onViewDetails, className }) => {
   const { toast } = useToast();
+  const { state: wishlistState, dispatch: wishlistDispatch } = useWishlist();
   const primaryColor = accentColor || 'hsl(var(--primary))';
   const accentPinkColor = accentColor || 'hsl(var(--accent-pink))';
   const accentYellowColor = accentColor || 'hsl(var(--accent-yellow))';
 
-  const handleWishlistAnimation = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const isInWishlist = wishlistState.items.some(item => item.id === product.id);
+
+  const handleWishlistToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     const button = event.currentTarget;
-    // Add a subtle scale animation
-    button.animate([
+    button.animate(
+      [
         { transform: 'scale(1)' },
         { transform: 'scale(1.2)' },
-        { transform: 'scale(1)' }
-    ], { duration: 300, easing: 'ease-in-out' });
+        { transform: 'scale(1)' },
+      ],
+      { duration: 300, easing: 'ease-in-out' }
+    );
 
-    toast({
-      title: `💖 ${product.name}`,
-      description: "تمت إضافة المنتج إلى قائمة أمنياتك (محاكاة)!",
-      action: <Button variant="outline" size="sm" onClick={() => { /* navigate to wishlist */ }}>عرض قائمة الأمنيات</Button>,
-    });
+    if (isInWishlist) {
+      wishlistDispatch({ type: 'REMOVE_ITEM', payload: { id: product.id } });
+      toast({
+        title: `💔 ${product.name}`,
+        description: 'تمت إزالة المنتج من قائمة أمنياتك.',
+      });
+    } else {
+      wishlistDispatch({ type: 'ADD_ITEM', payload: product });
+      toast({
+        title: `💖 ${product.name}`,
+        description: 'تمت إضافة المنتج إلى قائمة أمنياتك!',
+        action: (
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/wishlist">عرض القائمة</Link>
+          </Button>
+        ),
+      });
+    }
   };
 
   const handlePrimaryActionAnimation = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -93,12 +113,15 @@ const StoreProductCard: React.FC<StoreProductCardProps> = ({ product, accentColo
         <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 left-2 z-10 bg-card/50 hover:bg-card/80 rounded-full text-destructive/80 hover:text-destructive w-8 h-8 opacity-90 group-hover:opacity-100 transition-opacity"
-            onClick={handleWishlistAnimation}
-            title="إضافة إلى المفضلة"
-            aria-label="إضافة إلى المفضلة"
+            className={cn(
+              "absolute top-2 left-2 z-10 bg-card/50 hover:bg-card/80 rounded-full w-8 h-8 opacity-90 group-hover:opacity-100 transition-all",
+              isInWishlist ? "text-destructive" : "text-destructive/80 hover:text-destructive"
+            )}
+            onClick={handleWishlistToggle}
+            title={isInWishlist ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+            aria-label={isInWishlist ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
         >
-            <Heart className="w-4 h-4" />
+            <Heart className={cn("w-4 h-4 transition-all", isInWishlist ? "fill-destructive" : "")} />
         </Button>
       </CardHeader>
       <CardContent className="p-4 flex-grow flex flex-col">

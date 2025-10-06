@@ -29,9 +29,11 @@ import {
   ListOrdered,
   Info, // Added Info icon for "About Us"
   Sparkles, // Added Sparkles for consistency with Hero section
+  Heart,
 } from 'lucide-react';
 import { WomenCommerceLogo } from '@/components/icons/logo';
 import { motion } from 'framer-motion';
+import { useWishlist } from '@/context/wishlist-context';
 
 
 const navItems = [
@@ -52,8 +54,10 @@ const navItemVariants = {
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { state: wishlistState } = useWishlist();
   const isLoggedIn = true; // Mock state, replace with actual auth state
   const isSeller = true; // Mock state, replace with actual seller state
+  const wishlistCount = wishlistState.items.length;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -91,6 +95,19 @@ export function Navbar() {
                   </Button>
                 </motion.div>
               )}
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary relative">
+                  <Link href="/wishlist" className="flex items-center text-sm group">
+                    <Heart size={18} className="ml-1.5 text-destructive transition-colors duration-200 group-hover:text-primary" />
+                    المفضلة
+                    {wishlistCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent-yellow text-xs font-bold text-accent-yellow-foreground">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </Link>
+                </Button>
+              </motion.div>
                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button variant="ghost" asChild className="hidden sm:inline-flex text-foreground hover:text-primary">
                     <Link href="/profile" className="flex items-center text-sm group">
@@ -183,6 +200,19 @@ export function Navbar() {
                                 طلباتي
                              </Link>
                            </Button>
+                         </SheetClose>
+                         <SheetClose asChild>
+                            <Button variant="ghost" className="w-full justify-start text-base py-2.5 group relative" asChild>
+                                <Link href="/wishlist" className="flex items-center hover:text-primary">
+                                    <Heart size={18} className="ml-2.5 text-destructive transition-colors duration-200 group-hover:text-primary" />
+                                    المفضلة
+                                    {wishlistCount > 0 && (
+                                        <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-yellow text-xs font-bold text-accent-yellow-foreground">
+                                            {wishlistCount}
+                                        </span>
+                                    )}
+                                </Link>
+                            </Button>
                          </SheetClose>
                          <Button variant="outline" className="w-full justify-start text-base py-2.5 mt-4 border-primary text-primary hover:bg-primary/5 group" onClick={() => {alert('تسجيل الخروج (محاكاة)'); setIsMobileMenuOpen(false);}}>
                             <LogOutIcon size={18} className="ml-2.5 transition-colors duration-200 group-hover:text-primary" />
